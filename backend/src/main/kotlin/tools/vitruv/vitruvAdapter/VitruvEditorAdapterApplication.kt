@@ -1,4 +1,4 @@
-package tools.vitruv.vitruv_editor_adapter
+package tools.vitruv.vitruvAdapter
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

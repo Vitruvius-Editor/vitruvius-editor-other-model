@@ -1,4 +1,4 @@
-package tools.vitruv.vitruv_editor_adapter.dto
+package tools.vitruv.vitruvAdapter.dto
 
 /**
  * This data class holds all data to edit a view.

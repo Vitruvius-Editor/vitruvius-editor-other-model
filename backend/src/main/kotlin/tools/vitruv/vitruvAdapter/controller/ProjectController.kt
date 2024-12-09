@@ -1,8 +1,8 @@
-package tools.vitruv.vitruv_editor_adapter.controller
+package tools.vitruv.vitruvAdapter.controller
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import tools.vitruv.vitruv_editor_adapter.dto.*
+import tools.vitruv.vitruvAdapter.dto.*
 
 /**
  * This rest controller handles all requests that deal with the management of projects.

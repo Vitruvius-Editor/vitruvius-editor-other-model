@@ -1,4 +1,4 @@
-package tools.vitruv.vitruv_editor_adapter
+package tools.vitruv.vitruvAdapter
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
