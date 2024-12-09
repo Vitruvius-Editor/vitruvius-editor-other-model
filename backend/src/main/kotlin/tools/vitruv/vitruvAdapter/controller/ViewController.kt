@@ -1,9 +1,11 @@
-package tools.vitruv.vitruv_editor_adapter.controller
+package tools.vitruv.vitruvAdapter.controller
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import tools.vitruv.vitruv_editor_adapter.dto.ViewContentResponse
-import tools.vitruv.vitruv_editor_adapter.dto.ViewResponse
+import tools.vitruv.framework.remote.client.VitruvClient
+import tools.vitruv.framework.remote.client.VitruvClientFactory
+import tools.vitruv.vitruvAdapter.dto.ViewContentResponse
+import tools.vitruv.vitruvAdapter.dto.ViewResponse
 
 /**
  * This controller handles all requests related to views.

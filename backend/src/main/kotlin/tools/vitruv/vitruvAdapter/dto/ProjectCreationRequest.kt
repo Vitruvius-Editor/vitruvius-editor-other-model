@@ -1,4 +1,4 @@
-package tools.vitruv.vitruv_editor_adapter.dto
+package tools.vitruv.vitruvAdapter.dto
 
 /**
  * Data class that holds all properties required to create a new project.
