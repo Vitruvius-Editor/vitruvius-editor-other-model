@@ -29,7 +29,52 @@
 	<properties>
 		<java.version>17</java.version>
 		<kotlin.version>2.1.0</kotlin.version>
+	   <repo.emf-compare.version>3.3</repo.emf-compare.version>
+    	<repo.sdq-commons.version>2.2.0</repo.sdq-commons.version>
+    	<repo.xannotations.version>1.6.0</repo.xannotations.version>
+    	<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    	<sonar.organization>vitruv-tools</sonar.organization>
+    	<sonar.projectKey>vitruv-tools_Vitruv</sonar.projectKey>
 	</properties>
+	<pluginRepositories>
+		<!-- the plugin is hosted in OpenNTF's Maven repository -->
+		<pluginRepository>
+			<id>artifactory.openntf.org</id>
+			<name>artifactory.openntf.org</name>
+			<url>https://artifactory.openntf.org/openntf</url>
+		</pluginRepository>
+	</pluginRepositories>
+  <repositories>
+    <!-- Maven Central should have priority -->
+    <repository>
+      <id>central</id>
+      <name>Maven Central</name>
+      <url>https://repo1.maven.org/maven2/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+
+    <!-- for p2 dependencies, `groupId` specifies the repository -->
+    <repository>
+      <id>emf-compare</id>
+      <name>EMF Compare</name>
+      <layout>p2</layout>
+      <url>https://download.eclipse.org/modeling/emf/compare/updates/releases/${repo.emf-compare.version}</url>
+    </repository>
+    <repository>
+      <id>sdq-commons</id>
+      <name>SDQ Commons</name>
+      <url>https://kit-sdq.github.io/updatesite/release/commons/${repo.sdq-commons.version}</url>
+      <layout>p2</layout>
+    </repository>
+    <repository>
+      <id>xannotations</id>
+      <name>XAnnotations</name>
+      <layout>p2</layout>
+      <url>https://kit-sdq.github.io/updatesite/release/xannotations/${repo.xannotations.version}</url>
+    </repository>
+  </repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -107,6 +152,12 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.openntf.maven</groupId>
+				<artifactId>p2-layout-resolver</artifactId>
+				<version>1.7.0</version>
+				<extensions>true</extensions>
 			</plugin>
 			<plugin>
 				<groupId>org.jetbrains.kotlin</groupId>
