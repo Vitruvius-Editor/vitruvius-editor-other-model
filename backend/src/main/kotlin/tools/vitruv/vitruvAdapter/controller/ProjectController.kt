@@ -1,8 +1,10 @@
 package tools.vitruv.vitruvAdapter.controller
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import tools.vitruv.vitruvAdapter.dto.*
+import tools.vitruv.vitruvAdapter.services.ProjectService
 
 /**
  * This rest controller handles all requests that deal with the management of projects.
@@ -11,6 +13,8 @@ import tools.vitruv.vitruvAdapter.dto.*
 @RestController
 @RequestMapping(value = ["/api/v1"])
 class ProjectController {
+    @Autowired
+    lateinit var projectService: ProjectService
     /**
      * This method returns a list of all saved projects.
      *
