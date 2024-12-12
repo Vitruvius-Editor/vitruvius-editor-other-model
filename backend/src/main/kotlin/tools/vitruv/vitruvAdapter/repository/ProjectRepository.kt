@@ -9,6 +9,5 @@ import java.util.UUID
  *
  */
 interface ProjectRepository : Repository<Project, UUID> {
-    fun findByUUID(uuid: UUID): Project?;
-    fun getAll(): List<Project>;
+    fun findByUuid(uuid: UUID): Project?;
 }

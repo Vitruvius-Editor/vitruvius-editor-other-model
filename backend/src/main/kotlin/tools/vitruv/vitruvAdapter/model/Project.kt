@@ -6,7 +6,7 @@ import java.util.*
 /**
  * This class represents a project stored on a Vitruvius server.
  *
- * @property id A unique identifier of the project.
+ * @property uuid A unique identifier of the project.
  * @property name Name of the project.
  * @property description A short description of the project.
  * @property url The url to the Vitruvius server of the project.
@@ -15,7 +15,7 @@ import java.util.*
 class Project(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    val id: UUID,
+    val uuid: UUID,
 
     @Column(nullable = false)
     val name: String,
