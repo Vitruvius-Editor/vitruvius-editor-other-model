@@ -26,27 +26,32 @@ interface Connection {
     fun getViewTypeProvider(): ViewTypeProvider
 
     /**
-     * Creates a connection to a Vitruvius server.
-     * @param ip The ip of the server.
-     * @param port The port of the server.
-     * @param protocol The protocol of the server.
-     * @param temporaryPath The path to an empty temporary directory where the {@link VitruvClient} can store temporary files.
-     * @throws VitruviusConnectFailedException If the connection to the server failed.
-     */
-    fun createConnection(ip: String, port: Int, protocol: String, temporaryPath: Path)
-
-    /**
      * Checks if the connection is established.
      * @return True if the connection is established, false otherwise.
      */
     fun isConnected(): Boolean
 
+    /**
+     * Gets the ip of the connection.
+     * @return The ip of the connection.
+     */
     fun getIp(): String
 
+    /**
+     * Gets the port of the connection.
+     * @return The port of the connection.
+     */
     fun getPort(): Int
 
+    /**
+     * Gets the protocol of the connection.
+     * @return The protocol of the connection.
+     */
     fun getProtocol(): String
 
+    /**
+     * Gets the temporary path of the connection.
+     * @return The temporary path of the connection.
+     */
     fun getTemporaryPath(): Path
-
 }
