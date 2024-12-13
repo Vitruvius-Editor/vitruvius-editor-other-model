@@ -24,6 +24,10 @@ class VitruviusService {
         TODO()
     }
 
+    fun closeAllViews(project: Project) {
+        TODO()
+    }
+
     fun closeView(view: RemoteView) {
         TODO()
     }

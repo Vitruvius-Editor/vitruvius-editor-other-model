@@ -5,9 +5,9 @@ package tools.vitruv.vitruvAdapter.dto
  *
  * @property name The projects name.
  * @property description The projects' description.
- * @property location The projects' location.
+ * @property url The projects' location.
  */
-data class ProjectCreationRequest(val name: String, val description: String, val location: String) {
+data class ProjectCreationRequest(val name: String, val description: String, val url: String) {
 }
 /**
  * Type alias, because editing a project requires the same properties as creating.
