@@ -1,8 +1,10 @@
 package tools.vitruv.vitruvAdapter.controller
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import tools.vitruv.vitruvAdapter.dto.*
+import tools.vitruv.vitruvAdapter.services.ProjectService
 
 /**
  * This rest controller handles all requests that deal with the management of projects.
@@ -11,6 +13,8 @@ import tools.vitruv.vitruvAdapter.dto.*
 @RestController
 @RequestMapping(value = ["/api/v1"])
 class ProjectController {
+    @Autowired
+    lateinit var projectService: ProjectService
     /**
      * This method returns a list of all saved projects.
      *
@@ -29,7 +33,7 @@ class ProjectController {
      */
     @GetMapping("/projects/{id}")
     fun getProject(@PathVariable("id") id: String) : ResponseEntity<ProjectResponse> {
-        return ResponseEntity.ok(ProjectResponse("foo", "bar", id, "example.com"))
+        return ResponseEntity.ok().build()
     }
 
     /**
@@ -40,7 +44,7 @@ class ProjectController {
      */
     @PostMapping("/project")
     fun createProject(@RequestBody body: ProjectCreationRequest): ResponseEntity<ProjectResponse> {
-        return ResponseEntity.ok(ProjectResponse(body.name, body.description, "1337", "example.com"))
+        return ResponseEntity.ok().build()
     }
 
     /**
@@ -63,6 +67,6 @@ class ProjectController {
      */
     @PutMapping("/project/{id}")
     fun editProject(@PathVariable("id") id: String, @RequestBody body: ProjectEditRequest) : ResponseEntity<ProjectResponse> {
-        return ResponseEntity.ok(ProjectResponse(body.name, body.description, "1337", body.location))
+        return ResponseEntity.ok().build()
     }
 }

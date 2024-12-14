@@ -1,11 +1,13 @@
 package tools.vitruv.vitruvAdapter.controller
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import tools.vitruv.framework.remote.client.VitruvClient
 import tools.vitruv.framework.remote.client.VitruvClientFactory
 import tools.vitruv.vitruvAdapter.dto.ViewContentResponse
 import tools.vitruv.vitruvAdapter.dto.ViewResponse
+import tools.vitruv.vitruvAdapter.services.VitruviusService
 
 /**
  * This controller handles all requests related to views.
@@ -14,38 +16,27 @@ import tools.vitruv.vitruvAdapter.dto.ViewResponse
 @RestController
 @RequestMapping("/api/v1")
 class ViewController {
+    @Autowired
+    lateinit var vitruviusService: VitruviusService
+
     /**
-     * This method returns a list of all available views of a project.
+     * Returns all opened views of a project.
      *
      * @param projectId The id of the project.
-     * @return A list of all available views.
+     * @return A list of all opened views.
      */
     @GetMapping("/projects/{projectId}/views")
-    fun getViews(@PathVariable("projectId") projectId: String) : ResponseEntity<List<ViewResponse>> {
+    fun getOpenedViews(@PathVariable("projectId") projectId: String): ResponseEntity<List<ViewResponse>> {
         return ResponseEntity.ok().build()
     }
-
-    /**
-     * Returns a single view of a project.
-     *
-     * @param projectId The id of the project.
-     * @param viewId The id of the view.
-     * @return The data of the view
-     */
-    @GetMapping("/projects/{projectId}/views/{viewId}")
-    fun getView(@PathVariable("projectId") projectId: String, @PathVariable("viewId") viewId: String): ResponseEntity<ViewResponse> {
-        return ResponseEntity.ok().build()
-    }
-
     /**
      * Returns the content of a view.
      *
-     * @param projectId The id of the project.
      * @param viewId The id of the view.
      * @return The content of the view.
      */
-    @GetMapping("/projects/{projectId}/views/{viewId}/content")
-    fun getViewContent(@PathVariable("projectId") projectId: String, @PathVariable("viewId") viewId: String) : ResponseEntity<ViewContentResponse> {
+    @GetMapping("/view/{viewId}")
+    fun getViewContent(@PathVariable("viewId") viewId: String) : ResponseEntity<ViewContentResponse> {
         return ResponseEntity.ok().build()
     }
 
@@ -57,8 +48,19 @@ class ViewController {
      * @param body The changes to the view.
      * @return The new content.
      */
-    @PutMapping("/projects/{projectId}/views/{viewId}/content")
-    fun editViewContent(@PathVariable("projectId") projectId: String, @PathVariable("viewId") viewId: String, @RequestBody body: ViewContentResponse): ResponseEntity<ViewContentResponse> {
+    @PutMapping("/view/{viewId}")
+    fun editViewContent(projectId: String, @PathVariable("viewId") viewId: String, @RequestBody body: ViewContentResponse): ResponseEntity<ViewContentResponse> {
+        return ResponseEntity.ok().build()
+    }
+
+    /**
+     * Close an opened view.
+     *
+     * @param viewId The id of the view that should be closed.
+     * @return
+     */
+    @PostMapping("/view/{viewId}/close")
+    fun closeView(@PathVariable viewId: String) : ResponseEntity<Unit> {
         return ResponseEntity.ok().build()
     }
 }
