@@ -7,7 +7,7 @@ import java.util.UUID
  *
  * @property name The name of the project.
  * @property description The description of the project.
- * @property uuid The id of the project.
+ * @property uuid The uuid of the project.
  * @property url The location of the project.
  */
 data class ProjectResponse(val name: String, val description: String, val uuid: UUID, val url: String) {
