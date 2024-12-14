@@ -1,12 +1,15 @@
 package tools.vitruv.vitruvAdapter.dto
 
+import java.util.*
+
 /**
  * This data class holds all metadata provided by a view.
  *
+ * @property uuid The uuid of the view.
  * @property name The name of the view.
- * @property description The description of the view.
- * @property id The id of the view.
- * @property editable Whether the view is editable.
+ * @property isClosed Whether the view is closed.
+ * @property isModified Whether the view is modified.
+ * @property isOutdated Whether the view is outdated.
  */
-data class ViewResponse(val name: String, val description: String, val id: String, val editable: Boolean) {
+data class ViewResponse(val uuid: UUID, val name: String, val isClosed: Boolean, val isModified: Boolean, val isOutdated: Boolean) {
 }

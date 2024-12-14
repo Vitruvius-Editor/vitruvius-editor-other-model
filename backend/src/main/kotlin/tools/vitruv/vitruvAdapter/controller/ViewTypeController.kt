@@ -20,16 +20,24 @@ class ViewTypeController {
     lateinit var vitruviusService: VitruviusService
 
     /**
-     * This method returns a list of all available View Types of a project.
+     * This method returns a list of all available View-Types of a project.
      *
      * @param projectId The id of the project.
      * @return A list of all available views.
      */
     @GetMapping("/projects/{projectId}/viewTypes")
-    fun getViews(@PathVariable("projectId") projectId: String) : ResponseEntity<List<ViewTypeResponse>> {
+    fun getViewTypes(@PathVariable("projectId") projectId: String) : ResponseEntity<List<ViewTypeResponse>> {
         return ResponseEntity.ok().build()
     }
 
+    /**
+     * This method opens a new view of a viewType
+     *
+     * @param projectId The id of the project/
+     * @param viewTypeName The name of the View-Type
+     * @param openViewRequest The data about the view that is opened.
+     * @return
+     */
     @PostMapping("/projects/{projectId}/viewTypes/{viewTypeName}/open")
     fun openView(@PathVariable("projectId") projectId: String, @PathVariable("viewTypeName") viewTypeName: String, @RequestBody openViewRequest: OpenViewRequest): ResponseEntity<ViewResponse> {
         return ResponseEntity.ok().build()
