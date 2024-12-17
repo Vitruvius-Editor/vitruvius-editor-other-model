@@ -10,15 +10,28 @@ import tools.vitruv.framework.views.ViewType
 interface DisplayView {
 
     /**
+     * Gets the name of the display view.
+     * @return The name of the display view.
+     */
+    fun getName(): String
+
+    /**
      * Gets the relating vitruvius view type.
      * @return The relating vitruvius view type.
      */
     fun getViewType(): ViewType<out ViewSelector>
 
     /**
+     * Gets the selector of the display view.
+     * @return The selector of the display view.
+     */
+    fun getSelector(): ViewSelector
+
+    /**
      * Gets the view mapper of the display view.
      * @return The view mapper of the display view.
      */
     fun getViewMapper(): ViewMapper
+
 
 }
