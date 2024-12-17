@@ -33,7 +33,7 @@ class ProjectController {
      */
     @GetMapping("/projects/{id}")
     fun getProject(@PathVariable("id") id: String) : ResponseEntity<ProjectResponse> {
-        return ResponseEntity.ok(ProjectResponse("foo", "bar", id, "example.com"))
+        return ResponseEntity.ok().build()
     }
 
     /**
@@ -44,7 +44,7 @@ class ProjectController {
      */
     @PostMapping("/project")
     fun createProject(@RequestBody body: ProjectCreationRequest): ResponseEntity<ProjectResponse> {
-        return ResponseEntity.ok(ProjectResponse(body.name, body.description, "1337", "example.com"))
+        return ResponseEntity.ok().build()
     }
 
     /**
@@ -67,6 +67,6 @@ class ProjectController {
      */
     @PutMapping("/project/{id}")
     fun editProject(@PathVariable("id") id: String, @RequestBody body: ProjectEditRequest) : ResponseEntity<ProjectResponse> {
-        return ResponseEntity.ok(ProjectResponse(body.name, body.description, "1337", body.location))
+        return ResponseEntity.ok().build()
     }
 }
