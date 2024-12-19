@@ -1,6 +1,6 @@
-package tools.vitruv.vitruvAdapter.logic.api.contents
+package tools.vitruv.vitruvAdapter.vitruv.contents
 
-import tools.vitruv.vitruvAdapter.logic.api.displayViews.ViewMapper
+import tools.vitruv.vitruvAdapter.vitruv.displayViews.mapper.ViewMapper
 
 /**
  * Interface for contents.
