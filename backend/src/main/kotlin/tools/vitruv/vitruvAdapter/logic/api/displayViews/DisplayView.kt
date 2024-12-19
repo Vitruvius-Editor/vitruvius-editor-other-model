@@ -1,7 +1,9 @@
 package tools.vitruv.vitruvAdapter.logic.api.displayViews
 
+import org.eclipse.emf.ecore.EObject
 import tools.vitruv.framework.views.ViewSelector
 import tools.vitruv.framework.views.ViewType
+import tools.vitruv.vitruvAdapter.logic.api.contents.Content
 
 /**
  * This interface represents a display view, which can be displayed in the Vitruvius graphical editor.
@@ -33,5 +35,10 @@ interface DisplayView {
      */
     fun getViewMapper(): ViewMapper
 
-
+    /**
+     * Get the content of the viewType in a processed format.
+     *
+     * @return
+     */
+    fun getViewContent(): Content
 }

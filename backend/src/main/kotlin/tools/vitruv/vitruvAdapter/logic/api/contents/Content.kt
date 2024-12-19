@@ -15,4 +15,5 @@ import tools.vitruv.vitruvAdapter.logic.api.displayViews.ViewMapper
  * @author uhsab
  */
 interface Content {
+    fun getContent(): String
 }
