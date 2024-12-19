@@ -1,10 +1,12 @@
 package tools.vitruv.vitruvAdapter.services
 
 import org.eclipse.emf.ecore.EObject
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import tools.vitruv.framework.remote.client.impl.RemoteView
 import tools.vitruv.framework.remote.client.impl.RemoteViewType
 import tools.vitruv.vitruvAdapter.model.Project
+import tools.vitruv.vitruvAdapter.vitruv.displayViews.DisplayViewRepository
 
 /**
  * This service handles all Vitruvius Interaction. It uses the RemoteVitruviusClient to make requests to a
@@ -13,6 +15,8 @@ import tools.vitruv.vitruvAdapter.model.Project
  */
 @Service
 class VitruviusService {
+    @Autowired
+    lateinit var displayViewRepository: DisplayViewRepository
     /**
      * Returns all ViewTypes of a project.
      *

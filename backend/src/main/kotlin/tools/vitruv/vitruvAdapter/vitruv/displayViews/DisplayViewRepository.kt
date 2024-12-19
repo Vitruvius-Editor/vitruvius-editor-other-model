@@ -1,7 +1,10 @@
 package tools.vitruv.vitruvAdapter.vitruv.displayViews
 
-class DisplayViewRepository: tools.vitruv.vitruvAdapter.vitruv.displayViews.DisplayViewContainer {
-    override fun registerDisplayView(displayView: tools.vitruv.vitruvAdapter.vitruv.displayViews.DisplayView) {
+import org.springframework.stereotype.Service
+
+@Service
+class DisplayViewRepository: DisplayViewContainer {
+    override fun registerDisplayView(displayView: DisplayView) {
         TODO("Not yet implemented")
     }
 
