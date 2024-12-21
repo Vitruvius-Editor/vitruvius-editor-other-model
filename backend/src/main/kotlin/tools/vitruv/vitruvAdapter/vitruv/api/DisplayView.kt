@@ -1,8 +1,7 @@
-package tools.vitruv.vitruvAdapter.vitruv.displayViews
+package tools.vitruv.vitruvAdapter.vitruv.api
 
 import tools.vitruv.framework.views.ViewSelector
 import tools.vitruv.framework.views.ViewType
-import tools.vitruv.vitruvAdapter.vitruv.displayViews.mapper.ViewMapper
 
 /**
  * This interface represents a display view, which can be displayed in the Vitruvius graphical editor.
@@ -39,5 +38,5 @@ interface DisplayView {
      *
      * @return
      */
-    fun getViewContent(): tools.vitruv.vitruvAdapter.vitruv.contents.Content
+    fun getViewContent(): DisplayContent
 }

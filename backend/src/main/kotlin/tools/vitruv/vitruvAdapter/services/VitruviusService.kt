@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service
 import tools.vitruv.framework.remote.client.impl.RemoteView
 import tools.vitruv.framework.remote.client.impl.RemoteViewType
 import tools.vitruv.vitruvAdapter.model.Project
-import tools.vitruv.vitruvAdapter.vitruv.displayViews.DisplayViewRepository
+import tools.vitruv.vitruvAdapter.vitruv.impl.DisplayViewRepository
 
 /**
  * This service handles all Vitruvius Interaction. It uses the RemoteVitruviusClient to make requests to a

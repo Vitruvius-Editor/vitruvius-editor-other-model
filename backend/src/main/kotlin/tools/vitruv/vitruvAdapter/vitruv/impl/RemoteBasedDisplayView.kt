@@ -1,9 +1,11 @@
-package tools.vitruv.vitruvAdapter.vitruv.displayViews
+package tools.vitruv.vitruvAdapter.vitruv.impl
 
 import tools.vitruv.framework.remote.client.impl.RemoteViewType
 import tools.vitruv.framework.views.ViewSelector
 import tools.vitruv.framework.views.ViewType
-import tools.vitruv.vitruvAdapter.vitruv.displayViews.mapper.ViewMapper
+import tools.vitruv.vitruvAdapter.vitruv.api.DisplayContent
+import tools.vitruv.vitruvAdapter.vitruv.api.DisplayView
+import tools.vitruv.vitruvAdapter.vitruv.api.ViewMapper
 
 open class RemoteBasedDisplayView(var remoteViewType: RemoteViewType, var remoteViewMapper: ViewMapper):
     DisplayView {
@@ -23,7 +25,7 @@ open class RemoteBasedDisplayView(var remoteViewType: RemoteViewType, var remote
         TODO("Not yet implemented")
     }
 
-    override fun getViewContent(): tools.vitruv.vitruvAdapter.vitruv.contents.Content {
+    override fun getViewContent(): DisplayContent {
         TODO("Not yet implemented")
     }
 }
