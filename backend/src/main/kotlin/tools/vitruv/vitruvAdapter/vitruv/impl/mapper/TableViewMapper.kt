@@ -5,11 +5,11 @@ import tools.vitruv.vitruvAdapter.vitruv.api.DisplayContent
 import tools.vitruv.vitruvAdapter.vitruv.api.ViewMapper
 
 class TableViewMapper : ViewMapper {
-    override fun mapViewContent(viewContent: List<EObject>): DisplayContent {
+    override fun mapViewToJson(rootObjects: List<EObject>): DisplayContent {
         TODO("Not yet implemented")
     }
 
-    override fun mapViewContent(viewDisplayContent: DisplayContent): List<EObject> {
+    override fun mapJsonToView(viewDisplayContent: DisplayContent): List<EObject> {
         TODO("Not yet implemented")
     }
 }

@@ -7,36 +7,37 @@ import tools.vitruv.framework.views.ViewType
  * This interface represents a display view, which can be displayed in the Vitruvius graphical editor.
  * @author uhsab
  */
-interface DisplayView {
+abstract class DisplayView(
+    val name: String,
+    val viewMapper: ViewMapper
+) {
 
     /**
-     * Gets the name of the display view.
-     * @return The name of the display view.
-     */
-    fun getName(): String
-
-    /**
-     * Gets the relating vitruvius view type.
+     * Gets the relating vitruvius view type from the server.
      * @return The relating vitruvius view type.
      */
-    fun getViewType(): ViewType<out ViewSelector>
+    abstract fun getViewType(): ViewType<out ViewSelector>
 
     /**
-     * Gets the selector of the display view.
-     * @return The selector of the display view.
+     * Gets all windows that are available for this view.
+     * @see Window
+     * @return The windows that are available for this view.
      */
-    fun getSelector(): ViewSelector
+    fun getWindows(): Set<String> {
+        val selector = getViewType().createSelector(null)
+        //How to select the windows?
+    }
 
     /**
-     * Gets the view mapper of the display view.
-     * @return The view mapper of the display view.
+     * Creates the content for the given windows.
+     * @param windows The windows to create the content for.
+     * @return The created content for each window.
      */
-    fun getViewMapper(): ViewMapper
+    fun createWindowContent(windows: Set<String>): DisplayContent {
+        val selector = getViewType().createSelector(null)
+        //How to select the windows?
+        val view = selector.createView()
+        return viewMapper.mapViewToJson(view.rootObjects.toList())
+    }
 
-    /**
-     * Get the content of the viewType in a processed format.
-     *
-     * @return
-     */
-    fun getViewContent(): DisplayContent
 }

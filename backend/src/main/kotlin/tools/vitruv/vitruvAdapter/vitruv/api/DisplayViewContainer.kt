@@ -26,4 +26,11 @@ interface DisplayViewContainer {
      * @return The registered display views.
      */
     fun getDisplayViews(): Set<DisplayView>
+
+    /**
+     * Gets a display view by its name.
+     * @param name The name of the display view.
+     * @return The display view with the given name or null if no display view with the given name is registered.
+     */
+    fun getDisplayView(name: String): DisplayView?
 }

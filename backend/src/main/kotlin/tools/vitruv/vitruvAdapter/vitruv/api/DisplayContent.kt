@@ -3,5 +3,8 @@ package tools.vitruv.vitruvAdapter.vitruv.api
 /**
  * @author uhsab
  */
-interface DisplayContent {
+abstract class DisplayContent(
+    val name: String
+) {
+    abstract fun createJsonViewInformation(): JsonViewInformation
 }

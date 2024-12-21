@@ -4,11 +4,11 @@ import org.eclipse.emf.ecore.EObject
 import tools.vitruv.vitruvAdapter.vitruv.api.DisplayContent
 
 class SourceCodeViewMapper: TextViewMapper() {
-    override fun mapViewContent(viewContent: List<EObject>): DisplayContent {
+    override fun mapViewToJson(rootObjects: List<EObject>): DisplayContent {
         TODO("Not yet implemented")
     }
 
-    override fun mapViewContent(viewDisplayContent: DisplayContent): List<EObject> {
+    override fun mapJsonToView(viewDisplayContent: DisplayContent): List<EObject> {
         TODO("Not yet implemented")
     }
 }
