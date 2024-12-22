@@ -12,7 +12,7 @@ import java.util.*
  * @property url The url to the Vitruvius server of the project.
  */
 @Entity
-class Project(
+class ConnectionDetails(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     val uuid: UUID,

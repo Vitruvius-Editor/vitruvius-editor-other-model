@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import tools.vitruv.framework.remote.client.impl.RemoteView
 import tools.vitruv.framework.remote.client.impl.RemoteViewType
-import tools.vitruv.vitruvAdapter.model.Project
+import tools.vitruv.vitruvAdapter.model.ConnectionDetails
 import tools.vitruv.vitruvAdapter.vitruv.impl.DisplayViewRepository
 
 /**
@@ -20,20 +20,20 @@ class VitruviusService {
     /**
      * Returns all ViewTypes of a project.
      *
-     * @param project The project of which the ViewTypes shall be returned.
+     * @param connectionDetails The project of which the ViewTypes shall be returned.
      * @return A list of RemoteViewTypes.
      */
-    fun getViewTypes(project: Project): List<RemoteViewType> {
+    fun getViewTypes(connectionDetails: ConnectionDetails): List<RemoteViewType> {
         TODO()
     }
 
     /**
      * Returns all currently opened views of a project.
      *
-     * @param project The project of which the views shall be returned.
+     * @param connectionDetails The project of which the views shall be returned.
      * @return A list of RemoteViews.
      */
-    fun getOpenedViews(project: Project): List<RemoteView> {
+    fun getOpenedViews(connectionDetails: ConnectionDetails): List<RemoteView> {
         TODO()
     }
 
@@ -62,9 +62,9 @@ class VitruviusService {
     /**
      * Close all opened views of a project
      *
-     * @param project
+     * @param connectionDetails
      */
-    fun closeAllViews(project: Project) {
+    fun closeAllViews(connectionDetails: ConnectionDetails) {
         TODO()
     }
 
