@@ -17,4 +17,8 @@ class DisplayViewRepository: DisplayViewContainer {
     override fun getDisplayViews(): Set<DisplayView> {
         TODO("Not yet implemented")
     }
+
+    override fun getDisplayView(name: String): DisplayView? {
+        TODO("Not yet implemented")
+    }
 }

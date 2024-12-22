@@ -8,7 +8,8 @@ class XmlViewMapper: TextViewMapper() {
         TODO("Not yet implemented")
     }
 
-    override fun mapJsonToView(viewDisplayContent: DisplayContent): List<EObject> {
+    override fun mapJsonToView(json: String): List<EObject> {
         TODO("Not yet implemented")
     }
+
 }

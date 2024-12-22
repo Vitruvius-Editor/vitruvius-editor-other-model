@@ -6,6 +6,6 @@ class JsonViewInformation(
 ) {
 
     fun toJson(): String {
-        //Todo
+        TODO("Not yet implemented")
     }
 }
