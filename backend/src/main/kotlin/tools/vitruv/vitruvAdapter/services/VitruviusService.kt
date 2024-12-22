@@ -2,11 +2,18 @@ package tools.vitruv.vitruvAdapter.services
 
 import org.eclipse.emf.ecore.EObject
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import tools.vitruv.framework.remote.client.impl.RemoteView
 import tools.vitruv.framework.remote.client.impl.RemoteViewType
+import tools.vitruv.vitruvAdapter.dto.DisplayViewResponse
+import tools.vitruv.vitruvAdapter.dto.WindowSelectionRequest
 import tools.vitruv.vitruvAdapter.model.ConnectionDetails
+import tools.vitruv.vitruvAdapter.vitruv.api.DisplayView
+import tools.vitruv.vitruvAdapter.vitruv.api.Selector
+import tools.vitruv.vitruvAdapter.vitruv.api.Window
 import tools.vitruv.vitruvAdapter.vitruv.impl.DisplayViewRepository
+import java.util.*
 
 /**
  * This service handles all Vitruvius Interaction. It uses the RemoteVitruviusClient to make requests to a
@@ -17,63 +24,20 @@ import tools.vitruv.vitruvAdapter.vitruv.impl.DisplayViewRepository
 class VitruviusService {
     @Autowired
     lateinit var displayViewRepository: DisplayViewRepository
-    /**
-     * Returns all ViewTypes of a project.
-     *
-     * @param connectionDetails The project of which the ViewTypes shall be returned.
-     * @return A list of RemoteViewTypes.
-     */
-    fun getViewTypes(connectionDetails: ConnectionDetails): List<RemoteViewType> {
-        TODO()
+
+    fun getDisplayViews(projectId: UUID): List<DisplayView> {
+        TODO("Not yet implemented")
     }
 
-    /**
-     * Returns all currently opened views of a project.
-     *
-     * @param connectionDetails The project of which the views shall be returned.
-     * @return A list of RemoteViews.
-     */
-    fun getOpenedViews(connectionDetails: ConnectionDetails): List<RemoteView> {
-        TODO()
+    fun getDisplayViewWindows(projectId: UUID, displayViewName: String): List<Window> {
+        TODO("Not yet implemented")
     }
 
-    /**
-     * Open a view of a View-Type.
-     *
-     * @param viewType The View-Type of which a view should be opened.
-     * @param viewName The name of the view to open.
-     * @return The instantiated view. Is null if an error occurred.
-     */
-    fun openView(viewType: RemoteViewType, viewName: String): RemoteView? {
-        TODO()
+    fun getDisplayViewContent(projectId: UUID, displayViewName: String, selector: Selector): String {
+        TODO("Not yet implemented")
     }
 
-    /**
-     * Update a view and return the updated view back.
-     *
-     * @param view The view to update.
-     * @param newData The new data of the view.
-     * @return The updated version of the view. Null if unsuccessful.
-     */
-    fun updateView(view: RemoteView, newData: List<EObject>): RemoteView? {
-        TODO()
-    }
-
-    /**
-     * Close all opened views of a project
-     *
-     * @param connectionDetails
-     */
-    fun closeAllViews(connectionDetails: ConnectionDetails) {
-        TODO()
-    }
-
-    /**
-     * CLose a single view.
-     *
-     * @param view
-     */
-    fun closeView(view: RemoteView) {
-        TODO()
+    fun editDisplayViewContent(projectId: UUID, displayViewName: String, updatedContent: String) {
+        TODO("Not yet implemented")
     }
 }
