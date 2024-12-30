@@ -9,7 +9,9 @@ import tools.vitruv.framework.views.ViewType
  */
 abstract class DisplayView(
     val name: String,
-    val viewMapper: ViewMapper
+    protected val viewMapper: ViewMapper,
+    protected val windowSelector: Selector,
+    protected val contentSelector: Selector
 ) {
 
     /**
@@ -26,7 +28,7 @@ abstract class DisplayView(
      */
     fun getWindows(selector: Selector): Set<String> {
         val internalSelector = getViewType().createSelector(null)
-        //How to select the windows?
+
         TODO("Not yet implemented")
     }
 
