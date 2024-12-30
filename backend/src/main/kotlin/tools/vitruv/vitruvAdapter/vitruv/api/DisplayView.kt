@@ -28,8 +28,14 @@ abstract class DisplayView(
      */
     fun getWindows(selector: Selector): Set<String> {
         val internalSelector = getViewType().createSelector(null)
-
-        TODO("Not yet implemented")
+        windowSelector.applySelection(internalSelector)
+        //Now only the names of the windows should be in the selection
+        val view = internalSelector.createView()
+        val windows = mutableSetOf<String>()
+        for (rootObject in view.rootObjects) {
+            //Add all names of windows to windows set
+        }
+        return windows
     }
 
     /**
@@ -38,9 +44,10 @@ abstract class DisplayView(
      * @return The created content for each window.
      */
     fun createWindowContent(windows: Set<String>): DisplayContent {
-        val selector = getViewType().createSelector(null)
-        //How to select the windows?
-        val view = selector.createView()
+        val internalSelector = getViewType().createSelector(null)
+        contentSelector.applySelection(internalSelector)
+        //Now only the things needed to create content for the windows should be in the selection
+        val view = internalSelector.createView()
         return viewMapper.mapViewToJson(view.rootObjects.toList())
     }
 

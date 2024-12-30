@@ -1,11 +1,17 @@
 package tools.vitruv.vitruvAdapter.vitruv.api
 
 class JsonViewInformation(
-    val displayContent: DisplayContent,
+    val displayContentName: String,
     val windows: List<Window>
 ) {
 
     fun toJson(): String {
-        TODO("Not yet implemented")
+        //Example
+        val firstLine = "name = $displayContentName"
+        val content = mutableListOf<String>()
+        for (window in windows) {
+            content.add(window.getContent())
+        }
+        return StringBuilder().append(firstLine).append(content).toString()
     }
 }
