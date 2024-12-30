@@ -24,7 +24,7 @@ abstract class DisplayView(
      * @param selector The selector to apply. To select all use the AllSelector
      * @return The windows that are available for this view.
      */
-    fun getWindows(selector: Selector): Set<Window> {
+    fun getWindows(selector: Selector): Set<String> {
         val internalSelector = getViewType().createSelector(null)
         //How to select the windows?
         TODO("Not yet implemented")
@@ -35,7 +35,7 @@ abstract class DisplayView(
      * @param windows The windows to create the content for.
      * @return The created content for each window.
      */
-    fun createWindowContent(windows: Set<Window>): DisplayContent {
+    fun createWindowContent(windows: Set<String>): DisplayContent {
         val selector = getViewType().createSelector(null)
         //How to select the windows?
         val view = selector.createView()
