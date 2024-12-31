@@ -3,14 +3,12 @@ package tools.vitruv.vitruvAdapter.vitruv.api
 import tools.vitruv.framework.views.View
 import tools.vitruv.framework.views.ViewSelector
 import tools.vitruv.framework.views.ViewType
-import tools.vitruv.framework.views.changederivation.DefaultStateBasedChangeResolutionStrategy
 
 /**
  * This interface represents a display view, which can be displayed in the Vitruvius graphical editor.
  * @author uhsab
  */
 abstract class DisplayView {
-
     /**
      * Gets the name of the DisplayView.
      * @return name
@@ -49,11 +47,11 @@ abstract class DisplayView {
     fun getWindows(): Set<String> {
         val internalSelector = getViewType().createSelector(null)
         getWindowSelector().applySelection(internalSelector)
-        //Now only the names of the windows should be in the selection
+        // Now only the names of the windows should be in the selection
         val view = internalSelector.createView()
         val windows = mutableSetOf<String>()
         for (rootObject in view.rootObjects) {
-            //Add all names of windows to windows set
+            // Add all names of windows to windows set
         }
         return windows
     }
@@ -61,7 +59,7 @@ abstract class DisplayView {
     private fun getViewForWindows(windows: Set<String>): View {
         val internalSelector = getViewType().createSelector(null)
         getContentSelector().applySelection(internalSelector)
-        //Now only the things needed to create content for the windows should be in the selection
+        // Now only the things needed to create content for the windows should be in the selection
         return internalSelector.createView()
     }
 
@@ -70,9 +68,8 @@ abstract class DisplayView {
      * @param windows The windows to create the content for.
      * @return The created content for each window.
      */
-    fun createWindowContent(windows: Set<String>): DisplayContent {
-        return getViewMapper().mapViewToJson(getViewForWindows(windows).rootObjects.toList())
-    }
+    fun createWindowContent(windows: Set<String>): DisplayContent =
+        getViewMapper().mapViewToJson(getViewForWindows(windows).rootObjects.toList())
 
     /**
      * This method reverts the json that Theia can interpret to display views to EObjects and tries to
@@ -82,8 +79,7 @@ abstract class DisplayView {
     fun editDisplayView(json: String) {
         val newViewContent = getViewMapper().mapJsonToView(json)
         val oldViewContent = getViewForWindows(getWindows())
-        //val strategy = DefaultStateBasedChangeResolutionStrategy().getChangeSequenceBetween(old, new) //How to convert to ressource?
-        //Update
+        // val strategy = DefaultStateBasedChangeResolutionStrategy().getChangeSequenceBetween(old, new) //How to convert to ressource?
+        // Update
     }
-
 }

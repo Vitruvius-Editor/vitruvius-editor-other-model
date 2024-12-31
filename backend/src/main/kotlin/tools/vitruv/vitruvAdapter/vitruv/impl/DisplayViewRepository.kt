@@ -5,7 +5,7 @@ import tools.vitruv.vitruvAdapter.vitruv.api.DisplayView
 import tools.vitruv.vitruvAdapter.vitruv.api.DisplayViewContainer
 
 @Service
-class DisplayViewRepository: DisplayViewContainer {
+class DisplayViewRepository : DisplayViewContainer {
     override fun registerDisplayView(displayView: DisplayView) {
         TODO("Not yet implemented")
     }

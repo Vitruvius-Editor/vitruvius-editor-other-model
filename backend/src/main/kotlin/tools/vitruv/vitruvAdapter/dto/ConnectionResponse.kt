@@ -10,5 +10,9 @@ import java.util.UUID
  * @property uuid The uuid of the project.
  * @property url The location of the project.
  */
-data class ConnectionResponse(val name: String, val description: String, val uuid: UUID, val url: String) {
-}
+data class ConnectionResponse(
+    val name: String,
+    val description: String,
+    val uuid: UUID,
+    val url: String,
+)

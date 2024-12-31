@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class VitruvEditorAdapterApplication
 
 fun main(args: Array<String>) {
-	runApplication<VitruvEditorAdapterApplication>(*args)
+    runApplication<VitruvEditorAdapterApplication>(*args)
 }

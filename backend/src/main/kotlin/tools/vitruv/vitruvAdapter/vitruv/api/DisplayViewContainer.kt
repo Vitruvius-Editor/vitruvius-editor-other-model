@@ -6,7 +6,6 @@ package tools.vitruv.vitruvAdapter.vitruv.api
  * @author uhsab
  */
 interface DisplayViewContainer {
-
     /**
      * Registers a display view to the adapter.
      * @param displayView The display view to register.

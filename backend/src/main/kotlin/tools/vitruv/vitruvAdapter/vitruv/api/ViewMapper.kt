@@ -8,8 +8,6 @@ import org.eclipse.emf.ecore.EObject
  * @author
  */
 interface ViewMapper {
-
-
     /**
      * Maps the given view content to a json string, which can be displayed in the graphical editor.
      * @param rootObjects The view content to map.

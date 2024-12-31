@@ -52,7 +52,10 @@ class ConnectionService {
      * @param editRequest The content that should be edited.
      * @return The new version of the project.
      */
-    fun editConnection(projectId: UUID, editRequest: ConnectionEditRequest): ConnectionDetails {
+    fun editConnection(
+        projectId: UUID,
+        editRequest: ConnectionEditRequest,
+    ): ConnectionDetails {
         TODO()
     }
 

@@ -15,15 +15,14 @@ import tools.vitruv.vitruvAdapter.services.ConnectionService
 class ConnectionController {
     @Autowired
     lateinit var connectionService: ConnectionService
+
     /**
      * This method returns a list of all saved connections.
      *
      * @return The list of all connections.
      */
     @GetMapping("/connections")
-    fun getConnections() : List<ConnectionResponse> {
-        return listOf()
-    }
+    fun getConnections(): List<ConnectionResponse> = listOf()
 
     /**
      * This method returns the data of a single connection.
@@ -32,9 +31,9 @@ class ConnectionController {
      * @return The content of the connection.
      */
     @GetMapping("/connections/{id}")
-    fun getConnection(@PathVariable("id") id: String) : ResponseEntity<ConnectionResponse> {
-        return ResponseEntity.ok().build()
-    }
+    fun getConnection(
+        @PathVariable("id") id: String,
+    ): ResponseEntity<ConnectionResponse> = ResponseEntity.ok().build()
 
     /**
      * This method creates a new connection and returns its data.
@@ -43,9 +42,9 @@ class ConnectionController {
      * @return The content of the new connection.
      */
     @PostMapping("/connection")
-    fun createConnection(@RequestBody body: ConnectionCreationRequest): ResponseEntity<ConnectionResponse> {
-        return ResponseEntity.ok().build()
-    }
+    fun createConnection(
+        @RequestBody body: ConnectionCreationRequest,
+    ): ResponseEntity<ConnectionResponse> = ResponseEntity.ok().build()
 
     /**
      * This method deletes a connection.
@@ -54,9 +53,9 @@ class ConnectionController {
      * @return An empty return value containing the status code.
      */
     @DeleteMapping("/connection/{id}")
-    fun deleteConnection(@PathVariable("id") id: String) : ResponseEntity<Void> {
-        return ResponseEntity.ok().build()
-    }
+    fun deleteConnection(
+        @PathVariable("id") id: String,
+    ): ResponseEntity<Void> = ResponseEntity.ok().build()
 
     /**
      * This method edits a connection.
@@ -66,7 +65,8 @@ class ConnectionController {
      * @return The new content of the connection.
      */
     @PutMapping("/connection/{id}")
-    fun editConnection(@PathVariable("id") id: String, @RequestBody body: ConnectionEditRequest) : ResponseEntity<ConnectionResponse> {
-        return ResponseEntity.ok().build()
-    }
+    fun editConnection(
+        @PathVariable("id") id: String,
+        @RequestBody body: ConnectionEditRequest,
+    ): ResponseEntity<ConnectionResponse> = ResponseEntity.ok().build()
 }

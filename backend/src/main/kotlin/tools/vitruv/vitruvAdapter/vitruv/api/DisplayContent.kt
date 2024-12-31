@@ -4,8 +4,7 @@ package tools.vitruv.vitruvAdapter.vitruv.api
  * @author uhsab
  */
 abstract class DisplayContent(
-    val windows: Set<Window>
-
+    val windows: Set<Window>,
 ) {
     abstract fun createJsonViewInformation(): JsonViewInformation
 

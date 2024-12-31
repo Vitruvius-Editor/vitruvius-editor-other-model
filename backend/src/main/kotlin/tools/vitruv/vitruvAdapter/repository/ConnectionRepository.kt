@@ -9,5 +9,5 @@ import java.util.UUID
  *
  */
 interface ConnectionRepository : Repository<ConnectionDetails, UUID> {
-    fun findByUuid(uuid: UUID): ConnectionDetails?;
+    fun findByUuid(uuid: UUID): ConnectionDetails?
 }

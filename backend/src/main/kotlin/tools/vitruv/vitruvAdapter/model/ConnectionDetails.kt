@@ -16,13 +16,10 @@ class ConnectionDetails(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     val uuid: UUID,
-
     @Column(nullable = false)
     val name: String,
-
     @Column(nullable = false)
     val description: String,
-
     @Column(nullable = false)
     val url: String,
 )
