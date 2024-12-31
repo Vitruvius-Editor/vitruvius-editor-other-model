@@ -82,7 +82,7 @@ abstract class DisplayView {
     fun editDisplayView(json: String) {
         val newViewContent = getViewMapper().mapJsonToView(json)
         val oldViewContent = getViewForWindows(getWindows())
-        val strategy = DefaultStateBasedChangeResolutionStrategy().getChangeSequenceBetween(old, new) //How to convert to ressource?
+        //val strategy = DefaultStateBasedChangeResolutionStrategy().getChangeSequenceBetween(old, new) //How to convert to ressource?
         //Update
     }
 
