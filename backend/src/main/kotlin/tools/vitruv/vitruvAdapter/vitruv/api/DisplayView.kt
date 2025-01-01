@@ -8,36 +8,12 @@ import tools.vitruv.framework.views.ViewType
  * This interface represents a display view, which can be displayed in the Vitruvius graphical editor.
  * @author uhsab
  */
-abstract class DisplayView {
-    /**
-     * Gets the name of the DisplayView.
-     * @return name
-     */
-    abstract fun getName(): String
-
-    /**
-     * Gets the relating vitruvius view type from the server.
-     * @return The relating vitruvius view type.
-     */
-    abstract fun getViewType(): ViewType<out ViewSelector>
-
-    /**
-     * Gets the ViewMapper for the DisplayView
-     * @return the ViewMapper.
-     */
-    abstract fun getViewMapper(): ViewMapper
-
-    /**
-     * Gets the WindowSelector for the DisplayView
-     * @return the WindowSelector
-     */
-    abstract fun getWindowSelector(): Selector
-
-    /**
-     * Gets the WindowSelector for the DisplayView
-     * @return the WindowSelector
-     */
-    abstract fun getContentSelector(): Selector
+interface DisplayView {
+    val name: String
+    val viewType: ViewType<out ViewSelector>
+    val viewMapper: ViewMapper
+    val windowSelector: Selector
+    val contentSelector: Selector
 
     /**
      * Gets all windows that are available for this view.
@@ -45,8 +21,8 @@ abstract class DisplayView {
      * @return The windows that are available for this view.
      */
     fun getWindows(): Set<String> {
-        val internalSelector = getViewType().createSelector(null)
-        getWindowSelector().applySelection(internalSelector)
+        val internalSelector = viewType.createSelector(null)
+        windowSelector.applySelection(internalSelector)
         // Now only the names of the windows should be in the selection
         val view = internalSelector.createView()
         val windows = mutableSetOf<String>()
@@ -57,8 +33,8 @@ abstract class DisplayView {
     }
 
     private fun getViewForWindows(windows: Set<String>): View {
-        val internalSelector = getViewType().createSelector(null)
-        getContentSelector().applySelection(internalSelector)
+        val internalSelector = viewType.createSelector(null)
+        contentSelector.applySelection(internalSelector)
         // Now only the things needed to create content for the windows should be in the selection
         return internalSelector.createView()
     }
@@ -69,7 +45,7 @@ abstract class DisplayView {
      * @return The created content for each window.
      */
     fun createWindowContent(windows: Set<String>): DisplayContent =
-        getViewMapper().mapViewToJson(getViewForWindows(windows).rootObjects.toList())
+        viewMapper.mapViewToJson(getViewForWindows(windows).rootObjects.toList())
 
     /**
      * This method reverts the json that Theia can interpret to display views to EObjects and tries to
@@ -77,7 +53,7 @@ abstract class DisplayView {
      * @param json the json String
      */
     fun editDisplayView(json: String) {
-        val newViewContent = getViewMapper().mapJsonToView(json)
+        val newViewContent = viewMapper.mapJsonToView(json)
         val oldViewContent = getViewForWindows(getWindows())
         // val strategy = DefaultStateBasedChangeResolutionStrategy().getChangeSequenceBetween(old, new) //How to convert to ressource?
         // Update
