@@ -1,7 +1,10 @@
 package tools.vitruv.vitruvAdapter.dto
 
-import tools.vitruv.vitruvAdapter.vitruv.api.Selector
+sealed class WindowSelectionRequest {
+    data object All : WindowSelectionRequest()
 
-data class WindowSelectionRequest(
-    var selector: Selector,
-)
+    class Name(
+        val name: String,
+        val exact: Boolean,
+    ) : WindowSelectionRequest()
+}

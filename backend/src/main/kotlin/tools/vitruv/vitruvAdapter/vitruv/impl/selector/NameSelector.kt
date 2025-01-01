@@ -1,7 +1,7 @@
 package tools.vitruv.vitruvAdapter.vitruv.impl.selector
 
+import tools.vitruv.framework.views.ViewSelector
 import tools.vitruv.vitruvAdapter.vitruv.api.Selector
-import tools.vitruv.vitruvAdapter.vitruv.api.Window
 
 /**
  * A selector that selects windows by their name.
@@ -13,7 +13,7 @@ class NameSelector(
     var name: String,
     var exact: Boolean,
 ) : Selector {
-    override fun applySelection(content: List<Window>): List<Window> {
+    override fun applySelection(viewSelector: ViewSelector) {
         TODO("Not yet implemented")
     }
 }
