@@ -1,4 +1,4 @@
-node_modules
-.browser_modules
-lib
-*.log
+**/node_modules
+**/.browser_modules
+**/lib
+**/.log
