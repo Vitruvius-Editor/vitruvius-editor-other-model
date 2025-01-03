@@ -14,8 +14,7 @@
     "@theia/process": "1.57.1",
     "@theia/terminal": "1.57.1",
     "@theia/workspace": "1.57.1",
-    "hello-world": "0.0.0",
-    "sprotty-theia": "0.12.0"
+    "hello-world": "0.0.0"
   },
   "devDependencies": {
     "@theia/cli": "1.57.1"
