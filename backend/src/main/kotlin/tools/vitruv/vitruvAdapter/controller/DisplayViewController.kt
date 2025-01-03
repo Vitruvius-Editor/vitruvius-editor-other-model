@@ -3,7 +3,7 @@ package tools.vitruv.vitruvAdapter.controller
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import tools.vitruv.vitruvAdapter.dto.DisplayViewDetailsResponse
+import tools.vitruv.vitruvAdapter.dto.DisplayViewContentResponse
 import tools.vitruv.vitruvAdapter.dto.DisplayViewResponse
 import tools.vitruv.vitruvAdapter.dto.WindowSelectionRequest
 import tools.vitruv.vitruvAdapter.services.VitruviusService
@@ -26,7 +26,7 @@ class DisplayViewController {
     fun getDisplayViewDetails(
         @PathVariable connectionId: UUID,
         @PathVariable displayViewName: String,
-    ): ResponseEntity<DisplayViewDetailsResponse> {
+    ): ResponseEntity<DisplayViewContentResponse> {
         TODO("Not yet implemented")
     }
 

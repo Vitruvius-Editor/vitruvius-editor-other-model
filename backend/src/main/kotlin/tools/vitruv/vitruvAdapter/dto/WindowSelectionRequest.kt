@@ -1,9 +1,11 @@
 package tools.vitruv.vitruvAdapter.dto
 
-sealed class WindowSelectionRequest {
+import com.fasterxml.jackson.annotation.JsonCreator
+
+sealed class WindowSelectionRequest() {
     data object All : WindowSelectionRequest()
 
-    class Name(
+    data class Name(
         val name: String,
         val exact: Boolean,
     ) : WindowSelectionRequest()
