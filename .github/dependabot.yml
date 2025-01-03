@@ -7,7 +7,7 @@ updates:
       interval: "daily"
 
   # Yarn dependencies for the frontend project  
-  - package-ecosystem: "yarn"
+  - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
       interval: "daily"
