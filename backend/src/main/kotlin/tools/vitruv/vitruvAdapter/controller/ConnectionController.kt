@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import tools.vitruv.vitruvAdapter.dto.*
 import tools.vitruv.vitruvAdapter.services.ConnectionService
+import java.util.*
 
 /**
  * This rest controller handles all requests that deal with the management of connections.
@@ -22,7 +23,7 @@ class ConnectionController {
      * @return The list of all connections.
      */
     @GetMapping("/connections")
-    fun getConnections(): List<ConnectionResponse> = listOf()
+    fun getConnections(): ResponseEntity<List<ConnectionResponse>> = ResponseEntity.ok().build()
 
     /**
      * This method returns the data of a single connection.
@@ -32,7 +33,7 @@ class ConnectionController {
      */
     @GetMapping("/connections/{id}")
     fun getConnection(
-        @PathVariable("id") id: String,
+        @PathVariable("id") id: UUID,
     ): ResponseEntity<ConnectionResponse> = ResponseEntity.ok().build()
 
     /**
@@ -54,8 +55,8 @@ class ConnectionController {
      */
     @DeleteMapping("/connection/{id}")
     fun deleteConnection(
-        @PathVariable("id") id: String,
-    ): ResponseEntity<Void> = ResponseEntity.ok().build()
+        @PathVariable("id") id: UUID,
+    ): ResponseEntity<Unit> = ResponseEntity.ok().build()
 
     /**
      * This method edits a connection.
@@ -66,7 +67,7 @@ class ConnectionController {
      */
     @PutMapping("/connection/{id}")
     fun editConnection(
-        @PathVariable("id") id: String,
+        @PathVariable("id") id: UUID,
         @RequestBody body: ConnectionEditRequest,
     ): ResponseEntity<ConnectionResponse> = ResponseEntity.ok().build()
 }

@@ -15,36 +15,36 @@ class DisplayViewController {
     @Autowired
     lateinit var vitruviusService: VitruviusService
 
-    @GetMapping("/connection/{projectId}/displayViews")
+    @GetMapping("/connection/{connectionId}/displayViews")
     fun getDisplayViews(
-        @PathVariable projectId: UUID,
+        @PathVariable connectionId: UUID,
     ): ResponseEntity<List<DisplayViewResponse>> {
         TODO("Not yet implemented")
     }
 
-    @GetMapping("/connection/{projectId}/displayView/{displayViewName}")
+    @GetMapping("/connection/{connectionId}/displayView/{displayViewName}")
     fun getDisplayViewDetails(
-        @PathVariable projectId: UUID,
+        @PathVariable connectionId: UUID,
         @PathVariable displayViewName: String,
     ): ResponseEntity<DisplayViewDetailsResponse> {
         TODO("Not yet implemented")
     }
 
-    @PostMapping("/connection/{projectId}/displayView/{displayViewName}")
+    @PostMapping("/connection/{connectionId}/displayView/{displayViewName}")
     fun getDisplayViewWindowContent(
-        @PathVariable projectId: UUID,
+        @PathVariable connectionId: UUID,
         @PathVariable displayViewName: String,
         @RequestBody windowSelectionRequest: WindowSelectionRequest,
     ): ResponseEntity<String> {
         TODO("Not yet implemented")
     }
 
-    @PutMapping("/connection/{projectId}/displayView/{displayViewName}")
+    @PutMapping("/connection/{connectionId}/displayView/{displayViewName}")
     fun editDisplayViewContent(
-        @PathVariable projectId: UUID,
+        @PathVariable connectionId: UUID,
         @PathVariable displayViewName: String,
         @RequestBody updatedContent: String,
-    ): ResponseEntity<Unit> {
+    ): ResponseEntity<String> {
         TODO("Not yet implemented")
     }
 }
