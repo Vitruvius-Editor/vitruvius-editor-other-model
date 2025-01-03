@@ -1,0 +1,13 @@
+version: 2
+updates:
+  # Maven dependencies for the backend project
+  - package-ecosystem: "maven"
+    directory: "/backend"
+    schedule:
+      interval: "daily"
+
+  # Yarn dependencies for the frontend project  
+  - package-ecosystem: "yarn"
+    directory: "/frontend"
+    schedule:
+      interval: "daily"
