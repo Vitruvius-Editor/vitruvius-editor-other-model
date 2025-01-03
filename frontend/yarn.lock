@@ -1300,7 +1300,7 @@
     tslib "^2.6.2"
     yargs "^15.3.1"
 
-"@theia/core@1.57.1":
+"@theia/core@1.57.1", "@theia/core@^1.18.0":
   version "1.57.1"
   resolved "https://registry.yarnpkg.com/@theia/core/-/core-1.57.1.tgz#a498d588ee80137c3cbac8e7ede7a02e5b1f5bb9"
   integrity sha512-xInRNBwHbhC9Lh2OjitMObbG6XKk/X1/ppk/yqYZCNBIranMGuysPmdstEKf3ehENeaKmyKRE/dSvl6BYkZYRg==
@@ -1376,7 +1376,7 @@
     ws "^8.17.1"
     yargs "^15.3.1"
 
-"@theia/editor@1.57.1":
+"@theia/editor@1.57.1", "@theia/editor@^1.18.0":
   version "1.57.1"
   resolved "https://registry.yarnpkg.com/@theia/editor/-/editor-1.57.1.tgz#5215d9bb29ec2f21ec2f58752bc0639fc6c37488"
   integrity sha512-6CblYaQgvISzR5gsEnLfw8TLw/xOMWB6B+gA36prDSuBBDvinyKnx5G+RqJVNI8X/VBhYQCL6osluWh5qw4kNQ==
@@ -1416,7 +1416,7 @@
     "@vscode/ripgrep" "^1.14.2"
     tslib "^2.6.2"
 
-"@theia/filesystem@1.57.1":
+"@theia/filesystem@1.57.1", "@theia/filesystem@^1.18.0":
   version "1.57.1"
   resolved "https://registry.yarnpkg.com/@theia/filesystem/-/filesystem-1.57.1.tgz#c31508f96ca4eb1b30db68d50553d6e680543da5"
   integrity sha512-UI0Bzzv2btWtY9PyHCSnDyl8/TR/w1c8nMh7ctXauZxLOxXSRr2hH6Fr3ofIwAdQP+O08QGg47uQ9sl+UYz07w==
@@ -1477,7 +1477,7 @@
   resolved "https://registry.yarnpkg.com/@theia/monaco-editor-core/-/monaco-editor-core-1.83.101.tgz#a0577396fb4c69540536df2d7fed2de4399c4fde"
   integrity sha512-UaAi6CEvain/qbGD3o6Ufe8plLyzAVQ53p9Ke+MoBYDhb391+r+MuK++JtITqIrXqoa8OCjbt8wQxEFSNNO0Mw==
 
-"@theia/monaco@1.57.1":
+"@theia/monaco@1.57.1", "@theia/monaco@^1.18.0":
   version "1.57.1"
   resolved "https://registry.yarnpkg.com/@theia/monaco/-/monaco-1.57.1.tgz#1007c833ca82e995feb3d47fe75bfdeeebfab68f"
   integrity sha512-fS8a+Ex4Vlj0oHjwZW40SeLVgmzlnxNG+QkmQanKGUfIrneR7FFX2kg8bEVfICzRE0ulinSs8iDpelWWeHF0Aw==
@@ -1996,6 +1996,11 @@
   resolved "https://registry.yarnpkg.com/@vscode/codicons/-/codicons-0.0.36.tgz#ccdabfaef5db596b266644ab85fc25aa701058f0"
   integrity sha512-wsNOvNMMJ2BY8rC2N2MNBG7yOowV3ov8KlvUE/AiVUlHKTfWsw3OgAOQduX7h0Un6GssKD3aoTVH+TF3DSQwKQ==
 
+"@vscode/codicons@^0.0.25":
+  version "0.0.25"
+  resolved "https://registry.yarnpkg.com/@vscode/codicons/-/codicons-0.0.25.tgz#4ebc3e2c9e707ac46aea0becceda79f7738c647c"
+  integrity sha512-uqPhTdADjwoCh5Ufbv0M6TZiiP2mqbfJVB4grhVx1k+YeP03LDMOHBWPsNwGKn4/0S5Mq9o1w1GeftvR031Gzg==
+
 "@vscode/ripgrep@^1.14.2":
   version "1.15.9"
   resolved "https://registry.yarnpkg.com/@vscode/ripgrep/-/ripgrep-1.15.9.tgz#92279f7f28e1e49ad9a89603e10b17a4c7f9f5f1"
@@ -2464,6 +2469,11 @@ atomically@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/atomically/-/atomically-1.7.0.tgz#c07a0458432ea6dbc9a3506fffa424b48bccaafe"
   integrity sha512-Xcz9l0z7y9yQ9rdDaxlmaI4uJHf/T8g9hOEzJcsEqX2SjCj4J20uK7+ldkDHMbpJDK76wF7xEIgxc/vSlsfw5w==
+
+autocompleter@^5.1.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/autocompleter/-/autocompleter-5.2.0.tgz#9ed3df262614fd557bf4d5bf67ab13cdee008203"
+  integrity sha512-CMYgI+r7RGZFaT0SvXcyBn1hb/Ne6XbjXimWQPc16LcwZgUGFBHg/Pv8honrwkTZE4DbfrD/MzqlG+Bn2u+1ng==
 
 axios@^1.7.4:
   version "1.7.9"
@@ -4342,6 +4352,11 @@ file-icons-js@~1.0.3:
   resolved "https://registry.yarnpkg.com/file-icons-js/-/file-icons-js-1.0.3.tgz#d0765dc1d86aba4b2d7664a39e4ef7af9f12c5af"
   integrity sha512-n4zoKEpMaAxBTUB7wtgrFBa4dM3b7mBLLA1VI/Q5Cdk/k2UA8S8oaxvnECp3QOzg0Dn+KKRzfIHF7qSdRkA65Q==
 
+file-saver@^2.0.2:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/file-saver/-/file-saver-2.0.5.tgz#d61cfe2ce059f414d899e9dd6d4107ee25670c38"
+  integrity sha512-P9bmyZ3h/PRG+Nzga+rbdI4OEpNDzAVyy74uVO9ATgzLK6VtAsYybF/+TOCvrc0MO793d6+42lLyZTw7/ArVzA==
+
 file-type@^3.8.0:
   version "3.9.0"
   resolved "https://registry.yarnpkg.com/file-type/-/file-type-3.9.0.tgz#257a078384d1db8087bc449d107d52a52672b9e9"
@@ -5176,6 +5191,11 @@ interpret@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-2.2.0.tgz#1a78a0b5965c40a5416d007ad6f50ad27c417df9"
   integrity sha512-Ju0Bz/cEia55xDwUWEa8+olFpCiQoypjnQySseKtmjNrnps3P+xfpUmGr90T7yjlVJmOtybRvPXhKMbHr+fWnw==
+
+inversify@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/inversify/-/inversify-5.1.1.tgz#6fbd668c591337404e005a1946bfe0d802c08730"
+  integrity sha512-j8grHGDzv1v+8T1sAQ+3boTCntFPfvxLCkNcxB1J8qA0lUN+fAlSyYd+RXKvaPRL4AGyPxViutBEJHNXOyUdFQ==
 
 inversify@^6.1.3:
   version "6.2.1"
@@ -7941,6 +7961,11 @@ smart-buffer@^4.2.0:
   resolved "https://registry.yarnpkg.com/smart-buffer/-/smart-buffer-4.2.0.tgz#6e1d71fa4f18c05f7d0ff216dd16a481d0e8d9ae"
   integrity sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==
 
+snabbdom@^3.0.3:
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/snabbdom/-/snabbdom-3.6.2.tgz#57dd66878f6320497fa7f67941df356a045c75a1"
+  integrity sha512-ig5qOnCDbugFntKi6c7Xlib8bA6xiJVk8O+WdFrV3wxbMqeHO0hXFQC4nAhPVWfZfi8255lcZkNhtIBINCc4+Q==
+
 socket.io-adapter@~2.5.2:
   version "2.5.5"
   resolved "https://registry.yarnpkg.com/socket.io-adapter/-/socket.io-adapter-2.5.5.tgz#c7a1f9c703d7756844751b6ff9abfc1780664082"
@@ -8094,6 +8119,36 @@ sprintf-js@^1.1.2, sprintf-js@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.1.3.tgz#4914b903a2f8b685d17fdf78a70e917e872e444a"
   integrity sha512-Oo+0REFV59/rz3gfJNKQiBlwfHaSESl1pcGyABQsnnIfWOFt6JNj5gCog2U6MLZ//IGYD+nA8nI+mTShREReaA==
+
+sprotty-protocol@^0.12.0, sprotty-protocol@~0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/sprotty-protocol/-/sprotty-protocol-0.12.0.tgz#542eb6396a645f85f8cfc2e7ef1d9b90c7b1980b"
+  integrity sha512-vbov+XfbmSeMYb46vm6dJvK3q7YKUvg0q7JnM6H7Ca5qY8TaZCEZ5Vc8zHKFZGWchcwnQYKqLTzwDItsMikD0A==
+
+sprotty-theia@0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/sprotty-theia/-/sprotty-theia-0.12.0.tgz#e2fa82f9e56a9df54ae1856acbbd68bdb491e5a9"
+  integrity sha512-insqidQuWqLr9N6q1mcaNyk+xBYjVGJidHlgkSKF3zPkni5WO3w8ihnz6Yza0wQAg2lySzCHt99cT1c9F4VPhg==
+  dependencies:
+    "@theia/core" "^1.18.0"
+    "@theia/editor" "^1.18.0"
+    "@theia/filesystem" "^1.18.0"
+    "@theia/monaco" "^1.18.0"
+    sprotty "^0.12.0"
+    sprotty-protocol "^0.12.0"
+
+sprotty@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/sprotty/-/sprotty-0.12.0.tgz#693432346d9321bb19f368c6806641539962db99"
+  integrity sha512-0RjRn3iR9McDt+LZ+cyySfdBdWyzR4kPbg4xESumvoSPziHphs6TdM7CvJ9ywTMmG131nKUF6GgbzhQZ+L6cGg==
+  dependencies:
+    "@vscode/codicons" "^0.0.25"
+    autocompleter "^5.1.0"
+    file-saver "^2.0.2"
+    inversify "^5.1.1"
+    snabbdom "^3.0.3"
+    sprotty-protocol "~0.12.0"
+    tinyqueue "^2.0.3"
 
 ssri@^9.0.0:
   version "9.0.1"
@@ -8488,6 +8543,11 @@ through@2, "through@>=2.2.7 <3", through@^2.3.4, through@^2.3.6, through@^2.3.8:
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
   integrity sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==
+
+tinyqueue@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/tinyqueue/-/tinyqueue-2.0.3.tgz#64d8492ebf39e7801d7bd34062e29b45b2035f08"
+  integrity sha512-ppJZNDuKGgxzkHihX8v9v9G5f+18gzaTfrukGrq6ueg0lmH4nqVnA2IPG0AEH3jKEk2GRJCUhDoqpoiw3PHLBA==
 
 tmp@^0.0.33:
   version "0.0.33"
