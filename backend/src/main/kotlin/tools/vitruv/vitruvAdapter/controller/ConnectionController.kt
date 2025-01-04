@@ -15,7 +15,7 @@ import java.util.*
 @RequestMapping(value = ["/api/v1"])
 class ConnectionController {
     @Autowired
-    lateinit var connectionService: ConnectionService
+    private lateinit var connectionService: ConnectionService
 
     /**
      * This method returns a list of all saved connections.

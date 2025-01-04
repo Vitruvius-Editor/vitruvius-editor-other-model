@@ -13,7 +13,7 @@ import java.util.*
 @RequestMapping(value = ["/api/v1"])
 class DisplayViewController {
     @Autowired
-    lateinit var vitruviusService: VitruviusService
+    private lateinit var vitruviusService: VitruviusService
 
     @GetMapping("/connection/{connectionId}/displayViews")
     fun getDisplayViews(

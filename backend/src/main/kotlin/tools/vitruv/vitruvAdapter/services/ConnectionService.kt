@@ -15,7 +15,7 @@ import java.util.*
 @Service
 class ConnectionService {
     @Autowired
-    lateinit var connectionRepository: ConnectionRepository
+    private lateinit var connectionRepository: ConnectionRepository
 
     /**
      * Get all saved projects.
