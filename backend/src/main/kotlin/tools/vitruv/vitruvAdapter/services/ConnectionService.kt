@@ -39,21 +39,21 @@ class ConnectionService {
     /**
      * Delete a project.
      *
-     * @param projectId The id of the project.
+     * @param connectionId The id of the project.
      */
-    fun deleteConnection(projectId: UUID) {
+    fun deleteConnection(connectionId: UUID) {
         TODO()
     }
 
     /**
      * Edit the saved data of a project.
      *
-     * @param projectId The id of the project.
+     * @param connectionId The id of the project.
      * @param editRequest The content that should be edited.
      * @return The new version of the project.
      */
     fun editConnection(
-        projectId: UUID,
+        connectionId: UUID,
         editRequest: ConnectionEditRequest,
     ): ConnectionDetails {
         TODO()
@@ -62,10 +62,10 @@ class ConnectionService {
     /**
      * Get a project by its id.
      *
-     * @param projectId The id of the project.
+     * @param connectionId The id of the project.
      * @return The project.
      */
-    fun getConnectionById(projectId: UUID): ConnectionDetails {
+    fun getConnectionById(connectionId: UUID): ConnectionDetails {
         TODO()
     }
 }
