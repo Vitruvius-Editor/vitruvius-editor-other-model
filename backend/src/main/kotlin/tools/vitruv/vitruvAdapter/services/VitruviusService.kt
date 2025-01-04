@@ -15,8 +15,6 @@ import java.util.*
  */
 @Service
 class VitruviusService {
-    @Autowired
-    lateinit var displayViewRepository: DisplayViewRepository
 
     fun getDisplayViews(connectionId: UUID): List<DisplayView> {
         TODO("Not yet implemented")
