@@ -1,7 +1,9 @@
 package tools.vitruv.vitruvAdapter.vitruv.api
 
+import org.springframework.stereotype.Service
 import tools.vitruv.framework.views.View
 
+@Service
 class VitruvAdapter {
     fun getWindows(displayView : DisplayView): Set<String> {
         val internalSelector = displayView.viewType.createSelector(null)
