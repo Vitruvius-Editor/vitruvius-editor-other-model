@@ -15,15 +15,15 @@ export class DisplayViewService {
         return new Promise<DisplayView[]>((resolve, reject) => {})
     }
 
-    async getDisplayViewWindows(displayViewName: string): Promise<Window[]> {
+    async getDisplayViewWindows(displayViewName: string): Promise<Window[] | null> {
         return new Promise<Window[]>((resolve, reject) => {})
     }
 
-    async getDisplayViewContent(displayViewName: string, selector: Selector): Promise<string> {
+    async getDisplayViewContent(displayViewName: string, selector: Selector): Promise<string | null> {
         return new Promise<string>((resolve, reject) => {})
     }
 
-    async updateDisplayViewContent(displayViewName: string, updatedContent: string): Promise<string> {
+    async updateDisplayViewContent(displayViewName: string, updatedContent: string): Promise<string | null> {
         return new Promise<string>((resolve, reject) => {})
     }
 }
