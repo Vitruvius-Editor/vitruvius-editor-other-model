@@ -1,23 +1,25 @@
 package tools.vitruv.vitruvAdapter.vitruv.impl
 
-import org.springframework.stereotype.Service
 import tools.vitruv.vitruvAdapter.vitruv.api.DisplayView
 import tools.vitruv.vitruvAdapter.vitruv.api.DisplayViewContainer
 
 class DisplayViewRepository : DisplayViewContainer {
+
+    private val displayViews = mutableSetOf<DisplayView>()
+
     override fun registerDisplayView(displayView: DisplayView) {
-        TODO("Not yet implemented")
+        displayViews.add(displayView)
     }
 
     override fun registerDisplayViews(displayViews: Set<DisplayView>) {
-        TODO("Not yet implemented")
+        this.displayViews.addAll(displayViews)
     }
 
     override fun getDisplayViews(): Set<DisplayView> {
-        TODO("Not yet implemented")
+        return displayViews.toSet()
     }
 
     override fun getDisplayView(name: String): DisplayView? {
-        TODO("Not yet implemented")
+        return displayViews.find { it.name == name }
     }
 }

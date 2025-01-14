@@ -10,6 +10,7 @@ class WindowSerializer: JsonSerializer<Window>() {
         gen.writeStringField("windowName", window.getWindowName())
         gen.writeStringField("content", window.getContent())
         gen.writeEndObject()
+
     }
 
 }
