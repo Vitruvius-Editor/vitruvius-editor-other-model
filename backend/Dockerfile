@@ -17,6 +17,12 @@ RUN mvn clean install
 # Runtime stage
 FROM openjdk:17-jdk-slim
 WORKDIR /backend
+
+# Create a non-root user
+RUN useradd -m -u 1000 appuser
+USER appuser
+
+# Copy the built application from the build stage
 COPY --from=build /backend/target/*.jar app.jar
 EXPOSE 8080
 CMD ["java", "-jar", "app.jar"]
