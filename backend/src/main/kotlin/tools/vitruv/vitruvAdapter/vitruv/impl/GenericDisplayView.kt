@@ -1,10 +1,12 @@
 package tools.vitruv.vitruvAdapter.vitruv.impl
 
 import tools.vitruv.framework.remote.client.VitruvClient
+import tools.vitruv.framework.views.ViewSelector
 import tools.vitruv.framework.views.ViewType
 import tools.vitruv.vitruvAdapter.vitruv.api.DisplayView
 import tools.vitruv.vitruvAdapter.vitruv.api.Selector
 import tools.vitruv.vitruvAdapter.vitruv.api.ViewMapper
+import tools.vitruv.vitruvAdapter.vitruv.impl.exception.DisplayViewException
 
 class GenericDisplayView(
     private val vitruvClient: VitruvClient,
@@ -15,8 +17,12 @@ class GenericDisplayView(
     override val contentSelector: Selector,
 ) : DisplayView {
 
-    override fun getViewType(): ViewType<*>? {
-        return vitruvClient.viewTypes.find { it.name == correspondingViewTypeName }
+    override fun getViewType(): ViewType<out ViewSelector> {
+        val viewType = vitruvClient.viewTypes.find { it.name == correspondingViewTypeName }
+        if ( viewType == null ) {
+            throw DisplayViewException("View type $correspondingViewTypeName not found on model server.")
+        }
+        return viewType
     }
 
     override fun equals(other: Any?): Boolean {

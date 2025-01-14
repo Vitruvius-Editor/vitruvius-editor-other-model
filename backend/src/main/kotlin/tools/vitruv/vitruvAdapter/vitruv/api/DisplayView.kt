@@ -1,5 +1,6 @@
 package tools.vitruv.vitruvAdapter.vitruv.api
 
+import tools.vitruv.framework.views.ViewSelector
 import tools.vitruv.framework.views.ViewType
 
 /**
@@ -12,7 +13,7 @@ interface DisplayView {
     val windowSelector: Selector
     val contentSelector: Selector
 
-    fun getViewType(): ViewType<*>?
+    fun getViewType(): ViewType<out ViewSelector>
 }
 
 
