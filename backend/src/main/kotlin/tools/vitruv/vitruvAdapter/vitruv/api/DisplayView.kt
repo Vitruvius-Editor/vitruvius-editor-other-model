@@ -1,7 +1,5 @@
 package tools.vitruv.vitruvAdapter.vitruv.api
 
-import tools.vitruv.framework.views.View
-import tools.vitruv.framework.views.ViewSelector
 import tools.vitruv.framework.views.ViewType
 
 /**

@@ -25,4 +25,8 @@ class GenericDisplayView(
         val that = other as GenericDisplayView
         return name == that.name
     }
+
+    override fun hashCode(): Int {
+        return javaClass.hashCode()
+    }
 }
