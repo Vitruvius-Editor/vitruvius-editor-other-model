@@ -1,5 +1,5 @@
 /** @jsx svg */
-import { svg } from 'sprotty/lib/lib/jsx';
+/*import { svg } from 'sprotty/lib/lib/jsx';
 import { injectable } from 'inversify';
 import { VNode } from 'snabbdom';
 import { IView, RenderingContext, SNode } from 'sprotty';
@@ -20,4 +20,4 @@ export class TaskNodeView implements IView {
             <text x={position} y={position + 5}>{node.name}</text>
         </g>;
     }
-}
+}*/

@@ -2,6 +2,7 @@ import {BackendServer} from "./BackendServer";
 import {Connection} from "../model/Connection";
 
 export class ConnectionService {
+    // @ts-ignore
     private backendServer: BackendServer;
 
     constructor(backendServer: BackendServer) {

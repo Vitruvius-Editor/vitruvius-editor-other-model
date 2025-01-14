@@ -3,6 +3,7 @@ import {DisplayView} from "../model/DisplayView";
 import {Selector} from "../model/Selector";
 
 export class DisplayViewService {
+    // @ts-ignore
     private backendServer: BackendServer;
     readonly connectionId: string;
 
