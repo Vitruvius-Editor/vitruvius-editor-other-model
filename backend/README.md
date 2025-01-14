@@ -51,21 +51,3 @@ VitruvEditorAdapter is a Kotlin-based Spring project that serves as an adapter b
 
 The application's configuration is stored in the `application.properties` file located in the `src/main/resources` directory. You can customize the settings, such as the server port, database connection, and other application-specific properties, by modifying this file.
 
-## Interacting with the Application
-
-The VitruvEditorAdapter provides a set of REST API endpoints that allow you to interact with Vitruvius models from your editor environment. You can find the documentation for these endpoints in the project's `README.md` file or by using a tool like Swagger UI.
-
-## Contributing
-
-If you would like to contribute to the VitruvEditorAdapter project, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Implement your changes and ensure that all tests pass.
-4. Submit a pull request with a detailed description of your changes.
-
-We welcome contributions from the community and appreciate your support in improving the VitruvEditorAdapter project.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
