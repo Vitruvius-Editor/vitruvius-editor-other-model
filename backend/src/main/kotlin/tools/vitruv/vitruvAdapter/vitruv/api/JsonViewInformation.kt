@@ -1,16 +1,17 @@
 package tools.vitruv.vitruvAdapter.vitruv.api
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+
 class JsonViewInformation(
+
     val displayContentName: String,
+
+    @JsonSerialize(using = WindowSerializer::class)
     val windows: List<Window>,
 ) {
     fun toJson(): String {
-        // Example
-        val firstLine = "name = $displayContentName"
-        val content = mutableListOf<String>()
-        for (window in windows) {
-            content.add(window.getContent())
-        }
-        return StringBuilder().append(firstLine).append(content).toString()
+        val objectMapper = ObjectMapper()
+        return objectMapper.writeValueAsString(this)
     }
 }
