@@ -15,8 +15,9 @@ class JsonViewInformationTest {
                 return content
             }
         }
-        val jsonViewInformation = JsonViewInformation("displayContentName", listOf(window))
-        assertEquals("{\"displayContentName\":\"$name\",\"windows\":[{\"windowName\":\"windowName\",\"content\":\"$content\"}]}", jsonViewInformation.toJson())
+        val jsonViewInformation = JsonViewInformation("test", listOf(window))
+        val expected = "{\"displayContentName\":\"test\",\"windows\":[{\"windowName\":\"$name\",\"content\":\"$content\"}]}"
+        assertEquals(expected, jsonViewInformation.toJson())
     }
 
 }
