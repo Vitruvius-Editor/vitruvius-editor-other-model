@@ -7,13 +7,14 @@ import org.eclipse.emf.ecore.EObject
  * to things that can be displayed in the graphical editor. These are represented as json contents, which the graphical editor can interpret.
  * @author
  */
-interface ViewMapper {
+interface ViewMapper<E> {
+
     /**
      * Maps the given view content to a json string, which can be displayed in the graphical editor.
      * @param rootObjects The view content to map.
      * @return The json string representing the view content.
      */
-    fun mapViewToJson(rootObjects: List<EObject>): DisplayContent
+    fun mapViewToJson(rootObjects: List<EObject>): List<Window<E>>
 
     /**
      * Maps the given json string to a view content, which can be displayed in the graphical editor.
@@ -21,4 +22,11 @@ interface ViewMapper {
      * @return The view content.
      */
     fun mapJsonToView(json: String): List<EObject>
+
+    /**
+     * Maps the given view to all windows it can find within the view.
+     * @param rootObjects The view to map.
+     * @return The names of the windows that are available in the view.
+     */
+    fun mapViewToWindows(rootObjects: List<EObject>): Set<String>
 }
