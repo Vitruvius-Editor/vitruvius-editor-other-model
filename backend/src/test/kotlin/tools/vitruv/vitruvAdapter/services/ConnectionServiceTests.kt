@@ -7,10 +7,8 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.AdditionalAnswers
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.*;
 import tools.vitruv.vitruvAdapter.dto.ConnectionCreationRequest
 import tools.vitruv.vitruvAdapter.dto.ConnectionEditRequest
 import tools.vitruv.vitruvAdapter.exception.ConnectionNotFoundException
@@ -39,7 +37,7 @@ class ConnectionServiceTest {
     @Test
     fun testGetConnections() {
         val connections = listOf(connection1, connection2)
-        `when`(connectionRepository.findAll()).thenReturn(connections)
+        whenever(connectionRepository.findAll()).thenReturn(connections)
 
         val result = connectionService.getConnections()
 
@@ -51,26 +49,26 @@ class ConnectionServiceTest {
     @Test
     fun testImportConnection() {
         val request = ConnectionCreationRequest("New Connection", "Description", "https://example.com/new")
-        `when`(connectionRepository.save(Mockito.any(ConnectionDetails::class.java))).thenAnswer(AdditionalAnswers.returnsFirstArg<ConnectionDetails>())
+        whenever(connectionRepository.save(any<ConnectionDetails>())).thenAnswer(AdditionalAnswers.returnsFirstArg<ConnectionDetails>())
 
         val result = connectionService.importConnection(request)
 
         assertEquals(request.name, result.name)
         assertEquals(request.description, result.description)
         assertEquals(request.url, result.url)
-        verify(connectionRepository, Mockito.times(1)).save(Mockito.any(ConnectionDetails::class.java))
+        verify(connectionRepository, times(1)).save(any<ConnectionDetails>())
     }
 
     @Test
     fun testDeleteConnection() {
         val connectionId = connection1.uuid
-        `when`(connectionRepository.findByUuid(connectionId)).thenReturn(connection1)
-        Mockito.doNothing().`when`(connectionRepository).delete(connection1)
+        whenever(connectionRepository.findByUuid(connectionId)).thenReturn(connection1)
+        doNothing().whenever(connectionRepository).delete(connection1)
 
         connectionService.deleteConnection(connectionId)
 
-        verify(connectionRepository, Mockito.times(1)).findByUuid(connectionId)
-        verify(connectionRepository, Mockito.times(1)).delete(connection1)
+        verify(connectionRepository, times(1)).findByUuid(connectionId)
+        verify(connectionRepository, times(1)).delete(connection1)
     }
 
     @Test
@@ -78,21 +76,21 @@ class ConnectionServiceTest {
         val connectionId = connection1.uuid
         val editRequest = ConnectionEditRequest("Edited Name", "Edited Description", "https://example.com/edited")
 
-        `when`(connectionRepository.findByUuid(connectionId)).thenReturn(connection1)
-        `when`(connectionRepository.save(Mockito.any(ConnectionDetails::class.java))).thenReturn(connection1)
+        whenever(connectionRepository.findByUuid(connectionId)).thenReturn(connection1)
+        whenever(connectionRepository.save(any<ConnectionDetails>())).thenReturn(connection1)
 
         val result = connectionService.editConnection(connectionId, editRequest)
 
         assertEquals(editRequest.name, result.name)
         assertEquals(editRequest.description, result.description)
         assertEquals(editRequest.url, result.url)
-        verify(connectionRepository, Mockito.times(1)).findByUuid(connectionId)
-        verify(connectionRepository, Mockito.times(1)).save(Mockito.any(ConnectionDetails::class.java))
+        verify(connectionRepository, times(1)).findByUuid(connectionId)
+        verify(connectionRepository, times(1)).save(any<ConnectionDetails>())
     }
     @Test
     fun testGetConnectionById() {
         val connectionId = connection1.uuid
-        `when`(connectionRepository.findByUuid(connectionId)).thenReturn(connection1)
+        whenever(connectionRepository.findByUuid(connectionId)).thenReturn(connection1)
 
         val result = connectionService.getConnectionById(connectionId)
 
@@ -100,18 +98,18 @@ class ConnectionServiceTest {
         assertEquals(connection1.name, result.name)
         assertEquals(connection1.description, result.description)
         assertEquals(connection1.url, result.url)
-        verify(connectionRepository, Mockito.times(1)).findByUuid(connectionId)
+        verify(connectionRepository, times(1)).findByUuid(connectionId)
     }
 
     @Test
     fun testGetConnectionByIdWhenNotFound() {
         val connectionId = UUID.randomUUID()
-        `when`(connectionRepository.findByUuid(connectionId)).thenReturn(null)
+        whenever(connectionRepository.findByUuid(connectionId)).thenReturn(null)
 
         assertThrows(ConnectionNotFoundException::class.java) {
             connectionService.getConnectionById(connectionId)
         }
 
-        verify(connectionRepository, Mockito.times(1)).findByUuid(connectionId)
+        verify(connectionRepository, times(1)).findByUuid(connectionId)
     }
 }
