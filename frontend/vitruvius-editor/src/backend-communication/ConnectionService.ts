@@ -2,7 +2,6 @@ import {BackendServer} from "./BackendServer";
 import {Connection} from "../model/Connection";
 
 export class ConnectionService {
-    // @ts-ignore
     private backendServer: BackendServer;
 
     constructor(backendServer: BackendServer) {
@@ -10,22 +9,22 @@ export class ConnectionService {
     }
 
     async getConnections(): Promise<Connection[]> {
-        return new Promise<Connection[]>(async (resolve) => {})
+		return this.backendServer.sendWebRequest("/api/v1/connections", 'GET')
     }
 
     async getConnection(uuid: string): Promise<Connection | null> {
-        return new Promise<Connection>((resolve) => {})
-    }
+		return this.backendServer.sendWebRequest(`/api/v1/connection/${uuid}`, 'GET')
+	}
 
     async deleteConnection(uuid: string): Promise<void> {
-        return new Promise<void>((resolve) => {})
+        return this.backendServer.sendWebRequest(`/api/v1/connection/${uuid}`, 'DELETE')
     }
 
     async createConnection(connectionCreationRequest: {name: string, description: string, url: string}): Promise<Connection> {
-        return new Promise<Connection>((resolve) => {})
+        return this.backendServer.sendWebRequest("/api/v1/connection", 'POST', connectionCreationRequest)
     }
 
-    async updateConnection(connectionUpdateRequest: Partial<{name: string, description: string, url: string}>): Promise<Connection> {
-        return new Promise<Connection>((resolve) => {})
+    async updateConnection(uuid: string, connectionUpdateRequest: Partial<{name: string, description: string, url: string}>): Promise<Connection> {
+        return this.backendServer.sendWebRequest(`/api/v1/connection/${uuid}`, 'PUT', connectionUpdateRequest)
     }
 }
