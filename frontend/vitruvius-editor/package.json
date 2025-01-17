@@ -9,8 +9,7 @@
     "src"
   ],
   "dependencies": {
-    "@theia/core": "1.57.1",
-    "css-modules": "^0.3.0"
+    "@theia/core": "1.57.1"
   },
   "devDependencies": {
     "@types/chai": "^5.0.1",
