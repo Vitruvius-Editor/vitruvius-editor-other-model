@@ -151,6 +151,12 @@
           <groupId>org.jetbrains.kotlin</groupId>
           <version>${kotlin.version}</version>
       </dependency>
+    <dependency>
+      <groupId>org.mockito.kotlin</groupId>
+      <artifactId>mockito-kotlin</artifactId>
+      <version>4.0.0</version> <!-- or the latest version -->
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <sourceDirectory>src/main/kotlin</sourceDirectory>
