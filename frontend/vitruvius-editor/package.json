@@ -12,14 +12,23 @@
     "@theia/core": "1.57.1"
   },
   "devDependencies": {
+    "@types/chai": "^5.0.1",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.10.7",
+    "@types/sinon": "^17.0.3",
+    "chai": "^5.1.2",
+    "mocha": "^11.0.1",
     "rimraf": "^5.0.0",
+    "sinon": "^19.0.2",
+    "tsx": "^4.19.2",
     "typescript": "~5.7.3"
   },
   "scripts": {
     "prepare": "yarn run clean && yarn run build",
     "clean": "rimraf lib",
     "build": "tsc",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "test": "mocha -r tsx 'src/**/*.test.ts'"
   },
   "theiaExtensions": [
     {
