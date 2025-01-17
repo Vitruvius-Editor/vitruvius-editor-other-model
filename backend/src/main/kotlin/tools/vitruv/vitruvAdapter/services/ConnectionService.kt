@@ -8,6 +8,7 @@ import tools.vitruv.vitruvAdapter.exception.ConnectionNotFoundException
 import tools.vitruv.vitruvAdapter.model.ConnectionDetails
 import tools.vitruv.vitruvAdapter.repository.ConnectionRepository
 import java.util.*
+import kotlin.jvm.Throws
 
 /**
  * This service handles all project interaction.
