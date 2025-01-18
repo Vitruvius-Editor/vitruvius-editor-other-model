@@ -1,6 +1,11 @@
 package tools.vitruv.vitruvAdapter.vitruv.api
 
-interface DisplayViewFactory {
+import tools.vitruv.vitruvAdapter.vitruv.impl.DisplayViewRepository
 
-    fun initializeViews(): List<DisplayView>
+/**
+ * Factory for creating a [DisplayViewRepository].
+ *
+ */
+abstract class DisplayViewRepositoryFactory {
+    abstract fun createDisplayViewRepository(): DisplayViewRepository
 }
