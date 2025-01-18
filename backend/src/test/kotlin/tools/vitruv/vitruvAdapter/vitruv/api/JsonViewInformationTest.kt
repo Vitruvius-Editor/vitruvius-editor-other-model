@@ -9,8 +9,8 @@ class JsonViewInformationTest {
     
     @org.junit.jupiter.api.Test
     fun testTextMappingToJsonViewInformation() {
-        val viewInformation = JsonViewInformation("textVisualizer")
         val displayContentMapper = TestTextDisplayContentMapper()
+        val viewInformation = JsonViewInformation(displayContentMapper)
         val window = Window<String>("window1", "content1")
         val window2 = Window<String>("window2", "content2")
 
@@ -25,7 +25,7 @@ class JsonViewInformationTest {
         }
         """.trimIndent()
 
-        val serializedJson = viewInformation.toJson(listOf(window,window2), displayContentMapper)/* Your JSON serialization method here */
+        val serializedJson = viewInformation.toJson(listOf(window,window2))/* Your JSON serialization method here */
         val objectMapper = ObjectMapper()
         // Normalize both JSON strings to remove formatting differences
         val normalizedExpectedJson = objectMapper.writeValueAsString(

@@ -9,7 +9,7 @@ abstract class DisplayContentMapper<E> {
 
     /**
      * This function is used to parse the content of a window to a string.
-     * @param e the content of the window
+     * @param content the content of the window
      * @return the string representation of the content
      */
     abstract fun parseContent(content: E): String
