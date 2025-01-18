@@ -9,37 +9,56 @@ import org.springframework.stereotype.Service
 import tools.vitruv.framework.views.View
 import tools.vitruv.framework.views.changederivation.DefaultStateBasedChangeResolutionStrategy
 import org.eclipse.emf.common.util.URI
+import tools.vitruv.framework.remote.client.VitruvClient
+import tools.vitruv.framework.remote.client.VitruvClientFactory
+import tools.vitruv.framework.views.ViewSelector
+import tools.vitruv.framework.views.ViewType
+import tools.vitruv.vitruvAdapter.vitruv.impl.exception.DisplayViewException
 import java.util.Collections
 import java.util.*
 
 @Service
 class VitruvAdapter {
 
+    private var vitruvClient: VitruvClient? = null
 
-    private val filePath = "newView.xmi"
+    private var displayViewContainer: DisplayViewContainer? = null
 
-    fun getWindows(displayView : DisplayView): Set<String> {
-        val internalSelector = displayView.getViewType().createSelector(null)
-        displayView.windowSelector.applySelection(internalSelector)
-        // Now only the names of the windows should be in the selection
-        val view = internalSelector.createView()
-        val windows = mutableSetOf<String>()
-        for (rootObject in view.rootObjects) {
-            // Add all names of windows to windows set
-        }
-        return windows
+    fun setConnection(protocol: String, host: String, port: Int, tmp: Path) {
+        vitruvClient = VitruvClientFactory.create(protocol, host, port, tmp)
+    }
+
+    fun setDisplayViewContainer(displayViewContainer: DisplayViewContainer) {
+        this.displayViewContainer = displayViewContainer
     }
 
 
+    private val filePath = "newView.xmi"
+
     /**
-     * Gets all windows that are available for this view.
-     * @see Window
-     * @return The windows that are available for this view.
+     * Returns all available DisplayViews.
+     * @return The available DisplayViews.
      */
+    fun getDisplayViews(): Set<DisplayView> = displayViewContainer.getDisplayViews()
 
+    /**
+     * gets all windows that are available for a given DisplayView.
+     * @param displayView The DisplayView to get the windows for.
+     * @return The windows that are available for the given DisplayView.
+     */
+    fun getWindows(displayView : DisplayView): Set<String> {
+        val internalSelector = getViewType(displayView).createSelector(null)
+        displayView.windowSelector.applySelection(internalSelector)
+        return displayView.viewMapper.mapViewToWindows(internalSelector.createView().rootObjects.toList())
+    }
 
+    /**
+     * Creates the content for the given windows.
+     * @param windows The windows to create the content for.
+     * @return The created View for the windows.
+     */
     private fun getViewForWindows(displayView: DisplayView, windows: Set<String>): View {
-        val internalSelector = displayView.getViewType().createSelector(null)
+        val internalSelector = getViewType(displayView).createSelector(null)
         displayView.contentSelector.applySelection(internalSelector)
         // Now only the things needed to create content for the windows should be in the selection
         return internalSelector.createView()
@@ -56,7 +75,8 @@ class VitruvAdapter {
     /**
      * This method reverts the json that Theia can interpret to display views to EObjects and tries to
      * apply the changes to the model by state changed derivation strategy.
-     * @param json the json String
+     * @param displayView The DisplayView to edit.
+     * @param json The json to edit the DisplayView with.
      */
     fun editDisplayView(displayView: DisplayView, json: String) {
         val newViewContent = displayView.viewMapper.mapJsonToView(json)
@@ -64,8 +84,16 @@ class VitruvAdapter {
         val newViewResource = convertEObjectsToResource(newViewContent, filePath)
         val oldViewResource = convertViewToResource(oldViewContent, filePath)
         val strategy = DefaultStateBasedChangeResolutionStrategy().getChangeSequenceBetween(newViewResource, oldViewResource)
-        // apply change to model
+        val view = oldViewContent.withChangeDerivingTrait(DefaultStateBasedChangeResolutionStrategy())
+        view.commitChanges()
+    }
 
+    private fun getViewType(displayView: DisplayView): ViewType<out ViewSelector> {
+        val viewType = vitruvClient.viewTypes.find { it.name == displayView.viewTypeName }
+        if ( viewType == null ) {
+            throw DisplayViewException("View type ${displayView.viewTypeName} not found on model server.")
+        }
+        return viewType
     }
 
     private fun convertEObjectsToResource(eObjects: List<EObject>, filePath: String,
