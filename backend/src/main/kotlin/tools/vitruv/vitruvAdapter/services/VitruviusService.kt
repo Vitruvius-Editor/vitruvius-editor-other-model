@@ -48,7 +48,7 @@ class VitruviusService {
         connectionId: UUID,
         displayViewName: String,
         updatedContent: String,
-    ) {
+    ): String {
         TODO("Not yet implemented")
     }
 }

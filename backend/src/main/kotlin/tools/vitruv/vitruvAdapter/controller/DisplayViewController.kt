@@ -7,6 +7,8 @@ import tools.vitruv.vitruvAdapter.dto.DisplayViewContentResponse
 import tools.vitruv.vitruvAdapter.dto.DisplayViewResponse
 import tools.vitruv.vitruvAdapter.dto.WindowSelectionRequest
 import tools.vitruv.vitruvAdapter.services.VitruviusService
+import tools.vitruv.vitruvAdapter.vitruv.impl.selector.AllSelector
+import tools.vitruv.vitruvAdapter.vitruv.impl.selector.NameSelector
 import java.util.*
 
 @RestController
@@ -18,17 +20,13 @@ class DisplayViewController {
     @GetMapping("/connection/{connectionId}/displayViews")
     fun getDisplayViews(
         @PathVariable connectionId: UUID,
-    ): ResponseEntity<List<DisplayViewResponse>> {
-        TODO("Not yet implemented")
-    }
+    ): ResponseEntity<List<DisplayViewResponse>> = ResponseEntity.ok(vitruviusService.getDisplayViews(connectionId).map { DisplayViewResponse(it) })
 
     @GetMapping("/connection/{connectionId}/displayView/{displayViewName}")
     fun getDisplayViewDetails(
         @PathVariable connectionId: UUID,
         @PathVariable displayViewName: String,
-    ): ResponseEntity<DisplayViewContentResponse> {
-        TODO("Not yet implemented")
-    }
+    ): ResponseEntity<DisplayViewContentResponse> = ResponseEntity.ok(DisplayViewContentResponse(vitruviusService.getDisplayViewWindows(connectionId, displayViewName).map { it.getContent() }))
 
     @PostMapping("/connection/{connectionId}/displayView/{displayViewName}")
     fun getDisplayViewWindowContent(
@@ -36,7 +34,10 @@ class DisplayViewController {
         @PathVariable displayViewName: String,
         @RequestBody windowSelectionRequest: WindowSelectionRequest,
     ): ResponseEntity<String> {
-        TODO("Not yet implemented")
+        return when (windowSelectionRequest) {
+            is WindowSelectionRequest.All -> ResponseEntity.ok(vitruviusService.getDisplayViewContent(connectionId, displayViewName, AllSelector()))
+            is WindowSelectionRequest.Name -> ResponseEntity.ok(vitruviusService.getDisplayViewContent(connectionId, displayViewName, NameSelector(windowSelectionRequest.name, windowSelectionRequest.exact)))
+        }
     }
 
     @PutMapping("/connection/{connectionId}/displayView/{displayViewName}")
@@ -44,7 +45,5 @@ class DisplayViewController {
         @PathVariable connectionId: UUID,
         @PathVariable displayViewName: String,
         @RequestBody updatedContent: String,
-    ): ResponseEntity<String> {
-        TODO("Not yet implemented")
-    }
+    ): ResponseEntity<String> = ResponseEntity.ok(vitruviusService.editDisplayViewContent(connectionId, displayViewName, updatedContent))
 }
