@@ -1,8 +1,6 @@
 package tools.vitruv.vitruvAdapter.vitruv.api
 
-interface Window {
+class Window<E> (val name: String, val content: E) {
 
-    fun getWindowName(): String
 
-    fun getContent(): String
 }

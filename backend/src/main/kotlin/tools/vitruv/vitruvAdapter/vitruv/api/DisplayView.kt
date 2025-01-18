@@ -9,11 +9,10 @@ import tools.vitruv.framework.views.ViewType
  */
 interface DisplayView {
     val name: String
-    val viewMapper: ViewMapper
+    val viewTypeName: String
+    val viewMapper: ViewMapper<*>
     val windowSelector: Selector
     val contentSelector: Selector
-
-    fun getViewType(): ViewType<out ViewSelector>
 }
 
 

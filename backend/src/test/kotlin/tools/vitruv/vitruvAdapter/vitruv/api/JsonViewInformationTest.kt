@@ -1,23 +1,46 @@
 package tools.vitruv.vitruvAdapter.vitruv.api
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Assertions.*
-class JsonViewInformationTest {
-    @org.junit.jupiter.api.Test
-    fun testToJson() {
-        val name = "Class Diagram 1"
-        val content = "I like Pineapples"
-        val window = object : Window {
-            override fun getWindowName(): String {
-                return name
-            }
+import tools.vitruv.vitruvAdapter.vitruv.api.testutils.TestTextDisplayContentMapper
 
-            override fun getContent(): String {
-                return content
-            }
+class JsonViewInformationTest {
+
+    
+    @org.junit.jupiter.api.Test
+    fun testTextMappingToJsonViewInformation() {
+        val viewInformation = JsonViewInformation("textVisualizer")
+        val displayContentMapper = TestTextDisplayContentMapper()
+        val window = Window<String>("window1", "content1")
+        val window2 = Window<String>("window2", "content2")
+
+
+        val expectedJson = """
+        {
+          "visualizerName": "textVisualizer",
+          "windows": [
+            { "name": "window1", "content": "content1" },
+            { "name": "window2", "content": "content2" }
+          ]
         }
-        val jsonViewInformation = JsonViewInformation("test", listOf(window))
-        val expected = "{\"displayContentName\":\"test\",\"windows\":[{\"windowName\":\"$name\",\"content\":\"$content\"}]}"
-        assertEquals(expected, jsonViewInformation.toJson())
+        """.trimIndent()
+
+        val serializedJson = viewInformation.toJson(listOf(window,window2), displayContentMapper)/* Your JSON serialization method here */
+        val objectMapper = ObjectMapper()
+        // Normalize both JSON strings to remove formatting differences
+        val normalizedExpectedJson = objectMapper.writeValueAsString(
+            objectMapper.readTree(expectedJson)
+        )
+        val normalizedActualJson = objectMapper.writeValueAsString(
+            objectMapper.readTree(serializedJson)
+        )
+
+        // Compare the normalized strings
+        assertEquals(normalizedExpectedJson, normalizedActualJson)
     }
 
+
+
 }
+
+

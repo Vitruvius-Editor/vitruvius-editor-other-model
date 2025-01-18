@@ -1,22 +1,41 @@
 package tools.vitruv.vitruvAdapter.vitruv.api
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.fasterxml.jackson.databind.module.SimpleModule
 
+/**
+ * This class is responsible for serializing the visualizer information and the list of windows to a json string.
+ * @author uhsab
+ */
 class JsonViewInformation(
-
-    val displayContentName: String,
-
-    val windows: List<Window>,
+    private val visualizerName: String,
 ) {
-    fun toJson(): String {
-        val module = SimpleModule()
-        module.addSerializer(Window::class.java, WindowSerializer())
-        val objectMapper = ObjectMapper()
-        objectMapper.registerModule(module)
-        return objectMapper.writeValueAsString(this)
+
+    /**
+     * Serializes the visualizer information and the list of windows to a json string.
+     * @param windows The list of windows.
+     * @param displayContentMapper The DisplayContent instance used for parsing window content.
+     * @return The generated json string.
+     */
+    fun <E> toJson(windows: List<Window<E>>, displayContentMapper: DisplayContentMapper<E>): String {
+        // Map each Window to a SerializableWindow by parsing its content.
+        val serializableWindows = windows.map { window ->
+            SerializableWindow(
+                name = window.name,
+                content = displayContentMapper.parseContent(window.content)
+            )
+        }
+
+        // Create a data structure to hold the full JSON content.
+        val output = mapOf(
+            "visualizerName" to visualizerName,
+            "windows" to serializableWindows
+        )
+
+        val objectMapper = ObjectMapper().apply {
+            enable(SerializationFeature.INDENT_OUTPUT)
+        }
+        return objectMapper.writeValueAsString(output)
     }
+
 }
