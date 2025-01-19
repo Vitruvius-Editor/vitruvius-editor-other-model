@@ -4,7 +4,7 @@ package tools.vitruv.vitruvAdapter.vitruv.api
  * This class is used to map the content of a window to a string and vice versa.
  * @author uhsab
  */
-abstract class DisplayContentMapper<E> {
+interface DisplayContentMapper<E> {
 
 
     /**
