@@ -2,6 +2,7 @@ package tools.vitruv.vitruvAdapter.vitruv.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Assertions.*
+import tools.vitruv.vitruvAdapter.vitruv.api.testutils.JsonNormalizer
 import tools.vitruv.vitruvAdapter.vitruv.api.testutils.TestTextDisplayContentMapper
 
 class JsonViewInformationTest {
@@ -26,17 +27,10 @@ class JsonViewInformationTest {
         """.trimIndent()
 
         val serializedJson = viewInformation.toJson(listOf(window,window2))/* Your JSON serialization method here */
-        val objectMapper = ObjectMapper()
-        // Normalize both JSON strings to remove formatting differences
-        val normalizedExpectedJson = objectMapper.writeValueAsString(
-            objectMapper.readTree(expectedJson)
-        )
-        val normalizedActualJson = objectMapper.writeValueAsString(
-            objectMapper.readTree(serializedJson)
-        )
+
 
         // Compare the normalized strings
-        assertEquals(normalizedExpectedJson, normalizedActualJson)
+        assertEquals(JsonNormalizer.normalize(expectedJson), JsonNormalizer.normalize(serializedJson))
     }
 
 

@@ -1,58 +1,78 @@
 package tools.vitruv.vitruvAdapter.vitruv.api
+import io.swagger.v3.core.util.Json
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.EcoreFactory
+import org.eclipse.emf.ecore.impl.EClassImpl
+import org.eclipse.emf.ecore.impl.EFactoryImpl
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import tools.vitruv.vitruvAdapter.vitruv.api.testutils.JavaClassViewMapper
-import tools.vitruv.vitruvAdapter.vitruv.api.testutils.MockJavaClass
+import tools.vitruv.vitruvAdapter.vitruv.api.testutils.JsonNormalizer
 
-class JavaClassViewMapperTest {
+class CreateWindowContentMockupTest {
+
+    lateinit var eObjects: List<EObject>
+
+    @BeforeEach
+    fun initEObjects() {
+        val testEClass = EcoreFactory.eINSTANCE.createEClass()
+        testEClass.name = "EClass"
+        testEClass.eAttributes.add(EcoreFactory.eINSTANCE.createEAttribute().apply {
+            name = "test"
+            eType = EcoreFactory.eINSTANCE.createEDataType().apply {
+                instanceClassName = "int"
+            }
+        })
+
+        val testEClass2 = EcoreFactory.eINSTANCE.createEClass()
+        testEClass2.name = "EClass2"
+        testEClass2.eAttributes.add(EcoreFactory.eINSTANCE.createEAttribute().apply {
+            name = "test2"
+            eType = EcoreFactory.eINSTANCE.createEDataType().apply {
+                instanceClassName = "String"
+            }
+        })
+        eObjects = listOf(testEClass, testEClass2)
+
+    }
+
 
     @Test
     fun `test mapping and JSON serialization`() {
-        // Given: A list of MockJavaClass objects
-        val rootObjects = listOf(
-            MockJavaClass("MyClass1"),
-            MockJavaClass("MyClass2")
-        )
-
-        // And: A JavaClassViewMapper
+        // Given: A JavaClassViewMapper
         val mapper = JavaClassViewMapper()
 
-        // When: We map them to content data (Windows)
-        val windows = mapper.mapViewToContentData(rootObjects)
+        // When: We map the EObjects to Windows
+        val windows = mapper.mapViewToContentData(eObjects)
+
+        // Then: We should get our Windows with the correct content
         assertEquals(2, windows.size)
-        assertEquals("MyClass1", windows[0].name)
-        assertTrue(windows[0].content.contains("public class MyClass1"))
-        assertEquals("MyClass2", windows[1].name)
+        assertEquals("EClass", windows[0].name)
+        assertEquals("EClass2", windows[1].name)
+        assertEquals("public class EClass {\n  test: int\n}", windows[0].content)
+        assertEquals("public class EClass {\n  test2: String\n}", windows[1].content)
 
-        // And: Convert the windows to JSON
-        val viewInformation = JsonViewInformation(mapper.getDisplayContent())
-        val jsonOutput = viewInformation.toJson(windows)
+        val jsonViewInformation = JsonViewInformation(mapper.getDisplayContent())
+        val serializedJson = jsonViewInformation.toJson(windows)
+        val expectedJson = """
+        {
+          "visualizerName": "textVisualizer",
+          "windows": [
+            { "name": "EClass", "content": "public class EClass {\n  test: int\n}" },
+            { "name": "EClass2", "content": "public class EClass {\n  test2: String\n}" }
+          ]
+        }
+        """.trimIndent()
+        assertEquals(
+            JsonNormalizer.normalize(expectedJson),
+            JsonNormalizer.normalize(serializedJson)
+        )
 
-        // Then: JSON should contain our class names
-        println(jsonOutput)
-        assertTrue(jsonOutput.contains("MyClass1"), "JSON should include 'MyClass1'")
-        assertTrue(jsonOutput.contains("MyClass2"), "JSON should include 'MyClass2'")
-        assertTrue(jsonOutput.contains("TestVisualizer"), "JSON should include our visualizer name")
-
-        // You can also do more complex JSON structure checks, e.g., by parsing the JSON back into a data object.
     }
 
     @Test
     fun `test mapContentDataToView`() {
-        // Given: Some Windows with string content
-        val windows = listOf(
-            Window(name = "ClassA", content = "public class ClassA {}"),
-            Window(name = "ClassB", content = "public class ClassB {}")
-        )
 
-        val mapper = JavaClassViewMapper()
-
-        // When: We map them back to EObjects
-        val eObjects = mapper.mapContentDataToView(windows)
-
-        // Then: We should get our MockJavaClass objects
-        assertEquals(2, eObjects.size)
-        assertEquals("ClassA", (eObjects[0] as MockJavaClass).className)
-        assertEquals("ClassB", (eObjects[1] as MockJavaClass).className)
     }
 }
