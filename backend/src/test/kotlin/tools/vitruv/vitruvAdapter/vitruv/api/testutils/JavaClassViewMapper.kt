@@ -16,12 +16,11 @@ class JavaClassViewMapper : ViewMapper<String> {
     private val displayContentMapper = TestTextDisplayContentMapper()
 
     override fun mapViewToContentData(rootObjects: List<EObject>): List<Window<String>> {
-        //Map EClasses to a window where the window name is the class name and the content is a string build like a java class public class <name> { here are the attributes of the class}
         return rootObjects.map {
             if (it !is EClassImpl) {
                 throw IllegalArgumentException("Only EClasses are supported")
             }
-            val eClass = it as EClassImpl
+            val eClass = it
             val className = eClass.name
             val attributes = eClass.eAttributes.joinToString("\n") { attr -> "${attr.name}: ${attr.eType.name}" }
             Window(name = className, content = "public class $className {\n$attributes\n}")
@@ -29,8 +28,6 @@ class JavaClassViewMapper : ViewMapper<String> {
     }
 
     override fun mapContentDataToView(windows: List<Window<String>>): List<EObject> {
-        //Map windows to EClasses where the class name is the window name and the attributes can be collected out of the string like in mapViewToContentData
-        //Use EFactore.einstance.createEClass() to create EClasses, you cant call EClassImpl directly
         return windows.map {
             val className = it.name
             val attributes = it.content.lines().drop(1).dropLast(1).map { line ->
