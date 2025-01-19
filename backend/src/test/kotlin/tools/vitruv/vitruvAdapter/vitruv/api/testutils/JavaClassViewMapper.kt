@@ -22,7 +22,7 @@ class JavaClassViewMapper : ViewMapper<String> {
             }
             val eClass = it
             val className = eClass.name
-            val attributes = eClass.eAttributes.joinToString("\n") { attr -> "${attr.name}: ${attr.eType.name}" }
+            val attributes = eClass.eStructuralFeatures.joinToString("\n") { attr -> "${attr.name}: ${attr.eType.instanceClass.simpleName}" }
             Window(name = className, content = "public class $className {\n$attributes\n}")
         }
     }
@@ -34,12 +34,12 @@ class JavaClassViewMapper : ViewMapper<String> {
                 val parts = line.split(":")
                 EcoreFactory.eINSTANCE.createEAttribute().apply {
                     name = parts[0].trim()
-                    eType = EcoreFactory.eINSTANCE.createEClass().apply { name = parts[1].trim() }
+                    eType = EcoreFactory.eINSTANCE.createEDataType().apply { instanceClassName = parts[1].trim() }
                 }
             }
             EcoreFactory.eINSTANCE.createEClass().apply {
                 name = className
-                eAttributes.addAll(attributes)
+                eStructuralFeatures.addAll(attributes)
             }
         }
     }

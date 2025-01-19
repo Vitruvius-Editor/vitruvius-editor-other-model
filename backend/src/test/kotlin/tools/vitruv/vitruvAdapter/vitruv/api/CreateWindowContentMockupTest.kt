@@ -1,9 +1,8 @@
 package tools.vitruv.vitruvAdapter.vitruv.api
-import io.swagger.v3.core.util.Json
+import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EcoreFactory
-import org.eclipse.emf.ecore.impl.EClassImpl
-import org.eclipse.emf.ecore.impl.EFactoryImpl
+import org.eclipse.emf.ecore.util.EcoreUtil
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -18,7 +17,7 @@ class CreateWindowContentMockupTest {
     fun initEObjects() {
         val testEClass = EcoreFactory.eINSTANCE.createEClass()
         testEClass.name = "EClass"
-        testEClass.eAttributes.add(EcoreFactory.eINSTANCE.createEAttribute().apply {
+        testEClass.eStructuralFeatures.add(EcoreFactory.eINSTANCE.createEAttribute().apply {
             name = "test"
             eType = EcoreFactory.eINSTANCE.createEDataType().apply {
                 instanceClassName = "int"
@@ -27,10 +26,10 @@ class CreateWindowContentMockupTest {
 
         val testEClass2 = EcoreFactory.eINSTANCE.createEClass()
         testEClass2.name = "EClass2"
-        testEClass2.eAttributes.add(EcoreFactory.eINSTANCE.createEAttribute().apply {
+        testEClass2.eStructuralFeatures.add(EcoreFactory.eINSTANCE.createEAttribute().apply {
             name = "test2"
             eType = EcoreFactory.eINSTANCE.createEDataType().apply {
-                instanceClassName = "String"
+                instanceClassName = "char"
             }
         })
         eObjects = listOf(testEClass, testEClass2)
@@ -50,17 +49,17 @@ class CreateWindowContentMockupTest {
         assertEquals(2, windows.size)
         assertEquals("EClass", windows[0].name)
         assertEquals("EClass2", windows[1].name)
-        assertEquals("public class EClass {\n  test: int\n}", windows[0].content)
-        assertEquals("public class EClass {\n  test2: String\n}", windows[1].content)
+        assertEquals("public class EClass {\ntest: int\n}", windows[0].content)
+        assertEquals("public class EClass2 {\ntest2: char\n}", windows[1].content)
 
         val jsonViewInformation = JsonViewInformation(mapper.getDisplayContent())
         val serializedJson = jsonViewInformation.toJson(windows)
         val expectedJson = """
         {
-          "visualizerName": "textVisualizer",
+          "visualizerName": "TestVisualizer",
           "windows": [
-            { "name": "EClass", "content": "public class EClass {\n  test: int\n}" },
-            { "name": "EClass2", "content": "public class EClass {\n  test2: String\n}" }
+            { "name": "EClass", "content": "public class EClass {\ntest: int\n}"},
+            { "name": "EClass2", "content": "public class EClass2 {\ntest2: char\n}"}
           ]
         }
         """.trimIndent()
@@ -73,6 +72,28 @@ class CreateWindowContentMockupTest {
 
     @Test
     fun `test mapContentDataToView`() {
+        val mapper = JavaClassViewMapper()
+        val expectedJson = """
+        {
+          "visualizerName": "TestVisualizer",
+          "windows": [
+            { "name": "EClass", "content": "public class EClass {\ntest: int\n}"},
+            { "name": "EClass2", "content": "public class EClass2 {\ntest2: char\n}"}
+          ]
+        }
+        """.trimIndent()
+        val jsonViewInformation = JsonViewInformation(mapper.getDisplayContent())
+        val contents = jsonViewInformation.fromJson(expectedJson)
+        val retrievedEObjects = mapper.mapContentDataToView(contents)
+        assertEquals(2, retrievedEObjects.size)
+        assertEquals("EClass", (retrievedEObjects[0] as EClass).name)
+        assertEquals("EClass2", (retrievedEObjects[1] as EClass).name)
+        assertEquals(1, (retrievedEObjects[0] as EClass).eStructuralFeatures.size)
+        assertEquals(1, (retrievedEObjects[1] as EClass).eStructuralFeatures.size)
+        assertEquals("test", (retrievedEObjects[0] as EClass).eStructuralFeatures[0].name)
+        assertEquals("int", (retrievedEObjects[0] as EClass).eStructuralFeatures[0].eType.instanceClassName)
+        assertEquals("test2", (retrievedEObjects[1] as EClass).eStructuralFeatures[0].name)
+        assertEquals("char", (retrievedEObjects[1] as EClass).eStructuralFeatures[0].eType.instanceClassName)
 
     }
 }
