@@ -10,6 +10,10 @@ import tools.vitruv.framework.views.ViewType
 import tools.vitruv.vitruvAdapter.exception.VitruviusConnectFailedException
 import tools.vitruv.vitruvAdapter.exception.DisplayViewException
 
+/**
+ * This class is the adapter for the Vitruvius model server. It provides methods to interact with the model server.
+ * This class contains the methods for the frontend to interact with the model server.
+ */
 @Service
 class VitruvAdapter {
 

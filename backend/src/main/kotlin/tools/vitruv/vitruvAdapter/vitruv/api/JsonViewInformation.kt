@@ -38,6 +38,11 @@ class JsonViewInformation<E>(
         return objectMapper.writeValueAsString(output)
     }
 
+    /**
+     * Deserializes the given json string to a list of windows.
+     * @param json The json string to deserialize.
+     * @return The list of windows.
+     */
     fun fromJson(json: String): List<Window<E>> {
         val objectMapper = ObjectMapper()
         val jsonNode = objectMapper.readTree(json)
