@@ -32,7 +32,7 @@ class VitruviusService {
     fun getDisplayViewWindows(
         connectionId: UUID,
         displayViewName: String,
-    ): List<Window> {
+    ): List<String> {
         TODO("Not yet implemented")
     }
 
