@@ -83,13 +83,13 @@ class VitruvAdapter {
      * @param windows The windows to create the content for.
      * @return The created content for each window.
      */
-    fun createWindowContent(displayView: DisplayView, windows: Set<String>) {
+    fun createWindowContent(displayView: DisplayView, windows: Set<String>): String {
         val view = getViewForWindows(displayView, windows)
         val mapper = displayView.viewMapper
-        val content = mapper.mapViewToContentData(view.rootObjects.toList())
         val viewInformation = JsonViewInformation(mapper.getDisplayContent())
         val mappedData = mapper.mapViewToContentData(view.rootObjects.toList())
         val json = viewInformation.toJson(mappedData)
+        return json
     }
 
 
