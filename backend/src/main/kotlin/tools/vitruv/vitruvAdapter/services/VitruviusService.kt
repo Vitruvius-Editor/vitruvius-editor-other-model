@@ -22,6 +22,9 @@ class VitruviusService {
     @Autowired
     lateinit var vitruvAdapter: VitruvAdapter
 
+    @Autowired
+    lateinit var displayViewRepository: DisplayViewRepository
+
     fun getDisplayViews(connectionId: UUID): List<DisplayView> {
         TODO("Not yet implemented")
     }
@@ -29,7 +32,7 @@ class VitruviusService {
     fun getDisplayViewWindows(
         connectionId: UUID,
         displayViewName: String,
-    ): List<Window> {
+    ): List<String> {
         TODO("Not yet implemented")
     }
 
