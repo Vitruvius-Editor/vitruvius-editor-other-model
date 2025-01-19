@@ -1,22 +1,14 @@
 package tools.vitruv.vitruvAdapter.vitruv.api
 
-import org.eclipse.emf.ecore.EObject
-import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.emf.ecore.resource.ResourceSet
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 import org.springframework.stereotype.Service
 import tools.vitruv.framework.views.View
 import tools.vitruv.framework.views.changederivation.DefaultStateBasedChangeResolutionStrategy
-import org.eclipse.emf.common.util.URI
 import tools.vitruv.framework.remote.client.VitruvClient
-import tools.vitruv.framework.remote.client.VitruvClientFactory
 import tools.vitruv.framework.remote.client.exception.BadClientResponseException
 import tools.vitruv.framework.views.ViewSelector
 import tools.vitruv.framework.views.ViewType
-import tools.vitruv.vitruvAdapter.vitruv.impl.exception.DisplayViewException
-import java.util.Collections
-import java.util.*
+import tools.vitruv.vitruvAdapter.exception.VitruviusConnectFailedException
+import tools.vitruv.vitruvAdapter.exception.DisplayViewException
 
 @Service
 class VitruvAdapter {
@@ -33,7 +25,7 @@ class VitruvAdapter {
         try {
             vitruvClient.viewTypes
         } catch (e: BadClientResponseException) {
-            throw IllegalArgumentException("Could not connect to model server.")
+            throw VitruviusConnectFailedException("Could not connect to model server.")
         }
         this.vitruvClient = vitruvClient
     }

@@ -11,7 +11,7 @@ import tools.vitruv.vitruvAdapter.vitruv.api.testutils.JsonNormalizer
 
 class CreateWindowContentMockupTest {
 
-    lateinit var eObjects: List<EObject>
+    private lateinit var eObjects: List<EObject>
 
     @BeforeEach
     fun initEObjects() {
@@ -38,7 +38,7 @@ class CreateWindowContentMockupTest {
 
 
     @Test
-    fun `test mapping and JSON serialization`() {
+    fun testViewAndContentMapping() {
         // Given: A JavaClassViewMapper
         val mapper = JavaClassViewMapper()
 
@@ -71,7 +71,7 @@ class CreateWindowContentMockupTest {
     }
 
     @Test
-    fun `test mapContentDataToView`() {
+    fun testViewAndContentBackwardsMapping() {
         val mapper = JavaClassViewMapper()
         val expectedJson = """
         {
