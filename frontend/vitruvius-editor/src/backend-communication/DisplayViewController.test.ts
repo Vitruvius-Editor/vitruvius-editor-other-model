@@ -60,7 +60,7 @@ describe('DisplayViewService', () => {
     describe('getDisplayViewContent', () => {
         it('should return the content of a display view', async () => {
             const mockContent = 'DisplayView Content';
-            const selector: Selector = { type: 'All'};
+            const selector: Selector = {windows: ["Window1", "Window2"]};
             sendWebRequestStub.resolves(mockContent);
 
             const content = await displayViewService.getDisplayViewContent('DisplayView 1', selector);
@@ -69,7 +69,7 @@ describe('DisplayViewService', () => {
         });
 
         it('should return null if the display view content is not found', async () => {
-            const selector: Selector = { type: 'All'};
+            const selector: Selector = {windows: ["Window1", "Window2"]};
             sendWebRequestStub.resolves(null);
 
             const content = await displayViewService.getDisplayViewContent('NonExistentDisplayView', selector);
