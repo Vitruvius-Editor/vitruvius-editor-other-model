@@ -128,5 +128,25 @@ export class VitruviusSubmenuContribution implements MenuContribution {
             commandId: VitruviusHelpCommand.id,
             label: VitruviusHelpCommand.label
         });
+        menus.registerMenuAction(VitruviusMenus.VITRUVIUS, {
+            commandId: VitruviusLoadProject.id,
+            label: VitruviusLoadProject.label
+        });
+        menus.registerMenuAction(VitruviusMenus.VITRUVIUS, {
+            commandId: VitruviusImportProject.id,
+            label: VitruviusImportProject.label
+        });
+        menus.registerMenuAction(VitruviusMenus.VITRUVIUS, {
+            commandId: VitruviusRefreshProject.id,
+            label: VitruviusRefreshProject.label
+        });
+        menus.registerMenuAction(VitruviusMenus.VITRUVIUS, {
+            commandId: VitruviusDeleteProject.id,
+            label: VitruviusDeleteProject.label
+        });
+        menus.registerMenuAction(VitruviusMenus.VITRUVIUS, {
+            commandId: VitruviusChangeProject.id,
+            label: VitruviusChangeProject.label
+        });
     }
 }
