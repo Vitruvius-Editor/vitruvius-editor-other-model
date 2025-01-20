@@ -1,13 +1,9 @@
-import { injectable, inject } from "@theia/core/shared/inversify";
-import {
-  Command,
-  CommandContribution,
-  CommandRegistry,
-  MenuContribution,
-  MenuModelRegistry,
-  MessageService,
-} from "@theia/core/lib/common";
-import { CommonMenus } from "@theia/core/lib/browser";
+import { injectable, inject } from '@theia/core/shared/inversify';
+import { Command, CommandContribution, CommandRegistry, MAIN_MENU_BAR, MenuContribution, MenuModelRegistry, MenuPath, MessageService } from '@theia/core/lib/common';
+
+export namespace VitruviusMenus {
+    export const VITRUVIUS: MenuPath = MAIN_MENU_BAR.concat("vitruvius");
+}
 
 export const VitruviusHelpCommand: Command = {
   id: "VitruviusHelp.command",
@@ -15,29 +11,29 @@ export const VitruviusHelpCommand: Command = {
 };
 
 export const VitruviusLoadProject: Command = {
-  id: "VitruviusLoadProject.command",
-  label: "Load Project",
-};
+    id: 'VitruviusLoadProject.command',
+    label: 'Vitruvius Load Project'
+}
 
 export const VitruviusImportProject: Command = {
-  id: "VitruviusImportProject.command",
-  label: "Import Project",
-};
+    id: 'VitruviusImportProject.command',
+    label: 'Vitruvius Import Project'
+}
 
 export const VitruviusRefreshProject: Command = {
-  id: "VitruviusRefreshProject.command",
-  label: "Refresh Project",
-};
+    id: 'VitruviusRefreshProject.command',
+    label: 'Vitruvius Refresh Project'
+}
 
 export const VitruviusDeleteProject: Command = {
-  id: "VitruviusDeleteProject.command",
-  label: "Delete Project",
-};
+    id: 'VitruviusDeleteProject.command',
+    label: 'Vitruvius Delete Project'
+}
 
 export const VitruviusChangeProject: Command = {
-  id: "VitruviusChangeProject.command",
-  label: "Change Project",
-};
+    id: 'VitruviusChangeProject.command',
+    label: 'Vitruvius Change Project'
+}
 
 @injectable()
 export class VitruviusHelpCommandContribution implements CommandContribution {
@@ -108,11 +104,34 @@ export class VitruviusChangeProjectContribution implements CommandContribution {
 }
 
 @injectable()
-export class VitruviusSubmenuContribution implements MenuContribution {
-  registerMenus(menus: MenuModelRegistry): void {
-    menus.registerMenuAction(CommonMenus.EDIT_FIND, {
-      commandId: VitruviusHelpCommand.id,
-      label: VitruviusHelpCommand.label,
-    });
-  }
+export class VitruviusMenuContribution implements MenuContribution {
+
+    registerMenus(menus: MenuModelRegistry): void {
+        menus.registerSubmenu(VitruviusMenus.VITRUVIUS, 'Vitruvius');
+
+        menus.registerMenuAction(VitruviusMenus.VITRUVIUS, {
+            commandId: VitruviusHelpCommand.id,
+            label: VitruviusHelpCommand.label
+        });
+        menus.registerMenuAction(VitruviusMenus.VITRUVIUS, {
+            commandId: VitruviusLoadProject.id,
+            label: VitruviusLoadProject.label
+        });
+        menus.registerMenuAction(VitruviusMenus.VITRUVIUS, {
+            commandId: VitruviusImportProject.id,
+            label: VitruviusImportProject.label
+        });
+        menus.registerMenuAction(VitruviusMenus.VITRUVIUS, {
+            commandId: VitruviusRefreshProject.id,
+            label: VitruviusRefreshProject.label
+        });
+        menus.registerMenuAction(VitruviusMenus.VITRUVIUS, {
+            commandId: VitruviusDeleteProject.id,
+            label: VitruviusDeleteProject.label
+        });
+        menus.registerMenuAction(VitruviusMenus.VITRUVIUS, {
+            commandId: VitruviusChangeProject.id,
+            label: VitruviusChangeProject.label
+        });
+    }
 }
