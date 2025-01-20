@@ -77,11 +77,10 @@ describe("DisplayViewService", () => {
       ).to.be.true;
     });
   });
-
   describe("getDisplayViewContent", () => {
     it("should return the content of a display view", async () => {
       const mockContent = "DisplayView Content";
-      const selector: Selector = { type: "All" };
+      const selector: Selector = { windows: ["Window1", "Window2"] };
       sendWebRequestStub.resolves(mockContent);
 
       const content = await displayViewService.getDisplayViewContent(
@@ -97,27 +96,26 @@ describe("DisplayViewService", () => {
         ),
       ).to.be.true;
     });
-    describe('getDisplayViewContent', () => {
-        it('should return the content of a display view', async () => {
-            const mockContent = 'DisplayView Content';
-            const selector: Selector = {windows: ["Window1", "Window2"]};
-            sendWebRequestStub.resolves(mockContent);
 
-            const content = await displayViewService.getDisplayViewContent('DisplayView 1', selector);
-            expect(content).to.equal(mockContent);
-            expect(sendWebRequestStub.calledOnceWith(`/api/v1/connection/${connectionId}/displayView/DisplayView 1/content`, 'POST', selector)).to.be.true;
-        });
-
-        it('should return null if the display view content is not found', async () => {
-            const selector: Selector = {windows: ["Window1", "Window2"]};
-            sendWebRequestStub.resolves(null);
-
-            const content = await displayViewService.getDisplayViewContent('NonExistentDisplayView', selector);
-            expect(content).to.be.null;
-            expect(sendWebRequestStub.calledOnceWith(`/api/v1/connection/${connectionId}/displayView/NonExistentDisplayView/content`, 'POST', selector)).to.be.true;
-        });
     it("should return null if the display view content is not found", async () => {
-      const selector: Selector = { type: "All" };
+      const selector: Selector = { windows: ["Window1", "Window2"] };
+      sendWebRequestStub.resolves(null);
+
+      const content = await displayViewService.getDisplayViewContent(
+        "NonExistentDisplayView",
+        selector,
+      );
+      expect(content).to.be.null;
+      expect(
+        sendWebRequestStub.calledOnceWith(
+          `/api/v1/connection/${connectionId}/displayView/NonExistentDisplayView/content`,
+          "POST",
+          selector,
+        ),
+      ).to.be.true;
+    });
+    it("should return null if the display view content is not found", async () => {
+      const selector: Selector = { windows: ["Window1", "Window2"] };
       sendWebRequestStub.resolves(null);
 
       const content = await displayViewService.getDisplayViewContent(
