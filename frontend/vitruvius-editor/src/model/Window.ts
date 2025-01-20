@@ -1,1 +1,1 @@
-export type Window = {name: string}
+export type Window = { name: string };
