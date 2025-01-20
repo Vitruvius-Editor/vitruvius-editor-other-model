@@ -68,10 +68,8 @@ class VitruvAdapter {
      */
     private fun getViewForWindows(displayView: DisplayView, windows: Set<String>): View {
         val internalSelector = getViewType(displayView).createSelector(null)
-        displayView.contentSelector.applySelection(internalSelector)
-        // Now only the things needed to create content for the windows should be in the selection
+        displayView.contentSelector.applySelection(internalSelector, windows)
         return internalSelector.createView()
-        TODO("Select all windows")
     }
 
     /**

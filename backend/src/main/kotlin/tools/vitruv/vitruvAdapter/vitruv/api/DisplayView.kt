@@ -12,7 +12,7 @@ interface DisplayView {
     val viewTypeName: String
     val viewMapper: ViewMapper<Any?>
     val windowSelector: Selector
-    val contentSelector: Selector
+    val contentSelector: ContentSelector
 }
 
 
