@@ -1,7 +1,7 @@
-# Hello World Example
+# Vitruvius Editor Plugin Readme
 
-The example extension demonstrates how to register a command in Theia saying "Hello world" using the message service.
+This Package includes the Vitruvius Editor Plugin that Theia uses to extend the functionality.
 
-## How to use the Hello World example
+## How to use the Plugin
 
-In the running application, trigger the command "Say hello" via the command palette (F1 => "Say Hello"). A message dialog will pop up saying "Hello World".
+see the Readme in the frontend package to run the Theia application. 
