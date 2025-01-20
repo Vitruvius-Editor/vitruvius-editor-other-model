@@ -23,7 +23,8 @@ class ConnectionController {
      * @return The list of all connections.
      */
     @GetMapping("/connections")
-    fun getConnections(): ResponseEntity<List<ConnectionResponse>> = ResponseEntity.ok().build()
+    fun getConnections(): ResponseEntity<Set<ConnectionResponse>> =
+        ResponseEntity.ok(connectionService.getConnections().map { ConnectionResponse(it) }.toSet())
 
     /**
      * This method returns the data of a single connection.
@@ -31,10 +32,10 @@ class ConnectionController {
      * @param id The id of the connection.
      * @return The content of the connection.
      */
-    @GetMapping("/connections/{id}")
+    @GetMapping("/connection/{id}")
     fun getConnection(
         @PathVariable("id") id: UUID,
-    ): ResponseEntity<ConnectionResponse> = ResponseEntity.ok().build()
+    ): ResponseEntity<ConnectionResponse> = ResponseEntity.ok(ConnectionResponse(connectionService.getConnectionById(id)))
 
     /**
      * This method creates a new connection and returns its data.
@@ -45,7 +46,7 @@ class ConnectionController {
     @PostMapping("/connection")
     fun createConnection(
         @RequestBody body: ConnectionCreationRequest,
-    ): ResponseEntity<ConnectionResponse> = ResponseEntity.ok().build()
+    ): ResponseEntity<ConnectionResponse> = ResponseEntity.ok(ConnectionResponse(connectionService.importConnection(body)))
 
     /**
      * This method deletes a connection.
@@ -56,7 +57,7 @@ class ConnectionController {
     @DeleteMapping("/connection/{id}")
     fun deleteConnection(
         @PathVariable("id") id: UUID,
-    ): ResponseEntity<Unit> = ResponseEntity.ok().build()
+    ): ResponseEntity<Unit> = ResponseEntity.ok(connectionService.deleteConnection(id))
 
     /**
      * This method edits a connection.
@@ -69,5 +70,5 @@ class ConnectionController {
     fun editConnection(
         @PathVariable("id") id: UUID,
         @RequestBody body: ConnectionEditRequest,
-    ): ResponseEntity<ConnectionResponse> = ResponseEntity.ok().build()
+    ): ResponseEntity<ConnectionResponse> = ResponseEntity.ok(ConnectionResponse(connectionService.editConnection(id, body)))
 }

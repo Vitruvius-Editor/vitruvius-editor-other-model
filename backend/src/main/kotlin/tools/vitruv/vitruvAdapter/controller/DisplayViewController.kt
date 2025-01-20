@@ -18,33 +18,25 @@ class DisplayViewController {
     @GetMapping("/connection/{connectionId}/displayViews")
     fun getDisplayViews(
         @PathVariable connectionId: UUID,
-    ): ResponseEntity<List<DisplayViewResponse>> {
-        TODO("Not yet implemented")
-    }
+    ): ResponseEntity<Set<DisplayViewResponse>> = ResponseEntity.ok(vitruviusService.getDisplayViews(connectionId).map { DisplayViewResponse(it) }.toSet())
 
     @GetMapping("/connection/{connectionId}/displayView/{displayViewName}")
     fun getDisplayViewDetails(
         @PathVariable connectionId: UUID,
         @PathVariable displayViewName: String,
-    ): ResponseEntity<DisplayViewContentResponse> {
-        TODO("Not yet implemented")
-    }
+    ): ResponseEntity<DisplayViewContentResponse> = ResponseEntity.ok(DisplayViewContentResponse(vitruviusService.getDisplayViewWindows(connectionId, displayViewName)))
 
     @PostMapping("/connection/{connectionId}/displayView/{displayViewName}")
     fun getDisplayViewWindowContent(
         @PathVariable connectionId: UUID,
         @PathVariable displayViewName: String,
         @RequestBody windowSelectionRequest: WindowSelectionRequest,
-    ): ResponseEntity<String> {
-        TODO("Not yet implemented")
-    }
+    ): ResponseEntity<String> = ResponseEntity.ok(vitruviusService.getDisplayViewContent(connectionId, displayViewName, windowSelectionRequest))
 
     @PutMapping("/connection/{connectionId}/displayView/{displayViewName}")
     fun editDisplayViewContent(
         @PathVariable connectionId: UUID,
         @PathVariable displayViewName: String,
         @RequestBody updatedContent: String,
-    ): ResponseEntity<String> {
-        TODO("Not yet implemented")
-    }
+    ): ResponseEntity<String> = ResponseEntity.ok(vitruviusService.editDisplayViewContent(connectionId, displayViewName, updatedContent))
 }

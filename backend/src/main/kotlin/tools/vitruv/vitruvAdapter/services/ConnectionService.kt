@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import tools.vitruv.vitruvAdapter.dto.ConnectionCreationRequest
 import tools.vitruv.vitruvAdapter.dto.ConnectionEditRequest
+import tools.vitruv.vitruvAdapter.exception.ConnectionNotFoundException
 import tools.vitruv.vitruvAdapter.model.ConnectionDetails
 import tools.vitruv.vitruvAdapter.repository.ConnectionRepository
 import java.util.*
@@ -22,9 +23,7 @@ class ConnectionService {
      *
      * @return A list of projects.
      */
-    fun getConnections(): List<ConnectionDetails> {
-        TODO()
-    }
+    fun getConnections(): Set<ConnectionDetails> = connectionRepository.findAll().toSet()
 
     /**
      * Imports a project onto the adapter.
@@ -33,7 +32,9 @@ class ConnectionService {
      * @return The Project object.
      */
     fun importConnection(connectionCreationRequest: ConnectionCreationRequest): ConnectionDetails {
-        TODO()
+        val connection = ConnectionDetails(UUID.randomUUID(), connectionCreationRequest.name, connectionCreationRequest.description, connectionCreationRequest.url);
+        connectionRepository.save(connection);
+        return connection;
     }
 
     /**
@@ -42,7 +43,8 @@ class ConnectionService {
      * @param connectionId The id of the project.
      */
     fun deleteConnection(connectionId: UUID) {
-        TODO()
+        val connection: ConnectionDetails = getConnectionById(connectionId);
+        connectionRepository.delete(connection);
     }
 
     /**
@@ -56,7 +58,13 @@ class ConnectionService {
         connectionId: UUID,
         editRequest: ConnectionEditRequest,
     ): ConnectionDetails {
-        TODO()
+        var connection = getConnectionById(connectionId);
+        connection.name = editRequest.name;
+        connection.description = editRequest.description;
+        connection.url = editRequest.url;
+        connectionRepository.save(connection);
+        return connection;
+
     }
 
     /**
@@ -65,7 +73,5 @@ class ConnectionService {
      * @param connectionId The id of the project.
      * @return The project.
      */
-    fun getConnectionById(connectionId: UUID): ConnectionDetails {
-        TODO()
-    }
+    fun getConnectionById(connectionId: UUID): ConnectionDetails = connectionRepository.findByUuid(connectionId)?: throw ConnectionNotFoundException()
 }

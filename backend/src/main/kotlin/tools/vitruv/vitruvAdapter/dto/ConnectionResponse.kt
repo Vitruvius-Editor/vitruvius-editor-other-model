@@ -1,5 +1,6 @@
 package tools.vitruv.vitruvAdapter.dto
 
+import tools.vitruv.vitruvAdapter.model.ConnectionDetails
 import java.util.UUID
 
 /**
@@ -16,3 +17,6 @@ data class ConnectionResponse(
     val uuid: UUID,
     val url: String,
 )
+{
+    constructor(connectionDetails: ConnectionDetails): this(connectionDetails.name, connectionDetails.description, connectionDetails.uuid, connectionDetails.url)
+}

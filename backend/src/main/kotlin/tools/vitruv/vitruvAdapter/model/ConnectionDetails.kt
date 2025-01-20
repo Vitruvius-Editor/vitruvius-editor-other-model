@@ -17,9 +17,9 @@ data class ConnectionDetails(
     @GeneratedValue(strategy = GenerationType.UUID)
     val uuid: UUID,
     @Column(nullable = false)
-    val name: String,
+    var name: String,
     @Column(nullable = false)
-    val description: String,
+    var description: String,
     @Column(nullable = false)
-    val url: String,
+    var url: String,
 )
