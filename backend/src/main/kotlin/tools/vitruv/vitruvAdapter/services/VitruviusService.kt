@@ -100,7 +100,7 @@ class VitruviusService {
      */
     private fun setupConnection(connectionId: UUID) {
         val connection = connectionService.getConnectionById(connectionId)
-        val client = VitruvClientFactory.create(connection.url, Path("/vitruvius-editor"))
+        val client = VitruvClientFactory.create(connection.url, Path("vitruvius-editor"))
         vitruvAdapter.setDisplayViewContainer(displayViewRepository)
         vitruvAdapter.connectClient(client)
     }
