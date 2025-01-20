@@ -36,7 +36,7 @@
   },
   "theiaExtensions": [
     {
-      "frontend": "lib/browser/hello-world-frontend-module"
+      "frontend": "lib/browser/vitruvius-frontend-module"
     }
   ]
 }
