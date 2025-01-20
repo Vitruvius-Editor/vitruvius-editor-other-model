@@ -20,7 +20,7 @@ class DisplayViewController {
     @GetMapping("/connection/{connectionId}/displayViews")
     fun getDisplayViews(
         @PathVariable connectionId: UUID,
-    ): ResponseEntity<List<DisplayViewResponse>> = ResponseEntity.ok(vitruviusService.getDisplayViews(connectionId).map { DisplayViewResponse(it) })
+    ): ResponseEntity<Set<DisplayViewResponse>> = ResponseEntity.ok(vitruviusService.getDisplayViews(connectionId).map { DisplayViewResponse(it) }.toSet())
 
     @GetMapping("/connection/{connectionId}/displayView/{displayViewName}")
     fun getDisplayViewDetails(

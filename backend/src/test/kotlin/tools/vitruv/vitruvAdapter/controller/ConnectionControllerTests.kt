@@ -42,7 +42,7 @@ class ConnectionControllerTest {
 
     @Test
     fun testGetConnections() {
-        val connections = listOf(
+        val connections = setOf(
             ConnectionDetails(UUID.randomUUID(), "Connection 1", "Description 1", "https://example.com/1"),
             ConnectionDetails(UUID.randomUUID(), "Connection 2", "Description 2", "https://example.com/2")
         )

@@ -58,7 +58,7 @@ class DisplayViewControllerTests {
     fun testGetDisplayViews() {
        whenever(vitruviusService.getDisplayViews(any<UUID>())).thenAnswer {
            if (it.getArgument(0) as UUID == connectionId) {
-               displayViews
+               displayViews.toSet()
            } else {
                throw ConnectionNotFoundException()
            }
@@ -82,12 +82,12 @@ class DisplayViewControllerTests {
             if (it.getArgument(1) as String != displayViews[0].name) {
                 throw DisplayViewNotFoundException()
             }
-            listOf("Window1", "Window2")
+            setOf("Window1", "Window2")
         }
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/connection/$connectionId/displayView/${displayViews[0].name}"))
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(DisplayViewContentResponse(listOf("Window1", "Window2")))))
+            .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(DisplayViewContentResponse(setOf("Window1", "Window2")))))
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/connection/${UUID.randomUUID()}/displayView/${displayViews[0].name}"))
             .andExpect(MockMvcResultMatchers.status().isNotFound)
@@ -110,20 +110,20 @@ class DisplayViewControllerTests {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/connection/$connectionId/displayView/${displayViews[0].name}")
             .contentType("application/json")
-            .content(objectMapper.writeValueAsString(WindowSelectionRequest(listOf("Window1", "Window2"))))
+            .content(objectMapper.writeValueAsString(WindowSelectionRequest(setOf("Window1", "Window2"))))
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.content().string("Content"))
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/connection/${UUID.randomUUID()}/displayView/${displayViews[0].name}")
             .contentType("application/json")
-            .content(objectMapper.writeValueAsString(WindowSelectionRequest(listOf("Window1", "Window2"))))
+            .content(objectMapper.writeValueAsString(WindowSelectionRequest(setOf("Window1", "Window2"))))
         )
             .andExpect(MockMvcResultMatchers.status().isNotFound)
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/connection/$connectionId/displayView/Unknown")
             .contentType("application/json")
-            .content(objectMapper.writeValueAsString(WindowSelectionRequest(listOf("Window1", "Window2"))))
+            .content(objectMapper.writeValueAsString(WindowSelectionRequest(setOf("Window1", "Window2"))))
         )
             .andExpect(MockMvcResultMatchers.status().isNotFound)
     }

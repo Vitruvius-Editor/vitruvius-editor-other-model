@@ -23,8 +23,8 @@ class ConnectionController {
      * @return The list of all connections.
      */
     @GetMapping("/connections")
-    fun getConnections(): ResponseEntity<List<ConnectionResponse>> =
-        ResponseEntity.ok(connectionService.getConnections().map { ConnectionResponse(it) })
+    fun getConnections(): ResponseEntity<Set<ConnectionResponse>> =
+        ResponseEntity.ok(connectionService.getConnections().map { ConnectionResponse(it) }.toSet())
 
     /**
      * This method returns the data of a single connection.

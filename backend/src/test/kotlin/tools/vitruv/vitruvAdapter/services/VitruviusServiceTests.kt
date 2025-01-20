@@ -70,21 +70,21 @@ class VitruviusServiceTests {
     @Test
     fun testGetDisplayViews() {
         whenever(vitruvAdapter.getDisplayViews()).thenReturn(displayViews.toSet())
-        assertEquals(displayViews, vitruviusService.getDisplayViews(uuid))
+        assertEquals(displayViews.toSet(), vitruviusService.getDisplayViews(uuid))
     }
 
     @Test
     fun testGetDisplayViewWindows() {
         whenever(vitruvAdapter.getWindows(any<DisplayView>())).thenAnswer { setOf("Window1", "Window2") }
-        assertEquals(listOf("Window1", "Window2"), vitruviusService.getDisplayViewWindows(uuid, displayViews[0].name))
+        assertEquals(setOf("Window1", "Window2"), vitruviusService.getDisplayViewWindows(uuid, displayViews[0].name))
         assertThrows<DisplayViewNotFoundException> { vitruviusService.getDisplayViewWindows(uuid, displayViews[1].name) }
     }
 
     @Test
     fun testGetDisplayViewContent() {
         whenever(vitruvAdapter.createWindowContent(any<DisplayView>(), any<Set<String>>())).thenAnswer { "Example Content" }
-        assertEquals("Example Content", vitruviusService.getDisplayViewContent(uuid, displayViews[0].name, WindowSelectionRequest(listOf("Window 1", "Window 2"))))
-        assertThrows<DisplayViewNotFoundException> { vitruviusService.getDisplayViewContent(uuid, displayViews[1].name, WindowSelectionRequest(listOf("Window 1", "Window 2"))) }
+        assertEquals("Example Content", vitruviusService.getDisplayViewContent(uuid, displayViews[0].name, WindowSelectionRequest(setOf("Window 1", "Window 2"))))
+        assertThrows<DisplayViewNotFoundException> { vitruviusService.getDisplayViewContent(uuid, displayViews[1].name, WindowSelectionRequest(setOf("Window 1", "Window 2"))) }
     }
 
     @Test
@@ -100,14 +100,14 @@ class VitruviusServiceTests {
         // Test if the connection uuid is invalid
         assertThrows<ConnectionNotFoundException> { vitruviusService.getDisplayViews(UUID.randomUUID()) }
         assertThrows<ConnectionNotFoundException> { vitruviusService.getDisplayViewWindows(UUID.randomUUID(), displayViews[0].name) }
-        assertThrows<ConnectionNotFoundException> { vitruviusService.getDisplayViewContent(UUID.randomUUID(), displayViews[1].name, WindowSelectionRequest(listOf("Window 1", "Window 2"))) }
+        assertThrows<ConnectionNotFoundException> { vitruviusService.getDisplayViewContent(UUID.randomUUID(), displayViews[1].name, WindowSelectionRequest(setOf("Window 1", "Window 2"))) }
         assertThrows<ConnectionNotFoundException> { vitruviusService.editDisplayViewContent(UUID.randomUUID(), displayViews[0].name, "Updated Content") }
 
         // Test if the connection uuid is valid, but the server unreachable
         whenever(vitruvAdapter.connectClient(any())).thenAnswer { throw VitruviusConnectFailedException("Could not connect to model server.") }
         assertThrows<VitruviusConnectFailedException> { vitruviusService.getDisplayViews(uuid) }
         assertThrows<VitruviusConnectFailedException> { vitruviusService.getDisplayViewWindows(uuid, displayViews[0].name) }
-        assertThrows<VitruviusConnectFailedException> { vitruviusService.getDisplayViewContent(uuid, displayViews[1].name, WindowSelectionRequest(listOf("Window 1", "Window 2"))) }
+        assertThrows<VitruviusConnectFailedException> { vitruviusService.getDisplayViewContent(uuid, displayViews[1].name, WindowSelectionRequest(setOf("Window 1", "Window 2"))) }
         assertThrows<VitruviusConnectFailedException> { vitruviusService.editDisplayViewContent(uuid, displayViews[0].name, "Updated Content") }
     }
 }

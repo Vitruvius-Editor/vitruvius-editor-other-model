@@ -24,7 +24,7 @@ class ConnectionService {
      *
      * @return A list of projects.
      */
-    fun getConnections(): List<ConnectionDetails> = connectionRepository.findAll()
+    fun getConnections(): Set<ConnectionDetails> = connectionRepository.findAll().toSet()
 
     /**
      * Imports a project onto the adapter.

@@ -35,9 +35,9 @@ class VitruviusService {
      * @param connectionId The id of the connection to operate on.
      * @return A list of available DisplayViews of the connection.
      */
-    fun getDisplayViews(connectionId: UUID): List<DisplayView> {
+    fun getDisplayViews(connectionId: UUID): Set<DisplayView> {
         setupConnection(connectionId)
-        return vitruvAdapter.getDisplayViews().toList()
+        return vitruvAdapter.getDisplayViews()
     }
 
     /**
@@ -50,10 +50,10 @@ class VitruviusService {
     fun getDisplayViewWindows(
         connectionId: UUID,
         displayViewName: String,
-    ): List<String> {
+    ): Set<String> {
         setupConnection(connectionId)
         val displayView = vitruvAdapter.getDisplayView(displayViewName)?: throw DisplayViewNotFoundException()
-        return vitruvAdapter.getWindows(displayView).toList()
+        return vitruvAdapter.getWindows(displayView)
     }
 
     /**
@@ -71,7 +71,7 @@ class VitruviusService {
     ): String {
         setupConnection(connectionId)
         val displayView = vitruvAdapter.getDisplayView(displayViewName)?: throw DisplayViewNotFoundException()
-        return vitruvAdapter.createWindowContent(displayView, windowSelectionRequest.windows.toSet())
+        return vitruvAdapter.createWindowContent(displayView, windowSelectionRequest.windows)
     }
 
     /**
