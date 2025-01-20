@@ -1,16 +1,5 @@
 import { injectable, inject } from '@theia/core/shared/inversify';
 import { Command, CommandContribution, CommandRegistry, MAIN_MENU_BAR, MenuContribution, MenuModelRegistry, MenuPath, MessageService } from '@theia/core/lib/common';
-import { CommonMenus } from '@theia/core/lib/browser';
-
-// export namespace DiagramCommands {
-//     export const CENTER = 'diagram:center';
-//     export const FIT = 'diagram:fit';
-//     export const EXPORT = 'diagram:export';
-//     export const SELECT_ALL = 'diagram.selectAll';
-//     export const OPEN_IN_DIAGRAM = 'diagram.open';
-//     export const DELETE = 'diagram.delete';
-//     export const LAYOUT = 'diagram.layout';
-// }
 
 export namespace VitruviusMenus {
     export const VITRUVIUS: MenuPath = MAIN_MENU_BAR.concat("vitruvius");
@@ -23,27 +12,27 @@ export const VitruviusHelpCommand: Command = {
 
 export const VitruviusLoadProject: Command = {
     id: 'VitruviusLoadProject.command',
-    label: 'Load Project'
+    label: 'Vitruvius Load Project'
 }
 
 export const VitruviusImportProject: Command = {
     id: 'VitruviusImportProject.command',
-    label: 'Import Project'
+    label: 'Vitruvius Import Project'
 }
 
 export const VitruviusRefreshProject: Command = {
     id: 'VitruviusRefreshProject.command',
-    label: 'Refresh Project'
+    label: 'Vitruvius Refresh Project'
 }
 
 export const VitruviusDeleteProject: Command = {
     id: 'VitruviusDeleteProject.command',
-    label: 'Delete Project'
+    label: 'Vitruvius Delete Project'
 }
 
 export const VitruviusChangeProject: Command = {
     id: 'VitruviusChangeProject.command',
-    label: 'Change Project'
+    label: 'Vitruvius Change Project'
 }
 
 @injectable()
@@ -119,7 +108,7 @@ export class VitruviusChangeProjectContribution implements CommandContribution {
 }
 
 @injectable()
-export class VitruviusSubmenuContribution implements MenuContribution {
+export class VitruviusMenuContribution implements MenuContribution {
 
     registerMenus(menus: MenuModelRegistry): void {
         menus.registerSubmenu(VitruviusMenus.VITRUVIUS, 'Vitruvius');

@@ -1,7 +1,7 @@
 /**
  * Generated using theia-extension-generator
  */
-import { VitruviusChangeProjectContribution, VitruviusDeleteProjectContribution, VitruviusHelpCommandContribution, VitruviusImportProjectContribution, VitruviusLoadProjectContribution, VitruviusRefreshProjectContribution, VitruviusSubmenuContribution } from './vitruvius-contribution';
+import { VitruviusChangeProjectContribution, VitruviusDeleteProjectContribution, VitruviusHelpCommandContribution, VitruviusImportProjectContribution, VitruviusLoadProjectContribution, VitruviusRefreshProjectContribution, VitruviusMenuContribution } from './vitruvius-contribution';
 import { CommandContribution, MenuContribution } from '@theia/core/lib/common';
 import { ContainerModule } from '@theia/core/shared/inversify';
 
@@ -13,5 +13,5 @@ export default new ContainerModule(bind => {
     bind(CommandContribution).to(VitruviusImportProjectContribution);
     bind(CommandContribution).to(VitruviusLoadProjectContribution);
     bind(CommandContribution).to(VitruviusRefreshProjectContribution);
-    bind(MenuContribution).to(VitruviusSubmenuContribution);
+    bind(MenuContribution).to(VitruviusMenuContribution);
 });
