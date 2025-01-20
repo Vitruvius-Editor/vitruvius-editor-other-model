@@ -1,6 +1,20 @@
 import { injectable, inject } from '@theia/core/shared/inversify';
-import { Command, CommandContribution, CommandRegistry, MenuContribution, MenuModelRegistry, MessageService } from '@theia/core/lib/common';
+import { Command, CommandContribution, CommandRegistry, MAIN_MENU_BAR, MenuContribution, MenuModelRegistry, MenuPath, MessageService } from '@theia/core/lib/common';
 import { CommonMenus } from '@theia/core/lib/browser';
+
+// export namespace DiagramCommands {
+//     export const CENTER = 'diagram:center';
+//     export const FIT = 'diagram:fit';
+//     export const EXPORT = 'diagram:export';
+//     export const SELECT_ALL = 'diagram.selectAll';
+//     export const OPEN_IN_DIAGRAM = 'diagram.open';
+//     export const DELETE = 'diagram.delete';
+//     export const LAYOUT = 'diagram.layout';
+// }
+
+export namespace VitruviusMenus {
+    export const VITRUVIUS: MenuPath = MAIN_MENU_BAR.concat("vitruvius");
+}
 
 export const VitruviusHelpCommand: Command = {
     id: 'VitruviusHelp.command',
@@ -108,7 +122,9 @@ export class VitruviusChangeProjectContribution implements CommandContribution {
 export class VitruviusSubmenuContribution implements MenuContribution {
 
     registerMenus(menus: MenuModelRegistry): void {
-        menus.registerMenuAction(CommonMenus.EDIT_FIND, {
+        menus.registerSubmenu(VitruviusMenus.VITRUVIUS, 'Vitruvius');
+
+        menus.registerMenuAction(VitruviusMenus.VITRUVIUS, {
             commandId: VitruviusHelpCommand.id,
             label: VitruviusHelpCommand.label
         });
