@@ -26,19 +26,14 @@ class DisplayViewController {
     fun getDisplayViewDetails(
         @PathVariable connectionId: UUID,
         @PathVariable displayViewName: String,
-    ): ResponseEntity<DisplayViewContentResponse> = ResponseEntity.ok(DisplayViewContentResponse(vitruviusService.getDisplayViewWindows(connectionId, displayViewName).map { it.getContent() }))
+    ): ResponseEntity<DisplayViewContentResponse> = ResponseEntity.ok(DisplayViewContentResponse(vitruviusService.getDisplayViewWindows(connectionId, displayViewName)))
 
     @PostMapping("/connection/{connectionId}/displayView/{displayViewName}")
     fun getDisplayViewWindowContent(
         @PathVariable connectionId: UUID,
         @PathVariable displayViewName: String,
         @RequestBody windowSelectionRequest: WindowSelectionRequest,
-    ): ResponseEntity<String> {
-        return when (windowSelectionRequest) {
-            is WindowSelectionRequest.All -> ResponseEntity.ok(vitruviusService.getDisplayViewContent(connectionId, displayViewName, AllSelector()))
-            is WindowSelectionRequest.Name -> ResponseEntity.ok(vitruviusService.getDisplayViewContent(connectionId, displayViewName, NameSelector(windowSelectionRequest.name, windowSelectionRequest.exact)))
-        }
-    }
+    ): ResponseEntity<String> = ResponseEntity.ok(vitruviusService.getDisplayViewContent(connectionId, displayViewName, windowSelectionRequest))
 
     @PutMapping("/connection/{connectionId}/displayView/{displayViewName}")
     fun editDisplayViewContent(

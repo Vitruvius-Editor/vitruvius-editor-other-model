@@ -2,6 +2,7 @@ package tools.vitruv.vitruvAdapter.services
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import tools.vitruv.vitruvAdapter.dto.WindowSelectionRequest
 import tools.vitruv.vitruvAdapter.vitruv.api.DisplayView
 import tools.vitruv.vitruvAdapter.vitruv.api.Selector
 import tools.vitruv.vitruvAdapter.vitruv.api.VitruvAdapter
@@ -39,7 +40,7 @@ class VitruviusService {
     fun getDisplayViewContent(
         connectionId: UUID,
         displayViewName: String,
-        selector: Selector,
+        windowSelectionRequest: WindowSelectionRequest,
     ): String {
         TODO("Not yet implemented")
     }

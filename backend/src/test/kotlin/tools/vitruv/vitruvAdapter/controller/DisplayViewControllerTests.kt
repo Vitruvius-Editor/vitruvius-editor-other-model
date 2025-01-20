@@ -12,11 +12,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import tools.vitruv.framework.remote.client.VitruvClientFactory
-import tools.vitruv.framework.remote.client.impl.RemoteViewSelector
-import tools.vitruv.framework.remote.client.impl.RemoteViewType
-import tools.vitruv.framework.remote.client.impl.VitruvRemoteConnection
-import tools.vitruv.framework.views.ViewTypeFactory
 import tools.vitruv.vitruvAdapter.dto.DisplayViewContentResponse
 import tools.vitruv.vitruvAdapter.dto.DisplayViewResponse
 import tools.vitruv.vitruvAdapter.dto.WindowSelectionRequest
@@ -25,14 +20,12 @@ import tools.vitruv.vitruvAdapter.exception.DisplayViewNotFoundException
 import tools.vitruv.vitruvAdapter.services.VitruviusService
 import tools.vitruv.vitruvAdapter.vitruv.api.DisplayView
 import tools.vitruv.vitruvAdapter.vitruv.api.Selector
+import tools.vitruv.vitruvAdapter.vitruv.api.ViewMapper
 import tools.vitruv.vitruvAdapter.vitruv.api.Window
 import tools.vitruv.vitruvAdapter.vitruv.impl.GenericDisplayView
 import tools.vitruv.vitruvAdapter.vitruv.impl.mapper.ClassDiagramViewMapper
 import tools.vitruv.vitruvAdapter.vitruv.impl.mapper.SourceCodeViewMapper
-import tools.vitruv.vitruvAdapter.vitruv.impl.mapper.TextViewMapper
-import tools.vitruv.vitruvAdapter.vitruv.impl.mapper.UmlViewMapper
 import tools.vitruv.vitruvAdapter.vitruv.impl.selector.AllSelector
-import tools.vitruv.vitruvAdapter.vitruv.impl.selector.NameSelector
 import java.util.UUID
 
 @SpringBootTest
@@ -54,10 +47,9 @@ class DisplayViewControllerTests {
 
     @BeforeEach
     fun beforeEach() {
-        val viewType = ViewTypeFactory.createIdentityMappingViewType("IdentityMappingView")
         displayViews = listOf(
-            GenericDisplayView("DisplayView 1", viewType, SourceCodeViewMapper(), AllSelector(), AllSelector()),
-            GenericDisplayView("DisplayView 2", viewType, ClassDiagramViewMapper(), AllSelector(), AllSelector()),
+            GenericDisplayView("DisplayView 1", "ExampleViewType", SourceCodeViewMapper() as ViewMapper<Any?>, AllSelector(), AllSelector()),
+            GenericDisplayView("DisplayView 2", "ExampleViewType", ClassDiagramViewMapper() as ViewMapper<Any?>, AllSelector(), AllSelector()),
         )
         connectionId = UUID.randomUUID()
     }
@@ -90,14 +82,12 @@ class DisplayViewControllerTests {
             if (it.getArgument(1) as String != displayViews[0].name) {
                 throw DisplayViewNotFoundException()
             }
-            listOf(object : Window {
-                override fun getContent(): String = "Content"
-            })
+            listOf("Window1", "Window2")
         }
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/connection/$connectionId/displayView/${displayViews[0].name}"))
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(DisplayViewContentResponse(listOf("Content")))))
+            .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(DisplayViewContentResponse(listOf("Window1", "Window2")))))
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/connection/${UUID.randomUUID()}/displayView/${displayViews[0].name}"))
             .andExpect(MockMvcResultMatchers.status().isNotFound)
@@ -108,7 +98,7 @@ class DisplayViewControllerTests {
 
     @Test
     fun testGetDisplayViewWindowContent() {
-        whenever(vitruviusService.getDisplayViewContent(any<UUID>(), any<String>(), any<Selector>())).thenAnswer {
+        whenever(vitruviusService.getDisplayViewContent(any<UUID>(), any<String>(), any<WindowSelectionRequest>())).thenAnswer {
             if (it.getArgument(0) as UUID != connectionId) {
                 throw ConnectionNotFoundException()
             }
@@ -120,20 +110,20 @@ class DisplayViewControllerTests {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/connection/$connectionId/displayView/${displayViews[0].name}")
             .contentType("application/json")
-            .content(objectMapper.writeValueAsString(WindowSelectionRequest.All))
+            .content(objectMapper.writeValueAsString(WindowSelectionRequest(listOf("Window1", "Window2"))))
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.content().string("Content"))
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/connection/${UUID.randomUUID()}/displayView/${displayViews[0].name}")
             .contentType("application/json")
-            .content(objectMapper.writeValueAsString(WindowSelectionRequest.All))
+            .content(objectMapper.writeValueAsString(WindowSelectionRequest(listOf("Window1", "Window2"))))
         )
             .andExpect(MockMvcResultMatchers.status().isNotFound)
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/connection/$connectionId/displayView/Unknown")
             .contentType("application/json")
-            .content(objectMapper.writeValueAsString(WindowSelectionRequest.All))
+            .content(objectMapper.writeValueAsString(WindowSelectionRequest(listOf("Window1", "Window2"))))
         )
             .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
