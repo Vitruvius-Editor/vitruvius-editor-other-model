@@ -3,7 +3,6 @@ package tools.vitruv.vitruvAdapter.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.RequestBuilder
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import tools.vitruv.vitruvAdapter.dto.ConnectionCreationRequest
@@ -35,10 +33,6 @@ class ConnectionControllerTest {
 
     @MockitoBean
     private lateinit var connectionService: ConnectionService
-
-    @BeforeEach
-    fun setUp() {
-    }
 
     @Test
     fun testGetConnections() {

@@ -7,8 +7,6 @@ import tools.vitruv.vitruvAdapter.dto.DisplayViewContentResponse
 import tools.vitruv.vitruvAdapter.dto.DisplayViewResponse
 import tools.vitruv.vitruvAdapter.dto.WindowSelectionRequest
 import tools.vitruv.vitruvAdapter.services.VitruviusService
-import tools.vitruv.vitruvAdapter.vitruv.impl.selector.AllSelector
-import tools.vitruv.vitruvAdapter.vitruv.impl.selector.NameSelector
 import java.util.*
 
 @RestController

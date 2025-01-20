@@ -6,7 +6,6 @@ import tools.vitruv.framework.remote.client.VitruvClientFactory
 import tools.vitruv.vitruvAdapter.dto.WindowSelectionRequest
 import tools.vitruv.vitruvAdapter.exception.DisplayViewNotFoundException
 import tools.vitruv.vitruvAdapter.vitruv.api.DisplayView
-import tools.vitruv.vitruvAdapter.vitruv.api.Selector
 import tools.vitruv.vitruvAdapter.vitruv.api.VitruvAdapter
 import tools.vitruv.vitruvAdapter.vitruv.api.Window
 import tools.vitruv.vitruvAdapter.vitruv.impl.DisplayViewRepository

@@ -8,15 +8,12 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
-import org.springframework.test.context.bean.override.mockito.MockitoBean
-import tools.vitruv.framework.remote.client.VitruvClient
 import tools.vitruv.framework.remote.client.impl.VitruvRemoteConnection
 import tools.vitruv.vitruvAdapter.dto.WindowSelectionRequest
 import tools.vitruv.vitruvAdapter.exception.ConnectionNotFoundException
 import tools.vitruv.vitruvAdapter.exception.DisplayViewNotFoundException
 import tools.vitruv.vitruvAdapter.exception.VitruviusConnectFailedException
 import tools.vitruv.vitruvAdapter.model.ConnectionDetails
-import tools.vitruv.vitruvAdapter.repository.ConnectionRepository
 import tools.vitruv.vitruvAdapter.vitruv.api.DisplayView
 import tools.vitruv.vitruvAdapter.vitruv.api.ViewMapper
 import tools.vitruv.vitruvAdapter.vitruv.api.VitruvAdapter
@@ -25,16 +22,12 @@ import tools.vitruv.vitruvAdapter.vitruv.impl.GenericDisplayView
 import tools.vitruv.vitruvAdapter.vitruv.impl.mapper.ClassDiagramViewMapper
 import tools.vitruv.vitruvAdapter.vitruv.impl.mapper.SourceCodeViewMapper
 import tools.vitruv.vitruvAdapter.vitruv.impl.selector.AllSelector
-import java.util.UUID
+import java.util.*
 import kotlin.test.assertEquals
-import kotlin.uuid.Uuid
 
 class VitruviusServiceTests {
     @InjectMocks
     private lateinit var vitruviusService: VitruviusService
-
-    @Mock
-    private lateinit var displayViewRepository: DisplayViewRepository
 
     @Mock
     private lateinit var connectionService: ConnectionService

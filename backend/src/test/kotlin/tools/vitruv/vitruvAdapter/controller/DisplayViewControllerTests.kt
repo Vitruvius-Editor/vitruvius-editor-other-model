@@ -19,14 +19,12 @@ import tools.vitruv.vitruvAdapter.exception.ConnectionNotFoundException
 import tools.vitruv.vitruvAdapter.exception.DisplayViewNotFoundException
 import tools.vitruv.vitruvAdapter.services.VitruviusService
 import tools.vitruv.vitruvAdapter.vitruv.api.DisplayView
-import tools.vitruv.vitruvAdapter.vitruv.api.Selector
 import tools.vitruv.vitruvAdapter.vitruv.api.ViewMapper
-import tools.vitruv.vitruvAdapter.vitruv.api.Window
 import tools.vitruv.vitruvAdapter.vitruv.impl.GenericDisplayView
 import tools.vitruv.vitruvAdapter.vitruv.impl.mapper.ClassDiagramViewMapper
 import tools.vitruv.vitruvAdapter.vitruv.impl.mapper.SourceCodeViewMapper
 import tools.vitruv.vitruvAdapter.vitruv.impl.selector.AllSelector
-import java.util.UUID
+import java.util.*
 
 @SpringBootTest
 @AutoConfigureMockMvc
