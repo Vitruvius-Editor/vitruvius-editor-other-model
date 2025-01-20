@@ -1,6 +1,5 @@
 package tools.vitruv.vitruvAdapter.vitruv.api
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Assertions.*
 import tools.vitruv.vitruvAdapter.vitruv.api.testutils.JsonNormalizer
 import tools.vitruv.vitruvAdapter.vitruv.api.testutils.TestTextDisplayContentMapper
@@ -9,7 +8,7 @@ class JsonViewInformationTest {
 
     
     @org.junit.jupiter.api.Test
-    fun testTextMappingToJsonViewInformation() {
+    fun testTextMappingParseWindowsToJsonViewInformation() {
         val displayContentMapper = TestTextDisplayContentMapper()
         val viewInformation = JsonViewInformation(displayContentMapper)
         val window = Window("window1", "content1")
@@ -26,7 +25,7 @@ class JsonViewInformationTest {
         }
         """.trimIndent()
 
-        val serializedJson = viewInformation.toJson(listOf(window,window2))/* Your JSON serialization method here */
+        val serializedJson = viewInformation.parseWindowsToJson(listOf(window,window2))/* Your JSON serialization method here */
 
         println(JsonNormalizer.normalize(serializedJson))
 

@@ -84,7 +84,7 @@ class VitruvAdapter {
         val mapper = displayView.viewMapper
         val viewInformation = JsonViewInformation(mapper.getDisplayContent())
         val mappedData = mapper.mapViewToContentData(view.rootObjects.toList())
-        val json = viewInformation.toJson(mappedData)
+        val json = viewInformation.parseWindowsToJson(mappedData)
         return json
     }
 
@@ -98,12 +98,24 @@ class VitruvAdapter {
     fun editDisplayView(displayView: DisplayView, json: String) {
         val mapper = displayView.viewMapper
         val viewInformation = JsonViewInformation(mapper.getDisplayContent())
-        val retrievedEObjects = mapper.mapContentDataToView(viewInformation.fromJson(json))
+        val retrievedEObjects = mapper.mapContentDataToView(viewInformation.parseWindowsFromJson(json))
         val oldViewContent = getViewForWindows(displayView, getWindows(displayView))
         val view = oldViewContent.withChangeDerivingTrait(DefaultStateBasedChangeResolutionStrategy())
         view.rootObjects.clear()
         view.rootObjects.addAll(retrievedEObjects)
         view.commitChanges()
+    }
+
+    /**
+     * Collects the windows from the given json string.
+     * @param displayView The DisplayView to collect the windows for.
+     * @param json The json string to collect the windows from.
+     * @return The collected windows.
+     */
+    fun collectWindowsFromJson(displayView: DisplayView, json: String): List<String> {
+        val mapper = displayView.viewMapper
+        val viewInformation = JsonViewInformation(mapper.getDisplayContent())
+        return viewInformation.collectWindowsFromJson(json)
     }
 
 

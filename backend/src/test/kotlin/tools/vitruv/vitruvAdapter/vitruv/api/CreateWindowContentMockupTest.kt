@@ -2,7 +2,6 @@ package tools.vitruv.vitruvAdapter.vitruv.api
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EcoreFactory
-import org.eclipse.emf.ecore.util.EcoreUtil
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -53,7 +52,7 @@ class CreateWindowContentMockupTest {
         assertEquals("public class EClass2 {\ntest2: char\n}", windows[1].content)
 
         val jsonViewInformation = JsonViewInformation(mapper.getDisplayContent())
-        val serializedJson = jsonViewInformation.toJson(windows)
+        val serializedJson = jsonViewInformation.parseWindowsToJson(windows)
         val expectedJson = """
         {
           "visualizerName": "TestVisualizer",
@@ -83,7 +82,7 @@ class CreateWindowContentMockupTest {
         }
         """.trimIndent()
         val jsonViewInformation = JsonViewInformation(mapper.getDisplayContent())
-        val contents = jsonViewInformation.fromJson(expectedJson)
+        val contents = jsonViewInformation.parseWindowsFromJson(expectedJson)
         val retrievedEObjects = mapper.mapContentDataToView(contents)
         assertEquals(2, retrievedEObjects.size)
         assertEquals("EClass", (retrievedEObjects[0] as EClass).name)
