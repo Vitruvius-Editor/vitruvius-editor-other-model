@@ -30,6 +30,9 @@ class VitruviusServiceTests {
     private lateinit var vitruviusService: VitruviusService
 
     @Mock
+    private lateinit var displayViewRepository: DisplayViewRepository
+
+    @Mock
     private lateinit var connectionService: ConnectionService
 
     @Mock
