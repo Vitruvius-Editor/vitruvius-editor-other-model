@@ -3,8 +3,7 @@ package tools.vitruv.vitruvAdapter.vitruv.api
 import tools.vitruv.framework.views.ViewSelector
 
 /**
- * This interface represents a content selector, which can be used to select content in the Vitruvius graphical editor,
- * but only for the given windows.
+ * This interface represents a content selector, which selects the Elements that are contained in the given windows.
  */
 interface ContentSelector {
 
@@ -16,5 +15,4 @@ interface ContentSelector {
      * @return The viewSelector with the selected elements.
      */
     fun applySelection(viewSelector: ViewSelector, windows: Set<String>)
-
 }

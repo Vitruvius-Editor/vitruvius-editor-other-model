@@ -42,7 +42,7 @@ class CreateWindowContentMockupTest {
         val mapper = JavaClassViewMapper()
 
         // When: We map the EObjects to Windows
-        val windows = mapper.mapViewToContentData(eObjects)
+        val windows = mapper.mapEObjectsToWindowsContent(eObjects)
 
         // Then: We should get our Windows with the correct content
         assertEquals(2, windows.size)
@@ -83,7 +83,7 @@ class CreateWindowContentMockupTest {
         """.trimIndent()
         val jsonViewInformation = JsonViewInformation(mapper.getDisplayContent())
         val contents = jsonViewInformation.parseWindowsFromJson(expectedJson)
-        val retrievedEObjects = mapper.mapContentDataToView(contents)
+        val retrievedEObjects = mapper.mapWindowsContentToEObjects(contents)
         assertEquals(2, retrievedEObjects.size)
         assertEquals("EClass", (retrievedEObjects[0] as EClass).name)
         assertEquals("EClass2", (retrievedEObjects[1] as EClass).name)

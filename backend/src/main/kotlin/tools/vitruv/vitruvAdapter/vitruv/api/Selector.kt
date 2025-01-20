@@ -3,7 +3,7 @@ package tools.vitruv.vitruvAdapter.vitruv.api
 import tools.vitruv.framework.views.ViewSelector
 
 /**
- * A Selector is an interface which selects elements of a ViewSelector.
+ * A selector that selects elements within a viewSelector.
  */
 interface Selector {
     /**

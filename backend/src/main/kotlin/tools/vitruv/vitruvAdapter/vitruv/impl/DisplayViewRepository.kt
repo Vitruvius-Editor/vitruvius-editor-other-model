@@ -3,6 +3,10 @@ package tools.vitruv.vitruvAdapter.vitruv.impl
 import tools.vitruv.vitruvAdapter.vitruv.api.DisplayView
 import tools.vitruv.vitruvAdapter.vitruv.api.DisplayViewContainer
 
+/**
+ * A repository for display views. This class is used to store and manage display views.
+ */
+
 class DisplayViewRepository : DisplayViewContainer {
 
     private val displayViews = mutableSetOf<DisplayView>()

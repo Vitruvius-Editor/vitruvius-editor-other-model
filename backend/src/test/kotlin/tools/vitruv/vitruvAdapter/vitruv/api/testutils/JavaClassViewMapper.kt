@@ -15,7 +15,7 @@ class JavaClassViewMapper : ViewMapper<String> {
 
     private val displayContentMapper = TestTextDisplayContentMapper()
 
-    override fun mapViewToContentData(rootObjects: List<EObject>): List<Window<String>> {
+    override fun mapEObjectsToWindowsContent(rootObjects: List<EObject>): List<Window<String>> {
         return rootObjects.map {
             if (it !is EClassImpl) {
                 throw IllegalArgumentException("Only EClasses are supported")
@@ -27,7 +27,7 @@ class JavaClassViewMapper : ViewMapper<String> {
         }
     }
 
-    override fun mapContentDataToView(windows: List<Window<String>>): List<EObject> {
+    override fun mapWindowsContentToEObjects(windows: List<Window<String>>): List<EObject> {
         return windows.map {
             val className = it.name
             val attributes = it.content.lines().drop(1).dropLast(1).map { line ->
