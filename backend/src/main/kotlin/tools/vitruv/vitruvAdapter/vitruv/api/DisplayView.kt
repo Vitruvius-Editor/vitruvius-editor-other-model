@@ -1,8 +1,5 @@
 package tools.vitruv.vitruvAdapter.vitruv.api
 
-import tools.vitruv.framework.views.ViewSelector
-import tools.vitruv.framework.views.ViewType
-
 /**
  * This interface represents a display view, which can be displayed in the Vitruvius graphical editor.
  * @author uhsab
@@ -12,7 +9,7 @@ interface DisplayView {
     val viewTypeName: String
     val viewMapper: ViewMapper<Any?>
     val windowSelector: Selector
-    val contentSelector: Selector
+    val contentSelector: ContentSelector
 }
 
 
