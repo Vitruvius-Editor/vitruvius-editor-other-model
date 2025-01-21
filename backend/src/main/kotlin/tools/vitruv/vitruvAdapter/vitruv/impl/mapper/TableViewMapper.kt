@@ -6,7 +6,11 @@ import tools.vitruv.vitruvAdapter.vitruv.api.ViewMapper
 import tools.vitruv.vitruvAdapter.vitruv.api.Window
 
 class TableViewMapper: ViewMapper<String>  {
-    override fun mapViewToContentData(rootObjects: List<EObject>): List<Window<String>> {
+    override fun mapEObjectsToWindowsContent(rootObjects: List<EObject>): List<Window<String>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun mapWindowsContentToEObjects(windows: List<Window<String>>): List<EObject> {
         TODO("Not yet implemented")
     }
 
@@ -18,7 +22,5 @@ class TableViewMapper: ViewMapper<String>  {
         TODO("Not yet implemented")
     }
 
-    override fun mapContentDataToView(windows: List<Window<String>>): List<EObject> {
-        TODO("Not yet implemented")
-    }
+
 }

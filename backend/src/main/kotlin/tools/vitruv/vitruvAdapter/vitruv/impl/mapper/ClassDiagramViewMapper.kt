@@ -5,11 +5,11 @@ import tools.vitruv.vitruvAdapter.vitruv.api.DisplayContentMapper
 import tools.vitruv.vitruvAdapter.vitruv.api.Window
 
 class ClassDiagramViewMapper: UmlViewMapper() {
-    override fun mapViewToContentData(rootObjects: List<EObject>): List<Window<String>> {
+    override fun mapEObjectsToWindowsContent(rootObjects: List<EObject>): List<Window<String>> {
         TODO("Not yet implemented")
     }
 
-    override fun mapContentDataToView(windows: List<Window<String>>): List<EObject> {
+    override fun mapWindowsContentToEObjects(windows: List<Window<String>>): List<EObject> {
         TODO("Not yet implemented")
     }
 
