@@ -12,12 +12,14 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import tools.vitruv.framework.views.ViewSelector
 import tools.vitruv.vitruvAdapter.dto.DisplayViewContentResponse
 import tools.vitruv.vitruvAdapter.dto.DisplayViewResponse
 import tools.vitruv.vitruvAdapter.dto.WindowSelectionRequest
 import tools.vitruv.vitruvAdapter.exception.ConnectionNotFoundException
 import tools.vitruv.vitruvAdapter.exception.DisplayViewNotFoundException
 import tools.vitruv.vitruvAdapter.services.VitruviusService
+import tools.vitruv.vitruvAdapter.vitruv.api.ContentSelector
 import tools.vitruv.vitruvAdapter.vitruv.api.DisplayView
 import tools.vitruv.vitruvAdapter.vitruv.api.ViewMapper
 import tools.vitruv.vitruvAdapter.vitruv.impl.GenericDisplayView
@@ -45,9 +47,13 @@ class DisplayViewControllerTests {
 
     @BeforeEach
     fun beforeEach() {
+        val contentSelector = object : ContentSelector {
+            override fun applySelection(viewSelector: ViewSelector, windows: Set<String>) {
+            }
+        }
         displayViews = listOf(
-            GenericDisplayView("DisplayView 1", "ExampleViewType", SourceCodeViewMapper() as ViewMapper<Any?>, AllSelector(), AllSelector()),
-            GenericDisplayView("DisplayView 2", "ExampleViewType", ClassDiagramViewMapper() as ViewMapper<Any?>, AllSelector(), AllSelector()),
+            GenericDisplayView("DisplayView 1", "ExampleViewType", SourceCodeViewMapper() as ViewMapper<Any?>, AllSelector(), contentSelector),
+            GenericDisplayView("DisplayView 2", "ExampleViewType", ClassDiagramViewMapper() as ViewMapper<Any?>, AllSelector(), contentSelector),
         )
         connectionId = UUID.randomUUID()
     }

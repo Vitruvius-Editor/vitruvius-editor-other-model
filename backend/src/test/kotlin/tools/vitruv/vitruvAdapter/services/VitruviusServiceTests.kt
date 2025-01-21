@@ -9,11 +9,13 @@ import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import tools.vitruv.framework.remote.client.impl.VitruvRemoteConnection
+import tools.vitruv.framework.views.ViewSelector
 import tools.vitruv.vitruvAdapter.dto.WindowSelectionRequest
 import tools.vitruv.vitruvAdapter.exception.ConnectionNotFoundException
 import tools.vitruv.vitruvAdapter.exception.DisplayViewNotFoundException
 import tools.vitruv.vitruvAdapter.exception.VitruviusConnectFailedException
 import tools.vitruv.vitruvAdapter.model.ConnectionDetails
+import tools.vitruv.vitruvAdapter.vitruv.api.ContentSelector
 import tools.vitruv.vitruvAdapter.vitruv.api.DisplayView
 import tools.vitruv.vitruvAdapter.vitruv.api.ViewMapper
 import tools.vitruv.vitruvAdapter.vitruv.api.VitruvAdapter
@@ -46,9 +48,13 @@ class VitruviusServiceTests {
     fun beforeEach() {
         uuid = UUID.randomUUID()
         connection = ConnectionDetails(uuid, "Example", "Example connection", "https://example.com")
+        val contentSelector = object : ContentSelector {
+            override fun applySelection(viewSelector: ViewSelector, windows: Set<String>) {
+            }
+        }
         displayViews = listOf(
-            GenericDisplayView("DisplayView 1", "ExampleViewType", SourceCodeViewMapper() as ViewMapper<Any?>, AllSelector(), AllSelector()),
-            GenericDisplayView("DisplayView 2", "ExampleViewType", ClassDiagramViewMapper() as ViewMapper<Any?>, AllSelector(), AllSelector()),
+            GenericDisplayView("DisplayView 1", "ExampleViewType", SourceCodeViewMapper() as ViewMapper<Any?>, AllSelector(), contentSelector),
+            GenericDisplayView("DisplayView 2", "ExampleViewType", ClassDiagramViewMapper() as ViewMapper<Any?>, AllSelector(), contentSelector),
         )
         MockitoAnnotations.openMocks(this)
         whenever(connectionService.getConnectionById(any<UUID>())).thenAnswer {
