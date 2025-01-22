@@ -13,7 +13,7 @@ Workflow {
     }
 
     component = EcoreGenerator {
-        genModel = "platform:/resource/tools.vitruv.VitruvAdapter.vitruv_server/src/main/resources/test.genmodel"
+        genModel = "platform:/resource/tools.vitruv.VitruvAdapter.vitruv_server/src/main/resources/ecore/test.genmodel"
         srcPath = "platform:/resource/tools.vitruv.VitruvAdapter.vitruv_server/src/main/resources/ecore"
         generateCustomClasses = false
     }

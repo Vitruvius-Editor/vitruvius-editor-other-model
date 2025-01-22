@@ -8,9 +8,9 @@
   <foreignModel>test.ecore</foreignModel>
   <testsDirectory xsi:nil="true"/>
   <genPackages prefix="Test" disposableProviderFactory="true" ecorePackage="test.ecore#/">
-    <genClasses ecoreClass="test.ecore#//Syrer">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute test.ecore#//Syrer/beard"/>
+    <genClasses ecoreClass="test.ecore#//Person">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute test.ecore#//Person/beard"/>
     </genClasses>
-    <genClasses ecoreClass="test.ecore#//Terrorist"/>
+    <genClasses ecoreClass="test.ecore#//Famille"/>
   </genPackages>
 </genmodel:GenModel>
