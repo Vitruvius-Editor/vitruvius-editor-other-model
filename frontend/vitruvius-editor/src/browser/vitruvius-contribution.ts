@@ -30,9 +30,9 @@ export const VitruviusDeleteProject: Command = {
     label: 'Vitruvius Delete Project'
 }
 
-export const VitruviusChangeProject: Command = {
-    id: 'VitruviusChangeProject.command',
-    label: 'Vitruvius Change Project'
+export const VitruviusEditProject: Command = {
+    id: 'VitruviusEditProject.command',
+    label: 'Vitruvius Edit Project'
 }
 
 @injectable()
@@ -93,12 +93,12 @@ export class VitruviusDeleteProjectContribution implements CommandContribution {
 }
 
 @injectable()
-export class VitruviusChangeProjectContribution implements CommandContribution {
+export class VitruviusEditProjectContribution implements CommandContribution {
   @inject(MessageService)
   protected readonly messageService!: MessageService;
   registerCommands(registry: CommandRegistry): void {
-    registry.registerCommand(VitruviusChangeProject, {
-      execute: () => this.messageService.info("Change Project"),
+    registry.registerCommand(VitruviusEditProject, {
+      execute: () => this.messageService.info("Edit Project"),
     });
   }
 }
@@ -130,8 +130,8 @@ export class VitruviusMenuContribution implements MenuContribution {
             label: VitruviusDeleteProject.label
         });
         menus.registerMenuAction(VitruviusMenus.VITRUVIUS, {
-            commandId: VitruviusChangeProject.id,
-            label: VitruviusChangeProject.label
+            commandId: VitruviusEditProject.id,
+            label: VitruviusEditProject.label
         });
     }
 }
