@@ -11,6 +11,7 @@ import tools.vitruv.vitruvAdapter.vitruv.api.Window
 import tools.vitruv.vitruvAdapter.vitruv.impl.DisplayViewRepository
 import java.util.*
 import kotlin.io.path.Path
+import kotlin.io.path.createTempDirectory
 
 /**
  * This service handles all Vitruvius Interaction. It uses the [VitruvAdapter] to interact with a remote Vitruvius Server and
@@ -99,7 +100,7 @@ class VitruviusService {
      */
     private fun setupConnection(connectionId: UUID) {
         val connection = connectionService.getConnectionById(connectionId)
-        val client = VitruvClientFactory.create(connection.url, Path("vitruvius-editor"))
+        val client = VitruvClientFactory.create(connection.url, createTempDirectory("vitruvius-editor"))
         vitruvAdapter.setDisplayViewContainer(displayViewRepository)
         vitruvAdapter.connectClient(client)
     }
