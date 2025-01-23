@@ -7,9 +7,17 @@ import { CommandContribution, MenuContribution } from '@theia/core/lib/common';
 import { ContainerModule } from '@theia/core/shared/inversify';
 import {WidgetContribution} from './display-view-widget-contribution';
 import {DisplayViewWidget} from './display-view-widget';
+import {BackendServer} from '../backend-communication/BackendServer';
+import {DisplayViewService} from '../backend-communication/DisplayViewService';
+import {ConnectionService} from '../backend-communication/ConnectionService';
 
 export default new ContainerModule(bind => {
-    // add your contribution bindings here
+	// Backend communication
+	bind("Url").toConstantValue('http://localhost:8080');
+	bind(BackendServer).toSelf().inSingletonScope();
+	bind(ConnectionService).toSelf().inSingletonScope();
+	bind(DisplayViewService).toSelf().inSingletonScope();
+	// Ui stuff
     bind(CommandContribution).to(VitruviusHelpCommandContribution);
     bind(CommandContribution).to(VitruviusEditProjectContribution);
     bind(CommandContribution).to(VitruviusDeleteProjectContribution);
