@@ -1,12 +1,12 @@
-/**
+/*
  * Generated using theia-extension-generator
  */
 import {FrontendApplicationContribution, WidgetFactory, bindViewContribution} from '@theia/core/lib/browser';
 import { VitruviusEditProjectContribution, VitruviusDeleteProjectContribution, VitruviusHelpCommandContribution, VitruviusImportProjectContribution, VitruviusLoadProjectContribution, VitruviusRefreshProjectContribution, VitruviusMenuContribution } from './vitruvius-contribution';
 import { CommandContribution, MenuContribution } from '@theia/core/lib/common';
 import { ContainerModule } from '@theia/core/shared/inversify';
-import {WidgetContribution} from './widget-contribution';
-import {WidgetWidget} from './widget-widget';
+import {WidgetContribution} from './display-view-widget-contribution';
+import {DisplayViewWidget} from './display-view-widget';
 
 export default new ContainerModule(bind => {
     // add your contribution bindings here
@@ -20,10 +20,10 @@ export default new ContainerModule(bind => {
 
 	bindViewContribution(bind, WidgetContribution);
     bind(FrontendApplicationContribution).toService(WidgetContribution);
-    bind(WidgetWidget).toSelf();
+    bind(DisplayViewWidget).toSelf();
     bind(WidgetFactory).toDynamicValue(ctx => ({
-        id: WidgetWidget.ID,
-        createWidget: () => ctx.container.get<WidgetWidget>(WidgetWidget)
+        id: DisplayViewWidget.ID,
+        createWidget: () => ctx.container.get<DisplayViewWidget>(DisplayViewWidget)
     })).inSingletonScope();
 
 });
