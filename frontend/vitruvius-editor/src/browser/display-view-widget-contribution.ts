@@ -1,13 +1,13 @@
 import { injectable } from '@theia/core/shared/inversify';
 import { MenuModelRegistry } from '@theia/core';
 import { DisplayViewWidget } from './display-view-widget';
-import { AbstractViewContribution } from '@theia/core/lib/browser';
+import { AbstractViewContribution, FrontendApplication, FrontendApplicationContribution } from '@theia/core/lib/browser';
 import { Command, CommandRegistry } from '@theia/core/lib/common/command';
 
 export const WidgetCommand: Command = { id: 'widget:command' };
 
 @injectable()
-export class WidgetContribution extends AbstractViewContribution<DisplayViewWidget> {
+export class WidgetContribution extends AbstractViewContribution<DisplayViewWidget> implements FrontendApplicationContribution {
 
     /**
      * `AbstractViewContribution` handles the creation and registering
@@ -66,5 +66,9 @@ export class WidgetContribution extends AbstractViewContribution<DisplayViewWidg
      */
     registerMenus(menus: MenuModelRegistry): void {
         super.registerMenus(menus);
+    }
+
+	async initializeLayout(app: FrontendApplication): Promise<void> {
+        await this.openView();
     }
 }
