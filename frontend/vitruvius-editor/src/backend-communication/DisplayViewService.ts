@@ -7,7 +7,7 @@ import {inject, injectable} from "@theia/core/shared/inversify";
 export class DisplayViewService {
   private backendServer: BackendServer;
 
-  constructor(@inject("BackendServer") backendServer: BackendServer) {
+  constructor(@inject(BackendServer) backendServer: BackendServer) {
     this.backendServer = backendServer;
   }
 

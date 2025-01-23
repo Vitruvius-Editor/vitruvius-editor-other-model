@@ -4,6 +4,7 @@ import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import { MessageService } from '@theia/core';
 import { Connection } from '../model/Connection';
 import {DisplayView} from '../model/DisplayView';
+import {DisplayViewService} from '../backend-communication/DisplayViewService';
 
 @injectable()
 export class DisplayViewWidget extends ReactWidget {
@@ -13,6 +14,9 @@ export class DisplayViewWidget extends ReactWidget {
 
     @inject(MessageService)
     protected readonly messageService!: MessageService;
+
+	@inject(DisplayViewService)
+	protected readonly displayViewService: DisplayViewService;
 
 	private connection: Connection | null;
 	private displayViews: DisplayView[];
@@ -49,8 +53,10 @@ export class DisplayViewWidget extends ReactWidget {
     }
 
 	async loadProject(connection: Connection) {
-		this.connection = connection;
-		// TODO: Load DisplayViews
+		this.displayViewService.getDisplayViews(connection.id).then(displayViews => {
+			this.connection = connection;
+			this.displayViews = displayViews;
+		}).catch(_err => this.messageService.error("Error connecting to backend."))
 		this.update();
 	}
 }

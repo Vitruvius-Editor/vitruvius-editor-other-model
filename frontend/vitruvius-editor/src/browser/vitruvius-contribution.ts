@@ -1,5 +1,6 @@
 import { injectable, inject } from '@theia/core/shared/inversify';
 import { Command, CommandContribution, CommandRegistry, MAIN_MENU_BAR, MenuContribution, MenuModelRegistry, MenuPath, MessageService } from '@theia/core/lib/common';
+import {ConnectionService} from '../backend-communication/ConnectionService';
 
 export namespace VitruviusMenus {
     export const VITRUVIUS: MenuPath = MAIN_MENU_BAR.concat("vitruvius");
@@ -39,6 +40,8 @@ export const VitruviusEditProject: Command = {
 export class VitruviusHelpCommandContribution implements CommandContribution {
   @inject(MessageService)
   protected readonly messageService!: MessageService;
+  @inject(ConnectionService)
+  protected readonly connectionService!: ConnectionService;
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(VitruviusHelpCommand, {
       execute: () => this.messageService.info("Vitruvius Help"),
@@ -50,9 +53,13 @@ export class VitruviusHelpCommandContribution implements CommandContribution {
 export class VitruviusLoadProjectContribution implements CommandContribution {
   @inject(MessageService)
   protected readonly messageService!: MessageService;
+  @inject(ConnectionService)
+  protected readonly connectionService!: ConnectionService;
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(VitruviusLoadProject, {
-      execute: () => this.messageService.info("Load Project"),
+      execute: () => this.connectionService.getConnections().then(res => {
+		this.messageService.info("Server sucessful");
+	  }).catch(_err => this.messageService.error("Epic fail")),
     });
   }
 }
@@ -61,6 +68,8 @@ export class VitruviusLoadProjectContribution implements CommandContribution {
 export class VitruviusImportProjectContribution implements CommandContribution {
   @inject(MessageService)
   protected readonly messageService!: MessageService;
+  @inject(ConnectionService)
+  protected readonly connectionService!: ConnectionService;
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(VitruviusImportProject, {
       execute: () => this.messageService.info("Import Project"),
@@ -74,6 +83,8 @@ export class VitruviusRefreshProjectContribution
 {
   @inject(MessageService)
   protected readonly messageService!: MessageService;
+  @inject(ConnectionService)
+  protected readonly connectionService!: ConnectionService;
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(VitruviusRefreshProject, {
       execute: () => this.messageService.info("Refresh Project"),
@@ -96,6 +107,8 @@ export class VitruviusDeleteProjectContribution implements CommandContribution {
 export class VitruviusEditProjectContribution implements CommandContribution {
   @inject(MessageService)
   protected readonly messageService!: MessageService;
+  @inject(ConnectionService)
+  protected readonly connectionService!: ConnectionService;
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(VitruviusEditProject, {
       execute: () => this.messageService.info("Edit Project"),
