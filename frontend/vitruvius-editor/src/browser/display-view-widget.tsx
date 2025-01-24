@@ -52,11 +52,24 @@ export class DisplayViewWidget extends ReactWidget {
 		}
     }
 
-	async loadProject(connection: Connection) {
-		this.displayViewService.getDisplayViews(connection.uuid).then(displayViews => {
-			this.connection = connection;
-			this.displayViews = displayViews;
-		}).catch(_err => this.messageService.error("Couldn't connect to the given Vitruvius server."))
+	async loadProject(connection: Connection | null) {
+		if(connection == null) {
+			this.connection = null;
+			this.displayViews = [];
+		} else {
+			this.displayViewService.getDisplayViews(connection.uuid).then(displayViews => {
+				this.connection = connection;
+				this.displayViews = displayViews;
+			}).catch(_err => {
+				this.messageService.error("Couldn't connect to the given Vitruvius server.");
+				this.connection = null;
+				this.displayViews = [];
+			})
+		}
 		this.update();
+	}
+
+	getConnection(): Connection | null {
+		return this.connection;
 	}
 }

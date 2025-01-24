@@ -73,7 +73,8 @@ export class DisplayViewWidgetContribution extends AbstractViewContribution<Disp
         await this.openView();
     }
 
-	async loadProject(connection: Connection): Promise<void> {
+	async loadProject(connection: Connection | null): Promise<void> {
 		return super.widget.then(widget => widget.loadProject(connection))
 	}
+
 }

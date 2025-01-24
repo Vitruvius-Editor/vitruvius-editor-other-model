@@ -121,9 +121,32 @@ export class VitruviusRefreshProjectContribution
 export class VitruviusDeleteProjectContribution implements CommandContribution {
   @inject(MessageService)
   protected readonly messageService!: MessageService;
+  @inject(QuickPickService)
+  protected readonly quickPickService!: QuickPickService;
+  @inject(DisplayViewWidgetContribution)
+  protected readonly displayViewWidgetContribution!: DisplayViewWidgetContribution;
+  @inject(ConnectionService)
+  protected readonly connectionService!: ConnectionService;
+
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(VitruviusDeleteProject, {
-      execute: () => this.messageService.info("Delete Project"),
+      execute: () => this.connectionService.getConnections().then(connections => {
+		let items = connections.map(connection => {
+			return {
+				label: connection.name,
+				execute: () => {
+					this.connectionService.deleteConnection(connection.uuid);
+					this.messageService.info("Project deleted.");
+					this.displayViewWidgetContribution.widget.then(widget => {
+						if (widget.getConnection() == connection) {
+							widget.loadProject(null);
+						}
+					})
+				}
+			}
+		});
+		this.quickPickService.show(items);
+	  }).catch(_err => this.messageService.error("Couldn't connect to the Backend.")),
     });
   }
 }
