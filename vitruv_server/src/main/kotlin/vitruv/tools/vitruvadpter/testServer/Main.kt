@@ -2,7 +2,6 @@ package vitruv.tools.vitruvadpter.testServer
 
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EcoreFactory
-import org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher
 import tools.vitruv.change.interaction.UserInteractionFactory
 import tools.vitruv.framework.remote.client.VitruvClientFactory
 import tools.vitruv.framework.remote.server.VirtualModelInitializer
@@ -10,12 +9,16 @@ import tools.vitruv.framework.remote.server.VitruvServer
 import tools.vitruv.framework.views.impl.IdentityMappingViewType
 import tools.vitruv.framework.vsum.VirtualModelBuilder
 import java.nio.file.Path
+import org.eclipse.uml2.uml.*
+
 
 
     fun main() {
 
         val vitruvServer = VitruvServer(init())
         vitruvServer.start()
+
+
 
         val vitruvClient = VitruvClientFactory.create("localhost", Path.of("vitruv_server/src/main/resources/temp"))
         val viewTypes = vitruvClient.viewTypes
@@ -56,9 +59,5 @@ fun init() = VirtualModelInitializer {
             UserInteractionFactory.instance.createPredefinedInteractionResultProvider(null))).withViewType(IdentityMappingViewType("VT1")).buildAndInitialize()
 }
 
-fun createModel() {
-    val workflowArgs = arrayOf("vitruv_server/generate.mwe2", "-p", "key=value")
-    Mwe2Launcher().run(workflowArgs)
-}
 
 
