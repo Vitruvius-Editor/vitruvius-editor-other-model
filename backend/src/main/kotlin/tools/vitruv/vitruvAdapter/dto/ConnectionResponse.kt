@@ -14,7 +14,7 @@ import java.util.UUID
 data class ConnectionResponse(
     val name: String,
     val description: String,
-    val uuid: UUID,
+    val uuid: UUID?,
     val url: String,
 )
 {
