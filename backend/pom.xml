@@ -150,11 +150,6 @@
       <version>${kotlin.version}</version>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <artifactId>kotlin-stdlib-jdk8</artifactId>
-          <groupId>org.jetbrains.kotlin</groupId>
-          <version>${kotlin.version}</version>
-      </dependency>
     <!-- https://mvnrepository.com/artifact/org.eclipse.uml2/org.eclipse.uml2.uml.ecore.importer -->
     <dependency>
       <groupId>local.uml2</groupId>
@@ -163,6 +158,23 @@
       <scope>system</scope>
       <systemPath>${project.basedir}/Dep/uml-5.0.0-v20140602-0749.jar</systemPath>
     </dependency>
+
+    <dependency>
+      <groupId>local.uml2.types</groupId>
+      <artifactId>types</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/Dep/types-2.0.0-v20140602-0749.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>local.uml2.common</groupId>
+      <artifactId>common</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/Dep/common-2.0.0-v20140602-0749.jar</systemPath>
+    </dependency>
+
     <dependency>
       <groupId>org.mockito.kotlin</groupId>
       <artifactId>mockito-kotlin</artifactId>
