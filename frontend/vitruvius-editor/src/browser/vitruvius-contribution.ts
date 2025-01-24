@@ -1,5 +1,5 @@
 import { injectable, inject } from '@theia/core/shared/inversify';
-import { Command, CommandContribution, CommandRegistry, InputOptions, MAIN_MENU_BAR, MenuContribution, MenuModelRegistry, MenuPath, MessageService, QuickInputService, QuickPickService } from '@theia/core/lib/common';
+import { Command, CommandContribution, CommandRegistry, MAIN_MENU_BAR, MenuContribution, MenuModelRegistry, MenuPath, MessageService, QuickInputService, QuickPickService } from '@theia/core/lib/common';
 import {ConnectionService} from '../backend-communication/ConnectionService';
 import {DisplayViewWidgetContribution} from './display-view-widget-contribution';
 

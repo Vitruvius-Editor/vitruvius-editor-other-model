@@ -57,12 +57,12 @@ describe("ConnectionService", () => {
       sendWebRequestStub.resolves(mockConnection);
 
       const connection = await connectionService.getConnection(
-        mockConnection.id,
+        mockConnection.uuid,
       );
       expect(connection).to.deep.equal(mockConnection);
       expect(
         sendWebRequestStub.calledOnceWith(
-          "/api/v1/connection/" + mockConnection.id,
+          "/api/v1/connection/" + mockConnection.uuid,
           "GET",
         ),
       ).to.be.true;
