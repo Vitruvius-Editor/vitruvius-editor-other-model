@@ -36,10 +36,10 @@ class SourceCodeViewMapper: TextViewMapper() {
 
     private fun createSourceCodeForClass(classObject: Class): String {
         val stringBuilder = StringBuilder()
-        stringBuilder.append("class ${classObject.name} {")
+        stringBuilder.append("class ${classObject.name} {\n")
         buildStringContainingAttributes(classObject, stringBuilder)
         buildMethods(classObject, stringBuilder)
-        stringBuilder.append("}")
+        stringBuilder.append("\n}")
         return stringBuilder.toString()
     }
 
@@ -48,18 +48,23 @@ class SourceCodeViewMapper: TextViewMapper() {
         val staticAttributes = classObject.ownedAttributes.filter { it.isStatic }
         val nonStaticAttributes = classObject.ownedAttributes.filter { !it.isStatic }
         staticAttributes.forEach {
-            stringBuilder.append("${it.visibility.name} static ${it.type.name} ${it.name} = ${it.defaultValue}")
+            stringBuilder.append("${it.visibility.literal} static ${it.type.name} ${it.name} = ${it.defaultValue.stringValue()}")
+            stringBuilder.append("\n")
         }
         nonStaticAttributes.forEach {
-            stringBuilder.append("${it.visibility.name} ${it.type.name} ${it.name} = ${it.defaultValue}")
+            stringBuilder.append("${it.visibility.literal} ${it.type.name} ${it.name} = ${it.defaultValue.stringValue()}")
+            stringBuilder.append("\n")
         }
     }
 
     private fun buildMethods(classObject: Class, stringBuilder: StringBuilder) {
+        stringBuilder.append("\n")
         classObject.ownedOperations.forEach { operation ->
             stringBuilder.append(
-                "${operation.visibility.name} $operation.${operation.datatype.name} ${operation.name}" +
-                        "(${operation.ownedParameters.joinToString { "${it.type.name} ${it.name}" }}) {"
+                "${operation.visibility.literal} ${operation.type.name} ${operation.name}" +
+                        "(${operation.ownedParameters
+                            .filter { it.direction == ParameterDirectionKind.IN_LITERAL }
+                            .joinToString { "${it.type?.name ?: "Unknown"} ${it.name}" }}) { \n"
             )
             //build the body of the method
             if (operation.methods.isEmpty()) {
@@ -68,9 +73,14 @@ class SourceCodeViewMapper: TextViewMapper() {
             val behavior = operation.methods[0] as OpaqueBehavior
             for (i in behavior.bodies.indices) {
                 val body = behavior.bodies[i]
-                stringBuilder.append(body)
+                stringBuilder.append(addTabSpacing(body.trimIndent()))
             }
         }
     }
+    private fun addTabSpacing(code: String): String {
+        return code.lines()
+            .joinToString("\n") { "\t$it" } // Add a tab character before each line
+    }
+
 
 }

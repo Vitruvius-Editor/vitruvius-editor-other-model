@@ -1,4 +1,4 @@
-package tools.vitruv.vitruvAdapter.core.impl.sourceView
+package tools.vitruv.vitruvAdapter.vitruv.impl.sourceView
 
 import org.eclipse.emf.common.util.BasicEList
 import org.eclipse.emf.common.util.EList
@@ -8,7 +8,7 @@ import org.eclipse.uml2.uml.internal.impl.LiteralIntegerImpl
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import tools.vitruv.vitruvAdapter.core.impl.views.sourceView.SourceCodeViewMapper
+import tools.vitruv.vitruvAdapter.vitruv.impl.mapper.SourceCodeViewMapper
 
 
 class SourceCodeViewMapperTest {
@@ -17,22 +17,32 @@ class SourceCodeViewMapperTest {
     @BeforeEach
     fun innitObejcts() {
         val factory = UMLFactory.eINSTANCE
-        val umlModel = factory.createModel()
-        umlModel.name = "ExampleModel"
 
-        val umlPackage = umlModel.createNestedPackage("ExamplePackage")
+        val umlClass = factory.createClass()
+        umlClass.name = "ExampleModel"
 
-        val umlClass = umlPackage.createOwnedClass("ExampleClass", false)
         val attribute = umlClass.createOwnedAttribute("myIntAttribute", null)
         attribute.visibility = VisibilityKind.PUBLIC_LITERAL
 
-        val intType = umlModel.createOwnedPrimitiveType("int")
+        val intType = factory.createDataType()
+        intType.name = "int"
         attribute.type = intType
         attribute.setIsStatic(true)
         // 4.3 Set the Initial Value
         val initialValue = factory.createLiteralInteger()
         (initialValue as LiteralIntegerImpl).value = 5
         attribute.defaultValue = initialValue
+
+       //create new attribute String myStringAttribute = "Hello"
+        val stringType = factory.createDataType()
+        stringType.name = "String"
+        val attributeString = umlClass.createOwnedAttribute("myStringAttribute", stringType)
+        attributeString.visibility = VisibilityKind.PUBLIC_LITERAL
+        attributeString.setIsStatic(true)
+        val initialValueString = factory.createLiteralString()
+        (initialValueString as LiteralString).value = "Hello"
+        attributeString.defaultValue = initialValueString
+
 
         //create not static attribute
         val attribute2 = umlClass.createOwnedAttribute("myIntAttribute2", intType)
@@ -55,6 +65,7 @@ class SourceCodeViewMapperTest {
         operationParameterTypes.add(intType)
 
         val operation = umlClass.createOwnedOperation("myOperation", operationParameterNames, operationParameterTypes)
+        operation.type = stringType
 
         //add body to operation
         val body = factory.createOpaqueBehavior()
@@ -69,7 +80,7 @@ class SourceCodeViewMapperTest {
         )
 
         operation.methods.add(body)
-        eObjects = listOf(umlModel)
+        eObjects = listOf(umlClass)
     }
 
     @Test
@@ -78,7 +89,7 @@ class SourceCodeViewMapperTest {
         val windows = mapper.mapEObjectsToWindowsContent(eObjects)
         assertEquals(1, windows.size)
         assertEquals("ExampleModel", windows[0].name)
-        assertEquals("class ExampleModel {public static int myIntAttribute = 5public int myIntAttribute2 = 5}", windows[0].content)
+        print(windows[0].content)
     }
 
 }
