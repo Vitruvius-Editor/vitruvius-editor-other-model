@@ -1,6 +1,6 @@
 export type Connection = {
   name: string;
   description: string;
-  id: string;
+  uuid: string;
   url: string;
 };

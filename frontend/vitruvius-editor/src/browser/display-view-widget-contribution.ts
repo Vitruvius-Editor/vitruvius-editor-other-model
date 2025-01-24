@@ -3,11 +3,12 @@ import { MenuModelRegistry } from '@theia/core';
 import { DisplayViewWidget } from './display-view-widget';
 import { AbstractViewContribution, FrontendApplication, FrontendApplicationContribution } from '@theia/core/lib/browser';
 import { Command, CommandRegistry } from '@theia/core/lib/common/command';
+import {Connection} from '../model/Connection';
 
 export const WidgetCommand: Command = { id: 'widget:command' };
 
 @injectable()
-export class WidgetContribution extends AbstractViewContribution<DisplayViewWidget> implements FrontendApplicationContribution {
+export class DisplayViewWidgetContribution extends AbstractViewContribution<DisplayViewWidget> implements FrontendApplicationContribution {
 
     /**
      * `AbstractViewContribution` handles the creation and registering
@@ -71,4 +72,8 @@ export class WidgetContribution extends AbstractViewContribution<DisplayViewWidg
 	async initializeLayout(app: FrontendApplication): Promise<void> {
         await this.openView();
     }
+
+	async loadProject(connection: Connection): Promise<void> {
+		return super.widget.then(widget => widget.loadProject(connection))
+	}
 }

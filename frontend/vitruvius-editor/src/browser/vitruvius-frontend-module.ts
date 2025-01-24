@@ -5,7 +5,7 @@ import {FrontendApplicationContribution, WidgetFactory, bindViewContribution} fr
 import { VitruviusEditProjectContribution, VitruviusDeleteProjectContribution, VitruviusHelpCommandContribution, VitruviusImportProjectContribution, VitruviusLoadProjectContribution, VitruviusRefreshProjectContribution, VitruviusMenuContribution } from './vitruvius-contribution';
 import { CommandContribution, MenuContribution } from '@theia/core/lib/common';
 import { ContainerModule } from '@theia/core/shared/inversify';
-import {WidgetContribution} from './display-view-widget-contribution';
+import {DisplayViewWidgetContribution} from './display-view-widget-contribution';
 import {DisplayViewWidget} from './display-view-widget';
 import {BackendServer} from '../backend-communication/BackendServer';
 import {DisplayViewService} from '../backend-communication/DisplayViewService';
@@ -26,8 +26,8 @@ export default new ContainerModule(bind => {
     bind(CommandContribution).to(VitruviusRefreshProjectContribution);
     bind(MenuContribution).to(VitruviusMenuContribution);
 
-	bindViewContribution(bind, WidgetContribution);
-    bind(FrontendApplicationContribution).toService(WidgetContribution);
+	bindViewContribution(bind, DisplayViewWidgetContribution);
+    bind(FrontendApplicationContribution).toService(DisplayViewWidgetContribution);
     bind(DisplayViewWidget).toSelf();
     bind(WidgetFactory).toDynamicValue(ctx => ({
         id: DisplayViewWidget.ID,
