@@ -5,10 +5,12 @@ import tools.vitruv.framework.views.View
 import tools.vitruv.framework.views.changederivation.DefaultStateBasedChangeResolutionStrategy
 import tools.vitruv.framework.remote.client.VitruvClient
 import tools.vitruv.framework.remote.client.exception.BadClientResponseException
+import tools.vitruv.framework.remote.client.exception.BadServerResponseException
 import tools.vitruv.framework.views.ViewSelector
 import tools.vitruv.framework.views.ViewType
 import tools.vitruv.vitruvAdapter.exception.VitruviusConnectFailedException
 import tools.vitruv.vitruvAdapter.exception.DisplayViewException
+import java.nio.channels.UnresolvedAddressException;
 
 /**
  * This class is the adapter for the Vitruvius model server. It provides methods to interact with the model server.
@@ -29,6 +31,8 @@ class VitruvAdapter {
         try {
             vitruvClient.viewTypes
         } catch (e: BadClientResponseException) {
+            throw VitruviusConnectFailedException("Could not connect to model server.")
+        } catch (e: BadServerResponseException) {
             throw VitruviusConnectFailedException("Could not connect to model server.")
         }
         this.vitruvClient = vitruvClient
