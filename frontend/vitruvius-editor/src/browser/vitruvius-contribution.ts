@@ -1,5 +1,7 @@
 import { injectable, inject } from '@theia/core/shared/inversify';
-import { Command, CommandContribution, CommandRegistry, MAIN_MENU_BAR, MenuContribution, MenuModelRegistry, MenuPath, MessageService } from '@theia/core/lib/common';
+import { Command, CommandContribution, CommandRegistry, MAIN_MENU_BAR, MenuContribution, MenuModelRegistry, MenuPath, MessageService, QuickInputService, QuickPickService } from '@theia/core/lib/common';
+import {ConnectionService} from '../backend-communication/ConnectionService';
+import {DisplayViewWidgetContribution} from './display-view-widget-contribution';
 
 export namespace VitruviusMenus {
     export const VITRUVIUS: MenuPath = MAIN_MENU_BAR.concat("vitruvius");
@@ -39,6 +41,8 @@ export const VitruviusEditProject: Command = {
 export class VitruviusHelpCommandContribution implements CommandContribution {
   @inject(MessageService)
   protected readonly messageService!: MessageService;
+  @inject(ConnectionService)
+  protected readonly connectionService!: ConnectionService;
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(VitruviusHelpCommand, {
       execute: () => this.messageService.info("Vitruvius Help"),
@@ -50,9 +54,23 @@ export class VitruviusHelpCommandContribution implements CommandContribution {
 export class VitruviusLoadProjectContribution implements CommandContribution {
   @inject(MessageService)
   protected readonly messageService!: MessageService;
+  @inject(ConnectionService)
+  protected readonly connectionService!: ConnectionService;
+  @inject(QuickPickService)
+  protected readonly quickPickService!: QuickPickService;
+  @inject(DisplayViewWidgetContribution)
+  protected readonly displayViewWidgetContribution!: DisplayViewWidgetContribution;
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(VitruviusLoadProject, {
-      execute: () => this.messageService.info("Load Project"),
+      execute: () => this.connectionService.getConnections().then(res => {
+		let items = res.map(connection => {
+			return {
+				label: connection.name,
+				execute: () => this.displayViewWidgetContribution.loadProject(connection)
+			}
+		})
+		this.quickPickService.show(items);
+	  }).catch(_err => this.messageService.error("Couldn't connect to backend.")),
     });
   }
 }
@@ -61,9 +79,25 @@ export class VitruviusLoadProjectContribution implements CommandContribution {
 export class VitruviusImportProjectContribution implements CommandContribution {
   @inject(MessageService)
   protected readonly messageService!: MessageService;
+  @inject(ConnectionService)
+  protected readonly connectionService!: ConnectionService;
+  @inject(QuickInputService)
+  protected readonly quickInputService!: QuickInputService;
+  @inject(DisplayViewWidgetContribution)
+  protected readonly displayViewWidgetContribution!: DisplayViewWidgetContribution;
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(VitruviusImportProject, {
-      execute: () => this.messageService.info("Import Project"),
+      execute: () => {
+		this.quickInputService.input({title: 'Enter the projects name.'}).then(name => {
+			this.quickInputService.input({title: 'Enter a description for the project.'}).then(description => {
+				this.quickInputService.input({title: 'Enter the URL of the Vitruvius server.'}).then(url => {
+					this.connectionService.createConnection({name: name ?? '', description: description ?? '', url: url ?? ''}).then(connection => {
+						this.displayViewWidgetContribution.loadProject(connection);
+					}).catch(_err => this.messageService.error("Couldn't connect to backend."))
+				})
+			})
+		});
+	  },
     });
   }
 }
@@ -74,6 +108,8 @@ export class VitruviusRefreshProjectContribution
 {
   @inject(MessageService)
   protected readonly messageService!: MessageService;
+  @inject(ConnectionService)
+  protected readonly connectionService!: ConnectionService;
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(VitruviusRefreshProject, {
       execute: () => this.messageService.info("Refresh Project"),
@@ -85,9 +121,32 @@ export class VitruviusRefreshProjectContribution
 export class VitruviusDeleteProjectContribution implements CommandContribution {
   @inject(MessageService)
   protected readonly messageService!: MessageService;
+  @inject(QuickPickService)
+  protected readonly quickPickService!: QuickPickService;
+  @inject(DisplayViewWidgetContribution)
+  protected readonly displayViewWidgetContribution!: DisplayViewWidgetContribution;
+  @inject(ConnectionService)
+  protected readonly connectionService!: ConnectionService;
+
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(VitruviusDeleteProject, {
-      execute: () => this.messageService.info("Delete Project"),
+      execute: () => this.connectionService.getConnections().then(connections => {
+		let items = connections.map(connection => {
+			return {
+				label: connection.name,
+				execute: () => {
+					this.connectionService.deleteConnection(connection.uuid);
+					this.messageService.info("Project deleted.");
+					this.displayViewWidgetContribution.widget.then(widget => {
+						if (widget.getConnection() == connection) {
+							widget.loadProject(null);
+						}
+					})
+				}
+			}
+		});
+		this.quickPickService.show(items);
+	  }).catch(_err => this.messageService.error("Couldn't connect to the Backend.")),
     });
   }
 }
@@ -96,9 +155,40 @@ export class VitruviusDeleteProjectContribution implements CommandContribution {
 export class VitruviusEditProjectContribution implements CommandContribution {
   @inject(MessageService)
   protected readonly messageService!: MessageService;
+  @inject(ConnectionService)
+  protected readonly connectionService!: ConnectionService;
+  @inject(QuickInputService)
+  protected readonly quickInputService!: QuickInputService;
+  @inject(QuickPickService)
+  protected readonly quickPickService!: QuickPickService;
+  @inject(DisplayViewWidgetContribution)
+  protected readonly displayViewWidgetContribution!: DisplayViewWidgetContribution;
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(VitruviusEditProject, {
-      execute: () => this.messageService.info("Edit Project"),
+      execute: () => this.connectionService.getConnections().then(connections => {
+		  let items = connections.map(connection => {
+			return {
+				label: connection.name,
+				execute: () => {
+					this.quickInputService.input({title: 'Edit the projects name.', value: connection.name}).then(name => {
+						this.quickInputService.input({title: 'Edit the projects description.', value: connection.description}).then(description => {
+							this.quickInputService.input({title: 'Edit the projects URL', value: connection.url}).then(url => {
+								this.connectionService.updateConnection(connection.uuid, {name, description, url}).then(newConnection => {
+									this.messageService.info('Project sucessfully updated.');
+									this.displayViewWidgetContribution.widget.then(widget => {
+										if (widget.getConnection()?.uuid == newConnection.uuid) {
+											widget.loadProject(newConnection);
+										}
+									})								
+								}).catch(_err => this.messageService.error("Couldn't connect to Backend server."))
+							})
+						})
+					});
+				}
+			}
+		  });
+		  this.quickPickService.show(items);
+	  }),
     });
   }
 }

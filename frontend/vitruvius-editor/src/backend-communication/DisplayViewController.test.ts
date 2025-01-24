@@ -5,16 +5,17 @@ import { BackendServer } from "./BackendServer";
 import { DisplayViewService } from "./DisplayViewService";
 import { DisplayView } from "../model/DisplayView";
 import { Selector } from "../model/Selector";
+import {generateUuid} from "@theia/core";
 
 describe("DisplayViewService", () => {
   let backendServer: BackendServer;
   let displayViewService: DisplayViewService;
   let sendWebRequestStub: sinon.SinonStub;
-  const connectionId = "test-connection-id";
+  const connectionId = generateUuid();
 
   beforeEach(() => {
     backendServer = new BackendServer("http://localhost:8080");
-    displayViewService = new DisplayViewService(backendServer, connectionId);
+    displayViewService = new DisplayViewService(backendServer);
     sendWebRequestStub = sinon.stub(backendServer, "sendWebRequest");
   });
 
@@ -35,7 +36,7 @@ describe("DisplayViewService", () => {
       ];
       sendWebRequestStub.resolves(mockDisplayViews);
 
-      const displayViews = await displayViewService.getDisplayViews();
+      const displayViews = await displayViewService.getDisplayViews(connectionId);
       expect(displayViews).to.deep.equal(mockDisplayViews);
       expect(
         sendWebRequestStub.calledOnceWith(
@@ -52,7 +53,7 @@ describe("DisplayViewService", () => {
       sendWebRequestStub.resolves(mockWindows);
 
       const windows =
-        await displayViewService.getDisplayViewWindows("DisplayView 1");
+        await displayViewService.getDisplayViewWindows(connectionId, "DisplayView 1");
       expect(windows).to.deep.equal(mockWindows);
       expect(
         sendWebRequestStub.calledOnceWith(
@@ -66,6 +67,7 @@ describe("DisplayViewService", () => {
       sendWebRequestStub.resolves(null);
 
       const windows = await displayViewService.getDisplayViewWindows(
+		  connectionId,
         "NonExistentDisplayView",
       );
       expect(windows).to.be.null;
@@ -84,6 +86,7 @@ describe("DisplayViewService", () => {
       sendWebRequestStub.resolves(mockContent);
 
       const content = await displayViewService.getDisplayViewContent(
+		  connectionId,
         "DisplayView 1",
         selector,
       );
@@ -102,6 +105,7 @@ describe("DisplayViewService", () => {
       sendWebRequestStub.resolves(null);
 
       const content = await displayViewService.getDisplayViewContent(
+		  connectionId,
         "NonExistentDisplayView",
         selector,
       );
@@ -119,6 +123,7 @@ describe("DisplayViewService", () => {
       sendWebRequestStub.resolves(null);
 
       const content = await displayViewService.getDisplayViewContent(
+		  connectionId,
         "NonExistentDisplayView",
         selector,
       );
@@ -139,6 +144,7 @@ describe("DisplayViewService", () => {
       sendWebRequestStub.resolves(mockUpdatedContent);
 
       const updatedContent = await displayViewService.updateDisplayViewContent(
+		  connectionId,
         "DisplayView 1",
         mockUpdatedContent,
       );
@@ -157,6 +163,7 @@ describe("DisplayViewService", () => {
       sendWebRequestStub.resolves(null);
 
       const updatedContent = await displayViewService.updateDisplayViewContent(
+		  connectionId,
         "NonExistentDisplayView",
         mockUpdatedContent,
       );

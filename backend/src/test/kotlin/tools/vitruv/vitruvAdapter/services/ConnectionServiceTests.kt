@@ -61,7 +61,7 @@ class ConnectionServiceTest {
 
     @Test
     fun testDeleteConnection() {
-        val connectionId = connection1.uuid
+        val connectionId = connection1.uuid as UUID
         whenever(connectionRepository.findByUuid(connectionId)).thenReturn(connection1)
         doNothing().whenever(connectionRepository).delete(connection1)
 
@@ -73,7 +73,7 @@ class ConnectionServiceTest {
 
     @Test
     fun testEditConnection() {
-        val connectionId = connection1.uuid
+        val connectionId = connection1.uuid as UUID
         val editRequest = ConnectionEditRequest("Edited Name", "Edited Description", "https://example.com/edited")
 
         whenever(connectionRepository.findByUuid(connectionId)).thenReturn(connection1)
@@ -89,7 +89,7 @@ class ConnectionServiceTest {
     }
     @Test
     fun testGetConnectionById() {
-        val connectionId = connection1.uuid
+        val connectionId = connection1.uuid as UUID
         whenever(connectionRepository.findByUuid(connectionId)).thenReturn(connection1)
 
         val result = connectionService.getConnectionById(connectionId)

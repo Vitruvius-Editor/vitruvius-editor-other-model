@@ -15,7 +15,7 @@ import java.util.*
 data class ConnectionDetails(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    val uuid: UUID,
+    val uuid: UUID?,
     @Column(nullable = false)
     var name: String,
     @Column(nullable = false)

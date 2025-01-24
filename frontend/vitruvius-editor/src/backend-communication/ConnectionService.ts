@@ -1,10 +1,12 @@
 import { BackendServer } from "./BackendServer";
 import { Connection } from "../model/Connection";
+import {inject, injectable} from "@theia/core/shared/inversify";
 
+@injectable()
 export class ConnectionService {
   private backendServer: BackendServer;
 
-  constructor(backendServer: BackendServer) {
+  constructor(@inject(BackendServer) backendServer: BackendServer) {
     this.backendServer = backendServer;
   }
 

@@ -1,7 +1,10 @@
+import {inject, injectable} from "@theia/core/shared/inversify";
+
+@injectable()
 export class BackendServer {
   readonly url: string;
 
-  constructor(url: string) {
+  constructor(@inject("Url") url: string) {
     this.url = url;
   }
 

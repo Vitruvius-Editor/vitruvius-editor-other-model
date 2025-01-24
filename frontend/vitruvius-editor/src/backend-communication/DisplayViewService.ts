@@ -1,49 +1,52 @@
 import { BackendServer } from "./BackendServer";
 import { DisplayView } from "../model/DisplayView";
 import { Selector } from "../model/Selector";
+import {inject, injectable} from "@theia/core/shared/inversify";
 
+@injectable()
 export class DisplayViewService {
   private backendServer: BackendServer;
-  readonly connectionId: string;
 
-  constructor(backendServer: BackendServer, connectionId: string) {
+  constructor(@inject(BackendServer) backendServer: BackendServer) {
     this.backendServer = backendServer;
-    this.connectionId = connectionId;
   }
 
-  async getDisplayViews(): Promise<DisplayView[]> {
+  async getDisplayViews(connectionId: string): Promise<DisplayView[]> {
     return this.backendServer.sendWebRequest(
-      `/api/v1/connection/${this.connectionId}/displayViews`,
+      `/api/v1/connection/${connectionId}/displayViews`,
       "GET",
     );
   }
 
   async getDisplayViewWindows(
+	connectionId: string,
     displayViewName: string,
   ): Promise<Window[] | null> {
     return this.backendServer.sendWebRequest(
-      `/api/v1/connection/${this.connectionId}/displayView/${displayViewName}`,
+      `/api/v1/connection/${connectionId}/displayView/${displayViewName}`,
       "GET",
     );
   }
 
   async getDisplayViewContent(
+	connectionId: string,
     displayViewName: string,
     selector: Selector,
   ): Promise<string | null> {
     return this.backendServer.sendWebRequest(
-      `/api/v1/connection/${this.connectionId}/displayView/${displayViewName}/content`,
+      `/api/v1/connection/${connectionId}/displayView/${displayViewName}/content`,
       "POST",
       selector,
     );
   }
 
   async updateDisplayViewContent(
+	connectionId: string,
     displayViewName: string,
     updatedContent: string,
   ): Promise<string | null> {
     return this.backendServer.sendWebRequest(
-      `/api/v1/connection/${this.connectionId}/displayView/${displayViewName}`,
+      `/api/v1/connection/${connectionId}/displayView/${displayViewName}`,
       "PUT",
       updatedContent,
     );
