@@ -155,6 +155,14 @@
           <groupId>org.jetbrains.kotlin</groupId>
           <version>${kotlin.version}</version>
       </dependency>
+    <!-- https://mvnrepository.com/artifact/org.eclipse.uml2/org.eclipse.uml2.uml.ecore.importer -->
+    <dependency>
+      <groupId>local.uml2</groupId>
+      <artifactId>uml</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/Dep/uml-5.0.0-v20140602-0749.jar</systemPath>
+    </dependency>
     <dependency>
       <groupId>org.mockito.kotlin</groupId>
       <artifactId>mockito-kotlin</artifactId>
