@@ -25,13 +25,13 @@ describe("ConnectionService", () => {
     it("should return a list of connections", async () => {
       const mockConnections: Connection[] = [
         {
-          id: generateUuid(),
+          uuid: generateUuid(),
           name: "Connection 1",
           description: "Description",
           url: "http://example.com",
         },
         {
-          id: generateUuid(),
+          uuid: generateUuid(),
           name: "Connection 2",
           description: "Description",
           url: "http://example.com",
@@ -49,7 +49,7 @@ describe("ConnectionService", () => {
   describe("getConnection", () => {
     it("should return a connection by uuid", async () => {
       const mockConnection: Connection = {
-        id: generateUuid(),
+        uuid: generateUuid(),
         name: "Connection 1",
         description: "Description",
         url: "http://example.com",
@@ -92,7 +92,7 @@ describe("ConnectionService", () => {
   describe("createConnection", () => {
     it("should create a new connection", async () => {
       const mockConnection: Connection = {
-        id: generateUuid(),
+        uuid: generateUuid(),
         name: "Connection 1",
         description: "Description",
         url: "http://example.com",
@@ -121,7 +121,7 @@ describe("ConnectionService", () => {
   describe("updateConnection", () => {
     it("should update an existing connection", async () => {
       const mockConnection: Connection = {
-        id: generateUuid(),
+        uuid: generateUuid(),
         name: "Connection",
         description: "Description",
         url: "http://example.com",
