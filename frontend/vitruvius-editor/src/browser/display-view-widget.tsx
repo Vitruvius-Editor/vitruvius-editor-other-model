@@ -5,6 +5,7 @@ import { MessageService } from '@theia/core';
 import { Connection } from '../model/Connection';
 import {DisplayView} from '../model/DisplayView';
 import {DisplayViewService} from '../backend-communication/DisplayViewService';
+import {Window} from '../model/Window';
 
 @injectable()
 export class DisplayViewWidget extends ReactWidget {
@@ -19,7 +20,7 @@ export class DisplayViewWidget extends ReactWidget {
 	protected readonly displayViewService: DisplayViewService;
 
 	private connection: Connection | null;
-	private displayViews: DisplayView[];
+	private widgetItems: WidgetItem[];
 
     @postConstruct()
     protected init(): void {
@@ -33,43 +34,80 @@ export class DisplayViewWidget extends ReactWidget {
         this.title.closable = true;
         this.title.iconClass = 'fa fa-window-maximize'; // example widget icon.
 		this.connection = null;
-		this.displayViews = [];
+		this.widgetItems = [];
         this.update();
     }
 
     render(): React.ReactElement {
 		if (this.connection == null) {
 			return <div>
-				<p>Currently not Vitruvius project is loaded.</p>
+				<p>Currently no Vitruvius project is loaded.</p>
 				</div>
 		} else {
 			return <div>
 				<p>The following views are avaliable for the loaded project:</p>
 				<div>
-					{this.displayViews.map(displayView => <button>{displayView.name}</button> )}	
-			</div>
+					<ul>
+						{this.widgetItems.map(widgetItem => {
+							return <div>
+								<li onClick={() => this.widgetItemClickHandler(widgetItem)}>{widgetItem.displayView.name}</li>
+								{this.Windows(widgetItem.windows)}
+							</div>
+						} )
+						}	
+					</ul>
+				</div>
 			</div>
 		}
     }
 
+	Windows(windows: string[] | null): React.ReactElement {
+		let windowsNonNull = windows ? windows : [];
+		if (windowsNonNull.length != 0) {
+			return <div>
+				<ul>
+					{windowsNonNull.map(window => <div><li>{window}</li></div>)}
+				</ul>
+			</div>
+		} else {
+			return <div></div>;
+		}
+	}
+
 	async loadProject(connection: Connection | null) {
 		if(connection == null) {
 			this.connection = null;
-			this.displayViews = [];
+			this.widgetItems = [];
+			this.update();
 		} else {
 			this.displayViewService.getDisplayViews(connection.uuid).then(displayViews => {
 				this.connection = connection;
-				this.displayViews = displayViews;
+				this.widgetItems = displayViews.map(displayView => {
+					return {displayView, windows: null};
+				});
 			}).catch(_err => {
 				this.messageService.error("Couldn't connect to the given Vitruvius server.");
 				this.connection = null;
-				this.displayViews = [];
-			})
+				this.widgetItems = [];
+			}).finally(() => this.update())
 		}
-		this.update();
 	}
 
 	getConnection(): Connection | null {
 		return this.connection;
 	}
+
+	private async widgetItemClickHandler(widgetItem: WidgetItem) {
+		if(widgetItem.windows == null) {
+			this.displayViewService.getDisplayViewWindows((this.connection as Connection).uuid, widgetItem.displayView.name).then(windows => {
+				widgetItem.windows = windows ? windows : [];
+				this.update();
+			});
+		} else {
+			widgetItem.windows = null;
+			this.update();
+		}
+	}
 }
+
+type WidgetItem = {displayView: DisplayView, windows: string[] | null};

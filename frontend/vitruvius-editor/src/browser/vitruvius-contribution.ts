@@ -138,7 +138,7 @@ export class VitruviusDeleteProjectContribution implements CommandContribution {
 					this.connectionService.deleteConnection(connection.uuid);
 					this.messageService.info("Project deleted.");
 					this.displayViewWidgetContribution.widget.then(widget => {
-						if (widget.getConnection() == connection) {
+						if (widget.getConnection()?.uuid == connection.uuid) {
 							widget.loadProject(null);
 						}
 					})

@@ -21,11 +21,11 @@ export class DisplayViewService {
   async getDisplayViewWindows(
 	connectionId: string,
     displayViewName: string,
-  ): Promise<Window[] | null> {
-    return this.backendServer.sendWebRequest(
+  ): Promise<string[] | null> {
+    return this.backendServer.sendWebRequest<WindowResponse>(
       `/api/v1/connection/${connectionId}/displayView/${displayViewName}`,
       "GET",
-    );
+    ).then(windowResponse => windowResponse.windows);
   }
 
   async getDisplayViewContent(
@@ -52,3 +52,5 @@ export class DisplayViewService {
     );
   }
 }
+
+type WindowResponse = {windows: string[]};
