@@ -1,9 +1,11 @@
 package tools.vitruv.vitruvAdapter.vitruv.impl.mapper
 
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.EPackage
 import org.eclipse.uml2.uml.*
 import tools.vitruv.vitruvAdapter.vitruv.api.DisplayContentMapper
 import tools.vitruv.vitruvAdapter.vitruv.api.Window
+import tools.vitruv.vitruvAdapter.vitruv.impl.displayContent.TextDisplayContentMapper
 
 
 /**
@@ -14,9 +16,14 @@ class SourceCodeViewMapper: TextViewMapper() {
     override fun mapEObjectsToWindowsContent(rootObjects: List<EObject>): List<Window<String>> {
         val windows = mutableSetOf<Window<String>>()
         rootObjects.forEach {
-            if (it is Class) {
-                val window = Window(it.name, createSourceCodeForClass(it))
-                windows.add(window)
+            if (it is Package) {
+                it.packagedElements.forEach { element ->
+                    if (element is Class) {
+                        val window = Window(element.name, createSourceCodeForClass(element))
+                        windows.add(window)
+                    }
+                }
+
             }
         }
         return windows.toList()
@@ -26,25 +33,40 @@ class SourceCodeViewMapper: TextViewMapper() {
         TODO("Not yet implemented")
     }
 
+
     override fun mapViewToWindows(rootObjects: List<EObject>): Set<String> {
-        TODO("Not yet implemented")
+        val windows = mutableSetOf<String>()
+        rootObjects.forEach {
+            if (it is Package) {
+                it.packagedElements.forEach { element ->
+                    if (element is Class) {
+                        windows.add(element.name)
+                    }
+                    if(element is Interface){
+                        windows.add(element.name)
+                    }
+                }
+            }
+        }
+        return windows
     }
 
     override fun getDisplayContent(): DisplayContentMapper<String> {
-        TODO("Not yet implemented")
+        return TextDisplayContentMapper()
     }
 
     private fun createSourceCodeForClass(classObject: Class): String {
         val stringBuilder = StringBuilder()
         stringBuilder.append("class ${classObject.name} {\n")
-        buildStringContainingAttributes(classObject, stringBuilder)
-        buildMethods(classObject, stringBuilder)
+        stringBuilder.append(addTabSpacing(buildStringContainingAttributes(classObject)))
+        stringBuilder.append(addTabSpacing(buildMethods(classObject)))
         stringBuilder.append("\n}")
         return stringBuilder.toString()
     }
 
 
-    private fun buildStringContainingAttributes(classObject: Class, stringBuilder: StringBuilder) {
+    private fun buildStringContainingAttributes(classObject: Class) : String {
+        val stringBuilder = StringBuilder()
         val staticAttributes = classObject.ownedAttributes.filter { it.isStatic }
         val nonStaticAttributes = classObject.ownedAttributes.filter { !it.isStatic }
         staticAttributes.forEach {
@@ -55,9 +77,11 @@ class SourceCodeViewMapper: TextViewMapper() {
             stringBuilder.append("${it.visibility.literal} ${it.type.name} ${it.name} = ${it.defaultValue.stringValue()}")
             stringBuilder.append("\n")
         }
+        return stringBuilder.toString()
     }
 
-    private fun buildMethods(classObject: Class, stringBuilder: StringBuilder) {
+    private fun buildMethods(classObject: Class): String {
+        val stringBuilder = StringBuilder()
         stringBuilder.append("\n")
         classObject.ownedOperations.forEach { operation ->
             stringBuilder.append(
@@ -68,7 +92,7 @@ class SourceCodeViewMapper: TextViewMapper() {
             )
             //build the body of the method
             if (operation.methods.isEmpty()) {
-                return
+                return stringBuilder.toString()
             }
             val behavior = operation.methods[0] as OpaqueBehavior
             for (i in behavior.bodies.indices) {
@@ -76,6 +100,9 @@ class SourceCodeViewMapper: TextViewMapper() {
                 stringBuilder.append(addTabSpacing(body.trimIndent()))
             }
         }
+        stringBuilder.append("\n")
+        stringBuilder.append("}")
+        return stringBuilder.toString()
     }
     private fun addTabSpacing(code: String): String {
         return code.lines()

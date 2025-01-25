@@ -15,11 +15,13 @@ class SourceCodeViewMapperTest {
     private lateinit var eObjects: List<EObject>
 
     @BeforeEach
-    fun innitObejcts() {
+    fun innitObjects() {
         val factory = UMLFactory.eINSTANCE
 
-        val umlClass = factory.createClass()
-        umlClass.name = "ExampleModel"
+        val examplePackage = factory.createPackage()
+        examplePackage.name = "examplePackage"
+
+        val umlClass = examplePackage.createOwnedClass("ExampleModel", false)
 
         val attribute = umlClass.createOwnedAttribute("myIntAttribute", null)
         attribute.visibility = VisibilityKind.PUBLIC_LITERAL
@@ -52,10 +54,6 @@ class SourceCodeViewMapperTest {
         (initialValue2 as LiteralIntegerImpl).value = 5
         attribute2.defaultValue = initialValue2
 
-        //create operation
-        //Operation createOwnedOperation(String name, EList<String> parameterNames,
-        //			EList<Type> parameterTypes);
-
         val operationParameterNames: EList<String> = BasicEList<String>()
         operationParameterNames.add("param1")
         operationParameterNames.add("param2")
@@ -80,7 +78,7 @@ class SourceCodeViewMapperTest {
         )
 
         operation.methods.add(body)
-        eObjects = listOf(umlClass)
+        eObjects = listOf(examplePackage)
     }
 
     @Test
