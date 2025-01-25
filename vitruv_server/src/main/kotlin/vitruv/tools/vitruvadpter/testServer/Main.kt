@@ -1,63 +1,48 @@
 package vitruv.tools.vitruvadpter.testServer
 
-import org.eclipse.emf.common.util.URI
-import org.eclipse.emf.ecore.EcoreFactory
-import tools.vitruv.change.interaction.UserInteractionFactory
+import org.eclipse.uml2.uml.UMLFactory
+
 import tools.vitruv.framework.remote.client.VitruvClientFactory
-import tools.vitruv.framework.remote.server.VirtualModelInitializer
-import tools.vitruv.framework.remote.server.VitruvServer
-import tools.vitruv.framework.views.impl.IdentityMappingViewType
-import tools.vitruv.framework.vsum.VirtualModelBuilder
-import java.nio.file.Path
-import org.eclipse.uml2.uml.*
+
+fun main() {
+    val serverInitializer = ServerInitializer()
+    val server = serverInitializer.initialize()
+    var factory = UMLFactory.eINSTANCE
+    var newClass = factory.createClass()
+    newClass.name = "NewClass"
+//    rootPackage.packagedElements.add(newClass)
+//    umlView.commitChanges()
+//    umlView.close()
+
+
+    server.start()
+    println("Vitruvius server started on: " + serverInitializer.serverPort);
+
+    //start client
+    val client = VitruvClientFactory.create("localhost", serverInitializer.serverPort, serverInitializer.rootPath)
+    var clientViewTypes = client.viewTypes
+
+    var umlViewType = clientViewTypes.stream().filter{it.name == "UML"}.findAny()
+
+    print(umlViewType.get().name)
+
+    var umlSelector = umlViewType.get().createSelector(null)
+    umlSelector.selectableElements.forEach { it -> umlSelector.setSelected(it, true) }
+
+    var umlView = umlSelector.createView().withChangeDerivingTrait()
+    val umlPackage = umlView.rootObjects.first() as org.eclipse.uml2.uml.Package
+    umlPackage.packagedElements.add(newClass)
+    umlView.commitChangesAndUpdate()
+
+    print(umlPackage.packagedElements)
+    umlView.close()
 
 
 
-    fun main() {
-
-        val vitruvServer = VitruvServer(init())
-        vitruvServer.start()
 
 
 
-        val vitruvClient = VitruvClientFactory.create("localhost", Path.of("vitruv_server/src/main/resources/temp"))
-        val viewTypes = vitruvClient.viewTypes
-        println(viewTypes)
-        val selector = vitruvClient.createSelector(viewTypes.random())
-        selector.selectableElements.forEach() {
-            vitruvClient.createSelector(viewTypes.random()).setSelected(it, true)
-        }
-        val view = selector.createView()
 
-        val testEClass = EcoreFactory.eINSTANCE.createEClass()
-        testEClass.name = "EClass"
-        testEClass.eStructuralFeatures.add(EcoreFactory.eINSTANCE.createEAttribute().apply {
-            name = "test"
-            eType = EcoreFactory.eINSTANCE.createEDataType().apply {
-                instanceClassName = "int"
-            }
-        })
 
-        val testEClass2 = EcoreFactory.eINSTANCE.createEClass()
-        testEClass2.name = "EClass2"
-        testEClass2.eStructuralFeatures.add(EcoreFactory.eINSTANCE.createEAttribute().apply {
-            name = "test2"
-            eType = EcoreFactory.eINSTANCE.createEDataType().apply {
-                instanceClassName = "char"
-            }
-        })
-        val eObjects = listOf(testEClass, testEClass2)
-        val changeView = view.withChangeRecordingTrait()
-        changeView.registerRoot(testEClass2, URI.createURI("vitruv_server/src/main/resources/models"))
-        changeView.commitChanges()
 
-    }
-
-fun init() = VirtualModelInitializer {
-    VirtualModelBuilder().withStorageFolder(Path.of("vitruv_server/src/main/resources/model")).withUserInteractor(
-        UserInteractionFactory.instance.createUserInteractor(
-            UserInteractionFactory.instance.createPredefinedInteractionResultProvider(null))).withViewType(IdentityMappingViewType("VT1")).buildAndInitialize()
 }
-
-
-
