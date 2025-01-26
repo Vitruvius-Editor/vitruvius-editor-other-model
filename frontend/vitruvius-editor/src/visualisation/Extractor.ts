@@ -12,5 +12,5 @@ export interface Extractor {
    * @param {Widget} widget - The widget instance from which content is to be extracted.
    * @return {string} The extracted textual content of the widget.
    */
-  extractContent(widget: Widget): string;
+  extractContent(widget: Widget): Promise<string>;
 }

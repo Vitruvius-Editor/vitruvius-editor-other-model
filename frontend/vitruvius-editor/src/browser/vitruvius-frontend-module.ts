@@ -10,6 +10,9 @@ import {DisplayViewWidget} from './display-view-widget';
 import {BackendServer} from '../backend-communication/BackendServer';
 import {DisplayViewService} from '../backend-communication/DisplayViewService';
 import {ConnectionService} from '../backend-communication/ConnectionService';
+import {DisplayViewResolver} from '../visualisation/DisplayViewResolver';
+import {SourceCodeVisualizer} from '../visualisation/text/SourceCodeVisualizer';
+import {SourceCodeExtractor} from '../visualisation/text/SourceCodeExtractor';
 
 export default new ContainerModule(bind => {
 	// Backend communication
@@ -17,6 +20,14 @@ export default new ContainerModule(bind => {
 	bind(BackendServer).toSelf().inSingletonScope();
 	bind(ConnectionService).toSelf().inSingletonScope();
 	bind(DisplayViewService).toSelf().inSingletonScope();
+	// Visualisation
+	bind(SourceCodeVisualizer).toSelf().inSingletonScope();
+	bind(SourceCodeExtractor).toSelf().inSingletonScope();
+	bind(DisplayViewResolver).toDynamicValue(ctx => {
+		let displayViewResolver = new DisplayViewResolver();
+		displayViewResolver.registerDisplayView("SourceCodeViewMapper", ctx.container.get(SourceCodeVisualizer), ctx.container.get(SourceCodeExtractor));
+		return displayViewResolver;
+	}).inSingletonScope();
 	// Ui stuff
     bind(CommandContribution).to(VitruviusHelpCommandContribution);
     bind(CommandContribution).to(VitruviusEditProjectContribution);

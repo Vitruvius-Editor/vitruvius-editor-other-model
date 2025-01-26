@@ -11,5 +11,5 @@ export interface Visualizer {
    * @param {string} content - The content to be visualized.
    * @return {Widget} The visual representation of the provided content as a Widget.
    */
-  visualizeContent(content: string): Widget;
+  visualizeContent(content: string): Promise<Widget>;
 }

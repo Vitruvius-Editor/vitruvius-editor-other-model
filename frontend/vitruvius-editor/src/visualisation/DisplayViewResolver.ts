@@ -1,12 +1,14 @@
 import { Visualizer } from "./Visualizer";
 import { DisplayView } from "../model/DisplayView";
-import { BaseWidget, Widget } from "@theia/core/lib/browser";
+import { Widget } from "@theia/core/lib/browser";
 import { Extractor } from "./Extractor";
+import {inject, injectable, postConstruct} from "@theia/core/shared/inversify";
 
 /**
  * The DisplayViewResolver class is responsible for managing the registration and resolution
  * of display views with their corresponding visualizers and extractors.
  */
+ @injectable()
 export class DisplayViewResolver {
   readonly mappings: Map<string, [Visualizer, Extractor]>;
 
@@ -17,16 +19,18 @@ export class DisplayViewResolver {
   /**
    * Registers a display view to be used with a specific visualizer and extractor.
    *
-   * @param {DisplayView} displayView - The display view instance to be registered.
+   * @param {string} viewMapper - The name pf the viewMapper to be reigstered.
    * @param {Visualizer} visualizer - The visualizer associated with the display view.
    * @param {Extractor} extractor - The extractor used to provide data for the display view.
    * @return {void} This method does not return a value.
    */
   registerDisplayView(
-    displayView: DisplayView,
+    viewMapper: string,
     visualizer: Visualizer,
     extractor: Extractor,
-  ): void {}
+  ): void {
+	this.mappings.set(viewMapper, [visualizer, extractor]);
+  }
 
   /**
    * Retrieves a widget based on the provided display view and its content.
@@ -35,8 +39,8 @@ export class DisplayViewResolver {
    * @param {string} displayViewContent - The content associated with the display view.
    * @return {Widget} The widget instance created based on the provided display view and content.
    */
-  getWidget(displayView: DisplayView, displayViewContent: string): Widget {
-    return new BaseWidget();
+  getWidget(displayView: DisplayView, displayViewContent: string): Promise<Widget> | null {
+	return this.mappings.get(displayView.viewMapperName)?.[0].visualizeContent(displayViewContent) ?? null
   }
 
   /**
@@ -46,7 +50,7 @@ export class DisplayViewResolver {
    * @param {Widget} displayViewWidget - The widget associated with the display view.
    * @return {string} The content as a string.
    */
-  getContent(displayView: DisplayView, displayViewWidget: Widget): string {
-    return "";
+  getContent(displayView: DisplayView, displayViewWidget: Widget): Promise<string> | null {
+    return this.mappings.get(displayView.viewMapperName)?.[1].extractContent(displayViewWidget) ?? null
   }
 }

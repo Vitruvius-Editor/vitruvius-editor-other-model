@@ -6,6 +6,8 @@ import { Connection } from '../model/Connection';
 import {DisplayView} from '../model/DisplayView';
 import {DisplayViewService} from '../backend-communication/DisplayViewService';
 import {Window} from '../model/Window';
+import {DisplayViewResolver} from '../visualisation/DisplayViewResolver';
+import {UUID} from 'crypto';
 
 @injectable()
 export class DisplayViewWidget extends ReactWidget {
@@ -18,6 +20,9 @@ export class DisplayViewWidget extends ReactWidget {
 
 	@inject(DisplayViewService)
 	protected readonly displayViewService: DisplayViewService;
+
+	@inject(DisplayViewResolver)
+	protected readonly displayViewResolver: DisplayViewResolver;
 
 	private connection: Connection | null;
 	private widgetItems: WidgetItem[];
@@ -51,7 +56,7 @@ export class DisplayViewWidget extends ReactWidget {
 						{this.widgetItems.map(widgetItem => {
 							return <div>
 								<li onClick={() => this.widgetItemClickHandler(widgetItem)}>{widgetItem.displayView.name}</li>
-								{this.Windows(widgetItem.windows)}
+								{this.Windows(widgetItem)}
 							</div>
 						} )
 						}	
@@ -61,12 +66,12 @@ export class DisplayViewWidget extends ReactWidget {
 		}
     }
 
-	Windows(windows: string[] | null): React.ReactElement {
-		let windowsNonNull = windows ? windows : [];
+	Windows(widgetItem: WidgetItem): React.ReactElement {
+		let windowsNonNull = widgetItem.windows ? widgetItem.windows : [];
 		if (windowsNonNull.length != 0) {
 			return <div>
 				<ul>
-					{windowsNonNull.map(window => <div><li>{window}</li></div>)}
+					{windowsNonNull.map(window => <div><li onClick={() => this.windowClickHandler(widgetItem, window)}>{window}</li></div>)}
 				</ul>
 			</div>
 		} else {
@@ -107,6 +112,13 @@ export class DisplayViewWidget extends ReactWidget {
 			widgetItem.windows = null;
 			this.update();
 		}
+	}
+
+	private async windowClickHandler(widgetItem: WidgetItem, window: string) {
+		this.displayViewService.getDisplayViewContent((this.connection as Connection).uuid, widgetItem.displayView.name, {windows: [window]})
+			.then(content => {
+				this.displayViewResolver.getWidget(widgetItem.displayView, content ?? "")?.then(widget => widget.show());
+			})
 	}
 }
 

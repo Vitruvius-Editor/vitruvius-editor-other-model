@@ -33,8 +33,8 @@ export class DisplayViewService {
     displayViewName: string,
     selector: Selector,
   ): Promise<string | null> {
-    return this.backendServer.sendWebRequest(
-      `/api/v1/connection/${connectionId}/displayView/${displayViewName}/content`,
+    return this.backendServer.sendWebRequest<string>(
+      `/api/v1/connection/${connectionId}/displayView/${displayViewName}`,
       "POST",
       selector,
     );
