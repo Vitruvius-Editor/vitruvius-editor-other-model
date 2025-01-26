@@ -18,7 +18,7 @@ import java.nio.file.Files
 
 
 class ServerInitializer {
-    val rootPath: Path = Path.of("vitruv_server/src/main/resources/model")
+    val  rootPath: Path = Path.of("vitruv_server/src/main/resources/model")
 
     val viewTypes: Map<String, ViewType<*>> = createViewTypes()
     val javaPath: Path = Path.of("vitruv_server/src/main/resources/model/java")
@@ -27,15 +27,12 @@ class ServerInitializer {
     val umlUri: URI = URI.createFileURI(umlPath.toString())
 
     val vsum: VirtualModel = init()
-    val serverPort: Int = 8080
+    val serverPort: Int = 8000
 
 
     fun initialize(): VitruvServer {
-
         Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", UMLResourceFactoryImpl())
-
-
-        val vitruvServer = VitruvServer(VirtualModelInitializer { vsum }, serverPort)
+        val vitruvServer = VitruvServer(VirtualModelInitializer { vsum }, serverPort, "localhost")
         generatePackage()
         return vitruvServer
     }

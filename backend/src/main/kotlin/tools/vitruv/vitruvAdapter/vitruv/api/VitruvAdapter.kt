@@ -123,10 +123,10 @@ class VitruvAdapter {
 
     private fun getViewType(displayView: DisplayView): ViewType<out ViewSelector> {
         val client = vitruvClient ?: throw IllegalStateException("No client connected.")
-        val viewType = client.viewTypes.find { it.name == displayView.viewTypeName }
+        val viewType = client.viewTypes.stream().filter{it.name == displayView.viewTypeName}.findAny()
         if (viewType == null ) {
             throw DisplayViewException("View type ${displayView.viewTypeName} not found on model server.")
         }
-        return viewType
+        return viewType.get()
     }
 }
