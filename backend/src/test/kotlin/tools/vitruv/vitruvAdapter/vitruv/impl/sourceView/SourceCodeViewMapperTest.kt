@@ -15,7 +15,7 @@ class SourceCodeViewMapperTest {
     private lateinit var eObjects: List<EObject>
 
     @BeforeEach
-    fun innitObjects() {
+    fun initObjects() {
         val factory = UMLFactory.eINSTANCE
 
         val examplePackage = factory.createPackage()
@@ -71,9 +71,7 @@ class SourceCodeViewMapperTest {
         body.languages.add("Kotlin")
         body.bodies.add(
             """
-        val internalSelector = getViewType(displayView).createSelector(null)
-        displayView.windowSelector.applySelection(internalSelector)
-        return displayView.viewMapper.mapViewToWindows(internalSelector.createView().rootObjects.toList())
+            System.out.println("Hello World");
         """.trimIndent()
         )
 
@@ -88,6 +86,15 @@ class SourceCodeViewMapperTest {
         assertEquals(1, windows.size)
         assertEquals("ExampleModel", windows[0].name)
         print(windows[0].content)
+    }
+
+    @Test
+    fun testMapWindowContentToEObjects() {
+        val mapper = SourceCodeViewMapper()
+        val windows = mapper.mapEObjectsToWindowsContent(this.eObjects)
+        val eObjects = mapper.mapWindowsContentToEObjects(windows)
+        println(mapper.mapEObjectsToWindowsContent(eObjects).get(0).content)
+        println(mapper.mapEObjectsToWindowsContent(this.eObjects).get(0).content)
     }
 
 }

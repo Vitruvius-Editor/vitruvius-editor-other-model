@@ -9,6 +9,6 @@ import tools.vitruv.vitruvAdapter.vitruv.api.Selector
  */
 class AllSelector : Selector {
     override fun applySelection(viewSelector: ViewSelector) {
-        TODO("Not yet implemented")
+        viewSelector.selectableElements.forEach{ viewSelector.setSelected(it, true)}
     }
 }
