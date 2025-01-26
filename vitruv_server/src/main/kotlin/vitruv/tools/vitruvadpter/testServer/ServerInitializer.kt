@@ -1,6 +1,7 @@
 package vitruv.tools.vitruvadpter.testServer
 
 import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.resource.Resource
 import tools.vitruv.change.interaction.UserInteractionFactory
 import tools.vitruv.framework.remote.server.VirtualModelInitializer
@@ -9,7 +10,12 @@ import tools.vitruv.framework.views.impl.IdentityMappingViewType
 import tools.vitruv.framework.vsum.VirtualModelBuilder
 import java.nio.file.Path
 import org.eclipse.uml2.uml.*
+import org.eclipse.uml2.uml.internal.impl.UMLPackageImpl
 import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl
+import tools.vitruv.change.atomic.AtomicPackage
+import tools.vitruv.change.atomic.impl.AtomicPackageImpl
+import tools.vitruv.change.correspondence.CorrespondencePackage
+import tools.vitruv.change.correspondence.impl.CorrespondencePackageImpl
 import tools.vitruv.framework.views.ViewType
 import tools.vitruv.framework.views.View
 import tools.vitruv.framework.vsum.VirtualModel
@@ -32,6 +38,9 @@ class ServerInitializer {
 
     fun initialize(): VitruvServer {
         Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", UMLResourceFactoryImpl())
+        EPackage.Registry.INSTANCE.put(CorrespondencePackage.eNS_URI, CorrespondencePackageImpl.eINSTANCE);
+        EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackageImpl.eINSTANCE);
+        EPackage.Registry.INSTANCE.put(AtomicPackage.eNS_URI, AtomicPackageImpl.eINSTANCE);
         val vitruvServer = VitruvServer(VirtualModelInitializer { vsum }, serverPort, "localhost")
         generatePackage()
         return vitruvServer

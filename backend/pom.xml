@@ -149,27 +149,21 @@
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.eclipse.uml2/org.eclipse.uml2.uml.ecore.importer -->
     <dependency>
-      <groupId>local.uml2</groupId>
+      <groupId>eclipse.uml2</groupId>
       <artifactId>uml</artifactId>
       <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/Dep/uml-5.0.0-v20140602-0749.jar</systemPath>
     </dependency>
 
     <dependency>
-      <groupId>local.uml2.types</groupId>
+      <groupId>eclipse.uml2.types</groupId>
       <artifactId>types</artifactId>
       <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/Dep/types-2.0.0-v20140602-0749.jar</systemPath>
     </dependency>
 
     <dependency>
-      <groupId>local.uml2.common</groupId>
+      <groupId>eclipse.uml2.common</groupId>
       <artifactId>common</artifactId>
       <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/Dep/common-2.0.0-v20140602-0749.jar</systemPath>
     </dependency>
 
     <dependency>
@@ -183,6 +177,61 @@
     <sourceDirectory>src/main/kotlin</sourceDirectory>
     <testSourceDirectory>src/test/kotlin</testSourceDirectory>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>2.5.2</version>
+        <executions>
+          <!-- 1) UML JAR -->
+          <execution>
+            <id>install-local-uml</id>
+            <!-- Bind to an early phase so the JAR is installed before compile/test/package -->
+            <phase>clean</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>${project.basedir}/Dep/uml-5.0.0-v20140602-0749.jar</file>
+              <groupId>eclipse.uml2</groupId>
+              <artifactId>uml</artifactId>
+              <version>1.0</version>
+              <packaging>jar</packaging>
+            </configuration>
+          </execution>
+
+          <!-- 2) Types JAR -->
+          <execution>
+            <id>install-local-types</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>${project.basedir}/Dep/types-2.0.0-v20140602-0749.jar</file>
+              <groupId>eclipse.uml2.types</groupId>
+              <artifactId>types</artifactId>
+              <version>1.0</version>
+              <packaging>jar</packaging>
+            </configuration>
+          </execution>
+
+          <!-- 3) Common JAR -->
+          <execution>
+            <id>install-local-common</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>${project.basedir}/Dep/common-2.0.0-v20140602-0749.jar</file>
+              <groupId>eclipse.uml2.common</groupId>
+              <artifactId>common</artifactId>
+              <version>1.0</version>
+              <packaging>jar</packaging>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>

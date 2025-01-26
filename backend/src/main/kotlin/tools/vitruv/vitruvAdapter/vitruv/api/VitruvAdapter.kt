@@ -1,6 +1,15 @@
 package tools.vitruv.vitruvAdapter.vitruv.api
 
+import org.eclipse.emf.ecore.EPackage
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.uml2.uml.UMLPackage
+import org.eclipse.uml2.uml.internal.impl.UMLPackageImpl
+import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl
 import org.springframework.stereotype.Service
+import tools.vitruv.change.atomic.AtomicPackage
+import tools.vitruv.change.atomic.impl.AtomicPackageImpl
+import tools.vitruv.change.correspondence.CorrespondencePackage
+import tools.vitruv.change.correspondence.impl.CorrespondencePackageImpl
 import tools.vitruv.framework.views.View
 import tools.vitruv.framework.views.changederivation.DefaultStateBasedChangeResolutionStrategy
 import tools.vitruv.framework.remote.client.VitruvClient
@@ -18,7 +27,12 @@ import java.nio.channels.UnresolvedAddressException;
  */
 @Service
 class VitruvAdapter {
-
+    init {
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", UMLResourceFactoryImpl())
+        EPackage.Registry.INSTANCE.put(CorrespondencePackage.eNS_URI, CorrespondencePackageImpl.eINSTANCE);
+        EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackageImpl.eINSTANCE);
+        EPackage.Registry.INSTANCE.put(AtomicPackage.eNS_URI, AtomicPackageImpl.eINSTANCE);
+    }
     private var vitruvClient: VitruvClient? = null
     private var displayViewContainer: DisplayViewContainer? = null
 
@@ -35,6 +49,7 @@ class VitruvAdapter {
         } catch (e: BadServerResponseException) {
             throw VitruviusConnectFailedException("Could not connect to model server.")
         }
+
         this.vitruvClient = vitruvClient
     }
 

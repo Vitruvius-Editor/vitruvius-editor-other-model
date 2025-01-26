@@ -3,8 +3,10 @@ package tools.vitruv.vitruvAdapter.vitruv.api
 import org.eclipse.emf.common.util.BasicEList
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.uml2.uml.*
 import org.eclipse.uml2.uml.internal.impl.LiteralIntegerImpl
+import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -23,24 +25,27 @@ import java.nio.file.Path
 class TestVitruvAdapter {
 
 
-    val vitruvClient: VitruvClient = VitruvClientFactory.create("localhost", 8000, Path.of("tools/vitruv/vitruvAdapter/tmp"))
 
-
-    val adapter = VitruvAdapter()
-
-
-    val contentSelector = object : ContentSelector {
-        override fun applySelection(viewSelector: ViewSelector, windows: Set<String>) {
-        }
-    }
-    var displayViewRepository = DefaultDisplayViewRepositoryFactory().createDisplayViewRepository()
-    var sourceCodeDisplayView = GenericDisplayView("SourceCode", "UML", SourceCodeViewMapper() as ViewMapper<Any?>, AllSelector(),
-        contentSelector)
-
-
+    lateinit var adapter: VitruvAdapter
+    lateinit var displayViewRepository: DisplayViewRepository
 
     @BeforeEach
     fun initVitruvAdapter() {
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", UMLResourceFactoryImpl())
+        val vitruvClient: VitruvClient = VitruvClientFactory.create("localhost", 8000, Path.of("tools/vitruv/vitruvAdapter/tmp"))
+
+
+        adapter = VitruvAdapter()
+
+
+        val contentSelector = object : ContentSelector {
+            override fun applySelection(viewSelector: ViewSelector, windows: Set<String>) {
+            }
+        }
+        displayViewRepository = DefaultDisplayViewRepositoryFactory().createDisplayViewRepository()
+        var sourceCodeDisplayView = GenericDisplayView("SourceCode", "UML", SourceCodeViewMapper() as ViewMapper<Any?>, AllSelector(),
+            contentSelector)
+
         adapter.connectClient(vitruvClient)
         displayViewRepository.registerDisplayView(sourceCodeDisplayView)
         adapter.setDisplayViewContainer(displayViewRepository)
@@ -54,6 +59,7 @@ class TestVitruvAdapter {
 
     @Test
     fun testGetWindows(){
+
         val windows = adapter.getWindows(displayViewRepository.getDisplayView("SourceCode")!!)
 
     }
