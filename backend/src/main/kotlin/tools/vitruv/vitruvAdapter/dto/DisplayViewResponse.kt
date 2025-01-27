@@ -1,6 +1,6 @@
 package tools.vitruv.vitruvAdapter.dto
 
-import tools.vitruv.vitruvAdapter.vitruv.api.DisplayView
+import tools.vitruv.vitruvAdapter.core.api.DisplayView
 
 data class DisplayViewResponse(
     var name: String,
