@@ -100,7 +100,8 @@ class VitruviusService {
      */
     private fun setupConnection(connectionId: UUID) {
         val connection = connectionService.getConnectionById(connectionId)
-        val client = VitruvClientFactory.create(connection.url, createTempDirectory("vitruvius-editor"))
+        // TODO: Add logic to allow other ports
+        val client = VitruvClientFactory.create(connection.url, 8000, createTempDirectory("vitruvius-editor"))
         vitruvAdapter.setDisplayViewContainer(displayViewRepository)
         vitruvAdapter.connectClient(client)
     }
