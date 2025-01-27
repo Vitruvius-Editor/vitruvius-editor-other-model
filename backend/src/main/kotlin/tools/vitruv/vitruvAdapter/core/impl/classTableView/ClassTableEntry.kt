@@ -1,9 +1,9 @@
 package tools.vitruv.vitruvAdapter.core.impl.classTableView
 
 data class ClassTableEntry(
+    val uuid: String,
     val name: String,
     val visibility: String,
-    val isStatic : Boolean,
     val isAbstract: Boolean,
     val isFinal: Boolean,
     val superClassName: String,

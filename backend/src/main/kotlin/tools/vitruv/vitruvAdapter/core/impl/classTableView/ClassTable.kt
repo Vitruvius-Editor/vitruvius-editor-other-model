@@ -1,5 +1,5 @@
 package tools.vitruv.vitruvAdapter.core.impl.classTableView
 
-class ClassTable(
+data class ClassTable (
     val entries: Set<ClassTableEntry>
 )

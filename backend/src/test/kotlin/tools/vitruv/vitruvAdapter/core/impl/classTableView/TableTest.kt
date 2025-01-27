@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class ClassTableTest {
+class TableTest {
 
     lateinit var entries : Set<ClassTableEntry>
 
