@@ -1,8 +1,9 @@
+import {Content} from "../../model/Content";
 import { Visualizer } from "../Visualizer";
-import { BaseWidget, Widget } from "@theia/core/lib/browser";
+import { Widget } from "@theia/core/lib/browser";
 
 export class PackageDiagramVisualizer implements Visualizer {
-	visualizeContent(content: string): Promise<Widget> {
+	visualizeContent(content: Content): Promise<Widget> {
 		throw new Error("Method not implemented.");
 	}
  }

@@ -2,6 +2,7 @@ import { BackendServer } from "./BackendServer";
 import { DisplayView } from "../model/DisplayView";
 import { Selector } from "../model/Selector";
 import {inject, injectable} from "@theia/core/shared/inversify";
+import {Content} from "../model/Content";
 
 @injectable()
 export class DisplayViewService {
@@ -32,8 +33,8 @@ export class DisplayViewService {
 	connectionId: string,
     displayViewName: string,
     selector: Selector,
-  ): Promise<string | null> {
-    return this.backendServer.sendWebRequest<string>(
+  ): Promise<Content | null> {
+    return this.backendServer.sendWebRequest<Content>(
       `/api/v1/connection/${connectionId}/displayView/${displayViewName}`,
       "POST",
       selector,
@@ -43,8 +44,8 @@ export class DisplayViewService {
   async updateDisplayViewContent(
 	connectionId: string,
     displayViewName: string,
-    updatedContent: string,
-  ): Promise<string | null> {
+    updatedContent: Content,
+  ): Promise<Content | null> {
     return this.backendServer.sendWebRequest(
       `/api/v1/connection/${connectionId}/displayView/${displayViewName}`,
       "PUT",

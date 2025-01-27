@@ -1,8 +1,9 @@
 import { Visualizer } from "./Visualizer";
-import { DisplayView } from "../model/DisplayView";
 import { Widget } from "@theia/core/lib/browser";
 import { Extractor } from "./Extractor";
-import {inject, injectable, postConstruct} from "@theia/core/shared/inversify";
+import {injectable} from "@theia/core/shared/inversify";
+import {Content} from "../model/Content";
+import {DisplayView} from "../model/DisplayView";
 
 /**
  * The DisplayViewResolver class is responsible for managing the registration and resolution
@@ -39,8 +40,8 @@ export class DisplayViewResolver {
    * @param {string} displayViewContent - The content associated with the display view.
    * @return {Widget} The widget instance created based on the provided display view and content.
    */
-  getWidget(displayView: DisplayView, displayViewContent: string): Promise<Widget> | null {
-	return this.mappings.get(displayView.viewMapperName)?.[0].visualizeContent(displayViewContent) ?? null
+  getWidget(content: Content): Promise<Widget> | null {
+	return this.mappings.get(content.visualizerName)?.[0].visualizeContent(content) ?? null
   }
 
   /**
@@ -50,7 +51,7 @@ export class DisplayViewResolver {
    * @param {Widget} displayViewWidget - The widget associated with the display view.
    * @return {string} The content as a string.
    */
-  getContent(displayView: DisplayView, displayViewWidget: Widget): Promise<string> | null {
-    return this.mappings.get(displayView.viewMapperName)?.[1].extractContent(displayViewWidget) ?? null
+  getContent(displayView: DisplayView, widget: Widget): Promise<Content> | null {
+    return this.mappings.get(displayView.viewMapperName)?.[1].extractContent(widget) ?? null
   }
 }

@@ -1,4 +1,5 @@
 import { Widget } from "@theia/core/lib/browser";
+import {Content} from "../model/Content";
 
 /**
  * The Visualizer interface represents a component responsible for visualizing a given content string
@@ -11,5 +12,5 @@ export interface Visualizer {
    * @param {string} content - The content to be visualized.
    * @return {Widget} The visual representation of the provided content as a Widget.
    */
-  visualizeContent(content: string): Promise<Widget>;
+  visualizeContent(content: Content): Promise<Widget>;
 }

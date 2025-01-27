@@ -6,6 +6,7 @@ import { Connection } from '../model/Connection';
 import {DisplayView} from '../model/DisplayView';
 import {DisplayViewService} from '../backend-communication/DisplayViewService';
 import {DisplayViewResolver} from '../visualisation/DisplayViewResolver';
+import {Content} from '../model/Content';
 
 @injectable()
 export class DisplayViewWidget extends ReactWidget {
@@ -115,7 +116,7 @@ export class DisplayViewWidget extends ReactWidget {
 	private async windowClickHandler(widgetItem: WidgetItem, window: string) {
 		this.displayViewService.getDisplayViewContent((this.connection as Connection).uuid, widgetItem.displayView.name, {windows: [window]})
 			.then(content => {
-				this.displayViewResolver.getWidget(widgetItem.displayView, content ?? "")?.then(widget => widget.show());
+				this.displayViewResolver.getWidget(content as Content)?.then(widget => widget.show());
 			})
 	}
 }

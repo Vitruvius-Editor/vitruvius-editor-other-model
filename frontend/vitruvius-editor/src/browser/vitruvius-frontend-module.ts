@@ -36,7 +36,7 @@ export default new ContainerModule(bind => {
 	bind(SourceCodeExtractor).toSelf().inSingletonScope();
 	bind(DisplayViewResolver).toDynamicValue(ctx => {
 		let displayViewResolver = new DisplayViewResolver();
-		displayViewResolver.registerDisplayView("SourceCodeViewMapper", ctx.container.get(SourceCodeVisualizer), ctx.container.get(SourceCodeExtractor));
+		displayViewResolver.registerDisplayView("TextVisualizer", ctx.container.get(SourceCodeVisualizer), ctx.container.get(SourceCodeExtractor));
 		return displayViewResolver;
 	}).inSingletonScope();
 	// Ui stuff
