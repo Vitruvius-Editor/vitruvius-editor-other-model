@@ -1,47 +1,43 @@
-import {ReactWidget} from '@theia/core/lib/browser';
 import {inject, injectable, postConstruct} from '@theia/core/shared/inversify';
 import * as React from 'react';
 import { MessageService } from '@theia/core';
+import {VisualisationWidget} from "../VisualisationWidget";
 
 
+/**
+ * A Widget to visualize a text based Vitruvius view.
+ */
 @injectable()
-export class TextWidget extends ReactWidget {
-   static readonly ID = 'textwidget:textwidget';
+export class TextWidget extends VisualisationWidget<string> {
+    static readonly ID = 'textwidget:textwidget';
     static readonly LABEL = 'TextWidget';
-	private content = 'penis';
 
     @inject(MessageService)
     protected readonly messageService!: MessageService;
 
+    /**
+     * Initializes the widget with the default id, label and initial content.
+     */
     @postConstruct()
     protected init(): void {
-        this.doInit()
+        this.doInit(TextWidget.ID, TextWidget.LABEL, "/*Initial Content*/");
     }
 
-    protected async doInit(): Promise <void> {
-        this.id = TextWidget.ID;
-        this.title.label = TextWidget.LABEL;
-        this.title.caption = TextWidget.LABEL;
-        this.title.closable = true;
-        this.title.iconClass = 'fa fa-window-maximize'; // example widget icon.
-        this.update();
-    }
-
+    /**
+     * Renders the widget containing a text area to edit the content.
+     */
     render(): React.ReactElement {
     	return <div>
-			<textarea defaultValue={this.content}></textarea>
+			<textarea value={this.content} onChange={this.handleChange}></textarea>
 		</div>
 	}
 
-    
-	updateContent(content: string): void {
-		this.content = content;
-		this.update();
-	}
-
-    setLabel(label: string): void {
-        this.title.label = label;
-        this.title.caption = label;
-        this.update();
+    /**
+     * Handles the change event of the text area and updates the content.
+     * @param event
+     */
+    handleChange(event: React.ChangeEvent<HTMLTextAreaElement>): void {
+        this.content = event.target.value;
     }
+
 }

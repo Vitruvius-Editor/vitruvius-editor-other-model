@@ -1,9 +1,9 @@
 import {Content} from "../../model/Content";
 import { Visualizer } from "../Visualizer";
-import { Widget } from "@theia/core/lib/browser";
+import {VisualisationWidget} from "../VisualisationWidget";
 
 export class XmlVisualizer implements Visualizer {
-	visualizeContent(content: Content): Promise<Widget> {
+	visualizeContent(content: Content): Promise<VisualisationWidget<any>> {
 		throw new Error("Method not implemented.");
 	}
 }
