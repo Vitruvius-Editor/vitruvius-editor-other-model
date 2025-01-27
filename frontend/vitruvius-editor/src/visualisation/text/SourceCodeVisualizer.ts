@@ -1,16 +1,21 @@
 import { Visualizer } from "../Visualizer";
-import { Widget } from "@theia/core/lib/browser";
+import {Widget, WidgetManager} from "@theia/core/lib/browser";
 import {inject, injectable} from "@theia/core/shared/inversify";
-import { EditorManager } from "@theia/editor/lib/browser"
-import { URI } from "@theia/core";
+import {TextWidget} from "./TextWidget";
+import { ApplicationShell } from "@theia/core/lib/browser/shell/application-shell";
 
 @injectable()
 export class SourceCodeVisualizer implements Visualizer {
-	@inject(EditorManager)
-	protected readonly editorManager: EditorManager;
-	visualizeContent(content: string): Promise<Widget> {
-	  let uri = new URI('data:text/plain;charset=utf-8,' + encodeURIComponent(content));
-	  return this.editorManager.getOrCreateByUri(uri);
+	@inject(WidgetManager)
+	private readonly widgetManager!: WidgetManager;
+	@inject(ApplicationShell) protected readonly shell: ApplicationShell;
+	async visualizeContent(content: string): Promise<Widget> {
+		return this.widgetManager.getOrCreateWidget(TextWidget.ID, "foo").then(widget => {
+			(widget as TextWidget).updateContent(content);
+			widget.show();
+			this.shell.addWidget(widget, {area: 'main'});
+			return widget;
+		});
 	}
   
 }

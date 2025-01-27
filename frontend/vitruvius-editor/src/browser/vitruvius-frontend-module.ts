@@ -4,7 +4,7 @@
 import {FrontendApplicationContribution, WidgetFactory, bindViewContribution} from '@theia/core/lib/browser';
 import { VitruviusEditProjectContribution, VitruviusDeleteProjectContribution, VitruviusHelpCommandContribution, VitruviusImportProjectContribution, VitruviusLoadProjectContribution, VitruviusRefreshProjectContribution, VitruviusMenuContribution } from './vitruvius-contribution';
 import { CommandContribution, MenuContribution } from '@theia/core/lib/common';
-import { ContainerModule } from '@theia/core/shared/inversify';
+import { ContainerModule, Container } from '@theia/core/shared/inversify';
 import {DisplayViewWidgetContribution} from './display-view-widget-contribution';
 import {DisplayViewWidget} from './display-view-widget';
 import {BackendServer} from '../backend-communication/BackendServer';
@@ -13,6 +13,7 @@ import {ConnectionService} from '../backend-communication/ConnectionService';
 import {DisplayViewResolver} from '../visualisation/DisplayViewResolver';
 import {SourceCodeVisualizer} from '../visualisation/text/SourceCodeVisualizer';
 import {SourceCodeExtractor} from '../visualisation/text/SourceCodeExtractor';
+import {TextWidget } from '../visualisation/text/TextWidget';
 
 export default new ContainerModule(bind => {
 	// Backend communication
@@ -21,6 +22,16 @@ export default new ContainerModule(bind => {
 	bind(ConnectionService).toSelf().inSingletonScope();
 	bind(DisplayViewService).toSelf().inSingletonScope();
 	// Visualisation
+    bind(WidgetFactory).toDynamicValue(ctx => ({
+        id: TextWidget.ID,
+        createWidget: (widgetLabel: string) => {
+            const child = new Container({defaultScope: 'Singleton'});
+            child.parent = ctx.container;
+            child.bind(TextWidget).toSelf();
+            child.get(TextWidget).setLabel(widgetLabel);
+            return child.get(TextWidget)
+        }
+    }))
 	bind(SourceCodeVisualizer).toSelf().inSingletonScope();
 	bind(SourceCodeExtractor).toSelf().inSingletonScope();
 	bind(DisplayViewResolver).toDynamicValue(ctx => {

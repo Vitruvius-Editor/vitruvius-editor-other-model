@@ -5,9 +5,7 @@ import { MessageService } from '@theia/core';
 import { Connection } from '../model/Connection';
 import {DisplayView} from '../model/DisplayView';
 import {DisplayViewService} from '../backend-communication/DisplayViewService';
-import {Window} from '../model/Window';
 import {DisplayViewResolver} from '../visualisation/DisplayViewResolver';
-import {UUID} from 'crypto';
 
 @injectable()
 export class DisplayViewWidget extends ReactWidget {
