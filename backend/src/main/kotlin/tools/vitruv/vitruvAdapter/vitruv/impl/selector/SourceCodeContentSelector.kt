@@ -1,6 +1,9 @@
 package tools.vitruv.vitruvAdapter.vitruv.impl.selector
 
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.uml2.uml.Class
+import org.eclipse.uml2.uml.Package
+import tools.vitruv.framework.views.View
 import tools.vitruv.framework.views.ViewSelector
 import tools.vitruv.vitruvAdapter.vitruv.api.ContentSelector
 
@@ -12,20 +15,20 @@ class SourceCodeContentSelector: ContentSelector {
      * @param windows the windows to select the content for
      * @return The viewSelector with the selected elements.
      */
-    override fun applySelection(viewSelector: ViewSelector, windows: Set<String>) {
-        for (window in windows) {
-            val elements = viewSelector.selectableElements
-            for (element in elements) {
-                if (element !is Class) {
-                    continue
-                }
-                val clazz = element as Class
-                if (clazz.name == window) {
-                    viewSelector.setSelected(clazz, true)
+    override fun applySelection(view: View, windows: Set<String>) : List<EObject> {
+        val selectableElements = mutableListOf<Class>()
+        val ePackages = view.rootObjects
+        for (ePackage in ePackages) {
+            if (ePackage is Package) {
+                for (packagedElement in ePackage.packagedElements) {
+                    if (packagedElement is Class) {
+                        if (windows.contains(packagedElement.name)) {
+                            selectableElements.add(packagedElement)
+                        }
+                    }
                 }
             }
         }
+        return selectableElements
     }
-
-
 }

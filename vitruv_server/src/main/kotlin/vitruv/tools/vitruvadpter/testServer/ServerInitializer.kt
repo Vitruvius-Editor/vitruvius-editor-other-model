@@ -1,5 +1,7 @@
 package vitruv.tools.vitruvadpter.testServer
 
+import org.eclipse.emf.common.util.BasicEList
+import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.resource.Resource
@@ -10,6 +12,7 @@ import tools.vitruv.framework.views.impl.IdentityMappingViewType
 import tools.vitruv.framework.vsum.VirtualModelBuilder
 import java.nio.file.Path
 import org.eclipse.uml2.uml.*
+import org.eclipse.uml2.uml.internal.impl.LiteralIntegerImpl
 import org.eclipse.uml2.uml.internal.impl.UMLPackageImpl
 import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl
 import tools.vitruv.change.atomic.AtomicPackage
@@ -50,6 +53,44 @@ class ServerInitializer {
         val factory = UMLFactory.eINSTANCE
         val examplePackage = factory.createPackage()
         examplePackage.name = "examplePackage"
+
+
+        val umlClass = examplePackage.createOwnedClass("Class1", false)
+
+        val umlClass2 = examplePackage.createOwnedClass("Class2", false)
+
+
+        val attribute = umlClass.createOwnedAttribute("myIntAttribute", null)
+        attribute.visibility = VisibilityKind.PUBLIC_LITERAL
+
+        val operationParameterNames: EList<String> = BasicEList<String>()
+        operationParameterNames.add("param1")
+        operationParameterNames.add("param2")
+
+
+        val operationParameterTypes: EList<Type> = BasicEList<Type>()
+        operationParameterTypes.add(null)
+
+        val operation = umlClass.createOwnedOperation("myOperation", operationParameterNames, operationParameterTypes)
+
+        //add body to operation
+        val body = factory.createOpaqueBehavior()
+        body.name = "getWindowsBody"
+        body.languages.add("Kotlin")
+        body.bodies.add(
+            """
+            System.out.println("Hello World");
+        """.trimIndent()
+        )
+
+
+
+
+
+
+
+
+
         var view = getUMLView().withChangeDerivingTrait()
         view.registerRoot(examplePackage, umlUri)
         view.commitChanges()

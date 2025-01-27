@@ -28,7 +28,10 @@ class SourceCodeViewMapper: TextViewMapper() {
                         windows.add(window)
                     }
                 }
-
+            }
+            if(it is Class){
+                val window = Window(it.name, createSourceCodeForClass(it))
+                windows.add(window)
             }
         }
         return windows.toList()
@@ -122,14 +125,19 @@ class SourceCodeViewMapper: TextViewMapper() {
         val stringBuilder = StringBuilder()
         val staticAttributes = classObject.ownedAttributes.filter { it.isStatic }
         val nonStaticAttributes = classObject.ownedAttributes.filter { !it.isStatic }
+
+
+
         staticAttributes.forEach {
-            stringBuilder.append("${it.visibility.literal} static ${it.type.name} ${it.name} = ${it.defaultValue.stringValue()};")
+            stringBuilder.append("${it.visibility.literal} static ${it.type?.name ?: "Unknown"} ${it.name} = ${it.defaultValue?.stringValue() ?: "Unknown"};")
             stringBuilder.append("\n")
         }
         nonStaticAttributes.forEach {
-            stringBuilder.append("${it.visibility.literal} ${it.type.name} ${it.name} = ${it.defaultValue.stringValue()};")
+            stringBuilder.append("${it.visibility.literal} ${it.type?.name ?: "Unknown"} ${it.name} = ${it.defaultValue?.stringValue() ?: "Unknown"};")
             stringBuilder.append("\n")
         }
+
+
         return stringBuilder.toString()
     }
 
@@ -138,7 +146,7 @@ class SourceCodeViewMapper: TextViewMapper() {
         stringBuilder.append("\n")
         classObject.ownedOperations.forEach { operation ->
             stringBuilder.append(
-                "${operation.visibility.literal} ${operation.type.name} ${operation.name}" +
+                "${operation.visibility?.literal ?: "Unknown"} ${operation.type?.name ?: "Unknown"} ${operation.name}" +
                         "(${operation.ownedParameters
                             .filter { it.direction == ParameterDirectionKind.IN_LITERAL }
                             .joinToString { "${it.type?.name ?: "Unknown"} ${it.name}" }}) { \n"
@@ -153,6 +161,8 @@ class SourceCodeViewMapper: TextViewMapper() {
                 stringBuilder.append(addTabSpacing(body.trimIndent()))
             }
         }
+
+
         stringBuilder.append("\n")
         stringBuilder.append("}")
         return stringBuilder.toString()

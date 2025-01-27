@@ -19,7 +19,6 @@ import tools.vitruv.framework.views.ViewSelector
 import tools.vitruv.framework.views.ViewType
 import tools.vitruv.vitruvAdapter.exception.VitruviusConnectFailedException
 import tools.vitruv.vitruvAdapter.exception.DisplayViewException
-import java.nio.channels.UnresolvedAddressException;
 
 /**
  * This class is the adapter for the Vitruvius model server. It provides methods to interact with the model server.
@@ -85,9 +84,9 @@ class VitruvAdapter {
      * @param windows The windows to create the content for.
      * @return The created View for the windows.
      */
-    private fun getViewForWindows(displayView: DisplayView, windows: Set<String>): View {
+    private fun getView(displayView: DisplayView): View {
         val internalSelector = getViewType(displayView).createSelector(null)
-        displayView.contentSelector.applySelection(internalSelector, windows)
+        displayView.windowSelector.applySelection(internalSelector)
         return internalSelector.createView()
     }
 
@@ -97,10 +96,11 @@ class VitruvAdapter {
      * @return The created content for each window.
      */
     fun createWindowContent(displayView: DisplayView, windows: Set<String>): String {
-        val view = getViewForWindows(displayView, windows)
+        val view = getView(displayView)
+        val selectedEObjects = displayView.contentSelector.applySelection(view, windows)
         val mapper = displayView.viewMapper
         val viewInformation = JsonViewInformation(mapper.getDisplayContent())
-        val mappedData = mapper.mapEObjectsToWindowsContent(view.rootObjects.toList())
+        val mappedData = mapper.mapEObjectsToWindowsContent(selectedEObjects)
         val json = viewInformation.parseWindowsToJson(mappedData)
         return json
     }
@@ -116,7 +116,7 @@ class VitruvAdapter {
         val mapper = displayView.viewMapper
         val viewInformation = JsonViewInformation(mapper.getDisplayContent())
         val retrievedEObjects = mapper.mapWindowsContentToEObjects(viewInformation.parseWindowsFromJson(json))
-        val oldViewContent = getViewForWindows(displayView, getWindows(displayView))
+        val oldViewContent = getView(displayView)
         val view = oldViewContent.withChangeDerivingTrait(DefaultStateBasedChangeResolutionStrategy())
         view.rootObjects.clear()
         view.rootObjects.addAll(retrievedEObjects)

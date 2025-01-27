@@ -17,6 +17,7 @@ import tools.vitruv.framework.views.ViewSelector
 import tools.vitruv.vitruvAdapter.vitruv.impl.DefaultDisplayViewRepositoryFactory
 import tools.vitruv.vitruvAdapter.vitruv.impl.DisplayViewRepository
 import tools.vitruv.vitruvAdapter.vitruv.impl.GenericDisplayView
+import tools.vitruv.vitruvAdapter.vitruv.impl.displayContent.TextDisplayContentMapper
 import tools.vitruv.vitruvAdapter.vitruv.impl.mapper.SourceCodeViewMapper
 import tools.vitruv.vitruvAdapter.vitruv.impl.selector.AllSelector
 import tools.vitruv.vitruvAdapter.vitruv.impl.selector.SourceCodeContentSelector
@@ -24,9 +25,6 @@ import java.nio.file.Path
 
 
 class TestVitruvAdapter {
-
-
-
     lateinit var adapter: VitruvAdapter
     lateinit var displayViewRepository: DisplayViewRepository
 
@@ -60,10 +58,7 @@ class TestVitruvAdapter {
         val displayView = displayViewRepository.getDisplayView("SourceCode")!!
         val windows = adapter.getWindows(displayView)
         println(windows)
-        adapter.createWindowContent(displayView, windows)
-
-
+        val content = adapter.createWindowContent(displayView, windows)
+        print(content)
     }
-
-
 }
