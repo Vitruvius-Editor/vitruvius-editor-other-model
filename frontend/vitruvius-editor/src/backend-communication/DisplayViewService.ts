@@ -1,8 +1,8 @@
 import { BackendServer } from "./BackendServer";
 import { DisplayView } from "../model/DisplayView";
 import { Selector } from "../model/Selector";
-import {inject, injectable} from "@theia/core/shared/inversify";
-import {Content} from "../model/Content";
+import { inject, injectable } from "@theia/core/shared/inversify";
+import { Content } from "../model/Content";
 
 @injectable()
 export class DisplayViewService {
@@ -20,17 +20,19 @@ export class DisplayViewService {
   }
 
   async getDisplayViewWindows(
-	connectionId: string,
+    connectionId: string,
     displayViewName: string,
   ): Promise<string[] | null> {
-    return this.backendServer.sendWebRequest<WindowResponse>(
-      `/api/v1/connection/${connectionId}/displayView/${displayViewName}`,
-      "GET",
-    ).then(windowResponse => windowResponse.windows);
+    return this.backendServer
+      .sendWebRequest<WindowResponse>(
+        `/api/v1/connection/${connectionId}/displayView/${displayViewName}`,
+        "GET",
+      )
+      .then((windowResponse) => windowResponse.windows);
   }
 
   async getDisplayViewContent(
-	connectionId: string,
+    connectionId: string,
     displayViewName: string,
     selector: Selector,
   ): Promise<Content | null> {
@@ -42,7 +44,7 @@ export class DisplayViewService {
   }
 
   async updateDisplayViewContent(
-	connectionId: string,
+    connectionId: string,
     displayViewName: string,
     updatedContent: Content,
   ): Promise<Content | null> {
@@ -54,4 +56,4 @@ export class DisplayViewService {
   }
 }
 
-type WindowResponse = {windows: string[]};
+type WindowResponse = { windows: string[] };

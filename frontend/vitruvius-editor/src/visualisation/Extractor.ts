@@ -1,5 +1,5 @@
-import {Content} from "../model/Content";
-import {VisualisationWidget} from "./VisualisationWidget";
+import { Content } from "../model/Content";
+import { VisualisationWidget } from "./VisualisationWidget";
 
 /**
  * Interface representing an Extractor, which is responsible for extracting content from a given widget.

@@ -1,5 +1,5 @@
-import {Content} from "../model/Content";
-import {VisualisationWidget} from "./VisualisationWidget";
+import { Content } from "../model/Content";
+import { VisualisationWidget } from "./VisualisationWidget";
 
 /**
  * The Visualizer interface represents a component responsible for visualizing a given content
