@@ -5,12 +5,11 @@ import org.springframework.stereotype.Service
 import tools.vitruv.framework.remote.client.VitruvClientFactory
 import tools.vitruv.vitruvAdapter.dto.WindowSelectionRequest
 import tools.vitruv.vitruvAdapter.exception.DisplayViewNotFoundException
-import tools.vitruv.vitruvAdapter.vitruv.api.DisplayView
-import tools.vitruv.vitruvAdapter.vitruv.api.VitruvAdapter
-import tools.vitruv.vitruvAdapter.vitruv.api.Window
-import tools.vitruv.vitruvAdapter.vitruv.impl.DisplayViewRepository
+import tools.vitruv.vitruvAdapter.core.api.DisplayView
+import tools.vitruv.vitruvAdapter.core.api.VitruvAdapter
+import tools.vitruv.vitruvAdapter.core.api.Window
+import tools.vitruv.vitruvAdapter.core.impl.DisplayViewRepository
 import java.util.*
-import kotlin.io.path.Path
 import kotlin.io.path.createTempDirectory
 
 /**
