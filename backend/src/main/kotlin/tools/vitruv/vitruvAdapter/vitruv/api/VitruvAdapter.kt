@@ -1,6 +1,15 @@
 package tools.vitruv.vitruvAdapter.vitruv.api
 
+import org.eclipse.emf.ecore.EPackage
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.uml2.uml.UMLPackage
+import org.eclipse.uml2.uml.internal.impl.UMLPackageImpl
+import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl
 import org.springframework.stereotype.Service
+import tools.vitruv.change.atomic.AtomicPackage
+import tools.vitruv.change.atomic.impl.AtomicPackageImpl
+import tools.vitruv.change.correspondence.CorrespondencePackage
+import tools.vitruv.change.correspondence.impl.CorrespondencePackageImpl
 import tools.vitruv.framework.views.View
 import tools.vitruv.framework.views.changederivation.DefaultStateBasedChangeResolutionStrategy
 import tools.vitruv.framework.remote.client.VitruvClient
@@ -10,7 +19,6 @@ import tools.vitruv.framework.views.ViewSelector
 import tools.vitruv.framework.views.ViewType
 import tools.vitruv.vitruvAdapter.exception.VitruviusConnectFailedException
 import tools.vitruv.vitruvAdapter.exception.DisplayViewException
-import java.nio.channels.UnresolvedAddressException;
 
 /**
  * This class is the adapter for the Vitruvius model server. It provides methods to interact with the model server.
@@ -18,7 +26,12 @@ import java.nio.channels.UnresolvedAddressException;
  */
 @Service
 class VitruvAdapter {
-
+    init {
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", UMLResourceFactoryImpl())
+        EPackage.Registry.INSTANCE.put(CorrespondencePackage.eNS_URI, CorrespondencePackageImpl.eINSTANCE);
+        EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackageImpl.eINSTANCE);
+        EPackage.Registry.INSTANCE.put(AtomicPackage.eNS_URI, AtomicPackageImpl.eINSTANCE);
+    }
     private var vitruvClient: VitruvClient? = null
     private var displayViewContainer: DisplayViewContainer? = null
 
@@ -35,6 +48,7 @@ class VitruvAdapter {
         } catch (e: BadServerResponseException) {
             throw VitruviusConnectFailedException("Could not connect to model server.")
         }
+
         this.vitruvClient = vitruvClient
     }
 
@@ -70,9 +84,9 @@ class VitruvAdapter {
      * @param windows The windows to create the content for.
      * @return The created View for the windows.
      */
-    private fun getViewForWindows(displayView: DisplayView, windows: Set<String>): View {
+    private fun getView(displayView: DisplayView): View {
         val internalSelector = getViewType(displayView).createSelector(null)
-        displayView.contentSelector.applySelection(internalSelector, windows)
+        displayView.windowSelector.applySelection(internalSelector)
         return internalSelector.createView()
     }
 
@@ -82,10 +96,11 @@ class VitruvAdapter {
      * @return The created content for each window.
      */
     fun createWindowContent(displayView: DisplayView, windows: Set<String>): String {
-        val view = getViewForWindows(displayView, windows)
+        val view = getView(displayView)
+        val selectedEObjects = displayView.contentSelector.applySelection(view, windows)
         val mapper = displayView.viewMapper
         val viewInformation = JsonViewInformation(mapper.getDisplayContent())
-        val mappedData = mapper.mapEObjectsToWindowsContent(view.rootObjects.toList())
+        val mappedData = mapper.mapEObjectsToWindowsContent(selectedEObjects)
         val json = viewInformation.parseWindowsToJson(mappedData)
         return json
     }
@@ -101,7 +116,7 @@ class VitruvAdapter {
         val mapper = displayView.viewMapper
         val viewInformation = JsonViewInformation(mapper.getDisplayContent())
         val retrievedEObjects = mapper.mapWindowsContentToEObjects(viewInformation.parseWindowsFromJson(json))
-        val oldViewContent = getViewForWindows(displayView, getWindows(displayView))
+        val oldViewContent = getView(displayView)
         val view = oldViewContent.withChangeDerivingTrait(DefaultStateBasedChangeResolutionStrategy())
         view.rootObjects.clear()
         view.rootObjects.addAll(retrievedEObjects)
@@ -123,10 +138,10 @@ class VitruvAdapter {
 
     private fun getViewType(displayView: DisplayView): ViewType<out ViewSelector> {
         val client = vitruvClient ?: throw IllegalStateException("No client connected.")
-        val viewType = client.viewTypes.find { it.name == displayView.viewTypeName }
+        val viewType = client.viewTypes.stream().filter{it.name == displayView.viewTypeName}.findAny()
         if (viewType == null ) {
             throw DisplayViewException("View type ${displayView.viewTypeName} not found on model server.")
         }
-        return viewType
+        return viewType.get()
     }
 }

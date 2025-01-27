@@ -1,5 +1,7 @@
 package tools.vitruv.vitruvAdapter.vitruv.api
 
+import org.eclipse.emf.ecore.EObject
+import tools.vitruv.framework.views.View
 import tools.vitruv.framework.views.ViewSelector
 
 /**
@@ -14,5 +16,5 @@ interface ContentSelector {
      * @param windows the windows to select the content for
      * @return The viewSelector with the selected elements.
      */
-    fun applySelection(viewSelector: ViewSelector, windows: Set<String>)
+    fun applySelection(view: View, windows: Set<String>) : List<EObject>
 }

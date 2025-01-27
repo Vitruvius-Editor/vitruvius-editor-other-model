@@ -11,6 +11,7 @@
   <groupId>tools.vitruv</groupId>
   <artifactId>VitruvAdapter</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
   <name>VitruvAdapter</name>
   <description>An adapter between Vitruvius and the Theia Editor</description>
   <url/>
@@ -100,6 +101,13 @@
       <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
       <version>2.8.3</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.github.javaparser/javaparser-core -->
+    <dependency>
+      <groupId>com.github.javaparser</groupId>
+      <artifactId>javaparser-core</artifactId>
+      <version>3.26.3</version>
+    </dependency>
+
     <dependency>
       <groupId>tools.vitruv</groupId>
       <artifactId>tools.vitruv.framework.remote</artifactId>
@@ -125,11 +133,11 @@
       <artifactId>h2</artifactId>
       <scope>runtime</scope>
     </dependency>
-	<dependency>
-		<groupId>org.postgresql</groupId>
-		<artifactId>postgresql</artifactId>
-		<scope>runtime</scope>
-	</dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>runtime</scope>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
@@ -146,11 +154,31 @@
       <version>${kotlin.version}</version>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <artifactId>kotlin-stdlib-jdk8</artifactId>
-          <groupId>org.jetbrains.kotlin</groupId>
-          <version>${kotlin.version}</version>
-      </dependency>
+    <!-- https://mvnrepository.com/artifact/org.eclipse.uml2/org.eclipse.uml2.uml.ecore.importer -->
+    <dependency>
+      <groupId>local.uml2</groupId>
+      <artifactId>uml</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/Dep/uml-5.0.0-v20140602-0749.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>local.uml2.types</groupId>
+      <artifactId>types</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/Dep/types-2.0.0-v20140602-0749.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>local.uml2.common</groupId>
+      <artifactId>common</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/Dep/common-2.0.0-v20140602-0749.jar</systemPath>
+    </dependency>
+
     <dependency>
       <groupId>org.mockito.kotlin</groupId>
       <artifactId>mockito-kotlin</artifactId>
@@ -239,6 +267,14 @@
             <version>${kotlin.version}</version>
           </dependency>
         </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>11</source>
+          <target>11</target>
+        </configuration>
       </plugin>
     </plugins>
   </build>
