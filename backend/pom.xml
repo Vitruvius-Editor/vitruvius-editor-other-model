@@ -11,7 +11,6 @@
   <groupId>tools.vitruv</groupId>
   <artifactId>VitruvAdapter</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
   <name>VitruvAdapter</name>
   <description>An adapter between Vitruvius and the Theia Editor</description>
   <url/>
