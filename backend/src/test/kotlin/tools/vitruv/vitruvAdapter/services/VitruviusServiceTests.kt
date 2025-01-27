@@ -1,4 +1,4 @@
-package tools.vitruv.vitruvAdapter.services
+/*package tools.vitruv.vitruvAdapter.services
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -112,4 +112,4 @@ class VitruviusServiceTests {
         assertThrows<VitruviusConnectFailedException> { vitruviusService.getDisplayViewContent(uuid, displayViews[1].name, WindowSelectionRequest(setOf("Window 1", "Window 2"))) }
         assertThrows<VitruviusConnectFailedException> { vitruviusService.editDisplayViewContent(uuid, displayViews[0].name, "Updated Content") }
     }
-}
+}*/

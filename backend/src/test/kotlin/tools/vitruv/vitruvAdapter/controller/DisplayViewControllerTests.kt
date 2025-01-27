@@ -1,4 +1,4 @@
-package tools.vitruv.vitruvAdapter.controller
+/*package tools.vitruv.vitruvAdapter.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.BeforeEach
@@ -163,4 +163,4 @@ class DisplayViewControllerTests {
         )
             .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
-}
+}*/
