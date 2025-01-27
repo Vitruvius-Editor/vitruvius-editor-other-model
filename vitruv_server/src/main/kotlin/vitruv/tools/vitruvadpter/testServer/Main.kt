@@ -1,36 +1,33 @@
 package vitruv.tools.vitruvadpter.testServer
 
 import org.eclipse.uml2.uml.UMLFactory
-
 import tools.vitruv.framework.remote.client.VitruvClientFactory
 import java.nio.file.Path
+
+/**
+ * Starts the server
+ */
 
 fun main() {
     val serverInitializer = ServerInitializer()
     val server = serverInitializer.initialize()
     server.start()
-    println("Vitruvius server started on: " + serverInitializer.serverPort);
+    println("Vitruvius server started on: " + serverInitializer.serverPort)
 
     //clientTest(serverInitializer)
-
-    //start client
-
-//    rootPackage.packagedElements.add(newClass)
-//    umlView.commitChanges()
-//    umlView.close()
-
-
 }
 
+
+/**
+ * Test the client
+ */
 fun clientTest(serverInitializer: ServerInitializer) {
     val client = VitruvClientFactory.create("localhost", serverInitializer.serverPort, Path.of("vitruv_server/test"))
     var clientViewTypes = client.viewTypes
 
-    var umlViewType = clientViewTypes.stream().filter{it.name == "UML"}.findAny()
+    var umlViewType = clientViewTypes.stream().filter { it.name == "UML" }.findAny()
 
     print(umlViewType.get().name)
-
-
 
     var umlSelector = umlViewType.get().createSelector(null)
     umlSelector.selectableElements.forEach { it -> umlSelector.setSelected(it, true) }
@@ -52,5 +49,4 @@ fun clientTest(serverInitializer: ServerInitializer) {
     att.setIsStatic(true)
     umlView.commitChangesAndUpdate()
     umlView.close()
-
 }
