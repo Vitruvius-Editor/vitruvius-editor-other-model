@@ -136,12 +136,12 @@ class SourceCodeViewMapper: TextViewMapper() {
         val windows = mutableSetOf<String>()
         rootObjects.forEach {
             if (it is Package) {
-                it.packagedElements.forEach { element ->
-                    if (element is Class) {
-                        windows.add(element.name)
-                    }
-                    if(element is Interface){
-                        windows.add(element.name)
+                val iterator = it.eAllContents()
+                while (iterator.hasNext()) {
+                    when (val eObject = iterator.next()) {
+                        is Class -> windows.add(eObject.name)
+                        is Interface -> windows.add(eObject.name)
+                        is Enumeration -> windows.add(eObject.name)
                     }
                 }
             }
