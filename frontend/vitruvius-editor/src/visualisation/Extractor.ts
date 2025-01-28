@@ -1,4 +1,5 @@
-import { Widget } from "@theia/core/lib/browser";
+import { Content } from "../model/Content";
+import { VisualisationWidget } from "./VisualisationWidget";
 
 /**
  * Interface representing an Extractor, which is responsible for extracting content from a given widget.
@@ -12,5 +13,5 @@ export interface Extractor {
    * @param {Widget} widget - The widget instance from which content is to be extracted.
    * @return {string} The extracted textual content of the widget.
    */
-  extractContent(widget: Widget): string;
+  extractContent(widget: VisualisationWidget<any>): Promise<Content>;
 }

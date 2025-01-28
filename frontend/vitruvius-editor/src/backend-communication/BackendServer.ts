@@ -1,4 +1,4 @@
-import {inject, injectable} from "@theia/core/shared/inversify";
+import { inject, injectable } from "@theia/core/shared/inversify";
 
 @injectable()
 export class BackendServer {

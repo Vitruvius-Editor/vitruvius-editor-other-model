@@ -91,13 +91,6 @@
             <version>3.1.0</version>
         </dependency>
         <dependency>
-            <groupId>local.uml2</groupId>
-            <artifactId>uml</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/Dep/uml-5.0.0-v20140602-0749.jar</systemPath>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.ecore</artifactId>
             <version>2.21.0</version>
@@ -175,12 +168,20 @@
             <artifactId>org.eclipse.xtext.xbase.lib</artifactId>
             <version>2.36.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>local.uml2</groupId>
+            <artifactId>uml</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/Dependencies/uml-5.0.0-v20140602-0749.jar</systemPath>
+        </dependency>
         <dependency>
             <groupId>local.uml2.types</groupId>
             <artifactId>types</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/Dep/types-2.0.0-v20140602-0749.jar</systemPath>
+            <systemPath>${project.basedir}/Dependencies/types-2.0.0-v20140602-0749.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -188,7 +189,7 @@
             <artifactId>common</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/Dep/common-2.0.0-v20140602-0749.jar</systemPath>
+            <systemPath>${project.basedir}/Dependencies/common-2.0.0-v20140602-0749.jar</systemPath>
         </dependency>
 
     </dependencies>
