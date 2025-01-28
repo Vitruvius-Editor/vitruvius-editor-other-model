@@ -11,7 +11,7 @@ class TableDisplayContentMapperTest {
      val tableDisplayContentMapper = TableDisplayContentMapper.create<ClassTableEntry>()
 
      // Create a Table<ClassTableEntry> with sample data
-     val table = Table<ClassTableEntry>(
+     val table = Table(
       entries = setOf(
        ClassTableEntry(
         uuid = "uuid",

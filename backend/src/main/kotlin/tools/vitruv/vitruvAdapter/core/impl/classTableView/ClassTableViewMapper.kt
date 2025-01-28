@@ -8,7 +8,6 @@ import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.api.ViewMapper
 import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.TableDisplayContentMapper
-import kotlin.reflect.jvm.internal.impl.serialization.deserialization.ProtoContainer
 
 class ClassTableViewMapper: ViewMapper<Table<ClassTableEntry>> {
     /**
@@ -22,31 +21,30 @@ class ClassTableViewMapper: ViewMapper<Table<ClassTableEntry>> {
             if (rootObject !is Package) {
                 continue
             }
-            val packageObject = rootObject
             val entries = mutableSetOf<ClassTableEntry>()
-            packageObject.packagedElements.forEach{ element ->
-                    if (element !is Class) {
-                        return@forEach
-                    }
-                    entries.add(createClassEntryFromUmlClass(element))
+            rootObject.packagedElements.forEach { element ->
+                if (element !is Class) {
+                    return@forEach
+                }
+                entries.add(createClassEntryFromUmlClass(element))
             }
-           val window = Window(packageObject.name, Table(entries))
+            val window = Window(rootObject.name, Table(entries))
             windows.add(window)
         }
         return windows
     }
 
     private fun createClassEntryFromUmlClass(umlClass: Class): ClassTableEntry {
-        val uuid = umlClass.eResource().getURIFragment(umlClass)
-        val name = umlClass.name
-        val visibility = umlClass.visibility.literal
+        val uuid = umlClass.eResource()?.getURIFragment(umlClass) ?: ""
+        val name = umlClass.name ?: ""
+        val visibility = umlClass.visibility.literal ?: ""
         val isAbstract = umlClass.isAbstract
         val isFinal = umlClass.isFinalSpecialization
         val superClassName = umlClass.superClasses.firstOrNull()?.name ?: ""
-        val interfaces = umlClass.usedInterfaces.map { it.name }
+        val interfaces = umlClass.usedInterfaces.map { it.name } ?: emptyList()
         val attributeCount = umlClass.attributes.size
         val methodCount = umlClass.operations.size
-        val linesOfCode = umlClass.ownedBehaviors.filterIsInstance<OpaqueBehavior>().sumBy { it.bodies.size }
+        val linesOfCode = umlClass.ownedBehaviors.filterIsInstance<OpaqueBehavior>().sumBy { it.bodies.size } ?: 0
         return ClassTableEntry(uuid, name, visibility, isAbstract, isFinal, superClassName, interfaces, attributeCount, methodCount, linesOfCode)
     }
 
@@ -74,7 +72,9 @@ class ClassTableViewMapper: ViewMapper<Table<ClassTableEntry>> {
      * @return The view content.
      */
     override fun mapWindowsContentToEObjects(windows: List<Window<Table<ClassTableEntry>>>): List<EObject> {
-        TODO("Not yet implemented")
+       TODO(
+       )
+
     }
 
 }
