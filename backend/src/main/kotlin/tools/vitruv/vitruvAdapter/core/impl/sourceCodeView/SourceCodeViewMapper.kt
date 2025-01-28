@@ -194,19 +194,17 @@ class SourceCodeViewMapper: TextViewMapper() {
                             .joinToString { "${it.type?.name ?: "Unknown"} ${it.name}" }}) { \n"
             )
             //build the body of the method
-            if (operation.methods.isEmpty()) {
-                return stringBuilder.toString()
+            if (!operation.methods.isEmpty()) {
+                val behavior = operation.methods[0] as OpaqueBehavior
+                for (i in behavior.bodies.indices) {
+                    val body = behavior.bodies[i]
+                    stringBuilder.append(addTabSpacing(body.trimIndent()))
+                }
             }
-            val behavior = operation.methods[0] as OpaqueBehavior
-            for (i in behavior.bodies.indices) {
-                val body = behavior.bodies[i]
-                stringBuilder.append(addTabSpacing(body.trimIndent()))
-            }
+            stringBuilder.append("\n")
+            stringBuilder.append("}")
         }
 
-
-        stringBuilder.append("\n")
-        stringBuilder.append("}")
         return stringBuilder.toString()
     }
     private fun addTabSpacing(code: String): String {
