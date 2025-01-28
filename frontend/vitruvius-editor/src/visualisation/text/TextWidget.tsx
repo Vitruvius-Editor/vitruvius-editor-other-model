@@ -32,7 +32,7 @@ export class TextWidget extends VisualisationWidget<string> {
   render(): React.ReactElement {
     return (
       <div className="editor-container">
-        <textarea value={this.content} className="editor-window" onChange={this.handleChange} spellCheck="false"></textarea>
+        <textarea defaultValue={this.content} className="editor-window" onChange={this.handleChange} spellCheck="false"></textarea>
       </div>
     );
   }
