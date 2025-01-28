@@ -21,6 +21,7 @@ import { VitruviusImportProjectContribution } from "./menuCommands/importProject
 import { VitruviusRefreshProjectContribution } from "./menuCommands/refreshProjectCommand";
 import { VitruviusDeleteProjectContribution } from "./menuCommands/deleteProjectCommand";
 import { VitruviusEditProjectContribution } from "./menuCommands/editProjectCommand";
+import '../../src/browser/style/index.css';
 
 /**
  * This ContainerModule binds the services and contributions of the frontend part of the application.
