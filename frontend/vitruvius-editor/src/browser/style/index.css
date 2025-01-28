@@ -5,3 +5,21 @@
   padding: 10px;
   text-transform: uppercase;
 }
+
+.editor-window {
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    border: none; /* Remove border */
+    resize: none; /* Disable resizing */
+    padding: 10px; /* Optional padding */
+    box-sizing: border-box; /* Include padding in width/height */
+    font-family: inherit; /* Inherit font from body */
+    font-size: 12px; /* Set a default font size */
+    background-color: var(--theia-layout-color0); /* Optional background color */
+  	color: var(--theia-ui-font-color1);
+}
+
+.editor-container {
+	width: 100%;
+	height: 100%;
+}
