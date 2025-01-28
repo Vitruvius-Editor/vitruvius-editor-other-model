@@ -11,6 +11,7 @@ import java.util.*
  * This rest controller handles all requests that deal with the management of connections.
  *
  */
+@CrossOrigin
 @RestController
 @RequestMapping(value = ["/api/v1"])
 class ConnectionController {

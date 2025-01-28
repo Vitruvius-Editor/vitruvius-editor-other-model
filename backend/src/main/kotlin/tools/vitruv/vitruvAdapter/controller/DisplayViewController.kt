@@ -9,6 +9,8 @@ import tools.vitruv.vitruvAdapter.dto.WindowSelectionRequest
 import tools.vitruv.vitruvAdapter.services.VitruviusService
 import java.util.*
 
+
+@CrossOrigin
 @RestController
 @RequestMapping(value = ["/api/v1"])
 class DisplayViewController {
