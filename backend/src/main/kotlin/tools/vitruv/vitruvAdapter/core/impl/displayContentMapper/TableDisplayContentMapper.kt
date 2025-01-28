@@ -45,7 +45,7 @@ class TableDisplayContentMapper<P> @PublishedApi internal constructor(private va
      * @return the name of the visualizer
      */
     override fun getVisualizerName(): String {
-        return VisualizerType.TextVisualizer.visualizerName
+        return VisualizerType.ClassTableView.visualizerName
     }
 
 

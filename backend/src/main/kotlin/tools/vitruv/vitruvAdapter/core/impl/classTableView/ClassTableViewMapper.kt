@@ -4,6 +4,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.uml2.uml.Class
 import org.eclipse.uml2.uml.OpaqueBehavior
 import org.eclipse.uml2.uml.Package
+import org.eclipse.uml2.uml.UMLFactory
 import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.api.ViewMapper
 import tools.vitruv.vitruvAdapter.core.api.Window
@@ -54,8 +55,20 @@ class ClassTableViewMapper: ViewMapper<Table<ClassTableEntry>> {
      * @return The names of the windows that are available in the view.
      */
     override fun mapViewToWindows(rootObjects: List<EObject>): Set<String> {
-        //Collect all windows, which are the names of the packages
-        return rootObjects.filterIsInstance<Package>().map { it.name }.toSet()
+        val windows = mutableSetOf<String>()
+        for (rootObject in rootObjects) {
+            val iterator = rootObject.eAllContents()
+            while (iterator.hasNext()) {
+                val next = iterator.next()
+                if (next is Package) {
+                    windows.add(next.name)
+                }
+            }
+            if(rootObject is Package){
+                windows.add(rootObject.name)
+            }
+        }
+        return windows
     }
 
     /**

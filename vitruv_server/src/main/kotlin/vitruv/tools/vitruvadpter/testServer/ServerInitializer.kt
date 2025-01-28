@@ -84,13 +84,6 @@ class ServerInitializer {
         )
 
 
-
-
-
-
-
-
-
         var view = getUMLView().withChangeDerivingTrait()
         view.registerRoot(examplePackage, umlUri)
         view.commitChanges()

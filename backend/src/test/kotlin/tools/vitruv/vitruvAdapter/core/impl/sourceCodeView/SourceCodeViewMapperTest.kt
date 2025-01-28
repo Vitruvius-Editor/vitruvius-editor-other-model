@@ -75,7 +75,7 @@ class SourceCodeViewMapperTest {
         )
 
         operation.methods.add(body)
-        eObjects = listOf(examplePackage)
+        eObjects = listOf(umlClass)
     }
 
     @Test
