@@ -23,3 +23,16 @@
 	width: 100%;
 	height: 100%;
 }
+
+.display-view-list-container ul, li {
+	list-style-type: none;
+}
+
+.display-view-list-container {
+	margin: auto;
+	padding: auto;
+}
+
+.display-view-list {
+	padding-left: 0px;
+}

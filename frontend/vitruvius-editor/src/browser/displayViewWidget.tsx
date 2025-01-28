@@ -100,13 +100,13 @@ export class DisplayViewWidget extends ReactWidget {
       return (
         <div>
           <p>The following views are avaliable for the loaded project:</p>
-          <div>
-            <ul>
+          <div className="display-view-list-container">
+            <ul className="display-view-list">
               {this.widgetItems.map((widgetItem) => {
                 // Map each widget item to a html list item and show the windows if the widget item is clicked.
                 return (
-                  <div>
-                    <li onClick={() => this.widgetItemClickHandler(widgetItem)}>
+                  <div className="display-view-container">
+                    <li onClick={() => this.widgetItemClickHandler(widgetItem)} className="display-view-item">
                       {widgetItem.displayView.name}
                     </li>
                     {this.Windows(widgetItem)}
@@ -129,11 +129,11 @@ export class DisplayViewWidget extends ReactWidget {
     if (windowsNonNull.length != 0) {
       // Return a list of windows if there are any.
       return (
-        <div>
+        <div className="window-container">
           <ul>
             {windowsNonNull.map((window) => (
               <div>
-                <li onClick={() => this.windowClickHandler(widgetItem, window)}>
+                <li onClick={() => this.windowClickHandler(widgetItem, window)} className="window-item">
                   {window}
                 </li>
               </div>
