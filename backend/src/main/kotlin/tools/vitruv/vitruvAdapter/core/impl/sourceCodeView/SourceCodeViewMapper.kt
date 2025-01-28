@@ -7,6 +7,7 @@ import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.uml2.uml.Class
+import org.eclipse.uml2.uml.Enumeration
 import org.eclipse.uml2.uml.Interface
 import org.eclipse.uml2.uml.OpaqueBehavior
 import org.eclipse.uml2.uml.Package
@@ -27,21 +28,56 @@ class SourceCodeViewMapper: TextViewMapper() {
     override fun  mapEObjectsToWindowsContent(rootObjects: List<EObject>): List<Window<String>> {
         val windows = mutableSetOf<Window<String>>()
         rootObjects.forEach {
-            if (it is Package) {
-                it.packagedElements.forEach { element ->
-                    if (element is Class) {
-                        val window = Window(element.name, createSourceCodeForClass(element))
-                        windows.add(window)
-                    }
-                }
-            }
             if(it is Class){
                 val window = Window(it.name, createSourceCodeForClass(it))
                 windows.add(window)
             }
+            if (it is Interface){
+                val window = Window(it.name, createSourceCodeForInterface(it))
+                windows.add(window)
+            }
+            if (it is Enumeration){
+                val window = Window(it.name, createSourceCodeForEnum(it))
+                windows.add(window)
+            }
+
         }
         return windows.toList()
     }
+
+    private fun createSourceCodeForEnum(enumObject: Enumeration): String {
+        val stringBuilder = StringBuilder()
+        stringBuilder.append("enum ${enumObject.name} {\n")
+        stringBuilder.append("\n}")
+        //TODO: Add enum values
+        return stringBuilder.toString()
+    }
+
+    private fun createSourceCodeForInterface(interfaceObject: Interface): String {
+        val stringBuilder = StringBuilder()
+        stringBuilder.append("interface ${interfaceObject.name} {\n")
+        stringBuilder.append(addTabSpacing(buildMethodsForInterface(interfaceObject)))
+        stringBuilder.append("\n}")
+        return stringBuilder.toString()
+    }
+
+    private fun buildMethodsForInterface(interfaceObject: Interface): String {
+        val stringBuilder = StringBuilder()
+        stringBuilder.append("\n")
+        interfaceObject.ownedOperations.forEach { operation ->
+            stringBuilder.append(
+                "${operation.visibility?.literal ?: "Unknown"} ${operation.type?.name ?: "Unknown"} ${operation.name}" +
+                        "(${
+                            operation.ownedParameters
+                                .filter { it.direction == ParameterDirectionKind.IN_LITERAL }
+                                .joinToString { "${it.type?.name ?: "Unknown"} ${it.name}" }
+                        }) { \n"
+            )
+        }
+        stringBuilder.append("\n")
+        stringBuilder.append("}")
+        return stringBuilder.toString()
+        }
 
     override fun mapWindowsContentToEObjects(windows: List<Window<String>>): List<EObject> {
         val umlPackage = UMLFactory.eINSTANCE.createPackage()
