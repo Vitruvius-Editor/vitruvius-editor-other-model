@@ -1,17 +1,32 @@
 package tools.vitruv.vitruvAdapter.core.impl.displayContentMapper
 
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
-import tools.vitruv.vitruvAdapter.core.impl.classTableView.ClassTable
+import tools.vitruv.vitruvAdapter.core.impl.classTableView.Table
 
-class TableDisplayContentMapper: DisplayContentMapper<ClassTable> {
+class TableDisplayContentMapper<P> @PublishedApi internal constructor(private val typeReference:
+                    TypeReference<Table<P>>): DisplayContentMapper<Table<P>> {
 
+    private val objectMapper: ObjectMapper = jacksonObjectMapper()
+
+    companion object {
+        /**
+         * Factory method to create an instance of TableDisplayContentMapper with type information.
+         */
+        inline fun <reified P> create(): TableDisplayContentMapper<P> {
+            val typeRef = object : TypeReference<Table<P>>() {}
+            return TableDisplayContentMapper(typeRef)
+        }
+    }
     /**
      * This function is used to parse the content of a window to a string.
      * @param content the content of the window
      * @return the string representation of the content
      */
-    override fun parseContent(content: ClassTable): String {
-        TODO("Not yet implemented")
+    override fun parseContent(content: Table<P>): String {
+        return objectMapper.writeValueAsString(content)
     }
 
     /**
@@ -19,8 +34,8 @@ class TableDisplayContentMapper: DisplayContentMapper<ClassTable> {
      * @param content the string representation of the content
      * @return the content itself
      */
-    override fun parseString(content: String): ClassTable {
-        TODO("Not yet implemented")
+    override fun parseString(content: String): Table<P> {
+        return objectMapper.readValue(content, typeReference)
     }
 
     /**
@@ -29,7 +44,7 @@ class TableDisplayContentMapper: DisplayContentMapper<ClassTable> {
      * @return the name of the visualizer
      */
     override fun getVisualizerName(): String {
-        TODO("Not yet implemented")
+        return "TableVisualizer"
     }
 
 

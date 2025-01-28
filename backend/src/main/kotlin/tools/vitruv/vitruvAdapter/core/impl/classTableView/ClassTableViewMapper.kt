@@ -8,15 +8,16 @@ import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.api.ViewMapper
 import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.TableDisplayContentMapper
+import kotlin.reflect.jvm.internal.impl.serialization.deserialization.ProtoContainer
 
-class ClassTableViewMapper: ViewMapper<ClassTable> {
+class ClassTableViewMapper: ViewMapper<Table<ClassTableEntry>> {
     /**
      * Maps the given view content to a json string, which can be displayed in the graphical editor.
      * @param rootObjects The view content to map.
      * @return The json string representing the view content.
      */
-    override fun mapEObjectsToWindowsContent(rootObjects: List<EObject>): List<Window<ClassTable>> {
-        val windows = mutableListOf<Window<ClassTable>>()
+    override fun mapEObjectsToWindowsContent(rootObjects: List<EObject>): List<Window<Table<ClassTableEntry>>> {
+        val windows = mutableListOf<Window<Table<ClassTableEntry>>>()
         for (rootObject in rootObjects) {
             if (rootObject !is Package) {
                 continue
@@ -29,7 +30,7 @@ class ClassTableViewMapper: ViewMapper<ClassTable> {
                     }
                     entries.add(createClassEntryFromUmlClass(element))
             }
-           val window = Window(packageObject.name, ClassTable(entries))
+           val window = Window(packageObject.name, Table(entries))
             windows.add(window)
         }
         return windows
@@ -63,8 +64,8 @@ class ClassTableViewMapper: ViewMapper<ClassTable> {
      * Gets the display content of this view mapper, which is able to map the view content to a json string and vice versa.
      * @return The display content of this view mapper.
      */
-    override fun getDisplayContent(): DisplayContentMapper<ClassTable> {
-        return TableDisplayContentMapper()
+    override fun getDisplayContent(): DisplayContentMapper<Table<ClassTableEntry>> {
+        return TableDisplayContentMapper.create<ClassTableEntry>()
     }
 
     /**
@@ -72,7 +73,7 @@ class ClassTableViewMapper: ViewMapper<ClassTable> {
      * @param json The json string to map.
      * @return The view content.
      */
-    override fun mapWindowsContentToEObjects(windows: List<Window<ClassTable>>): List<EObject> {
+    override fun mapWindowsContentToEObjects(windows: List<Window<Table<ClassTableEntry>>>): List<EObject> {
         TODO("Not yet implemented")
     }
 
