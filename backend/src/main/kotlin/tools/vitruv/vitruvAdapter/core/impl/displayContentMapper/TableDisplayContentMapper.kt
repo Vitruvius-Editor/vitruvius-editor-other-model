@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
+import tools.vitruv.vitruvAdapter.core.impl.VisualizerType
 import tools.vitruv.vitruvAdapter.core.impl.classTableView.Table
 
 class TableDisplayContentMapper<P> @PublishedApi internal constructor(private val typeReference:
@@ -44,7 +45,7 @@ class TableDisplayContentMapper<P> @PublishedApi internal constructor(private va
      * @return the name of the visualizer
      */
     override fun getVisualizerName(): String {
-        return "TableVisualizer"
+        return VisualizerType.TextVisualizer.visualizerName
     }
 
 
