@@ -22,6 +22,9 @@ import { VitruviusRefreshProjectContribution } from "./menuCommands/refreshProje
 import { VitruviusDeleteProjectContribution } from "./menuCommands/deleteProjectCommand";
 import { VitruviusEditProjectContribution } from "./menuCommands/editProjectCommand";
 import '../../src/browser/style/index.css';
+import {TableVisualizer} from "../visualisation/table/TableVisualizer";
+import {TableExtractor} from "../visualisation/table/TableExtractor";
+import {TableWidget} from "../visualisation/table/TableWidget";
 
 /**
  * This ContainerModule binds the services and contributions of the frontend part of the application.
@@ -36,6 +39,8 @@ export default new ContainerModule((bind) => {
   // All bindings for the visualisation of DisplayViews
   bind(SourceCodeVisualizer).toSelf().inSingletonScope();
   bind(SourceCodeExtractor).toSelf().inSingletonScope();
+  bind(TableVisualizer).toSelf().inSingletonScope();
+  bind(TableExtractor).toSelf().inSingletonScope();
   bind(DisplayViewResolver)
     .toDynamicValue((ctx) => {
       let displayViewResolver = new DisplayViewResolver();
@@ -44,6 +49,7 @@ export default new ContainerModule((bind) => {
         ctx.container.get(SourceCodeVisualizer),
         ctx.container.get(SourceCodeExtractor),
       );
+      displayViewResolver.registerDisplayView("TableVisualizer", ctx.container.get(TableVisualizer), ctx.container.get(TableExtractor));
       return displayViewResolver;
     })
     .inSingletonScope();
@@ -59,6 +65,19 @@ export default new ContainerModule((bind) => {
       return child.get(TextWidget);
     },
   }));
+
+  // Factory for creating a TableWidget
+  bind(WidgetFactory).toDynamicValue((ctx) => ({
+    id: TableWidget.ID,
+    createWidget: (widgetLabel: string) => {
+      const child = new Container({ defaultScope: "Singleton" });
+      child.parent = ctx.container;
+      child.bind(TableWidget).toSelf();
+      child.get(TableWidget).setLabel(widgetLabel);
+      return child.get(TableWidget);
+    },
+  }));
+
 
   // All bindings for various UI contributions
   bind(CommandContribution).to(VitruviusHelpCommandContribution);
