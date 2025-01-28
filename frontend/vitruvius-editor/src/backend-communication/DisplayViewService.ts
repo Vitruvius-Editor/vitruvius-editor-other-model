@@ -1,7 +1,8 @@
 import { BackendServer } from "./BackendServer";
 import { DisplayView } from "../model/DisplayView";
 import { Selector } from "../model/Selector";
-import {inject, injectable} from "@theia/core/shared/inversify";
+import { inject, injectable } from "@theia/core/shared/inversify";
+import { Content } from "../model/Content";
 
 @injectable()
 export class DisplayViewService {
@@ -19,32 +20,34 @@ export class DisplayViewService {
   }
 
   async getDisplayViewWindows(
-	connectionId: string,
+    connectionId: string,
     displayViewName: string,
-  ): Promise<Window[] | null> {
-    return this.backendServer.sendWebRequest(
-      `/api/v1/connection/${connectionId}/displayView/${displayViewName}`,
-      "GET",
-    );
+  ): Promise<string[] | null> {
+    return this.backendServer
+      .sendWebRequest<WindowResponse>(
+        `/api/v1/connection/${connectionId}/displayView/${displayViewName}`,
+        "GET",
+      )
+      .then((windowResponse) => windowResponse.windows);
   }
 
   async getDisplayViewContent(
-	connectionId: string,
+    connectionId: string,
     displayViewName: string,
     selector: Selector,
-  ): Promise<string | null> {
-    return this.backendServer.sendWebRequest(
-      `/api/v1/connection/${connectionId}/displayView/${displayViewName}/content`,
+  ): Promise<Content | null> {
+    return this.backendServer.sendWebRequest<Content>(
+      `/api/v1/connection/${connectionId}/displayView/${displayViewName}`,
       "POST",
       selector,
     );
   }
 
   async updateDisplayViewContent(
-	connectionId: string,
+    connectionId: string,
     displayViewName: string,
-    updatedContent: string,
-  ): Promise<string | null> {
+    updatedContent: Content,
+  ): Promise<Content | null> {
     return this.backendServer.sendWebRequest(
       `/api/v1/connection/${connectionId}/displayView/${displayViewName}`,
       "PUT",
@@ -52,3 +55,5 @@ export class DisplayViewService {
     );
   }
 }
+
+type WindowResponse = { windows: string[] };

@@ -1,9 +1,9 @@
+import { Content } from "../../model/Content";
 import { Extractor } from "../Extractor";
-import { Widget } from "@theia/core/lib/browser";
+import { VisualisationWidget } from "../VisualisationWidget";
 
 export class SourceCodeExtractor implements Extractor {
-  extractContent(widget: Widget): string {
-    // Implementation goes here, for now returning an empty string
-    return "";
+  extractContent(widget: VisualisationWidget<any>): Promise<Content> {
+    throw new Error("Method not implemented.");
   }
 }
