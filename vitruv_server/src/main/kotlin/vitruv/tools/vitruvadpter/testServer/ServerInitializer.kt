@@ -106,6 +106,7 @@ class ServerInitializer {
             System.out.println("Hello World");
         """.trimIndent()
         )
+        
         var view = getUMLView().withChangeDerivingTrait()
         view.registerRoot(examplePackage, umlUri)
         view.commitChanges()

@@ -10,6 +10,8 @@ import tools.vitruv.framework.remote.client.VitruvClientFactory
 import tools.vitruv.vitruvAdapter.core.impl.DefaultDisplayViewRepositoryFactory
 import tools.vitruv.vitruvAdapter.core.impl.DisplayViewRepository
 import tools.vitruv.vitruvAdapter.core.impl.GenericDisplayView
+import tools.vitruv.vitruvAdapter.core.impl.classTableView.ClassTableContentSelector
+import tools.vitruv.vitruvAdapter.core.impl.classTableView.ClassTableViewMapper
 import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeViewMapper
 import tools.vitruv.vitruvAdapter.core.impl.selector.AllSelector
 import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeContentSelector
@@ -33,9 +35,13 @@ class TestVitruvAdapter {
         displayViewRepository = DefaultDisplayViewRepositoryFactory().createDisplayViewRepository()
         val sourceCodeDisplayView = GenericDisplayView("SourceCode", "UML", SourceCodeViewMapper() as ViewMapper<Any?>, AllSelector(),
             contentSelector)
+        val classTableContentSelector = ClassTableContentSelector()
+        val classTableDisplayView = GenericDisplayView("ClassTable", "UML", ClassTableViewMapper() as ViewMapper<Any?>, AllSelector(),
+            classTableContentSelector)
 
         adapter.connectClient(vitruvClient)
         displayViewRepository.registerDisplayView(sourceCodeDisplayView)
+        displayViewRepository.registerDisplayView(classTableDisplayView)
         adapter.setDisplayViewContainer(displayViewRepository)
     }
 
@@ -47,7 +53,7 @@ class TestVitruvAdapter {
 
     @Test
     fun testGetWindows(){
-        val displayView = displayViewRepository.getDisplayView("SourceCode")!!
+        val displayView = displayViewRepository.getDisplayView("ClassTable")!!
         val windows = adapter.getWindows(displayView)
         println(windows)
         val content = adapter.createWindowContent(displayView, windows)
