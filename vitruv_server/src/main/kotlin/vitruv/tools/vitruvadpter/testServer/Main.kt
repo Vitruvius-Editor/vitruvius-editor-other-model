@@ -1,18 +1,39 @@
 package vitruv.tools.vitruvadpter.testServer
 
 import org.eclipse.uml2.uml.UMLFactory
+import tools.mdsd.jamopp.model.java.containers.JavaRoot
 import tools.vitruv.framework.remote.client.VitruvClientFactory
 import java.nio.file.Path
+import tools.mdsd.jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser
+import tools.mdsd.jamopp.printer.JaMoPPPrinter
+import java.io.File
+import java.io.FileInputStream
+import java.io.InputStream
+import java.nio.file.Files
 
 /**
  * Starts the server
  */
 
 fun main() {
-    val serverInitializer = ServerInitializer()
-    val server = serverInitializer.initialize()
-    server.start()
-    println("Vitruvius server started on: " + serverInitializer.serverPort)
+//    val serverInitializer = ServerInitializer()
+//    val server = serverInitializer.initialize()
+//    server.start()
+//    println("Vitruvius server started on: " + serverInitializer.serverPort)
+
+
+    val javaFile = File("C:\\Users\\amira\\Desktop\\vitruvius-editor2\\vitruv_server\\src\\main\\kotlin\\vitruv\\tools\\vitruvadpter\\testServer\\TestClass.java")
+
+    val fileName = "TestClass.java"
+    try{
+        val inputStream: InputStream = FileInputStream("C:\\Users\\amira\\Desktop\\vitruvius-editor2\\vitruv_server\\src\\main\\kotlin\\vitruv\\tools\\vitruvadpter\\testServer\\TestClass.java")
+        val root = JaMoPPJDTSingleFileParser().parse(fileName, inputStream)
+        JaMoPPPrinter.print(root ,Path.of("src/main/resources/output.txt"))
+    } catch (e: Exception){
+        e.printStackTrace()
+    }
+
+
 
     //clientTest(serverInitializer)
 }

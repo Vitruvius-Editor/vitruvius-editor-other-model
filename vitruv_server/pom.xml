@@ -216,6 +216,47 @@
             <systemPath>${project.basedir}/Dependencies/tools/mdsd/jamopp.resource/6.0.0-SNAPSHOT/jamopp.resource-6.0.0-SNAPSHOT.jar</systemPath>
         </dependency>
 
+        <dependency>
+            <groupId>local.java</groupId>
+            <artifactId>printer</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/Dependencies/tools/mdsd/jamopp.printer/6.0.0-SNAPSHOT/jamopp.printer-6.0.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>local.java</groupId>
+            <artifactId>parser.bcel</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/Dependencies/tools/mdsd/jamopp.parser.bcel/6.0.0-SNAPSHOT/jamopp.parser.bcel-6.0.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>local.java</groupId>
+            <artifactId>parser.jdt</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/Dependencies/tools/mdsd/jamopp.parser.jdt/6.0.0-SNAPSHOT/jamopp.parser.jdt-6.0.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>local.java</groupId>
+            <artifactId>parser.jdt.singleFile</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/Dependencies/tools/mdsd/jamopp.parser.jdt.singlefile/6.0.0-SNAPSHOT/jamopp.parser.jdt.singlefile-6.0.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>local.java</groupId>
+            <artifactId>parser.resolution</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/Dependencies/tools/mdsd/jamopp.resolution/6.0.0-SNAPSHOT/jamopp.resolution-6.0.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+
+
     </dependencies>
 
 </project>
