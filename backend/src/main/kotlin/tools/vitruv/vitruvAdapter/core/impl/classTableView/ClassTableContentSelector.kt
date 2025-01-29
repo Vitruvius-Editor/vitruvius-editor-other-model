@@ -15,7 +15,7 @@ class ClassTableContentSelector: ContentSelector {
         view: View,
         windows: Set<String>
     ): List<EObject> {
-        val rootObjects = view.rootObjects
+        val rootObjects = view.rootObjects.toList()
         for (ePackage in rootObjects) {
 
             val iterator = ePackage.eAllContents()
@@ -37,10 +37,12 @@ class ClassTableContentSelector: ContentSelector {
 
 
    private fun getClassesForPackage(ePackage: Package) {
-        for(element in ePackage.packagedElements){
-            if(element !is Class){
-                ePackage.packagedElements.remove(element)
+        val elementsToRemove = mutableListOf<EObject>()
+        for (element in ePackage.packagedElements) {
+            if (element !is Class) {
+                elementsToRemove.add(element)
             }
         }
+        ePackage.packagedElements.removeAll(elementsToRemove)
     }
 }

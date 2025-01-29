@@ -5,10 +5,14 @@ import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.emf.ecore.resource.ResourceSet
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.uml2.uml.Type
 import org.eclipse.uml2.uml.UMLFactory
 import org.eclipse.uml2.uml.UMLPackage
 import org.eclipse.uml2.uml.VisibilityKind
+import org.eclipse.uml2.uml.internal.impl.LiteralIntegerImpl
+import org.eclipse.uml2.uml.internal.impl.PrimitiveTypeImpl
 import org.eclipse.uml2.uml.internal.impl.UMLPackageImpl
 import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl
 import tools.vitruv.change.atomic.AtomicPackage
@@ -26,6 +30,7 @@ import tools.vitruv.framework.vsum.VirtualModelBuilder
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
+import java.rmi.registry.Registry
 
 /**
  * Initializes the server
@@ -80,10 +85,39 @@ class ServerInitializer {
         val examplePackage = factory.createPackage()
         examplePackage.name = "examplePackage"
 
+        val umlInterface = examplePackage.createOwnedInterface("Interface1")
+
 
         val umlClass = examplePackage.createOwnedClass("Class1", false)
 
-        examplePackage.createOwnedClass("Class2", false)
+        umlClass.setIsFinalSpecialization(true)
+
+
+        val class2 = examplePackage.createOwnedClass("Class2", true)
+        val intatt = class2.createOwnedAttribute("myIntAttribute", null)
+        class2.createOwnedOperation("myOperation", null, null)
+
+        val intType = factory.createPrimitiveType()
+        intType.name = "int"
+
+        val initialValue2 = factory.createLiteralInteger()
+        (initialValue2 as LiteralIntegerImpl).value = 5
+        intatt.defaultValue = initialValue2
+
+
+        val class1att = umlClass.createOwnedAttribute("myIntAttribute", intType)
+
+        val initialValue1 = factory.createLiteralInteger()
+        (initialValue2 as LiteralIntegerImpl).value = 20
+        class1att.defaultValue = initialValue2
+
+        examplePackage.packagedElements.add(intType)
+
+        umlClass.superClasses.add(class2)
+        umlClass.createInterfaceRealization("interfaceRealization", umlInterface)
+
+
+
 
         val attribute = umlClass.createOwnedAttribute("myIntAttribute", null)
         attribute.visibility = VisibilityKind.PUBLIC_LITERAL
@@ -92,10 +126,13 @@ class ServerInitializer {
         operationParameterNames.add("param1")
         operationParameterNames.add("param2")
 
-        val operationParameterTypes: EList<Type> = BasicEList<Type>()
-        operationParameterTypes.add(null)
 
-        umlClass.createOwnedOperation("myOperation", operationParameterNames, operationParameterTypes)
+        val operationParameterTypes: EList<Type> = BasicEList<Type>()
+        operationParameterTypes.add(intType)
+        operationParameterTypes.add(intType)
+
+        val operation = umlClass.createOwnedOperation("myOperation", operationParameterNames, operationParameterTypes)
+        operation.type = intType
 
         //add body to operation
         val body = factory.createOpaqueBehavior()
