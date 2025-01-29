@@ -30,7 +30,10 @@ import tools.vitruv.framework.vsum.VirtualModelBuilder
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
-import java.rmi.registry.Registry
+import tools.mdsd.jamopp.model.java.*
+import tools.mdsd.jamopp.model.java.impl.JavaFactoryImpl
+import tools.mdsd.jamopp.model.java.impl.JavaPackageImpl
+
 
 /**
  * Initializes the server
@@ -61,6 +64,9 @@ class ServerInitializer {
 
     private fun registerRegistry() {
         Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", UMLResourceFactoryImpl())
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("java", JavaFactoryImpl())
+
+        EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackageImpl.eINSTANCE)
         EPackage.Registry.INSTANCE.put(CorrespondencePackage.eNS_URI, CorrespondencePackageImpl.eINSTANCE)
         EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackageImpl.eINSTANCE)
         EPackage.Registry.INSTANCE.put(AtomicPackage.eNS_URI, AtomicPackageImpl.eINSTANCE)
@@ -148,6 +154,9 @@ class ServerInitializer {
         view.registerRoot(examplePackage, umlUri)
         view.commitChanges()
         view.close()
+
+
+
     }
 
 

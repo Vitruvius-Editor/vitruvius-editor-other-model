@@ -192,6 +192,30 @@
             <systemPath>${project.basedir}/Dependencies/common-2.0.0-v20140602-0749.jar</systemPath>
         </dependency>
 
+        <dependency>
+            <groupId>local.java</groupId>
+            <artifactId>java</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/Dependencies/tools/mdsd/jamopp.model/6.0.0-SNAPSHOT/jamopp.model-6.0.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>local.java</groupId>
+            <artifactId>parser</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/Dependencies/tools/mdsd/jamopp.parser/6.0.0-SNAPSHOT/jamopp.parser-6.0.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>local.java</groupId>
+            <artifactId>resource</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/Dependencies/tools/mdsd/jamopp.resource/6.0.0-SNAPSHOT/jamopp.resource-6.0.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+
     </dependencies>
 
 </project>
