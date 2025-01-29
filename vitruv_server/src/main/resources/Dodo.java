@@ -1,10 +1,7 @@
-package vitruv.tools.vitruvadpter.testServer;
+
 
 public class TestClass {
-
-
     int a = 0;
-
 
     public void testMethod() {
         System.out.println("Hello World");
@@ -13,5 +10,4 @@ public class TestClass {
     public void testMethod2() {
         System.out.println("Hello World");
     }
-
 }

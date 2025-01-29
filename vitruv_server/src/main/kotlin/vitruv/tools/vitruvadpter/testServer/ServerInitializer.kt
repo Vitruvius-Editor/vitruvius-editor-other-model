@@ -3,18 +3,34 @@ package vitruv.tools.vitruvadpter.testServer
 import org.eclipse.emf.common.util.BasicEList
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 import org.eclipse.uml2.uml.Type
 import org.eclipse.uml2.uml.UMLFactory
 import org.eclipse.uml2.uml.UMLPackage
 import org.eclipse.uml2.uml.VisibilityKind
 import org.eclipse.uml2.uml.internal.impl.LiteralIntegerImpl
-import org.eclipse.uml2.uml.internal.impl.PrimitiveTypeImpl
 import org.eclipse.uml2.uml.internal.impl.UMLPackageImpl
 import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl
+import tools.mdsd.jamopp.model.java.*
+import tools.mdsd.jamopp.model.java.classifiers.Class
+import tools.mdsd.jamopp.model.java.classifiers.ClassifiersFactory
+import tools.mdsd.jamopp.model.java.classifiers.ClassifiersPackage
+import tools.mdsd.jamopp.model.java.classifiers.impl.ClassifiersFactoryImpl
+import tools.mdsd.jamopp.model.java.containers.ContainersFactory
+import tools.mdsd.jamopp.model.java.containers.ContainersPackage
+import tools.mdsd.jamopp.model.java.containers.Package
+import tools.mdsd.jamopp.model.java.containers.impl.ContainersFactoryImpl
+import tools.mdsd.jamopp.model.java.containers.impl.ContainersPackageImpl
+import tools.mdsd.jamopp.model.java.impl.JavaFactoryImpl
+import tools.mdsd.jamopp.model.java.impl.JavaPackageImpl
+import tools.mdsd.jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser
+import tools.mdsd.jamopp.resource.JavaResource2
+import tools.mdsd.jamopp.resource.JavaResource2Factory
 import tools.vitruv.change.atomic.AtomicPackage
 import tools.vitruv.change.atomic.impl.AtomicPackageImpl
 import tools.vitruv.change.correspondence.CorrespondencePackage
@@ -27,12 +43,11 @@ import tools.vitruv.framework.views.ViewType
 import tools.vitruv.framework.views.impl.IdentityMappingViewType
 import tools.vitruv.framework.vsum.VirtualModel
 import tools.vitruv.framework.vsum.VirtualModelBuilder
+import java.io.FileInputStream
 import java.io.IOException
+import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
-import tools.mdsd.jamopp.model.java.*
-import tools.mdsd.jamopp.model.java.impl.JavaFactoryImpl
-import tools.mdsd.jamopp.model.java.impl.JavaPackageImpl
 
 
 /**
@@ -58,13 +73,47 @@ class ServerInitializer {
     fun initialize(): VitruvServer {
         registerRegistry()
         val vitruvServer = VitruvServer(VirtualModelInitializer { vsum }, serverPort, "localhost")
-        generatePackage()
+  //generatePackage()
+
+        genrateJavaCode()
         return vitruvServer
     }
 
+    private fun genrateJavaCode(){
+
+        val fileName = "Dodo.java"
+        try{
+//            val inputStream: InputStream = FileInputStream("C:\\Users\\amira\\Desktop\\vitruvius-editor2\\vitruv_server\\src\\main\\resources\\Dodo.java")
+//            val root = JaMoPPJDTSingleFileParser().parse(fileName, inputStream).classifiersInSamePackage.first() as Class
+
+
+            val root = ClassifiersFactory.eINSTANCE.createClass()
+            root.name = "Dodo"
+            val javaPackage = ContainersFactory.eINSTANCE.createPackage()
+            javaPackage.name = "examplePackage"
+            javaPackage.classifiers.add(root)
+
+
+
+
+            val view = getJavaView().withChangeDerivingTrait()
+            view.registerRoot(javaPackage, javaUri)
+            view.commitChanges()
+            view.close()
+        } catch (e: Exception){
+            e.printStackTrace()
+        }
+    }
+
+
+
     private fun registerRegistry() {
         Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", UMLResourceFactoryImpl())
-        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("java", JavaFactoryImpl())
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("java", JavaResource2Factory())
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("Containers", ContainersFactoryImpl())
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("xmi", XMIResourceFactoryImpl())
+
+
 
         EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackageImpl.eINSTANCE)
         EPackage.Registry.INSTANCE.put(CorrespondencePackage.eNS_URI, CorrespondencePackageImpl.eINSTANCE)

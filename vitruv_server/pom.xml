@@ -91,27 +91,6 @@
             <version>3.1.0</version>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore</artifactId>
-            <version>2.21.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.common</artifactId>
-            <version>2.21.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.mwe.utils</artifactId>
-            <version>1.12.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.mwe2.runtime</artifactId>
-            <version>2.20.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-test-junit5</artifactId>
             <version>2.0.21</version>
@@ -143,31 +122,7 @@
             <artifactId>antlr-runtime</artifactId>
             <version>3.2</version>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-            <version>2.37.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.xtext</groupId>
-            <artifactId>org.eclipse.xtext</artifactId>
-            <version>2.36.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.xtext</groupId>
-            <artifactId>org.eclipse.xtext.common.types</artifactId>
-            <version>2.36.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.xtext</groupId>
-            <artifactId>org.eclipse.xtext.util</artifactId>
-            <version>2.36.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.xtext</groupId>
-            <artifactId>org.eclipse.xtext.xbase.lib</artifactId>
-            <version>2.36.0</version>
-        </dependency>
+
 
         <dependency>
             <groupId>local.uml2</groupId>
@@ -254,6 +209,12 @@
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/Dependencies/tools/mdsd/jamopp.resolution/6.0.0-SNAPSHOT/jamopp.resolution-6.0.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jdt</groupId>
+            <artifactId>org.eclipse.jdt.core</artifactId>
+            <version>3.38.0</version>
         </dependency>
 
 
