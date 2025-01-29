@@ -25,6 +25,9 @@ import '../../src/browser/style/index.css';
 import {TableVisualizer} from "../visualisation/table/TableVisualizer";
 import {TableExtractor} from "../visualisation/table/TableExtractor";
 import {TableWidget} from "../visualisation/table/TableWidget";
+import {PackageDiagramWidget} from "../visualisation/uml/PackageDiagramWidget";
+import {PackageDiagramVisualizer} from "../visualisation/uml/PackageDiagramVisualizer";
+import {PackageDiagramExtractor} from "../visualisation/uml/PackageDiagramExtractor";
 
 /**
  * This ContainerModule binds the services and contributions of the frontend part of the application.
@@ -41,6 +44,8 @@ export default new ContainerModule((bind) => {
   bind(SourceCodeExtractor).toSelf().inSingletonScope();
   bind(TableVisualizer).toSelf().inSingletonScope();
   bind(TableExtractor).toSelf().inSingletonScope();
+  bind(PackageDiagramVisualizer).toSelf().inSingletonScope();
+  bind(PackageDiagramExtractor).toSelf().inSingletonScope();
   bind(DisplayViewResolver)
     .toDynamicValue((ctx) => {
       let displayViewResolver = new DisplayViewResolver();
@@ -49,7 +54,8 @@ export default new ContainerModule((bind) => {
         ctx.container.get(SourceCodeVisualizer),
         ctx.container.get(SourceCodeExtractor),
       );
-      displayViewResolver.registerDisplayView("TableVisualizer", ctx.container.get(TableVisualizer), ctx.container.get(TableExtractor));
+      // TODO: Change this back to the Table Visualizer and Extractor this is just temporarly to test the diagram renderung
+      displayViewResolver.registerDisplayView("TableVisualizer", ctx.container.get(PackageDiagramVisualizer), ctx.container.get(PackageDiagramExtractor));
       return displayViewResolver;
     })
     .inSingletonScope();
@@ -78,6 +84,17 @@ export default new ContainerModule((bind) => {
     },
   }));
 
+  // Factory for creating a PackageDiagramWidget
+  bind(WidgetFactory).toDynamicValue((ctx) => ({
+    id: PackageDiagramWidget.ID,
+    createWidget: (widgetLabel: string) => {
+      const child = new Container({ defaultScope: "Singleton" });
+      child.parent = ctx.container;
+      child.bind(PackageDiagramWidget).toSelf();
+      child.get(PackageDiagramWidget).setLabel(widgetLabel);
+      return child.get(PackageDiagramWidget);
+    },
+  }));
 
   // All bindings for various UI contributions
   bind(CommandContribution).to(VitruviusHelpCommandContribution);
