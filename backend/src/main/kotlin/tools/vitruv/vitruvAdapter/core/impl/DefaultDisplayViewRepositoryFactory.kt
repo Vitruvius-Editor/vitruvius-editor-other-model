@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Component
 import tools.vitruv.vitruvAdapter.core.api.DisplayViewRepositoryFactory
 import tools.vitruv.vitruvAdapter.core.api.ViewMapper
+import tools.vitruv.vitruvAdapter.core.impl.classTableView.ClassTableContentSelector
+import tools.vitruv.vitruvAdapter.core.impl.classTableView.ClassTableViewMapper
 import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeViewMapper
 import tools.vitruv.vitruvAdapter.core.impl.selector.AllSelector
 import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeContentSelector
@@ -20,6 +22,9 @@ class DefaultDisplayViewRepositoryFactory : DisplayViewRepositoryFactory() {
         var displayViewRepository = DisplayViewRepository()
         displayViewRepository.registerDisplayView(GenericDisplayView("SourceCode", "UML", SourceCodeViewMapper() as ViewMapper<Any?>, AllSelector(),
             SourceCodeContentSelector()
+        ))
+        displayViewRepository.registerDisplayView(GenericDisplayView("ClassTable", "UML", ClassTableViewMapper() as ViewMapper<Any?>, AllSelector(),
+            ClassTableContentSelector()
         ))
         return displayViewRepository;
     }
