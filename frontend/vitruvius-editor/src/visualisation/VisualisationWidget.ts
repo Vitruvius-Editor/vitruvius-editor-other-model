@@ -1,9 +1,14 @@
 import { ReactWidget } from "@theia/core/lib/browser/widgets/react-widget";
+import {inject} from "@theia/core/shared/inversify";
+import {VisualisationWidgetRegsitry} from "./VisualisationWidgetRegistry";
 
 /**
  * Abstract widget that represents a ReactWidget used to visualize a Vitruvius view.
  */
 export abstract class VisualisationWidget<T> extends ReactWidget {
+  @inject(VisualisationWidgetRegsitry)
+  private readonly visualisationWidgetRegsitry: VisualisationWidgetRegsitry;
+  private label: string;
   // The content of the widget.
   protected content: T;
 
@@ -19,11 +24,11 @@ export abstract class VisualisationWidget<T> extends ReactWidget {
     initialContent: T,
   ): Promise<void> {
     this.id = id;
-    this.title.label = initialLabel;
-    this.title.caption = initialLabel;
+    this.setLabel(initialLabel);
     this.title.closable = true;
     this.title.iconClass = "fa fa-window-maximize"; // example widget icon.\
     this.content = initialContent;
+    this.visualisationWidgetRegsitry.registerWidget(this);
     this.update();
   }
 
@@ -38,10 +43,19 @@ export abstract class VisualisationWidget<T> extends ReactWidget {
     return this.content;
   }
 
+  abstract getVisualizerName(): string;
+
   // Sets the label of the widget.
   setLabel(label: string): void {
     this.title.label = label;
     this.title.caption = label;
+    this.label = label;
     this.update();
   }
+
+  // Get the label of the widget
+  getLabel(): string {
+    return this.label;
+  }
+
 }
