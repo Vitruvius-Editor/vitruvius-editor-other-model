@@ -212,6 +212,14 @@
         </dependency>
 
         <dependency>
+            <groupId>local.vitruv</groupId>
+            <artifactId>application</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/Dependencies/tools/vitruv.applications.umljava/3.0.1-SNAPSHOT/tools.vitruv.applications.umljava-3.0.1-SNAPSHOT.jar</systemPath>
+        </dependency>
+
+        <dependency>
             <groupId>org.eclipse.jdt</groupId>
             <artifactId>org.eclipse.jdt.core</artifactId>
             <version>3.38.0</version>
