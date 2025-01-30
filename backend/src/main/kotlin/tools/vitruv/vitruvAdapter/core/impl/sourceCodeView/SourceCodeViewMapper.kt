@@ -45,6 +45,21 @@ class SourceCodeViewMapper: TextViewMapper() {
         return windows.toList()
     }
 
+    /**
+     * Maps the given json string to view content, compares it to [oldEObjects] and applies the changes to [oldEObjects].
+     * Note that no changes will be applied to the model,
+     * this have to be done after this method with a View object, where the [oldEObjects] came from.
+     * @param oldEObjects The old EObjects to compare the windows to.
+     * @param windows the windows to map to EObjects.
+     * @return The view content.
+     */
+    override fun mapWindowsToEObjectsAndApplyChangesToEObjects(
+        oldEObjects: List<EObject>,
+        windows: List<Window<String>>
+    ): List<EObject> {
+        TODO("Not yet implemented")
+    }
+
     private fun createSourceCodeForEnum(enumObject: Enumeration): String {
         val stringBuilder = StringBuilder()
         stringBuilder.append("enum ${enumObject.name} {\n")
@@ -79,57 +94,6 @@ class SourceCodeViewMapper: TextViewMapper() {
         return stringBuilder.toString()
         }
 
-    override fun mapWindowsContentToEObjects(windows: List<Window<String>>): List<EObject> {
-        val umlPackage = UMLFactory.eINSTANCE.createPackage()
-
-        for (window in windows) {
-            // Parse the file
-            val compilationUnit: CompilationUnit = StaticJavaParser.parse(window.content)
-
-            // Find the class (assuming there's only one top-level class)
-            val classDeclaration: ClassOrInterfaceDeclaration = compilationUnit
-                .findFirst(ClassOrInterfaceDeclaration::class.java)
-                .orElseThrow { RuntimeException("No class found in the file.") }
-
-
-            // Now you can collect methods and fields
-            val methods = collectMethods(classDeclaration)
-            val fields = collectFields(classDeclaration)
-            val classObject = UMLFactory.eINSTANCE.createClass()
-            classObject.name = classDeclaration.nameAsString
-            fields.forEach { field ->
-                val attribute = UMLFactory.eINSTANCE.createProperty()
-                attribute.name = field.variables[0].nameAsString
-                attribute.type = UMLFactory.eINSTANCE.createPrimitiveType()
-                attribute.type.name = field.elementType.asString()
-                val stringValue = UMLFactory.eINSTANCE.createLiteralString()
-                stringValue.value = field.variables[0].initializer.get().toString()
-                attribute.defaultValue = stringValue
-                classObject.ownedAttributes.add(attribute)
-
-            }
-            methods.forEach { method ->
-                val operation = UMLFactory.eINSTANCE.createOperation()
-                operation.name = method.nameAsString
-                operation.type = UMLFactory.eINSTANCE.createPrimitiveType()
-                operation.type.name = method.typeAsString
-                method.parameters.forEach { parameter ->
-                    val parameterObject = UMLFactory.eINSTANCE.createParameter()
-                    parameterObject.name = parameter.nameAsString
-                    parameterObject.type = UMLFactory.eINSTANCE.createPrimitiveType()
-                    parameterObject.type.name = parameter.typeAsString
-                    operation.ownedParameters.add(parameterObject)
-                }
-                val body = UMLFactory.eINSTANCE.createOpaqueBehavior()
-                body.name = method.nameAsString
-                body.bodies.add(method.body.get().toString())
-                operation.methods.add(body)
-                classObject.ownedOperations.add(operation)
-            }
-            umlPackage.packagedElements.add(classObject)
-        }
-        return listOf(umlPackage)
-    }
 
 
     override fun mapViewToWindows(rootObjects: List<EObject>): Set<String> {

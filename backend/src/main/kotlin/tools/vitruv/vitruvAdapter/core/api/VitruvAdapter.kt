@@ -75,7 +75,7 @@ class VitruvAdapter {
      */
     fun getWindows(displayView : DisplayView): Set<String> {
         val internalSelector = getViewType(displayView).createSelector(null)
-        displayView.windowSelector.applySelection(internalSelector)
+        displayView.internalSelector.applySelection(internalSelector)
         return displayView.viewMapper.mapViewToWindows(internalSelector.createView().rootObjects.toList())
     }
 
@@ -86,7 +86,7 @@ class VitruvAdapter {
      */
     private fun getView(displayView: DisplayView): View {
         val internalSelector = getViewType(displayView).createSelector(null)
-        displayView.windowSelector.applySelection(internalSelector)
+        displayView.internalSelector.applySelection(internalSelector)
         return internalSelector.createView()
     }
 
@@ -115,12 +115,10 @@ class VitruvAdapter {
     fun editDisplayView(displayView: DisplayView, json: String) {
         val mapper = displayView.viewMapper
         val viewInformation = JsonViewInformation(mapper.getDisplayContent())
-        val retrievedEObjects = mapper.mapWindowsContentToEObjects(viewInformation.parseWindowsFromJson(json))
-        val oldViewContent = getView(displayView)
-        val view = oldViewContent.withChangeDerivingTrait(DefaultStateBasedChangeResolutionStrategy())
-        view.rootObjects.clear()
-        view.rootObjects.addAll(retrievedEObjects)
-        view.commitChanges()
+        val oldView = getView(displayView).withChangeDerivingTrait()
+        val oldSelectedEObjects = displayView.contentSelector.applySelection(oldView, viewInformation.collectWindowsFromJson(json))
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(oldSelectedEObjects, viewInformation.parseWindowsFromJson(json))
+        oldView.commitChanges()
     }
 
     /**
@@ -129,7 +127,7 @@ class VitruvAdapter {
      * @param json The json string to collect the windows from.
      * @return The collected windows.
      */
-    fun collectWindowsFromJson(displayView: DisplayView, json: String): List<String> {
+    fun collectWindowsFromJson(displayView: DisplayView, json: String): Set<String> {
         val mapper = displayView.viewMapper
         val viewInformation = JsonViewInformation(mapper.getDisplayContent())
         return viewInformation.collectWindowsFromJson(json)
@@ -139,8 +137,8 @@ class VitruvAdapter {
     private fun getViewType(displayView: DisplayView): ViewType<out ViewSelector> {
         val client = vitruvClient ?: throw IllegalStateException("No client connected.")
         val viewType = client.viewTypes.stream().filter{it.name == displayView.viewTypeName}.findAny()
-        if (viewType == null ) {
-            throw DisplayViewException("View type ${displayView.viewTypeName} not found on model server.")
+        if (viewType.isEmpty) {
+            throw DisplayViewException("ViewType ${displayView.viewTypeName} not found.")
         }
         return viewType.get()
     }
