@@ -1,24 +1,6 @@
 import { DefaultNodeModel } from '@projectstorm/react-diagrams-defaults';
 import React from 'react';
 
-// export class PackageNode extends DefaultNodeModel {
-//   constructor(className: string, attributes: string[], methods: string[]) {
-//       super({
-//           name: (
-//               <>
-//                 Class Name <br />
-//                 <hr width="100%" size="2" color="black" noshade></hr>
-//                 +attribute1: type <br />
-//                 -attribute2: type <br />
-//                 <hr width="100%" size="2" color="black" noshade></hr>
-//                 +method1: void <br />
-//                 -method2: type <br />
-//               </>
-//             ),
-//           color: 'rgb(145, 145, 145)'})
-//   }
-// }
-
 export class PackageNode extends DefaultNodeModel {
   constructor(className: string, attributes: string[], methods: string[]) {
     super({
@@ -26,11 +8,18 @@ export class PackageNode extends DefaultNodeModel {
         <>
           {className} <br />
           <hr width="100%" size="2" color="black" noshade></hr>
-          +attribute1: type <br />
-          -attribute2: type <br />
+          {attributes.map((attr, index) => (
+            <React.Fragment key={index}>
+              {attr} <br />
+            </React.Fragment>
+          ))}
+
           <hr width="100%" size="2" color="black" noshade></hr>
-          +method1: void <br />
-          -method2: type <br />
+          {methods.map((method, index) => (
+            <React.Fragment key={index}>
+              {method} <br />
+            </React.Fragment>
+          ))}
         </>
       ),
       color: 'rgb(145, 145, 145)'

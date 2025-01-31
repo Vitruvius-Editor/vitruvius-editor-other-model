@@ -34,24 +34,28 @@ export class PackageDiagramWidget extends VisualisationWidget<string> {
   render(): React.ReactElement {
     const engine = createEngine();
 
-    const className1 = "Class Name";
-    const attributes1 = ["+attribute1: type", "-attribute2: type"];
-    const methods1 = ["+method1: void", "-method2: type"];
+    const packageNodeComponents: PackageNode[] = [];
+
+    const className1 = "Class Name1";
+    const attributes1 = ["+attribute11: type", "-attribute12: type"];
+    const methods1 = ["+method11: void", "-method12: type"];
 
     const packageNode1 = new PackageNode( className1, attributes1, methods1 )
     packageNode1.setPosition(100, 100);
     let portout1 = packageNode1.addOutPort('Out');
     let portin1 = packageNode1.addInPort('In');
 
-    const className2 = "Class Name";
-    const attributes2 = ["+attribute1: type", "-attribute2: type"];
-    const methods2 = ["+method1: void", "-method2: type"];
+    const className2 = "Class Name2";
+    const attributes2 = ["+attribute21: type", "-attribute22: type"];
+    const methods2 = ["+method21: void", "-method22: type"];
 
     const packageNode2 = new PackageNode( className2, attributes2, methods2 )
-    packageNode2.setPosition(100, 100);
+    packageNode2.setPosition(600, 100);
     let portout2 = packageNode2.addOutPort('Out');
     let portin2 = packageNode2.addInPort('In');
 
+    packageNodeComponents.push(packageNode1);
+    packageNodeComponents.push(packageNode2);
 
     // link
     const link = portout1.link<DefaultLinkModel>(portin2);
@@ -59,7 +63,8 @@ export class PackageDiagramWidget extends VisualisationWidget<string> {
 
     //model
     const model = new DiagramModel();
-    model.addAll(packageNode1, packageNode2, link);
+    packageNodeComponents.forEach(component => model.addNode(component))
+    model.addAll(link)
     engine.setModel(model);
 
     return <CanvasWidget className="diagram-container" engine={engine} />;
