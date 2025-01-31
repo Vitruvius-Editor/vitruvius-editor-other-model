@@ -7,7 +7,7 @@ import * as React from "react";
 import { MessageService } from "@theia/core";
 import { VisualisationWidget } from "../VisualisationWidget";
 import createEngine, { DiagramModel, CanvasWidget, DefaultLinkModel } from '@projectstorm/react-diagrams';
-import { PackageNode } from "./PackageDiagramComponents";
+import { PackageImportLink, PackageNode } from "./PackageDiagramComponents";
 
 /**
  * A Widget to visualize a text based Vitruvius view.
@@ -35,6 +35,7 @@ export class PackageDiagramWidget extends VisualisationWidget<string> {
     const engine = createEngine();
 
     const packageNodeComponents: PackageNode[] = [];
+    const packageImportLinks: PackageImportLink[] = [];
 
     const className1 = "Class Name1";
     const attributes1 = ["+attribute11: type", "-attribute12: type"];
@@ -42,8 +43,6 @@ export class PackageDiagramWidget extends VisualisationWidget<string> {
 
     const packageNode1 = new PackageNode( className1, attributes1, methods1 )
     packageNode1.setPosition(100, 100);
-    let portout1 = packageNode1.addOutPort('Out');
-    let portin1 = packageNode1.addInPort('In');
 
     const className2 = "Class Name2";
     const attributes2 = ["+attribute21: type", "-attribute22: type"];
@@ -51,20 +50,18 @@ export class PackageDiagramWidget extends VisualisationWidget<string> {
 
     const packageNode2 = new PackageNode( className2, attributes2, methods2 )
     packageNode2.setPosition(600, 100);
-    let portout2 = packageNode2.addOutPort('Out');
-    let portin2 = packageNode2.addInPort('In');
 
     packageNodeComponents.push(packageNode1);
     packageNodeComponents.push(packageNode2);
 
     // link
-    const link = portout1.link<DefaultLinkModel>(portin2);
-    link.addLabel('Link Name');
+    const customLink = new PackageImportLink(packageNode1, packageNode2);
+    packageImportLinks.push(customLink);
 
     //model
     const model = new DiagramModel();
-    packageNodeComponents.forEach(component => model.addNode(component))
-    model.addAll(link)
+    packageNodeComponents.forEach(component => model.addNode(component));
+    packageImportLinks.forEach(link => model.addLink(link));
     engine.setModel(model);
 
     return <CanvasWidget className="diagram-container" engine={engine} />;

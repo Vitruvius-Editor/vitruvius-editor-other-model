@@ -1,4 +1,4 @@
-import { DefaultNodeModel } from '@projectstorm/react-diagrams-defaults';
+import { DefaultLinkModel, DefaultNodeModel } from '@projectstorm/react-diagrams-defaults';
 import React from 'react';
 
 export class PackageNode extends DefaultNodeModel {
@@ -24,5 +24,21 @@ export class PackageNode extends DefaultNodeModel {
       ),
       color: 'rgb(145, 145, 145)'
     })
+  }
+}
+
+export class PackageImportLink extends DefaultLinkModel {
+  constructor(From : PackageNode, To : PackageNode) {
+    super({
+      type: 'default'
+    });
+    
+    const fromPort = From.addOutPort('OUT');
+    const toPort = To.addInPort('IN');
+
+    const link = fromPort.link<DefaultLinkModel>(toPort);
+    this.addLabel('Imports');
+    this.setSourcePort(fromPort);
+    this.setTargetPort(toPort);
   }
 }
