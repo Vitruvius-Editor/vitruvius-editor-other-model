@@ -8,6 +8,7 @@ import { MessageService } from "@theia/core";
 import { VisualisationWidget } from "../VisualisationWidget";
 import createEngine, { DiagramModel, CanvasWidget, DefaultLinkModel } from '@projectstorm/react-diagrams';
 import { DefaultNodeModel } from '@projectstorm/react-diagrams-defaults';
+import { PackageNode } from "./PackageDiagramComponents";
 
 /**
  * A Widget to visualize a text based Vitruvius view.
@@ -33,30 +34,51 @@ export class PackageDiagramWidget extends VisualisationWidget<string> {
    */
   render(): React.ReactElement {
     const engine = createEngine();
+
+    const className = "Class Name";
+    const attributes = ["+attribute1: type", "-attribute2: type"];
+    const methods = ["+method1: void", "-method2: type"];
+    const packageNode1 = new PackageNode( className, attributes, methods )
+
     const node1 = new DefaultNodeModel({
-        name: 'Node 1',
-        color: 'rgb(0,192,255)',
+      name: (
+        <>
+          {className} <br />
+          <hr width="100%" size="2" color="black" noshade></hr>
+          +attribute1: type <br />
+          -attribute2: type <br />
+          <hr width="100%" size="2" color="black" noshade></hr>
+          +method1: void <br />
+          -method2: type <br />
+        </>
+      ),
+      color: 'rgb(145, 145, 145)',
     });
     node1.setPosition(100, 100);
     let port1 = node1.addOutPort('Out');
+    let portin1 = node1.addInPort('In');
 
     // node 2
     const node2 = new DefaultNodeModel({
-        name: 'Node 1',
-        color: 'rgb(0,192,255)',
+      name: 'Node 2',
+      color: 'rgb(0,192,255)',
     });
     node2.setPosition(100, 100);
     let port2 = node2.addOutPort('Out');
+
+    // link
     const link = port1.link<DefaultLinkModel>(port2);
     link.addLabel('Hello World!');
+
+    //model
     const model = new DiagramModel();
-    model.addAll(node1, node2, link);
+    model.addAll(node1, node2, link, packageNode1);
     engine.setModel(model);
 
-    return <CanvasWidget className="diagram-container" engine={engine}/>;
+    return <CanvasWidget className="diagram-container" engine={engine} />;
   }
 
-  
+
   /**
    * Handles the change event of the text area and updates the content.
    * @param event
