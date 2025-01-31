@@ -7,7 +7,6 @@ import * as React from "react";
 import { MessageService } from "@theia/core";
 import { VisualisationWidget } from "../VisualisationWidget";
 import createEngine, { DiagramModel, CanvasWidget, DefaultLinkModel } from '@projectstorm/react-diagrams';
-import { DefaultNodeModel } from '@projectstorm/react-diagrams-defaults';
 import { PackageNode } from "./PackageDiagramComponents";
 
 /**
@@ -35,44 +34,32 @@ export class PackageDiagramWidget extends VisualisationWidget<string> {
   render(): React.ReactElement {
     const engine = createEngine();
 
-    const className = "Class Name";
-    const attributes = ["+attribute1: type", "-attribute2: type"];
-    const methods = ["+method1: void", "-method2: type"];
-    const packageNode1 = new PackageNode( className, attributes, methods )
+    const className1 = "Class Name";
+    const attributes1 = ["+attribute1: type", "-attribute2: type"];
+    const methods1 = ["+method1: void", "-method2: type"];
 
-    const node1 = new DefaultNodeModel({
-      name: (
-        <>
-          {className} <br />
-          <hr width="100%" size="2" color="black" noshade></hr>
-          +attribute1: type <br />
-          -attribute2: type <br />
-          <hr width="100%" size="2" color="black" noshade></hr>
-          +method1: void <br />
-          -method2: type <br />
-        </>
-      ),
-      color: 'rgb(145, 145, 145)',
-    });
-    node1.setPosition(100, 100);
-    let port1 = node1.addOutPort('Out');
-    let portin1 = node1.addInPort('In');
+    const packageNode1 = new PackageNode( className1, attributes1, methods1 )
+    packageNode1.setPosition(100, 100);
+    let portout1 = packageNode1.addOutPort('Out');
+    let portin1 = packageNode1.addInPort('In');
 
-    // node 2
-    const node2 = new DefaultNodeModel({
-      name: 'Node 2',
-      color: 'rgb(0,192,255)',
-    });
-    node2.setPosition(100, 100);
-    let port2 = node2.addOutPort('Out');
+    const className2 = "Class Name";
+    const attributes2 = ["+attribute1: type", "-attribute2: type"];
+    const methods2 = ["+method1: void", "-method2: type"];
+
+    const packageNode2 = new PackageNode( className2, attributes2, methods2 )
+    packageNode2.setPosition(100, 100);
+    let portout2 = packageNode2.addOutPort('Out');
+    let portin2 = packageNode2.addInPort('In');
+
 
     // link
-    const link = port1.link<DefaultLinkModel>(port2);
-    link.addLabel('Hello World!');
+    const link = portout1.link<DefaultLinkModel>(portin2);
+    link.addLabel('Link Name');
 
     //model
     const model = new DiagramModel();
-    model.addAll(node1, node2, link, packageNode1);
+    model.addAll(packageNode1, packageNode2, link);
     engine.setModel(model);
 
     return <CanvasWidget className="diagram-container" engine={engine} />;
