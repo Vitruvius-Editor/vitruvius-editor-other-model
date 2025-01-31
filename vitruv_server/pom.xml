@@ -210,6 +210,14 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/Dependencies/tools/mdsd/jamopp.resolution/6.0.0-SNAPSHOT/jamopp.resolution-6.0.0-SNAPSHOT.jar</systemPath>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/tools.vitruv/tools.vitruv.dsls.reactions.runtime -->
+        <dependency>
+            <groupId>local.vitruv</groupId>
+            <artifactId>dsls</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/Dependencies/tools/tools.vitruv.dsls.reactions.runtime-3.1.0.jar</systemPath>
+        </dependency>
 
         <dependency>
             <groupId>local.vitruv</groupId>

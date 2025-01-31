@@ -3,32 +3,21 @@ package vitruv.tools.vitruvadpter.testServer
 import org.eclipse.emf.common.util.BasicEList
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.common.util.URI
-import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
-import org.eclipse.uml2.types.TypesFactory
 import org.eclipse.uml2.uml.Type
 import org.eclipse.uml2.uml.UMLFactory
 import org.eclipse.uml2.uml.UMLPackage
 import org.eclipse.uml2.uml.VisibilityKind
 import org.eclipse.uml2.uml.internal.impl.LiteralIntegerImpl
 import org.eclipse.uml2.uml.internal.impl.UMLPackageImpl
-import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl
 import tools.mdsd.jamopp.model.java.*
-import tools.mdsd.jamopp.model.java.classifiers.Class
 import tools.mdsd.jamopp.model.java.classifiers.ClassifiersFactory
-import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.mdsd.jamopp.model.java.containers.ContainersFactory
-import tools.mdsd.jamopp.model.java.containers.impl.ContainersFactoryImpl
 import tools.mdsd.jamopp.model.java.impl.JavaPackageImpl
 import tools.mdsd.jamopp.model.java.members.MembersFactory
-import tools.mdsd.jamopp.model.java.types.PrimitiveType
-import tools.mdsd.jamopp.model.java.types.impl.IntImpl
-import tools.mdsd.jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser
-import tools.mdsd.jamopp.resource.JavaResource2Factory
 import tools.vitruv.change.atomic.AtomicPackage
-import tools.vitruv.change.atomic.feature.attribute.AttributeFactory
 import tools.vitruv.change.atomic.impl.AtomicPackageImpl
 import tools.vitruv.change.correspondence.CorrespondencePackage
 import tools.vitruv.change.correspondence.impl.CorrespondencePackageImpl
@@ -40,13 +29,12 @@ import tools.vitruv.framework.views.ViewType
 import tools.vitruv.framework.views.impl.IdentityMappingViewType
 import tools.vitruv.framework.vsum.VirtualModel
 import tools.vitruv.framework.vsum.VirtualModelBuilder
-import java.io.FileInputStream
 import java.io.IOException
-import java.io.InputStream
 import java.nio.file.Files
-import java.nio.file.Path
 import tools.vitruv.applications.umljava.JavaToUmlChangePropagationSpecification
 import tools.vitruv.applications.umljava.UmlToJavaChangePropagationSpecification
+import java.nio.file.Path
+
 
 /**
  * Initializes the server
@@ -79,9 +67,9 @@ class ServerInitializer {
 
     private fun genrateJavaCode(){
 
-        val fileName = "Dodo.java"
+        val fileName = "TestClass.java"
         try{
-//            val inputStream: InputStream = FileInputStream("C:\\Users\\amira\\Desktop\\vitruvius-editor2\\vitruv_server\\src\\main\\resources\\Dodo.java")
+//            val inputStream: InputStream = FileInputStream("C:\\Users\\amira\\Desktop\\vitruvius-editor2\\vitruv_server\\src\\main\\resources\\TestClass.java")
 //            val rootw = JaMoPPJDTSingleFileParser().parse(fileName, inputStream) as CompilationUnit
 //
 //
@@ -97,19 +85,32 @@ class ServerInitializer {
 //            }
 
             val root = ClassifiersFactory.eINSTANCE.createClass()
-            root.objectClass
             root.name = "Dodo"
             root.makePublic()
             val member = MembersFactory.eINSTANCE.createField()
             member.name = "myIntAttribute"
-
             root.members.add(member)
 
             val intType = tools.mdsd.jamopp.model.java.types.TypesFactory.eINSTANCE.createInt()
+            member.typeReference = intType
+
+
+            val newClass = ClassifiersFactory.eINSTANCE.createClass()
+            newClass.name = "Dodo1"
+            root.makePublic()
+            val member1 = MembersFactory.eINSTANCE.createField()
+            member1.name = "myIntAttribute1"
+            root.members.add(member1)
+            val intType1 = tools.mdsd.jamopp.model.java.types.TypesFactory.eINSTANCE.createInt()
+            member1.typeReference = intType1
+
+
+
 
             val javaPackage = ContainersFactory.eINSTANCE.createCompilationUnit()
             javaPackage.name = "exampleCompilationUnit"
             javaPackage.classifiers.add(root)
+            javaPackage.classifiers.add(newClass)
 
 
             val view = getJavaView().withChangeDerivingTrait()
@@ -215,8 +216,6 @@ class ServerInitializer {
         view.commitChanges()
         view.close()
 
-
-
     }
 
 
@@ -242,15 +241,16 @@ class ServerInitializer {
             Files.createDirectories(rootPath)
         }
 
-
-        return VirtualModelBuilder().withStorageFolder(rootPath)
-            .withUserInteractor(
-            UserInteractionFactory.instance.createUserInteractor(
-                UserInteractionFactory.instance.createPredefinedInteractionResultProvider(
-                    null
-                )
-            )
-        ).withViewTypes(viewTypes.values).buildAndInitialize()
+        val uml2JavaPropagation = UmlToJavaChangePropagationSpecification()
+        val java2UmlPropagation = JavaToUmlChangePropagationSpecification()
+        return VirtualModelBuilder()
+            .withStorageFolder(rootPath)
+//            .withChangePropagationSpecification(uml2JavaPropagation)
+//            .withChangePropagationSpecification(java2UmlPropagation)
+            .withUserInteractor(UserInteractionFactory.instance.createUserInteractor(
+                UserInteractionFactory.instance.createPredefinedInteractionResultProvider(null)))
+            .withViewTypes(viewTypes.values)
+            .buildAndInitialize()
     }
 
     private fun deletePath(pathToDelete: Path) {
