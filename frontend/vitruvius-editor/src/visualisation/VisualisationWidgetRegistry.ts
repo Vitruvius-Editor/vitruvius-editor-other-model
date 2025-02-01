@@ -18,6 +18,10 @@ export class VisualisationWidgetRegistry{
     getWidgets(): Readonly<WidgetData[]> {
         return this.widgets;
     }
+
+    getWidgetsByConnection(connection: Connection) : Readonly<WidgetData[]> {
+        return this.widgets.filter(widgetData => widgetData.connection.uuid === connection.uuid);
+    }
 }
 
 type WidgetData = {connection: Connection, displayView: DisplayView, widget: VisualisationWidget<any>}
