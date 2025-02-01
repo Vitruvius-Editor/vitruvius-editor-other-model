@@ -31,8 +31,6 @@ import tools.vitruv.framework.vsum.VirtualModel
 import tools.vitruv.framework.vsum.VirtualModelBuilder
 import java.io.IOException
 import java.nio.file.Files
-import tools.vitruv.applications.umljava.JavaToUmlChangePropagationSpecification
-import tools.vitruv.applications.umljava.UmlToJavaChangePropagationSpecification
 import java.nio.file.Path
 
 
@@ -241,12 +239,8 @@ class ServerInitializer {
             Files.createDirectories(rootPath)
         }
 
-        val uml2JavaPropagation = UmlToJavaChangePropagationSpecification()
-        val java2UmlPropagation = JavaToUmlChangePropagationSpecification()
         return VirtualModelBuilder()
             .withStorageFolder(rootPath)
-//            .withChangePropagationSpecification(uml2JavaPropagation)
-//            .withChangePropagationSpecification(java2UmlPropagation)
             .withUserInteractor(UserInteractionFactory.instance.createUserInteractor(
                 UserInteractionFactory.instance.createPredefinedInteractionResultProvider(null)))
             .withViewTypes(viewTypes.values)
