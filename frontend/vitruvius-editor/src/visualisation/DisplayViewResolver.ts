@@ -53,12 +53,11 @@ export class DisplayViewResolver {
    * @param widget - The widget for which the content is being retrieved.
    */
   getContent(
-    displayView: DisplayView,
     widget: VisualisationWidget<any>,
   ): Promise<Content> | null {
     return (
       this.mappings
-        .get(displayView.viewMapperName)?.[1]
+        .get(widget.getVisualizerName())?.[1]
         .extractContent(widget) ?? null
     );
   }
