@@ -11,7 +11,6 @@ import {VisualisationWidgetRegistry} from "../../visualisation/VisualisationWidg
 import {DisplayViewService} from "../../backend-communication/DisplayViewService";
 import {DisplayViewResolver} from "../../visualisation/DisplayViewResolver";
 import {Content} from "../../model/Content";
-import {VisualisationWidget} from "../../visualisation/VisualisationWidget";
 
 /**
  * Command to refresh the project and synchronise the changes with the Vitruvius server

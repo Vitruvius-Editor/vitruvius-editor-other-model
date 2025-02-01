@@ -2,7 +2,6 @@ import { Visualizer } from "./Visualizer";
 import { Extractor } from "./Extractor";
 import { injectable } from "@theia/core/shared/inversify";
 import { Content } from "../model/Content";
-import { DisplayView } from "../model/DisplayView";
 import { VisualisationWidget } from "./VisualisationWidget";
 
 /**
