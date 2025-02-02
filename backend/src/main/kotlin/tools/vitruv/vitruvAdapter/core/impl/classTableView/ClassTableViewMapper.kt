@@ -1,17 +1,19 @@
 package tools.vitruv.vitruvAdapter.core.impl.classTableView
 
-import jakarta.persistence.Table
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.uml2.uml.Class
 import org.eclipse.uml2.uml.OpaqueBehavior
 import org.eclipse.uml2.uml.Package
+import org.eclipse.uml2.uml.VisibilityKind
+import tools.mdsd.jamopp.printer.JaMoPPPrinter
 import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.api.ViewMapper
 import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.TableDisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.impl.table.TableDTO
+import java.io.ByteArrayOutputStream
 
-class ClassTableViewMapper: ViewMapper<TableDTO<ClassTableEntry>> {
+class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
     /**
      * Maps the given view content to a json string, which can be displayed in the graphical editor.
      * @param selectEObjects The view content to map.
@@ -48,7 +50,22 @@ class ClassTableViewMapper: ViewMapper<TableDTO<ClassTableEntry>> {
         oldEObjects: List<EObject>,
         windows: List<Window<TableDTO<ClassTableEntry>>>
     ): List<EObject> {
-        TODO("Not yet implemented")
+        for (windows in windows) {
+            applyChangesToWindow(windows, oldEObjects)
+        }
+        return oldEObjects
+    }
+
+    private fun applyChangesToWindow(window: Window<TableDTO<ClassTableEntry>>, eObject: List<EObject>) {
+        for (eObject in eObject) {
+            val rows = window.content.rows
+            for (row in rows) {
+                val classEntry = row
+                val umlClass = eObject.eResource()?.getEObject(classEntry.uuid) as Class
+                umlClass.name = classEntry.name
+                umlClass.visibility = VisibilityKind.get(classEntry.visibility)
+            }
+        }
     }
 
     private fun createClassEntryFromUmlClass(umlClass: Class): ClassTableEntry {
@@ -62,7 +79,25 @@ class ClassTableViewMapper: ViewMapper<TableDTO<ClassTableEntry>> {
         val attributeCount = umlClass.attributes.size
         val methodCount = umlClass.operations.size
         val linesOfCode = umlClass.ownedBehaviors.filterIsInstance<OpaqueBehavior>().sumBy { it.bodies.size } ?: 0
-        return ClassTableEntry(uuid, name, visibility, isAbstract, isFinal, superClassName, interfaces, attributeCount, methodCount, linesOfCode)
+        return ClassTableEntry(
+            uuid,
+            name,
+            visibility,
+            isAbstract,
+            isFinal,
+            superClassName,
+            interfaces,
+            attributeCount,
+            methodCount,
+            linesOfCode
+        )
+    }
+
+    private fun getClassLinesOfCode(javaClass: tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier): Int {
+        val outputStream = ByteArrayOutputStream()
+        JaMoPPPrinter.print(javaClass, outputStream)
+        val count = outputStream.toString().lines().size
+        return count
     }
 
     /**
@@ -80,7 +115,7 @@ class ClassTableViewMapper: ViewMapper<TableDTO<ClassTableEntry>> {
                     windows.add(next.name)
                 }
             }
-            if(rootObject is Package){
+            if (rootObject is Package) {
                 windows.add(rootObject.name)
             }
         }
@@ -94,7 +129,6 @@ class ClassTableViewMapper: ViewMapper<TableDTO<ClassTableEntry>> {
     override fun getDisplayContent(): DisplayContentMapper<TableDTO<ClassTableEntry>> {
         return TableDisplayContentMapper.create<ClassTableEntry>()
     }
-
 
 
 }
