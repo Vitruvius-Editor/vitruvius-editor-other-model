@@ -2,6 +2,7 @@ package tools.vitruv.vitruvAdapter.core.impl.displayContentMapper
 
 import org.junit.jupiter.api.Assertions.*
 import tools.vitruv.vitruvAdapter.core.impl.classTableView.ClassTableEntry
+import tools.vitruv.vitruvAdapter.core.impl.table.TableDTO
 
 class TableDisplayContentMapperTest {
     @org.junit.jupiter.api.Test
@@ -10,8 +11,8 @@ class TableDisplayContentMapperTest {
      val tableDisplayContentMapper = TableDisplayContentMapper.create<ClassTableEntry>()
 
      // Create a Table<ClassTableEntry> with sample data
-     val table = Table(
-      entries = setOf(
+     val tableDto = TableDTO.buildTableDTO(
+      listOf(
        ClassTableEntry(
         uuid = "uuid",
         name = "name",
@@ -36,21 +37,22 @@ class TableDisplayContentMapperTest {
         methodCount = 1,
         linesOfCode = 1
        )
-      )
+      ),
+      ClassTableEntry::class
      )
 
      // Serialize the table to JSON
-     val result = tableDisplayContentMapper.parseContent(table)
+     val result = tableDisplayContentMapper.parseContent(tableDto)
      println("Serialized JSON: $result")
 
      // Deserialize the JSON back to Table<ClassTableEntry>
-     val table2: Table<ClassTableEntry> = tableDisplayContentMapper.parseString(result)
+     val table2: TableDTO<ClassTableEntry> = tableDisplayContentMapper.parseString(result)
      println("Deserialized Table: $table2")
 
      val table2SerializedAgain = tableDisplayContentMapper.parseContent(table2)
         println("Serialized JSON after deserialization: $table2SerializedAgain")
 
-     // Assert that the original table and the deserialized table are equal
-     assertEquals(table, table2)
+     assertEquals(result, table2SerializedAgain)
+
     }
 }
