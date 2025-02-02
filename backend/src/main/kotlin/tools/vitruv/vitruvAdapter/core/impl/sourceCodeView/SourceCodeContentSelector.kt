@@ -13,9 +13,8 @@ import tools.vitruv.vitruvAdapter.core.api.ContentSelector
  */
 
 class SourceCodeContentSelector : ContentSelector {
-    override fun applySelection(view: View, windows: Set<String>): List<EObject> {
+    override fun applySelection(rootObjects: List<EObject> , windows: Set<String>): List<EObject> {
         val selectedElements = mutableListOf<EObject>()
-        val rootObjects = view.rootObjects
         for (rootObject in rootObjects) {
             if(rootObject is JavaRoot){
                 val iterator = rootObject.eAllContents()

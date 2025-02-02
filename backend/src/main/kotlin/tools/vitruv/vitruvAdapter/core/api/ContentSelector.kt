@@ -10,9 +10,9 @@ interface ContentSelector {
 
     /**
      * Selects the view elements that are needed for the windows.
-     * @param view the view to select the elements within
+     * @param rootObjects the root objects of the view
      * @param windows the elements to select
      * @return the selected elements
      */
-    fun applySelection(view: View, windows: Set<String>) : List<EObject>
+    fun applySelection(rootObjects: List<EObject>, windows: Set<String>) : List<EObject>
 }

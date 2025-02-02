@@ -10,10 +10,9 @@ import org.eclipse.uml2.uml.Class
 class ClassTableContentSelector: ContentSelector {
 
     override fun applySelection(
-        view: View,
+        rootObjects: List<EObject>,
         windows: Set<String>
     ): List<EObject> {
-        val rootObjects = view.rootObjects
         val rootObjectsWithClassOnly = mutableListOf<EObject>()
         for (ePackage in rootObjects) {
             if(ePackage is Package){
