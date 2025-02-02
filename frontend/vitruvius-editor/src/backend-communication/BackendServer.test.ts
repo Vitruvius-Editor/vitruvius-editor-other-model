@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import { BackendServer } from "./BackendServer";
 import fetchMock from "fetch-mock";
 
@@ -23,7 +22,7 @@ describe("BackendServer", () => {
         headers: { "Content-Type": "application/json" },
       });
       const result = await backendServer.checkHealthy();
-      expect(result).to.be.true;
+      expect(result).toBe(true);
     });
 
     it("should return false if the server is not healthy", async () => {
@@ -34,21 +33,21 @@ describe("BackendServer", () => {
       });
 
       const result1 = await backendServer.checkHealthy();
-      expect(result1).to.be.false;
+      expect(result1).toBe(false);
 
       fetchMock.getOnce(serverUrl + "/actuator/health", {
         status: 404,
         headers: { "Content-Type": "application/json" },
       });
       const result2 = await backendServer.checkHealthy();
-      expect(result2).to.be.false;
+      expect(result2).toBe(false);
     });
 
     it("should return false if there is an error", async () => {
       fetchMock.getOnce(serverUrl, { throws: new Error("Network error") });
 
       const result = await backendServer.checkHealthy();
-      expect(result).to.be.false;
+      expect(result).toBe(false);
     });
   });
 
@@ -61,10 +60,10 @@ describe("BackendServer", () => {
       });
 
       const result = await backendServer.sendWebRequest<{ data: string }>(
-        "/test",
-        "GET",
+          "/test",
+          "GET",
       );
-      expect(result).to.deep.equal(mockResponse);
+      expect(result).toEqual(mockResponse);
     });
 
     it("should send a POST request with a body and return the parsed response", async () => {
@@ -76,22 +75,19 @@ describe("BackendServer", () => {
       });
 
       const result = await backendServer.sendWebRequest<{ data: string }>(
-        "/test",
-        "POST",
-        requestBody,
+          "/test",
+          "POST",
+          requestBody,
       );
-      expect(result).to.deep.equal(mockResponse);
+      expect(result).toEqual(mockResponse);
     });
 
     it("should handle a non-ok response and reject the promise", async () => {
       fetchMock.getOnce(serverUrl + "/test", 404);
 
-      try {
-        await backendServer.sendWebRequest<{ data: string }>("/test", "GET");
-        expect.fail("Expected an error to be thrown");
-      } catch (error) {
-        expect(error).to.equal("HTTP error! status: 404");
-      }
+      await expect(
+          backendServer.sendWebRequest<{ data: string }>("/test", "GET")
+      ).rejects.toEqual("HTTP error! status: 404");
     });
 
     it("should handle a network error and reject the promise", async () => {
@@ -99,12 +95,9 @@ describe("BackendServer", () => {
         throws: new Error("Network Error"),
       });
 
-      try {
-        await backendServer.sendWebRequest<{ data: string }>("/test", "GET");
-        expect.fail("Expected an error to be thrown");
-      } catch (error) {
-        expect(error.message).to.equal("Network Error");
-      }
+      await expect(
+          backendServer.sendWebRequest<{ data: string }>("/test", "GET")
+      ).rejects.toThrow("Network Error");
     });
   });
 });

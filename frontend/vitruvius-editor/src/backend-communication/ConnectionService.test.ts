@@ -1,6 +1,3 @@
-import { expect } from "chai";
-import { describe, it, beforeEach } from "mocha";
-import sinon from "sinon";
 import { BackendServer } from "./BackendServer";
 import { ConnectionService } from "./ConnectionService";
 import { Connection } from "../model/Connection";
@@ -9,16 +6,16 @@ import { generateUuid } from "@theia/core";
 describe("ConnectionService", () => {
   let backendServer: BackendServer;
   let connectionService: ConnectionService;
-  let sendWebRequestStub: sinon.SinonStub;
+  let sendWebRequestStub: jest.SpyInstance;
 
   beforeEach(() => {
     backendServer = new BackendServer("http://localhost:8080");
     connectionService = new ConnectionService(backendServer);
-    sendWebRequestStub = sinon.stub(backendServer, "sendWebRequest");
+    sendWebRequestStub = jest.spyOn(backendServer, "sendWebRequest");
   });
 
   afterEach(() => {
-    sinon.restore();
+    jest.restoreAllMocks();
   });
 
   describe("getConnections", () => {
@@ -37,12 +34,11 @@ describe("ConnectionService", () => {
           url: "http://example.com",
         },
       ];
-      sendWebRequestStub.resolves(mockConnections);
+      sendWebRequestStub.mockResolvedValue(mockConnections);
 
       const connections = await connectionService.getConnections();
-      expect(connections).to.deep.equal(mockConnections);
-      expect(sendWebRequestStub.calledOnceWith("/api/v1/connections", "GET")).to
-        .be.true;
+      expect(connections).toEqual(mockConnections);
+      expect(sendWebRequestStub).toHaveBeenCalledWith("/api/v1/connections", "GET");
     });
   });
 
@@ -54,38 +50,28 @@ describe("ConnectionService", () => {
         description: "Description",
         url: "http://example.com",
       };
-      sendWebRequestStub.resolves(mockConnection);
+      sendWebRequestStub.mockResolvedValue(mockConnection);
 
-      const connection = await connectionService.getConnection(
-        mockConnection.uuid,
-      );
-      expect(connection).to.deep.equal(mockConnection);
-      expect(
-        sendWebRequestStub.calledOnceWith(
-          "/api/v1/connection/" + mockConnection.uuid,
-          "GET",
-        ),
-      ).to.be.true;
+      const connection = await connectionService.getConnection(mockConnection.uuid);
+      expect(connection).toEqual(mockConnection);
+      expect(sendWebRequestStub).toHaveBeenCalledWith(`/api/v1/connection/${mockConnection.uuid}`, "GET");
     });
 
     it("should return null if the connection is not found", async () => {
-      sendWebRequestStub.resolves(null);
+      sendWebRequestStub.mockResolvedValue(null);
 
       const connection = await connectionService.getConnection("1");
-      expect(connection).to.be.null;
-      expect(sendWebRequestStub.calledOnceWith("/api/v1/connection/1", "GET"))
-        .to.be.true;
+      expect(connection).toBeNull();
+      expect(sendWebRequestStub).toHaveBeenCalledWith("/api/v1/connection/1", "GET");
     });
   });
 
   describe("deleteConnection", () => {
     it("should delete a connection by uuid", async () => {
-      sendWebRequestStub.resolves();
+      sendWebRequestStub.mockResolvedValue(null);
 
       await connectionService.deleteConnection("1");
-      expect(
-        sendWebRequestStub.calledOnceWith("/api/v1/connection/1", "DELETE"),
-      ).to.be.true;
+      expect(sendWebRequestStub).toHaveBeenCalledWith("/api/v1/connection/1", "DELETE");
     });
   });
 
@@ -102,19 +88,11 @@ describe("ConnectionService", () => {
         description: "Description",
         url: "http://example.com",
       };
-      sendWebRequestStub.resolves(mockConnection);
+      sendWebRequestStub.mockResolvedValue(mockConnection);
 
-      const connection = await connectionService.createConnection(
-        connectionCreationRequest,
-      );
-      expect(connection).to.deep.equal(mockConnection);
-      expect(
-        sendWebRequestStub.calledOnceWith(
-          "/api/v1/connection",
-          "POST",
-          connectionCreationRequest,
-        ),
-      ).to.be.true;
+      const connection = await connectionService.createConnection(connectionCreationRequest);
+      expect(connection).toEqual(mockConnection);
+      expect(sendWebRequestStub).toHaveBeenCalledWith("/api/v1/connection", "POST", connectionCreationRequest);
     });
   });
 
@@ -127,20 +105,11 @@ describe("ConnectionService", () => {
         url: "http://example.com",
       };
       const connectionUpdateRequest = { name: "Updated Connection" };
-      sendWebRequestStub.resolves(mockConnection);
+      sendWebRequestStub.mockResolvedValue(mockConnection);
 
-      const connection = await connectionService.updateConnection(
-        "1",
-        connectionUpdateRequest,
-      );
-      expect(connection).to.deep.equal(mockConnection);
-      expect(
-        sendWebRequestStub.calledOnceWith(
-          "/api/v1/connection/1",
-          "PUT",
-          connectionUpdateRequest,
-        ),
-      ).to.be.true;
+      const connection = await connectionService.updateConnection("1", connectionUpdateRequest);
+      expect(connection).toEqual(mockConnection);
+      expect(sendWebRequestStub).toHaveBeenCalledWith("/api/v1/connection/1", "PUT", connectionUpdateRequest);
     });
   });
 });
