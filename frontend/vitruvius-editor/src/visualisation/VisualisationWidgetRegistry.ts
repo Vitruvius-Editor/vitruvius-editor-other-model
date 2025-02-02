@@ -8,7 +8,9 @@ export class VisualisationWidgetRegistry{
     private widgets: WidgetData[] = [];
 
     registerWidget(widget: VisualisationWidget<any>, displayView: DisplayView, connection: Connection): void {
-        this.widgets.push({connection, displayView, widget})
+        if (this.widgets.find(widgetData => widgetData.widget.getLabel() === widget.getLabel() && widgetData.widget.constructor.name === widget.constructor.name) == undefined) {
+            this.widgets.push({connection, displayView, widget})
+        }
     }
 
     unregisterWidget(widget: VisualisationWidget<any>): void {
