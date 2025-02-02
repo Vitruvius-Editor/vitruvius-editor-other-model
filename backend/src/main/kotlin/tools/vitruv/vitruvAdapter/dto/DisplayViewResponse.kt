@@ -2,6 +2,10 @@ package tools.vitruv.vitruvAdapter.dto
 
 import tools.vitruv.vitruvAdapter.core.api.DisplayView
 
+/**
+ * A response for a display view.
+ */
+
 data class DisplayViewResponse(
     var name: String,
     var viewTypeName: String,

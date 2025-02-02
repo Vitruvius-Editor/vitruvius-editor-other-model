@@ -5,15 +5,14 @@ import tools.mdsd.jamopp.model.java.containers.JavaRoot
 import tools.vitruv.framework.views.View
 import tools.vitruv.vitruvAdapter.core.api.ContentSelector
 
-class SourceCodeContentSelector : ContentSelector {
-    /**
-     * Applies a selection to viewSelector.selectableElements.
-     * This method should only select the content for the given windows.
-     * @param viewSelector the viewSelector to select the elements within
-     * @param windows the windows to select the content for
-     * @return The viewSelector with the selected elements.
-     */
 
+/**
+ * The windows in a source code view are classes, interfaces and enumerations.
+ * This class selects the classes, interfaces and enumerations that are in the windows from the view.
+ * Based on the Java Metamodel.
+ */
+
+class SourceCodeContentSelector : ContentSelector {
     override fun applySelection(view: View, windows: Set<String>): List<EObject> {
         val selectedElements = mutableListOf<EObject>()
         val rootObjects = view.rootObjects
@@ -32,5 +31,4 @@ class SourceCodeContentSelector : ContentSelector {
         }
         return selectedElements
     }
-
 }
