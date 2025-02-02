@@ -3,7 +3,7 @@ package tools.vitruv.vitruvAdapter.core.impl.umlPackageView
 import org.eclipse.emf.ecore.EObject
 import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.api.Window
-import tools.vitruv.vitruvAdapter.core.impl.mapper.UmlViewMapper
+import tools.vitruv.vitruvAdapter.core.impl.abstractMapper.UmlViewMapper
 
 class PackageDiagramViewMapper: UmlViewMapper() {
     override fun mapEObjectsToWindowsContent(rootObjects: List<EObject>): List<Window<String>> {

@@ -5,7 +5,6 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 import org.eclipse.uml2.uml.UMLPackage
 import org.eclipse.uml2.uml.internal.impl.UMLPackageImpl
-import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl
 import org.springframework.stereotype.Service
 import tools.mdsd.jamopp.model.java.JavaPackage
 import tools.mdsd.jamopp.model.java.impl.JavaPackageImpl
@@ -14,7 +13,6 @@ import tools.vitruv.change.atomic.impl.AtomicPackageImpl
 import tools.vitruv.change.correspondence.CorrespondencePackage
 import tools.vitruv.change.correspondence.impl.CorrespondencePackageImpl
 import tools.vitruv.framework.views.View
-import tools.vitruv.framework.views.changederivation.DefaultStateBasedChangeResolutionStrategy
 import tools.vitruv.framework.remote.client.VitruvClient
 import tools.vitruv.framework.remote.client.exception.BadClientResponseException
 import tools.vitruv.framework.remote.client.exception.BadServerResponseException
@@ -31,7 +29,6 @@ import tools.vitruv.vitruvAdapter.exception.DisplayViewException
 class VitruvAdapter {
     init {
         Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", XMIResourceFactoryImpl())
-
         EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackageImpl.eINSTANCE)
         EPackage.Registry.INSTANCE.put(CorrespondencePackage.eNS_URI, CorrespondencePackageImpl.eINSTANCE)
         EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackageImpl.eINSTANCE)
@@ -48,9 +45,9 @@ class VitruvAdapter {
     fun connectClient(vitruvClient: VitruvClient) {
         try {
             vitruvClient.viewTypes
-        } catch (e: BadClientResponseException) {
+        } catch (_: BadClientResponseException) {
             throw VitruviusConnectFailedException("Could not connect to model server.")
-        } catch (e: BadServerResponseException) {
+        } catch (_: BadServerResponseException) {
             throw VitruviusConnectFailedException("Could not connect to model server.")
         }
 
@@ -71,6 +68,12 @@ class VitruvAdapter {
      * @return The available DisplayViews.
      */
     fun getDisplayViews(): Set<DisplayView> = displayViewContainer?.getDisplayViews() ?: emptySet()
+
+    /**
+     * Returns a DisplayView by its name.
+     * @param name The name of the DisplayView.
+     * @return The DisplayView with the given name or null if no DisplayView with the given name is registered.
+     */
     fun getDisplayView(name: String): DisplayView? = displayViewContainer?.getDisplayView(name)
 
     /**
@@ -79,15 +82,14 @@ class VitruvAdapter {
      * @return The windows that are available for the given DisplayView.
      */
     fun getWindows(displayView : DisplayView): Set<String> {
-        val internalSelector = getViewType(displayView).createSelector(null)
-        displayView.internalSelector.applySelection(internalSelector)
-        return displayView.viewMapper.mapViewToWindows(internalSelector.createView().rootObjects.toList())
+        val view = getView(displayView)
+        return displayView.viewMapper.mapViewToWindows(view.rootObjects.toList())
     }
 
     /**
-     * Creates the content for the given windows.
-     * @param windows The windows to create the content for.
-     * @return The created View for the windows.
+     * Creates a view for the given DisplayView with its internal selector.
+     * @param displayView The DisplayView to create the view for.
+     * @return The created view.
      */
     private fun getView(displayView: DisplayView): View {
         val internalSelector = getViewType(displayView).createSelector(null)
@@ -96,9 +98,9 @@ class VitruvAdapter {
     }
 
     /**
-     * Creates the content for the given windows.
+     * Creates the content that can be displayed in the Vitruvius graphical editor for the given windows.
      * @param windows The windows to create the content for.
-     * @return The created content for each window.
+     * @return The created content for the windows.
      */
     fun createWindowContent(displayView: DisplayView, windows: Set<String>): String {
         val view = getView(displayView)

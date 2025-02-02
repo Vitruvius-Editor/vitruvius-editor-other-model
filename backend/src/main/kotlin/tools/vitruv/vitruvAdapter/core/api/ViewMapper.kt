@@ -5,15 +5,14 @@ import org.eclipse.emf.ecore.EObject
 /**
  * This interface represents a view mapper, which is able to map contents of a view (RootObjects/EObjects),
  * to Windows that can be displayed in the graphical editor.
- * These are represented as json contents, which the graphical editor can interpret.
  * @author uhsab
  */
 interface ViewMapper<E> {
 
     /**
-     * Maps the given view content to a json string, which can be displayed in the graphical editor.
+     * Maps the given view content to a list of windows.
      * @param selectEObjects The view content to map.
-     * @return The json string representing the view content.
+     * @return The windows representing the view content.
      */
     fun mapEObjectsToWindowsContent(selectEObjects: List<EObject>): List<Window<E>>
 
