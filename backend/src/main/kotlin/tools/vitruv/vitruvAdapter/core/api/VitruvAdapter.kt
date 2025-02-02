@@ -104,7 +104,7 @@ class VitruvAdapter {
      */
     fun createWindowContent(displayView: DisplayView, windows: Set<String>): String {
         val view = getView(displayView)
-        val selectedEObjects = displayView.contentSelector.applySelection(view, windows)
+        val selectedEObjects = displayView.contentSelector.applySelection(view.rootObjects.toList(), windows)
         val mapper = displayView.viewMapper
         val viewInformation = JsonViewInformation(mapper.getDisplayContent())
         val mappedData = mapper.mapEObjectsToWindowsContent(selectedEObjects)
@@ -123,7 +123,7 @@ class VitruvAdapter {
         val mapper = displayView.viewMapper
         val viewInformation = JsonViewInformation(mapper.getDisplayContent())
         val oldView = getView(displayView).withChangeDerivingTrait()
-        val oldSelectedEObjects = displayView.contentSelector.applySelection(oldView, viewInformation.collectWindowsFromJson(json))
+        val oldSelectedEObjects = displayView.contentSelector.applySelection(oldView.rootObjects.toList(), viewInformation.collectWindowsFromJson(json))
         mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(oldSelectedEObjects, viewInformation.parseWindowsFromJson(json))
         oldView.commitChanges()
     }
