@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.impl.VisualizerType
-import tools.vitruv.vitruvAdapter.core.impl.classTableView.Table
 
 /**
  * This class is used to map the content of a [Table] window to a string that can be displayed with the visualizer in the frontend and vice versa.

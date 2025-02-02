@@ -1,35 +1,36 @@
 package tools.vitruv.vitruvAdapter.core.impl.classTableView
 
+import jakarta.persistence.Table
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.uml2.uml.Class
 import org.eclipse.uml2.uml.OpaqueBehavior
 import org.eclipse.uml2.uml.Package
-import org.eclipse.uml2.uml.UMLFactory
 import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.api.ViewMapper
 import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.TableDisplayContentMapper
+import tools.vitruv.vitruvAdapter.core.impl.table.TableDTO
 
-class ClassTableViewMapper: ViewMapper<Table<ClassTableEntry>> {
+class ClassTableViewMapper: ViewMapper<TableDTO<ClassTableEntry>> {
     /**
      * Maps the given view content to a json string, which can be displayed in the graphical editor.
-     * @param rootObjects The view content to map.
+     * @param selectEObjects The view content to map.
      * @return The json string representing the view content.
      */
-    override fun mapEObjectsToWindowsContent(rootObjects: List<EObject>): List<Window<Table<ClassTableEntry>>> {
-        val windows = mutableListOf<Window<Table<ClassTableEntry>>>()
-        for (rootObject in rootObjects) {
+    override fun mapEObjectsToWindowsContent(selectEObjects: List<EObject>): List<Window<TableDTO<ClassTableEntry>>> {
+        val windows = mutableListOf<Window<TableDTO<ClassTableEntry>>>()
+        for (rootObject in selectEObjects) {
             if (rootObject !is Package) {
                 continue
             }
-            val entries = mutableSetOf<ClassTableEntry>()
+            val entries = mutableListOf<ClassTableEntry>()
             rootObject.packagedElements.forEach { element ->
                 if (element !is Class) {
                     return@forEach
                 }
                 entries.add(createClassEntryFromUmlClass(element))
             }
-            val window = Window(rootObject.name, Table(entries))
+            val window = Window(rootObject.name, TableDTO.buildTableDTO(entries, ClassTableEntry::class))
             windows.add(window)
         }
         return windows
@@ -45,7 +46,7 @@ class ClassTableViewMapper: ViewMapper<Table<ClassTableEntry>> {
      */
     override fun mapWindowsToEObjectsAndApplyChangesToEObjects(
         oldEObjects: List<EObject>,
-        windows: List<Window<Table<ClassTableEntry>>>
+        windows: List<Window<TableDTO<ClassTableEntry>>>
     ): List<EObject> {
         TODO("Not yet implemented")
     }
@@ -90,7 +91,7 @@ class ClassTableViewMapper: ViewMapper<Table<ClassTableEntry>> {
      * Gets the display content of this view mapper, which is able to map the view content to a json string and vice versa.
      * @return The display content of this view mapper.
      */
-    override fun getDisplayContent(): DisplayContentMapper<Table<ClassTableEntry>> {
+    override fun getDisplayContent(): DisplayContentMapper<TableDTO<ClassTableEntry>> {
         return TableDisplayContentMapper.create<ClassTableEntry>()
     }
 

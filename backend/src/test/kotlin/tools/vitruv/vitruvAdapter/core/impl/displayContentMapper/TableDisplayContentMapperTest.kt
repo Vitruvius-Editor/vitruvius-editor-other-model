@@ -2,7 +2,6 @@ package tools.vitruv.vitruvAdapter.core.impl.displayContentMapper
 
 import org.junit.jupiter.api.Assertions.*
 import tools.vitruv.vitruvAdapter.core.impl.classTableView.ClassTableEntry
-import tools.vitruv.vitruvAdapter.core.impl.classTableView.Table
 
 class TableDisplayContentMapperTest {
     @org.junit.jupiter.api.Test
