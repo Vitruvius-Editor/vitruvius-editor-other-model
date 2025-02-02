@@ -6,6 +6,9 @@ export default async (): Promise<Config.InitialOptions> => ({
     rootDir: '../',
     transform: {
         '^.+\\.(ts)$': 'ts-jest',
-    }
+    },
+    moduleNameMapper: {
+        "\\.(css|less|scss|sass)$": "identity-obj-proxy",
+    },
 });
 
