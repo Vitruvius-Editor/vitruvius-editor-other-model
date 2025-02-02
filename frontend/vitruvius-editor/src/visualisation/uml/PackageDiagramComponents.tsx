@@ -23,7 +23,7 @@ export class PackageNode extends DefaultNodeModel {
         </>
       ),
       color: 'rgb(145, 145, 145)'
-    })
+    });
   }
 }
 
@@ -35,8 +35,13 @@ export class PackageImportLink extends DefaultLinkModel {
     
     const fromPort = From.addOutPort('OUT');
     const toPort = To.addInPort('IN');
-
     const link = fromPort.link<DefaultLinkModel>(toPort);
+
+    this.setLocked(true);
+    this.getOptions().curvyness = 0;
+    this.getOptions().color = 'black';
+    this.getOptions().selectedColor = 'black';
+
     this.addLabel('Imports');
     this.setSourcePort(fromPort);
     this.setTargetPort(toPort);

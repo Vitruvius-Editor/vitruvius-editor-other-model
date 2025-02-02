@@ -6,7 +6,7 @@ import {
 import * as React from "react";
 import { MessageService } from "@theia/core";
 import { VisualisationWidget } from "../VisualisationWidget";
-import createEngine, { DiagramModel, CanvasWidget, DefaultLinkModel } from '@projectstorm/react-diagrams';
+import createEngine, { DiagramModel, CanvasWidget } from '@projectstorm/react-diagrams';
 import { PackageImportLink, PackageNode } from "./PackageDiagramComponents";
 
 /**
