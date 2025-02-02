@@ -10,5 +10,6 @@ export default async (): Promise<Config.InitialOptions> => ({
     moduleNameMapper: {
         "\\.(css|less|scss|sass)$": "identity-obj-proxy",
     },
+    setupFilesAfterEnv: ['<rootDir>/test-setup.ts'],
 });
 

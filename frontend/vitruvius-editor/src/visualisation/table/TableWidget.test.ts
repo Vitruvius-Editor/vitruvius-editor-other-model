@@ -2,6 +2,7 @@ import { TableWidget } from "./TableWidget";
 import { Container } from "@theia/core/shared/inversify";
 import '@testing-library/jest-dom';
 import {VisualisationWidgetRegistry} from "../VisualisationWidgetRegistry";
+import { TableEntry } from "./TableEntry";
 
 describe("TableWidget", () => {
     let widget: TableWidget;
