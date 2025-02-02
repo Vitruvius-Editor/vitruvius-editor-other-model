@@ -9,9 +9,9 @@ import tools.vitruv.vitruvAdapter.core.impl.table.ColumnInfo
 data class ClassTableEntry(
     @ColumnInfo(false, "", false)
     val uuid: String,
-    @ColumnInfo(true, "Name", false)
+    @ColumnInfo(true, "Name", true)
     val name: String,
-    @ColumnInfo(true, "Visibility", false)
+    @ColumnInfo(true, "Visibility", true)
     val visibility: String,
     @ColumnInfo(true, "Abstract", false)
     val isAbstract: Boolean,
