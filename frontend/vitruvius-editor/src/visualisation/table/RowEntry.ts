@@ -1,4 +1,4 @@
-type TableEntry = {
+type RowEntry = {
     uuid: string,
     name: string,
     visibility: string,

@@ -13,11 +13,11 @@ export class TableVisualizer implements Visualizer {
 
   async visualizeContent(content: Content): Promise<VisualisationWidget<any>> {
 		let contentWindow = content.windows[0];
-    let parsed: {entries: TableEntry[]} = JSON.parse(contentWindow.content);
+		let parsed: Table = JSON.parse(contentWindow.content);
 		return this.widgetManager
 				.getOrCreateWidget(TableWidget.ID, contentWindow.name)
 				.then(widget => {
-						(widget as TableWidget).updateContent(parsed.entries);
+						(widget as TableWidget).updateContent(parsed);
 						this.shell.addWidget(widget, { area: "main" });
 						this.shell.activateWidget(widget.id);
 						return widget as VisualisationWidget<string>;
