@@ -15,7 +15,7 @@ describe("SourceCodeVisualizer", () => {
     beforeEach(() => {
         container = new Container();
         widgetManager = { getOrCreateWidget: jest.fn() } as unknown as jest.Mocked<WidgetManager>;
-        shell = { addWidget: jest.fn(), activateWidget: jest.fn() } as unknown as jest.Mocked<ApplicationShell>;
+        shell = { addWidget: jest.fn().mockResolvedValue(null), activateWidget: jest.fn() } as unknown as jest.Mocked<ApplicationShell>;
 
         container.bind(WidgetManager).toConstantValue(widgetManager);
         container.bind(ApplicationShell).toConstantValue(shell);
@@ -36,7 +36,7 @@ describe("SourceCodeVisualizer", () => {
 
         expect(widgetManager.getOrCreateWidget).toHaveBeenCalledWith(TextWidget.ID, "TestWindow");
         expect(mockWidget.updateContent).toHaveBeenCalledWith("Test Content");
-        expect(shell.addWidget).toHaveBeenCalledWith(mockWidget, { area: "main" });
+        expect(shell.addWidget).toHaveBeenCalledWith(mockWidget, { area: "main", mode: "tab-before" });
         expect(shell.activateWidget).toHaveBeenCalledWith(mockWidget.id);
         expect(result).toBe(mockWidget);
     });
