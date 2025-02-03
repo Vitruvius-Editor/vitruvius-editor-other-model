@@ -12,7 +12,18 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.code.style>official</kotlin.code.style>
         <kotlin.compiler.jvmTarget>17</kotlin.compiler.jvmTarget>
+        <repo.emf-compare.version>3.3</repo.emf-compare.version>
+        <repo.sdq-commons.version>2.2.0</repo.sdq-commons.version>
+        <repo.xannotations.version>1.6.0</repo.xannotations.version>
     </properties>
+    <pluginRepositories>
+        <!-- the plugin is hosted in OpenNTF's Maven repository -->
+        <pluginRepository>
+            <id>artifactory.openntf.org</id>
+            <name>artifactory.openntf.org</name>
+            <url>https://artifactory.openntf.org/openntf</url>
+        </pluginRepository>
+    </pluginRepositories>
     <repositories>
         <repository>
             <id>local-maven-repo</id>
@@ -35,6 +46,24 @@
             <releases>
                 <enabled>false</enabled>
             </releases>
+        </repository><!-- for p2 dependencies, `groupId` specifies the repository -->
+        <repository>
+            <id>emf-compare</id>
+            <name>EMF Compare</name>
+            <layout>p2</layout>
+            <url>https://download.eclipse.org/modeling/emf/compare/updates/releases/${repo.emf-compare.version}</url>
+        </repository>
+        <repository>
+            <id>sdq-commons</id>
+            <name>SDQ Commons</name>
+            <url>https://kit-sdq.github.io/updatesite/release/commons/${repo.sdq-commons.version}</url>
+            <layout>p2</layout>
+        </repository>
+        <repository>
+            <id>xannotations</id>
+            <name>XAnnotations</name>
+            <layout>p2</layout>
+            <url>https://kit-sdq.github.io/updatesite/release/xannotations/${repo.xannotations.version}</url>
         </repository>
     </repositories>
 
@@ -61,6 +90,12 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.openntf.maven</groupId>
+                <artifactId>p2-layout-resolver</artifactId>
+                <version>1.7.0</version>
+                <extensions>true</extensions>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>

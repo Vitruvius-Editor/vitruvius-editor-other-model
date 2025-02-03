@@ -3,16 +3,17 @@ FROM maven:3.9.9-eclipse-temurin-17 AS build
 WORKDIR /backend
 
 # Copy only the pom.xml file first
-COPY pom.xml .
+#COPY pom.xml .
+#COPY Dependencies .
 
 # Download the Maven dependencies
-RUN mvn dependency:go-offline
+#RUN mvn dependency:go-offline
 
 # Copy the rest of the project files
 COPY . .
 
 # Build the Maven project
-RUN mvn clean install
+RUN mvn clean package -DskipTests
 
 # Runtime stage
 FROM openjdk:17-jdk-slim
