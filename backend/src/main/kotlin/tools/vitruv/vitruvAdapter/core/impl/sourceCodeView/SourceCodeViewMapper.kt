@@ -8,6 +8,11 @@ import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.TextDisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.impl.abstractMapper.TextViewMapper
 import java.io.ByteArrayOutputStream
+import org.eclipse.jdt.core.ToolFactory
+import org.eclipse.jdt.core.formatter.CodeFormatter
+import org.eclipse.jface.text.Document
+import org.eclipse.text.edits.TextEdit
+
 
 /**
  * This class maps java classes to a string source code representation
@@ -22,11 +27,40 @@ class SourceCodeViewMapper : TextViewMapper() {
             if (classifier is tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier) {
                 val outputStream = ByteArrayOutputStream()
                 JaMoPPPrinter.print(classifier, outputStream)
-                val window = Window(classifier.name, outputStream.toString())
+                var window: Window<String>
+                val code = outputStream.toString()
+                val formattedCode = formatJavaCode(code)
+                window = if(formattedCode != null){
+                    Window(classifier.name, formattedCode)
+                }else{
+                    Window(classifier.name, code)
+                }
                 windows.add(window)
             }
         }
         return windows.toList()
+    }
+
+    fun formatJavaCode(code: String): String? {
+        // Create a CodeFormatter with default options (you can also supply a map for custom settings)
+        val formatter: CodeFormatter = ToolFactory.createCodeFormatter(null)
+        // Format the code as a compilation unit (use CodeFormatter.K_COMPILATION_UNIT)
+        val textEdit: TextEdit? = formatter.format(
+            CodeFormatter.K_COMPILATION_UNIT,
+            code,
+            0,
+            code.length,
+            0,
+            null
+        )
+
+        return (if (textEdit != null) {
+            val document = Document(code)
+            textEdit.apply(document)
+            document.get()
+        } else {
+            null // formatting failed
+        }).toString()
     }
 
 
