@@ -2,34 +2,38 @@ package tools.vitruv.vitruvAdapter.core.impl.classTableView
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.uml2.uml.Class
-import org.eclipse.uml2.uml.OpaqueBehavior
 import org.eclipse.uml2.uml.Package
-import org.eclipse.uml2.uml.UMLFactory
+import org.eclipse.uml2.uml.VisibilityKind
+import tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier
+import tools.mdsd.jamopp.printer.JaMoPPPrinter
 import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.api.ViewMapper
 import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.TableDisplayContentMapper
+import tools.vitruv.vitruvAdapter.core.impl.table.TableDTO
+import java.io.ByteArrayOutputStream
 
-class ClassTableViewMapper: ViewMapper<Table<ClassTableEntry>> {
+class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
     /**
      * Maps the given view content to a json string, which can be displayed in the graphical editor.
-     * @param rootObjects The view content to map.
+     * @param selectEObjects The view content to map.
      * @return The json string representing the view content.
      */
-    override fun mapEObjectsToWindowsContent(rootObjects: List<EObject>): List<Window<Table<ClassTableEntry>>> {
-        val windows = mutableListOf<Window<Table<ClassTableEntry>>>()
-        for (rootObject in rootObjects) {
+    override fun mapEObjectsToWindowsContent(selectEObjects: List<EObject>): List<Window<TableDTO<ClassTableEntry>>> {
+        val windows = mutableListOf<Window<TableDTO<ClassTableEntry>>>()
+        for (rootObject in selectEObjects) {
             if (rootObject !is Package) {
                 continue
             }
-            val entries = mutableSetOf<ClassTableEntry>()
+            val entries = mutableListOf<ClassTableEntry>()
             rootObject.packagedElements.forEach { element ->
                 if (element !is Class) {
                     return@forEach
                 }
-                entries.add(createClassEntryFromUmlClass(element))
+                val javaClass = getJavaClassFromUmlClass(element, selectEObjects)
+                entries.add(createClassEntryFromUmlClass(element, javaClass))
             }
-            val window = Window(rootObject.name, Table(entries))
+            val window = Window(rootObject.name, TableDTO.buildTableDTO(entries, ClassTableEntry::class))
             windows.add(window)
         }
         return windows
@@ -45,12 +49,29 @@ class ClassTableViewMapper: ViewMapper<Table<ClassTableEntry>> {
      */
     override fun mapWindowsToEObjectsAndApplyChangesToEObjects(
         oldEObjects: List<EObject>,
-        windows: List<Window<Table<ClassTableEntry>>>
+        windows: List<Window<TableDTO<ClassTableEntry>>>
     ): List<EObject> {
-        TODO("Not yet implemented")
+        for (windows in windows) {
+            applyChangesToWindow(windows, oldEObjects)
+        }
+        return oldEObjects
     }
 
-    private fun createClassEntryFromUmlClass(umlClass: Class): ClassTableEntry {
+
+
+    private fun applyChangesToWindow(window: Window<TableDTO<ClassTableEntry>>, eObject: List<EObject>) {
+        for (eObject in eObject) {
+            val rows = window.content.rows
+            for (row in rows) {
+                val classEntry = row
+                val umlClass = eObject.eResource()?.getEObject(classEntry.uuid) as Class
+                umlClass.name = classEntry.name
+                umlClass.visibility = VisibilityKind.get(classEntry.visibility)
+            }
+        }
+    }
+
+    private fun createClassEntryFromUmlClass(umlClass: Class, javaClass: ConcreteClassifier?): ClassTableEntry {
         val uuid = umlClass.eResource()?.getURIFragment(umlClass) ?: ""
         val name = umlClass.name ?: ""
         val visibility = umlClass.visibility.literal ?: ""
@@ -60,8 +81,46 @@ class ClassTableViewMapper: ViewMapper<Table<ClassTableEntry>> {
         val interfaces = umlClass.usedInterfaces.map { it.name } ?: emptyList()
         val attributeCount = umlClass.attributes.size
         val methodCount = umlClass.operations.size
-        val linesOfCode = umlClass.ownedBehaviors.filterIsInstance<OpaqueBehavior>().sumBy { it.bodies.size } ?: 0
-        return ClassTableEntry(uuid, name, visibility, isAbstract, isFinal, superClassName, interfaces, attributeCount, methodCount, linesOfCode)
+        val linesOfCode = getClassLinesOfCode(javaClass)
+        return ClassTableEntry(
+            uuid,
+            name,
+            visibility,
+            isAbstract,
+            isFinal,
+            superClassName,
+            interfaces,
+            attributeCount,
+            methodCount,
+            linesOfCode
+        )
+    }
+
+    private fun getJavaClassFromUmlClass(umlClass: Class, rootObjects: List<EObject>): tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier? {
+        for(rootObject in rootObjects){
+            if(rootObject is tools.mdsd.jamopp.model.java.containers.JavaRoot){
+                val iterator = rootObject.eAllContents()
+                while (iterator.hasNext()) {
+                    val next = iterator.next()
+                    if (next is tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier) {
+                        if(next.name == umlClass.name ){
+                            return next
+                        }
+                    }
+                }
+            }
+        }
+        return null
+    }
+
+    private fun getClassLinesOfCode(javaClass: ConcreteClassifier?): Int {
+        if (javaClass == null) {
+            return 0
+        }
+        val outputStream = ByteArrayOutputStream()
+        JaMoPPPrinter.print(javaClass, outputStream)
+        val count = outputStream.toString().lines().size
+        return count
     }
 
     /**
@@ -79,7 +138,7 @@ class ClassTableViewMapper: ViewMapper<Table<ClassTableEntry>> {
                     windows.add(next.name)
                 }
             }
-            if(rootObject is Package){
+            if (rootObject is Package) {
                 windows.add(rootObject.name)
             }
         }
@@ -90,10 +149,9 @@ class ClassTableViewMapper: ViewMapper<Table<ClassTableEntry>> {
      * Gets the display content of this view mapper, which is able to map the view content to a json string and vice versa.
      * @return The display content of this view mapper.
      */
-    override fun getDisplayContent(): DisplayContentMapper<Table<ClassTableEntry>> {
+    override fun getDisplayContent(): DisplayContentMapper<TableDTO<ClassTableEntry>> {
         return TableDisplayContentMapper.create<ClassTableEntry>()
     }
-
 
 
 }

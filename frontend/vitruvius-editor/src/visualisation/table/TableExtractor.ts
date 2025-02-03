@@ -7,7 +7,7 @@ export class TableExtractor implements Extractor {
       return new Promise((resolve, _refuse) => resolve({visualizerName: 'TableVisualizer', windows: [
         {
             name: widget.getLabel(),
-            content: JSON.stringify({entries: widget.getContent()})
+            content: JSON.stringify(widget.getContent()),
         }
       ]}))
   }

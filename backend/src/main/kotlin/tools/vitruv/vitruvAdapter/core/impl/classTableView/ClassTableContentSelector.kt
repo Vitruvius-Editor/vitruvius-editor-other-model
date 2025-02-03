@@ -6,6 +6,7 @@ import org.eclipse.uml2.uml.UMLFactory
 import tools.vitruv.framework.views.View
 import tools.vitruv.vitruvAdapter.core.api.ContentSelector
 import org.eclipse.uml2.uml.Class
+import tools.mdsd.jamopp.model.java.containers.JavaRoot
 
 class ClassTableContentSelector: ContentSelector {
 
@@ -20,29 +21,32 @@ class ClassTableContentSelector: ContentSelector {
                 while (iterator.hasNext()) {
                     val next = iterator.next()
                     if (next is Package) {
-                        rootObjectsWithClassOnly.add(packageWithClassOnly(next))
+                        if(windows.contains(next.name)){
+                            rootObjectsWithClassOnly.add(next)
+                        }
                     }
                 }
-                rootObjectsWithClassOnly.add(packageWithClassOnly(ePackage))
+
+                if (windows.contains(ePackage.name)){
+                    rootObjectsWithClassOnly.add(ePackage)
+                }
+            }
+            if(ePackage is JavaRoot){
+                val iterator = ePackage.eAllContents()
+                while (iterator.hasNext()) {
+                    val next = iterator.next()
+                    if (next is JavaRoot) {
+                        if(windows.contains(next.name)){
+                            rootObjectsWithClassOnly.add(next)
+                        }
+                    }
+                    if (windows.contains(ePackage.name)){
+                        rootObjectsWithClassOnly.add(next)
+                    }
+                }
             }
         }
         return rootObjectsWithClassOnly
     }
 
-
-    private fun packageWithClassOnly(ePackage: Package): Package {
-        val newPackage = UMLFactory.eINSTANCE.createPackage()
-        newPackage.name = ePackage.name
-
-        // Create a copy of the elements before iteration
-        val elementsCopy = ePackage.packagedElements.toList()
-
-        for (element in elementsCopy) {
-            if (element is Class) {
-                newPackage.packagedElements.add(element)
-            }
-        }
-
-        return newPackage
-    }
 }
