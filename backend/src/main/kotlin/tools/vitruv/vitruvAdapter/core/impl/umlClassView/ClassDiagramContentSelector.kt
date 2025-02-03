@@ -14,6 +14,23 @@ class ClassDiagramContentSelector: ContentSelector{
      * @return the selected elements
      */
     override fun applySelection(rootObjects: List<EObject>, windows: Set<String>): List<EObject> {
-        TODO("Select all UML classes in the given windows packages and return them")
+        val rootObjectsWithClassOnly = mutableListOf<EObject>()
+        for (ePackage in rootObjects) {
+            if(ePackage is Package){
+                val iterator = ePackage.eAllContents()
+                while (iterator.hasNext()) {
+                    val next = iterator.next()
+                    if (next is Package) {
+                        if(windows.contains(next.name)){
+                            rootObjectsWithClassOnly.add(next)
+                        }
+                    }
+                }
+                if (windows.contains(ePackage.name)){
+                    rootObjectsWithClassOnly.add(ePackage)
+                }
+            }
+        }
+        return rootObjectsWithClassOnly
     }
 }
