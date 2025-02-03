@@ -1,6 +1,6 @@
-import { Content } from "../../model/Content";
-import { Extractor } from "../Extractor";
-import { VisualisationWidget } from "../VisualisationWidget";
+import { Content } from "../../../model/Content";
+import { Extractor } from "../../Extractor";
+import { VisualisationWidget } from "../../VisualisationWidget";
 
 export class ClassDiagramExtractor implements Extractor {
   extractContent(widget: VisualisationWidget<any>): Promise<Content> {

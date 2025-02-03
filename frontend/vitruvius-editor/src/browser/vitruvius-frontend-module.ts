@@ -25,9 +25,9 @@ import '../../src/browser/style/index.css';
 import {TableVisualizer} from "../visualisation/table/TableVisualizer";
 import {TableExtractor} from "../visualisation/table/TableExtractor";
 import {TableWidget} from "../visualisation/table/TableWidget";
-import {PackageDiagramWidget} from "../visualisation/uml/PackageDiagramWidget";
-import {PackageDiagramVisualizer} from "../visualisation/uml/PackageDiagramVisualizer";
-import {PackageDiagramExtractor} from "../visualisation/uml/PackageDiagramExtractor";
+import {PackageDiagramWidget} from "../visualisation/uml/UMLPackageDiagram/PackageDiagramWidget";
+import {PackageDiagramVisualizer} from "../visualisation/uml/UMLPackageDiagram/PackageDiagramVisualizer";
+import {PackageDiagramExtractor} from "../visualisation/uml/UMLPackageDiagram/PackageDiagramExtractor";
 
 /**
  * This ContainerModule binds the services and contributions of the frontend part of the application.

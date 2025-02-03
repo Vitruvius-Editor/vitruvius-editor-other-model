@@ -1,6 +1,6 @@
-import { Content } from "../../model/Content";
-import { Visualizer } from "../Visualizer";
-import { VisualisationWidget } from "../VisualisationWidget";
+import { Content } from "../../../model/Content";
+import { Visualizer } from "../../Visualizer";
+import { VisualisationWidget } from "../../VisualisationWidget";
 import {inject, injectable} from "@theia/core/shared/inversify";
 import {ApplicationShell, WidgetManager} from "@theia/core/lib/browser";
 import {PackageDiagramWidget} from "./PackageDiagramWidget";

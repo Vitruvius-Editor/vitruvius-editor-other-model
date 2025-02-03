@@ -1,7 +1,7 @@
 import {injectable} from "@theia/core/shared/inversify";
-import { Content } from "../../model/Content";
-import { Extractor } from "../Extractor";
-import { VisualisationWidget } from "../VisualisationWidget";
+import { Content } from "../../../model/Content";
+import { Extractor } from "../../Extractor";
+import { VisualisationWidget } from "../../VisualisationWidget";
 
 @injectable()
 export class PackageDiagramExtractor implements Extractor {
