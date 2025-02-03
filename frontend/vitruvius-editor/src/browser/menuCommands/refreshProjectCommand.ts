@@ -11,6 +11,7 @@ import {VisualisationWidgetRegistry} from "../../visualisation/VisualisationWidg
 import {DisplayViewService} from "../../backend-communication/DisplayViewService";
 import {DisplayViewResolver} from "../../visualisation/DisplayViewResolver";
 import {Content} from "../../model/Content";
+import {VisualisationWidget} from "../../visualisation/VisualisationWidget";
 
 /**
  * Command to refresh the project and synchronise the changes with the Vitruvius server
@@ -53,10 +54,15 @@ export class VitruviusRefreshProjectContribution
             execute: () => {
               this.displayViewResolver.getContent(widgetData.widget)?.then(content => {
                 this.displayViewService.updateDisplayViewContent(widgetData.connection.uuid, widgetData.displayView.name, content).then(res => {
-                  this.visualisationWidgetRegsitry.unregisterWidget(widgetData.widget);
-                  this.displayViewResolver.getWidget(res as Content)?.then(widget => {
-                    this.visualisationWidgetRegsitry.registerWidget( widget, widgetData.displayView, widgetData.connection);
-                  })
+                    if (res !== null) {
+                        widgetData.widget.close();
+                        (this.displayViewResolver.getWidget(res) as Promise<VisualisationWidget<any>>).then(widget => {
+                            this.visualisationWidgetRegsitry.registerWidget(widget, widgetData.displayView, widgetData.connection);
+                            widget.show();
+                        })
+                    } else {
+                        this.messageService.error("Invalid update!");
+                    }
                 }).catch(_error => this.messageService.error("Error updating the window."));
               })
             }
