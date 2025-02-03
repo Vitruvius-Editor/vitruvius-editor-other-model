@@ -8,6 +8,7 @@ import { MessageService } from "@theia/core";
 import { VisualisationWidget } from "../VisualisationWidget";
 import createEngine, {DiagramModel, CanvasWidget} from '@projectstorm/react-diagrams';
 import {AdvancedLinkFactory, UMLArrowLink, UMLNode} from "./DiagramComponents";
+import {UMLDiagram} from "./DiagramContent";
 
 /**
  * A Widget to visualize a UML Package Vitruvius view.
@@ -38,20 +39,16 @@ export class DiagramWidget extends VisualisationWidget<string> {
     const umlDiagramParser = new UMLDiagramParser();
     const umlDiagram = umlDiagramParser.parse(this.getContent());
 
-    const nodes: UMLNode[] = [];
-    umlDiagram.getComponents().forEach(component => {
-      const packageNode = new UMLNode(component.classID, component.name, component.attributes, component.methods);
-      nodes.push(packageNode);
-    });
+    const nodes: UMLNode[] = umlDiagram.getNodes();
 
-    const links: UMLArrowLink[] = [];
-    umlDiagram.getLinks().forEach(relation => {
-      const fromNode = nodes.find(node => node.getClassID() === relation.fromID);
-      const toNode = nodes.find(node => node.getClassID() === relation.toID);
-      if (fromNode !== undefined && toNode !== undefined) {
-        links.push(new UMLArrowLink(fromNode, toNode));
-      }
-    });
+    const links: UMLArrowLink[] = umlDiagram.getLinks();
+    // umlDiagram.getLinks().forEach(relation => {
+    //   const fromNode = nodes.find(node => node.getClassID() === relation.fromID);
+    //   const toNode = nodes.find(node => node.getClassID() === relation.toID);
+    //   if (fromNode !== undefined && toNode !== undefined) {
+    //     links.push(new UMLArrowLink(fromNode, toNode));
+    //   }
+    // });
 
     const model = new DiagramModel();
     nodes.forEach(component => model.addNode(component));

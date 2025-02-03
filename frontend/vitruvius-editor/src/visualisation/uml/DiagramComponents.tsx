@@ -1,8 +1,8 @@
 import {DefaultLinkFactory, DefaultLinkModel, DefaultNodeModel, DefaultPortModel } from '@projectstorm/react-diagrams-defaults';
 import React from 'react';
-import {PortModelAlignment} from "@projectstorm/react-diagrams";
-import { LinkWidget, PointModel } from '@projectstorm/react-diagrams-core';
-import { DefaultLinkPointWidget, DefaultLinkSegmentWidget } from '@projectstorm/react-diagrams-defaults/dist';
+// import {PortModelAlignment} from "@projectstorm/react-diagrams";
+import { DiagramEngine, LinkWidget, PointModel } from '@projectstorm/react-diagrams-core';
+import { DefaultLinkPointWidget, DefaultLinkSegmentWidget } from '@projectstorm/react-diagrams-defaults';
 
 export class UMLNode extends DefaultNodeModel {
   classID: string
