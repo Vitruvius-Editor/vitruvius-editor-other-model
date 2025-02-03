@@ -2,9 +2,9 @@ package tools.vitruv.vitruvAdapter.core.impl.classTableView
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.uml2.uml.Class
-import org.eclipse.uml2.uml.OpaqueBehavior
 import org.eclipse.uml2.uml.Package
 import org.eclipse.uml2.uml.VisibilityKind
+import tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier
 import tools.mdsd.jamopp.printer.JaMoPPPrinter
 import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.api.ViewMapper
@@ -30,7 +30,8 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
                 if (element !is Class) {
                     return@forEach
                 }
-                entries.add(createClassEntryFromUmlClass(element))
+                val javaClass = getJavaClassFromUmlClass(element, selectEObjects)
+                entries.add(createClassEntryFromUmlClass(element, javaClass))
             }
             val window = Window(rootObject.name, TableDTO.buildTableDTO(entries, ClassTableEntry::class))
             windows.add(window)
@@ -56,6 +57,8 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
         return oldEObjects
     }
 
+
+
     private fun applyChangesToWindow(window: Window<TableDTO<ClassTableEntry>>, eObject: List<EObject>) {
         for (eObject in eObject) {
             val rows = window.content.rows
@@ -68,7 +71,7 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
         }
     }
 
-    private fun createClassEntryFromUmlClass(umlClass: Class): ClassTableEntry {
+    private fun createClassEntryFromUmlClass(umlClass: Class, javaClass: ConcreteClassifier?): ClassTableEntry {
         val uuid = umlClass.eResource()?.getURIFragment(umlClass) ?: ""
         val name = umlClass.name ?: ""
         val visibility = umlClass.visibility.literal ?: ""
@@ -78,7 +81,7 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
         val interfaces = umlClass.usedInterfaces.map { it.name } ?: emptyList()
         val attributeCount = umlClass.attributes.size
         val methodCount = umlClass.operations.size
-        val linesOfCode = umlClass.ownedBehaviors.filterIsInstance<OpaqueBehavior>().sumBy { it.bodies.size } ?: 0
+        val linesOfCode = getClassLinesOfCode(javaClass)
         return ClassTableEntry(
             uuid,
             name,
@@ -93,7 +96,27 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
         )
     }
 
-    private fun getClassLinesOfCode(javaClass: tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier): Int {
+    private fun getJavaClassFromUmlClass(umlClass: Class, rootObjects: List<EObject>): tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier? {
+        for(rootObject in rootObjects){
+            if(rootObject is tools.mdsd.jamopp.model.java.containers.JavaRoot){
+                val iterator = rootObject.eAllContents()
+                while (iterator.hasNext()) {
+                    val next = iterator.next()
+                    if (next is tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier) {
+                        if(next.name == umlClass.name ){
+                            return next
+                        }
+                    }
+                }
+            }
+        }
+        return null
+    }
+
+    private fun getClassLinesOfCode(javaClass: ConcreteClassifier?): Int {
+        if (javaClass == null) {
+            return 0
+        }
         val outputStream = ByteArrayOutputStream()
         JaMoPPPrinter.print(javaClass, outputStream)
         val count = outputStream.toString().lines().size
