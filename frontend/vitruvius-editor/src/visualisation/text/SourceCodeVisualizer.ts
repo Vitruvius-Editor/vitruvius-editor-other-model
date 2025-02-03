@@ -25,8 +25,10 @@ export class SourceCodeVisualizer implements Visualizer {
         // At the content to the window.
         (widget as TextWidget).updateContent(contentWindow.content);
         // At the window to the editor.
-        this.shell.addWidget(widget, { area: "main" });
-		this.shell.activateWidget(widget.id);
+        this.shell.addWidget(widget, { area: "main", mode: "tab-before" })
+            .then(() => {
+                this.shell.activateWidget(widget.id);
+            });
         return widget as VisualisationWidget<string>;
       });
   }
