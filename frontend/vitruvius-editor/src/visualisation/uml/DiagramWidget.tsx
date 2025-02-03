@@ -5,17 +5,17 @@ import {
 } from "@theia/core/shared/inversify";
 import * as React from "react";
 import { MessageService } from "@theia/core";
-import { VisualisationWidget } from "../../VisualisationWidget";
+import { VisualisationWidget } from "../VisualisationWidget";
 import createEngine, {DiagramModel, CanvasWidget} from '@projectstorm/react-diagrams';
-import {AdvancedLinkFactory, PackageImportLink, PackageNode} from "./PackageDiagramComponents";
+import {AdvancedLinkFactory, PackageImportLink, PackageNode} from "./DiagramComponents";
 
 /**
  * A Widget to visualize a UML Package Vitruvius view.
  */
 @injectable()
-export class PackageDiagramWidget extends VisualisationWidget<string> {
+export class DiagramWidget extends VisualisationWidget<string> {
   static readonly ID = "packagediagramwidget:packagediagramwidget";
-  static readonly LABEL = "PackageDiagramWidget";
+  static readonly LABEL = "DiagramWidget";
 
   @inject(MessageService)
   protected readonly messageService!: MessageService;
@@ -25,7 +25,7 @@ export class PackageDiagramWidget extends VisualisationWidget<string> {
    */
   @postConstruct()
   protected init(): void {
-    this.doInit(PackageDiagramWidget.ID, PackageDiagramWidget.LABEL, "/*Initial Content*/");
+    this.doInit(DiagramWidget.ID, DiagramWidget.LABEL, "/*Initial Content*/");
   }
 
   /**

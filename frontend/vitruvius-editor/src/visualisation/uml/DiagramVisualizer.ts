@@ -1,12 +1,12 @@
-import { Content } from "../../../model/Content";
-import { Visualizer } from "../../Visualizer";
-import { VisualisationWidget } from "../../VisualisationWidget";
+import { Content } from "../../model/Content";
+import { Visualizer } from "../Visualizer";
+import { VisualisationWidget } from "../VisualisationWidget";
 import {inject, injectable} from "@theia/core/shared/inversify";
 import {ApplicationShell, WidgetManager} from "@theia/core/lib/browser";
-import {PackageDiagramWidget} from "./PackageDiagramWidget";
+import {DiagramWidget} from "./DiagramWidget";
 
 @injectable()
-export class PackageDiagramVisualizer implements Visualizer {
+export class DiagramVisualizer implements Visualizer {
   @inject(WidgetManager)
   private readonly widgetManager!: WidgetManager;
   @inject(ApplicationShell) protected readonly shell: ApplicationShell;
@@ -14,12 +14,12 @@ export class PackageDiagramVisualizer implements Visualizer {
   async visualizeContent(content: Content): Promise<VisualisationWidget<any>> {
     let contentWindow = content.windows[0];
     return this.widgetManager
-      .getOrCreateWidget(PackageDiagramWidget.ID, contentWindow.name)
+      .getOrCreateWidget(DiagramWidget.ID, contentWindow.name)
       .then(widget => {
-        (widget as PackageDiagramWidget).updateContent(contentWindow.content);
+        (widget as DiagramWidget).updateContent(contentWindow.content);
 		this.shell.addWidget(widget, { area: "main" });
 		this.shell.activateWidget(widget.id);
-        (widget as PackageDiagramWidget).update();
+        (widget as DiagramWidget).update();
         return widget as VisualisationWidget<string>;
       })
   }

@@ -25,9 +25,9 @@ import '../../src/browser/style/index.css';
 import {TableVisualizer} from "../visualisation/table/TableVisualizer";
 import {TableExtractor} from "../visualisation/table/TableExtractor";
 import {TableWidget} from "../visualisation/table/TableWidget";
-import {PackageDiagramWidget} from "../visualisation/uml/UMLPackageDiagram/PackageDiagramWidget";
-import {PackageDiagramVisualizer} from "../visualisation/uml/UMLPackageDiagram/PackageDiagramVisualizer";
-import {PackageDiagramExtractor} from "../visualisation/uml/UMLPackageDiagram/PackageDiagramExtractor";
+import {DiagramWidget} from "../visualisation/uml/DiagramWidget";
+import {DiagramVisualizer} from "../visualisation/uml/DiagramVisualizer";
+import {DiagramExtractor} from "../visualisation/uml/DiagramExtractor";
 
 /**
  * This ContainerModule binds the services and contributions of the frontend part of the application.
@@ -44,8 +44,8 @@ export default new ContainerModule((bind) => {
   bind(SourceCodeExtractor).toSelf().inSingletonScope();
   bind(TableVisualizer).toSelf().inSingletonScope();
   bind(TableExtractor).toSelf().inSingletonScope();
-  bind(PackageDiagramVisualizer).toSelf().inSingletonScope();
-  bind(PackageDiagramExtractor).toSelf().inSingletonScope();
+  bind(DiagramVisualizer).toSelf().inSingletonScope();
+  bind(DiagramExtractor).toSelf().inSingletonScope();
   bind(DisplayViewResolver)
     .toDynamicValue((ctx) => {
       let displayViewResolver = new DisplayViewResolver();
@@ -55,7 +55,7 @@ export default new ContainerModule((bind) => {
         ctx.container.get(SourceCodeExtractor),
       );
       // TODO: Change this back to the Table Visualizer and Extractor this is just temporarly to test the diagram renderung
-      displayViewResolver.registerDisplayView("TableVisualizer", ctx.container.get(PackageDiagramVisualizer), ctx.container.get(PackageDiagramExtractor));
+      displayViewResolver.registerDisplayView("TableVisualizer", ctx.container.get(DiagramVisualizer), ctx.container.get(DiagramExtractor));
       return displayViewResolver;
     })
     .inSingletonScope();
@@ -84,15 +84,15 @@ export default new ContainerModule((bind) => {
     },
   }));
 
-  // Factory for creating a PackageDiagramWidget
+  // Factory for creating a DiagramWidget
   bind(WidgetFactory).toDynamicValue((ctx) => ({
-    id: PackageDiagramWidget.ID,
+    id: DiagramWidget.ID,
     createWidget: (widgetLabel: string) => {
       const child = new Container({ defaultScope: "Singleton" });
       child.parent = ctx.container;
-      child.bind(PackageDiagramWidget).toSelf();
-      child.get(PackageDiagramWidget).setLabel(widgetLabel);
-      return child.get(PackageDiagramWidget);
+      child.bind(DiagramWidget).toSelf();
+      child.get(DiagramWidget).setLabel(widgetLabel);
+      return child.get(DiagramWidget);
     },
   }));
 
