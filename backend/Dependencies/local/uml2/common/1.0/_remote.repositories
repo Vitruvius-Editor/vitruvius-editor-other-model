@@ -1,0 +1,4 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon Feb 03 12:56:23 CET 2025
+common-1.0.jar>=
+common-1.0.pom>=
