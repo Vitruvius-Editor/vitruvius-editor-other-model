@@ -36,8 +36,8 @@ jobs:
     - name: Build Test Server Docker image
       uses: docker/build-push-action@v2
       with:
-        context: ./vitruvius-server
-        file: ./vitruvius-server/Dockerfile
+        context: ./vitruv-server
+        file: ./vitruv-server/Dockerfile
         push: false
         tags: vitruvius-server:latest
         
