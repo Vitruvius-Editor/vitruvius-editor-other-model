@@ -45,10 +45,6 @@
     </pluginRepository>
   </pluginRepositories>
   <repositories>
-    <repository>
-      <id>local-maven-repo</id>
-      <url>file:///${project.basedir}/Dependencies</url>
-    </repository>
     <!-- Maven Central should have priority -->
     <repository>
       <id>central</id>
@@ -76,6 +72,10 @@
       <name>XAnnotations</name>
       <layout>p2</layout>
       <url>https://kit-sdq.github.io/updatesite/release/xannotations/${repo.xannotations.version}</url>
+    </repository>
+    <repository>
+      <id>local-maven-repo</id>
+      <url>file:///${project.basedir}/Dependencies</url>
     </repository>
   </repositories>
   <dependencies>
