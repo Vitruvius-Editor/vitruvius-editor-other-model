@@ -29,6 +29,6 @@ class TextDisplayContentMapper: DisplayContentMapper<String> {
      * @return the name of the visualizer
      */
     override fun getVisualizerName(): String {
-        return VisualizerType.TextVisualizer.visualizerName
+        return VisualizerType.TEXT_VISUALIZER.visualizerName
     }
 }
