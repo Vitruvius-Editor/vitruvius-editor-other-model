@@ -34,15 +34,6 @@ jobs:
         distribution: 'temurin'
         cache: maven
         
-    - name: install local common jar
-      run: mvn install:install-file -Dfile=Dep/common-2.0.0-v20140602-0749.jar -DgroupId=eclipse.uml2.common -DartifactId=common -Dversion=1.0. -Dpackaging=jar
-
-    - name: install local common jar
-      run: mvn install:install-file -Dfile=Dep/uml-5.0.0-v20140602-0749.jar -DgroupId=eclipse.uml2 -DartifactId=uml -Dversion=1.0. -Dpackaging=jar
-
-    - name: install local common jar
-      run: mvn install:install-file -Dfile=Dep/types-2.0.0-v20140602-0749.jar -DgroupId=eclipse.uml2.types -DartifactId=types -Dversion=1.0. -Dpackaging=jar
-      
     - name: Build with Maven
       run: mvn clean install
 
