@@ -4,7 +4,7 @@ import {PortModelAlignment} from "@projectstorm/react-diagrams";
 import { LinkWidget, PointModel } from '@projectstorm/react-diagrams-core';
 import { DefaultLinkPointWidget, DefaultLinkSegmentWidget } from '@projectstorm/react-diagrams-defaults/dist';
 
-export class PackageNode extends DefaultNodeModel {
+export class UMLNode extends DefaultNodeModel {
   classID: string
 
   constructor(classID :string, className: string, attributes: string[], methods: string[]) {
@@ -42,8 +42,8 @@ export class PackageNode extends DefaultNodeModel {
   }
 }
 
-export class PackageImportLink extends DefaultLinkModel {
-  constructor(From : PackageNode, To : PackageNode) {
+export class UMLArrowLink extends DefaultLinkModel {
+  constructor(From : UMLNode, To : UMLNode) {
     super({
       type: 'advanced',
       curvyness: 0,

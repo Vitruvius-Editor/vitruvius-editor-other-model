@@ -1,7 +1,7 @@
 /**
- * A class representing a UML Package.
+ * A class representing a UML Component.
  */
-class UMLPackage {
+class UMLComponent {
     classID: string;
     name: string;
     attributes: string[];
@@ -16,9 +16,10 @@ class UMLPackage {
 }
 
 /**
- * A class representing a UML Link between two Packages.
+ * A class representing a UML Relationship between two Components.
  */
-class UMLPackageLink {
+class UMLRelation {
+    name: string;
     fromID: string;
     toID: string;
 
@@ -29,17 +30,31 @@ class UMLPackageLink {
 }
 
 /**
- * A class representing a Full UML Package Diagram
+ * A class representing a Full UML Diagram
  */
-class UMLPackageDiagram {
-    packages :UMLPackage[];
-    links :UMLPackageLink[];
+class UMLDiagram {
+    packages :UMLComponent[];
+    links :UMLRelation[];
 
-    getPackages(): UMLPackage[] {
+    className1 = "Class Name1";
+    attributes1 = ["+attribute11: type", "-attribute12: type", "adsfsfsdfsdfsdf"];
+    methods1 = ["+method11: void", "-method12: type"];
+    umlPackage1:UMLComponent = new UMLComponent( 'a1', this.className1, this.attributes1, this.methods1 );
+
+    className2 :string = "Class Name2";
+    attributes2 :string[] = ["+attribute21: type", "-attribute22: type"];
+    methods2 :string[] = ["+method21: void", "-method22: type"];
+    umlPackage2:UMLComponent = new UMLComponent( 'b2', this.className2, this.attributes2, this.methods2 );
+
+    constructor() {
+        this.packages = [this.umlPackage1, this.umlPackage2];
+    }
+
+    getComponents(): UMLComponent[] {
         return this.packages;
     }
 
-    getLinks(): UMLPackageLink[] {
-        return [new UMLPackageLink('a1', 'b2')];
+    getLinks(): UMLRelation[] {
+        return [new UMLRelation('a1', 'b2')];
     }
 }
