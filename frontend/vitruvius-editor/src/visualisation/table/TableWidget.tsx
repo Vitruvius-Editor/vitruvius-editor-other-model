@@ -4,6 +4,8 @@ import {
 } from "@theia/core/shared/inversify";
 import * as React from "react";
 import { VisualisationWidget } from "../VisualisationWidget";
+import { Table } from "./Table";
+import { RowEntry } from "./RowEntry";
 
 /**
 * A Widget to visualize a table based Vitruvius view.

@@ -1,4 +1,4 @@
-type RowEntry = {
+export type RowEntry = {
     uuid: string,
     name: string,
     visibility: string,

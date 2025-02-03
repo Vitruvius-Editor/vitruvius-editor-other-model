@@ -1,4 +1,4 @@
-type ColumnEntry = {
+export type ColumnEntry = {
     fieldName: string,
     fieldType: string,
     shouldBeDisplayed: boolean,
