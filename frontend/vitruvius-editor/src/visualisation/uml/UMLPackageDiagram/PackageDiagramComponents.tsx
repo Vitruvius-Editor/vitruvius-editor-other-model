@@ -5,7 +5,9 @@ import { LinkWidget, PointModel } from '@projectstorm/react-diagrams-core';
 import { DefaultLinkPointWidget, DefaultLinkSegmentWidget } from '@projectstorm/react-diagrams-defaults/dist';
 
 export class PackageNode extends DefaultNodeModel {
-  constructor(className: string, attributes: string[], methods: string[]) {
+  classID: string
+
+  constructor(classID :string, className: string, attributes: string[], methods: string[]) {
     super({
       name: (
         <>
@@ -27,7 +29,12 @@ export class PackageNode extends DefaultNodeModel {
       ),
       color: 'rgb(145, 145, 145)'
     });
+    this.classID = classID;
     // this.addPort(new AdvancedPortModel(true, 'a'));
+  }
+
+  getClassID() {
+    return this.classID;
   }
 
   getPort() :DefaultPortModel {
@@ -38,21 +45,20 @@ export class PackageNode extends DefaultNodeModel {
 export class PackageImportLink extends DefaultLinkModel {
   constructor(From : PackageNode, To : PackageNode) {
     super({
-      type: 'default'
+      type: 'advanced',
+      curvyness: 0,
+      color: 'black',
+      selectedColor: 'black'
     });
 
-    // var fromPort:DefaultPortModel = From.addPort(new AdvancedPortModel(false, 'out'));
-    // var toPort:DefaultPortModel = To.addPort(new AdvancedPortModel(true, 'in'));
-    // fromPort.link(toPort);
+    const fromPort:DefaultPortModel = From.addPort(new AdvancedPortModel(false, 'out'));
+    const toPort:DefaultPortModel = To.addPort(new AdvancedPortModel(true, 'in'));
+    fromPort.link(toPort, new AdvancedLinkFactory());
 
     this.setLocked(true);
-    this.getOptions().curvyness = 0;
-    this.getOptions().color = 'black';
-    this.getOptions().selectedColor = 'black';
-
+    this.setSourcePort(fromPort);
+    this.setTargetPort(toPort);
     this.addLabel('Imports');
-    // this.setSourcePort(fromPort);
-    // this.setTargetPort(toPort);
   }
 }
 
