@@ -1,6 +1,6 @@
 package tools.vitruv.vitruvAdapter.core.impl.uml
 
-abstract class UmlNode(
+class UmlNode(
     val uuid: String,
     val name: String,
     /**
@@ -8,5 +8,5 @@ abstract class UmlNode(
      */
     val nodeType: String,
     val attributes: List<UmlAttribute>,
-    val methods: List<String>,
+    val methods: List<UmlMethod>,
 )
