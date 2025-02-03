@@ -26,4 +26,4 @@ export class VisualisationWidgetRegistry{
     }
 }
 
-type WidgetData = {connection: Connection, displayView: DisplayView, widget: VisualisationWidget<any>}
+export type WidgetData = {connection: Connection, displayView: DisplayView, widget: VisualisationWidget<any>}

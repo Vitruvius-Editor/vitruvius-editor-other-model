@@ -28,7 +28,8 @@ export class DisplayViewService {
         `/api/v1/connection/${connectionId}/displayView/${displayViewName}`,
         "GET",
       )
-      .then((windowResponse) => windowResponse.windows);
+      .then((windowResponse) => windowResponse.windows)
+        .catch(() => null);
   }
 
   async getDisplayViewContent(
