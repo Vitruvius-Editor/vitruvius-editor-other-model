@@ -4,8 +4,9 @@ import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.JsonSerializer
 import com.fasterxml.jackson.databind.SerializerProvider
 
-class UmlAttributeSerializer: JsonSerializer<UmlAttribute>() {
-    override fun serialize(value: UmlAttribute?, gen: JsonGenerator?, serializers: SerializerProvider?) {
+class UmlParameterSerializer: JsonSerializer<UmlParameter>() {
+
+    override fun serialize(value: UmlParameter?, gen: JsonGenerator?, serializers: SerializerProvider?) {
         var serialized = ""
         if (value != null) {
             serialized = getSerializedString(value)
@@ -13,7 +14,7 @@ class UmlAttributeSerializer: JsonSerializer<UmlAttribute>() {
         gen?.writeString(serialized)
     }
 
-    private fun getSerializedString(value: UmlAttribute): String {
-        return "${value.visibility.symbol} ${value.name}: ${value.type}"
+    fun getSerializedString(value: UmlParameter): String {
+        return "${value.name}: ${value.type}"
     }
 }
