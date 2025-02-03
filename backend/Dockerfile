@@ -10,7 +10,9 @@ WORKDIR /backend
 #RUN mvn dependency:go-offline
 
 # Copy the rest of the project files
-COPY . .
+COPY pom.xml .
+COPY Dependencies/ Dependencies/
+COPY src/ src/
 
 # Build the Maven project
 RUN mvn clean package -DskipTests

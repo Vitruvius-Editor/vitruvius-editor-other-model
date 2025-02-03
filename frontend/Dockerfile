@@ -6,6 +6,10 @@ RUN apt-get update && apt-get install -y libxkbfile-dev libsecret-1-dev
 
 WORKDIR /home/theia
 
+RUN \
+  --mount=type=cache,target=/root/.yarn \
+  yarn
+
 # Copy repository files
 COPY . .
 

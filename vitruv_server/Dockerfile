@@ -5,13 +5,19 @@ FROM maven:3.9.9-eclipse-temurin-17 AS build
 WORKDIR /app
 
 # Copy the source code
-COPY . .
+COPY pom.xml .
+COPY Dependencies ./Dependencies
+COPY src ./src
 
 # Package the application
 RUN mvn clean package -DskipTests
 
 # Stage 2: Run the application
-FROM openjdk:17-jdk-slim
+FROM openjdk:17
+
+# Create a non-root user
+RUN useradd -m -u 1000 appuser
+USER appuser
 
 # Set the working directory
 WORKDIR /app
