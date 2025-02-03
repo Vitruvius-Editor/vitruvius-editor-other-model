@@ -124,7 +124,8 @@ class VitruvAdapter {
         val viewInformation = JsonViewInformation(mapper.getDisplayContent())
         val oldView = getView(displayView).withChangeDerivingTrait()
         val oldSelectedEObjects = displayView.contentSelector.applySelection(oldView.rootObjects.toList(), viewInformation.collectWindowsFromJson(json))
-        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(oldSelectedEObjects, viewInformation.parseWindowsFromJson(json))
+        val newWindows = viewInformation.parseWindowsFromJson(json)
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(oldSelectedEObjects, newWindows)
         oldView.commitChanges()
     }
 

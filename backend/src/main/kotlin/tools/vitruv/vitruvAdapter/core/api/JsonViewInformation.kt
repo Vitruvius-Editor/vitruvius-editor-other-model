@@ -47,7 +47,8 @@ class JsonViewInformation<E>(
         val jsonNode = objectMapper.readTree(json)
         val windows = jsonNode.get("windows").map { windowNode ->
             val name = windowNode.get("name").asText()
-            val content = displayContentMapper.parseString(windowNode.get("content").asText())
+            val windowContent = windowNode.get("content").toString()
+            val content = displayContentMapper.parseString(windowContent)
             Window(name, content)
         }
         return windows
