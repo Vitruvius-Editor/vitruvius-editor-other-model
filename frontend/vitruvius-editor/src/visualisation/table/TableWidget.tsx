@@ -13,7 +13,7 @@ import { RowEntry } from "./RowEntry";
 @injectable()
 export class TableWidget extends VisualisationWidget<Table> {
     getVisualizerName(): string {
-        return "TextVisualizer";
+        return "TableVisualizer";
     }
 	static readonly ID = "tablewidget:tablewidget";
 	static readonly LABEL = "TableWidget";
