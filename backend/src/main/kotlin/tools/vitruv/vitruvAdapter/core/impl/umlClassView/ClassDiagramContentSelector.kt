@@ -2,6 +2,7 @@ package tools.vitruv.vitruvAdapter.core.impl.umlClassView
 
 import org.eclipse.emf.ecore.EObject
 import tools.vitruv.vitruvAdapter.core.api.ContentSelector
+import org.eclipse.uml2.uml.Package
 
 /**
  * Selects the content of a class diagram.
