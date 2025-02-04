@@ -2,19 +2,18 @@ package tools.vitruv.vitruvAdapter.core.impl.classTableView
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.uml2.uml.Package
-import org.eclipse.uml2.uml.UMLFactory
-import tools.vitruv.framework.views.View
 import tools.vitruv.vitruvAdapter.core.api.ContentSelector
-import org.eclipse.uml2.uml.Class
 import tools.mdsd.jamopp.model.java.containers.JavaRoot
+import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
+import tools.vitruv.vitruvAdapter.core.impl.table.TableDTO
 
 class ClassTableContentSelector: ContentSelector {
 
     override fun applySelection(
         rootObjects: List<EObject>,
         windows: Set<String>
-    ): List<EObject> {
-        val rootObjectsWithClassOnly = mutableListOf<EObject>()
+    ): List<PreMappedWindow<TableDTO<ClassTableEntry>>> {
+        val mutablePreMappedWindows = ContentSelector.createMutablePreMappedWindows(windows)
         for (ePackage in rootObjects) {
             if(ePackage is Package){
                 val iterator = ePackage.eAllContents()
@@ -22,13 +21,15 @@ class ClassTableContentSelector: ContentSelector {
                     val next = iterator.next()
                     if (next is Package) {
                         if(windows.contains(next.name)){
-                            rootObjectsWithClassOnly.add(next)
+                            ContentSelector.findPreMappedWindow(mutablePreMappedWindows, next.name)?.addEObject(next)
                         }
                     }
                 }
 
+
                 if (windows.contains(ePackage.name)){
-                    rootObjectsWithClassOnly.add(ePackage)
+                    ContentSelector.findPreMappedWindow(mutablePreMappedWindows, ePackage.name)?.addEObject(ePackage)
+
                 }
             }
             if(ePackage is JavaRoot){
@@ -37,16 +38,18 @@ class ClassTableContentSelector: ContentSelector {
                     val next = iterator.next()
                     if (next is JavaRoot) {
                         if(windows.contains(next.name)){
-                            rootObjectsWithClassOnly.add(next)
+                            ContentSelector.findPreMappedWindow(mutablePreMappedWindows, next.name)?.addEObject(next)
+
                         }
                     }
                     if (windows.contains(ePackage.name)){
-                        rootObjectsWithClassOnly.add(next)
+                        ContentSelector.findPreMappedWindow(mutablePreMappedWindows, ePackage.name)?.addEObject(next)
+
                     }
                 }
             }
         }
-        return rootObjectsWithClassOnly
+        return mutablePreMappedWindows.map { it.toPreMappedWindow() }
     }
 
 }

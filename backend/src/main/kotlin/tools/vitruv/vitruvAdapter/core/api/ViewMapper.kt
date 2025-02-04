@@ -11,22 +11,37 @@ interface ViewMapper<E> {
 
     /**
      * Maps the given view content to a list of windows.
-     * @param selectEObjects The view content to map.
+     * @param preMappedWindows the pre-mapped windows to map to windows.
      * @return The windows representing the view content.
      */
-    fun mapEObjectsToWindowsContent(selectEObjects: List<EObject>): List<Window<E>>
-
+    fun mapEObjectsToWindowsContent(preMappedWindows: List<PreMappedWindow>): List<Window<E>>
 
     /**
-     * Maps the given json string to view content, compares it to [oldEObjects] and applies the changes to [oldEObjects].
+     * Maps the given json string to view content, compares it to [preMappedWindows] and applies the changes to the eObjects of [preMappedWindows].
      * Note that no changes will be applied to the model,
-     * this have to be done after this method with a View object, where the [oldEObjects] came from.
-     * @param oldEObjects The old EObjects to compare the windows to.
+     * this have to be done after this method with a View object, where the [preMappedWindows] came from.
+     * @param preMappedWindows The pre-mapped windows to compare the windows to.
      * @param windows the windows to map to EObjects.
      * @return The view content.
      */
-    fun mapWindowsToEObjectsAndApplyChangesToEObjects(oldEObjects: List<EObject>, windows: List<Window<E>>): List<EObject>
+    fun mapWindowsToEObjectsAndApplyChangesToEObjects(preMappedWindows: List<PreMappedWindow>, windows: List<Window<E>>): List<EObject>
 
+    /**
+     * Pairs the pre-mapped windows with the windows.
+     * @param preMappedWindows The pre-mapped windows.
+     * @param windows The windows.
+     * @return The pairs of pre-mapped windows and windows.
+     */
+    fun pairWindowsTogether(preMappedWindows: List<PreMappedWindow<E>>, windows: List<Window<E>>): List<Pair<PreMappedWindow<E>, Window<E>>> {
+        val pairs = mutableListOf<Pair<PreMappedWindow<E>, Window<E>>>()
+        for (window in windows) {
+            val preMappedWindow = preMappedWindows.find { it.name == window.name }
+            if (preMappedWindow != null) {
+                pairs.add(Pair(preMappedWindow, window))
+            }
+        }
+        return pairs
+    }
 
     /**
      * Maps the given view to all windows it can find within the view.
@@ -34,6 +49,7 @@ interface ViewMapper<E> {
      * @return The names of the windows that are available in the view.
      */
     fun mapViewToWindows(rootObjects: List<EObject>): Set<String>
+
 
     /**
      * Gets the display content of this view mapper, which is able to map the view content to a json string and vice versa.
