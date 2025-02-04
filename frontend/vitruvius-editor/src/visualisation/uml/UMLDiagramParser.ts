@@ -2,10 +2,13 @@ import {UMLDiagram} from "./DiagramContent";
 import {UMLArrowLink, UMLNode} from "./DiagramComponents";
 
 /**
- * A class used to fetch the Classes from the Backend.
- * Currently, the classes are hardcoded for demonstration purposes.
+ * A class to parse a UML Diagram from a string.
+ * The string should be in JSON format and contain the nodes and links of the diagram.
+ * Currently, the parsing is commented out and the nodes and links are hardcoded for testing/demonstration purposes.
  */
 export class UMLDiagramParser {
+
+    // The example nodes and links data
     nodesData :[string, string, string[], string[]][] = [
         ['a1', 'class name1', ["+attribute11: type", "-attribute12: type"], ["+method11: void", "-method12: type"]],
         ['b2', 'class name2', ["+attribute21: type", "-attribute22: type"], ["+method21: void", "-method22: type"]]
@@ -19,6 +22,7 @@ export class UMLDiagramParser {
         const nodes: UMLNode[] = [];
         const links: UMLArrowLink[] = [];
 
+        // Uncomment the following lines to parse the content
         // const data = JSON.parse(content);
         // this.nodesData = data.nodes;
         // this.idPairs = data.links;

@@ -1,7 +1,7 @@
 import {UMLArrowLink, UMLNode} from "./DiagramComponents";
 
 /**
- * A class representing a Full UML Diagram
+ * A class to represent a UML Diagram.
  */
 export class UMLDiagram {
     nodes :UMLNode[];

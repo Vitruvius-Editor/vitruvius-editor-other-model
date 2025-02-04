@@ -31,6 +31,7 @@ export class DiagramWidget extends VisualisationWidget<string> {
 
   /**
    * Renders the widget containing the content as a UML Package Diagram given from the Backend.
+   * Uses the Parser to parse the content and create the diagram.
    */
   render(): React.ReactElement {
     const engine = createEngine();

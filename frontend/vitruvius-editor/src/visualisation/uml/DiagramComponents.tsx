@@ -4,6 +4,9 @@ import React from 'react';
 import { DiagramEngine, LinkWidget, PointModel } from '@projectstorm/react-diagrams-core';
 import { DefaultLinkPointWidget, DefaultLinkSegmentWidget } from '@projectstorm/react-diagrams-defaults';
 
+/**
+ * The UMLNode class represents a UML class node in the React diagram.
+ */
 export class UMLNode extends DefaultNodeModel {
   classID: string
 
@@ -42,6 +45,9 @@ export class UMLNode extends DefaultNodeModel {
   }
 }
 
+/**
+ * The UMLArrowLink class represents a UML arrow link in the React diagram.
+ */
 export class UMLArrowLink extends DefaultLinkModel {
   constructor(From : UMLNode, To : UMLNode) {
     super({
