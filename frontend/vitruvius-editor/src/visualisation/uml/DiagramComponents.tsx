@@ -1,6 +1,5 @@
 import {DefaultLinkFactory, DefaultLinkModel, DefaultNodeModel, DefaultPortModel } from '@projectstorm/react-diagrams-defaults';
 import React from 'react';
-// import {PortModelAlignment} from "@projectstorm/react-diagrams";
 import { DiagramEngine, LinkWidget, PointModel } from '@projectstorm/react-diagrams-core';
 import { DefaultLinkPointWidget, DefaultLinkSegmentWidget } from '@projectstorm/react-diagrams-defaults';
 
@@ -10,26 +9,9 @@ import { DefaultLinkPointWidget, DefaultLinkSegmentWidget } from '@projectstorm/
 export class UMLNode extends DefaultNodeModel {
   classID: string
 
-  constructor(classID :string, className: string, attributes: string[], methods: string[]) {
+  constructor(classID :string, text: string) {
     super({
-      name: (
-        <>
-          {className} <br />
-          <hr width="100%" size="2" color="black" noshade></hr>
-          {attributes.map((attr, index) => (
-            <React.Fragment key={index}>
-              {attr} <br />
-            </React.Fragment>
-          ))}
-
-          <hr width="100%" size="2" color="black" noshade></hr>
-          {methods.map((method, index) => (
-            <React.Fragment key={index}>
-              {method} <br />
-            </React.Fragment>
-          ))}
-        </>
-      ),
+      name: text,
       color: 'rgb(145, 145, 145)'
     });
     this.classID = classID;
@@ -46,26 +28,40 @@ export class UMLNode extends DefaultNodeModel {
 }
 
 /**
- * The UMLArrowLink class represents a UML arrow link in the React diagram.
+ * The UMLRelation class represents a general UML relation in the React diagram.
  */
-export class UMLArrowLink extends DefaultLinkModel {
-  constructor(From : UMLNode, To : UMLNode) {
-    super({
-      type: 'advanced',
-      curvyness: 0,
-      color: 'black',
-      selectedColor: 'black'
-    });
+export class UMLRelation extends DefaultLinkModel {
+  private fromPort: DefaultPortModel | null;
+  private toPort: DefaultPortModel | null;
+    constructor(type: string, label: string, From : UMLNode, To : UMLNode) {
+        super({
+        type: 'advanced',
+        curvyness: 0,
+        color: 'black',
+        selectedColor: 'black'
+        });
 
-    const fromPort:DefaultPortModel = From.addPort(new AdvancedPortModel(false, 'out'));
-    const toPort:DefaultPortModel = To.addPort(new AdvancedPortModel(true, 'in'));
-    fromPort.link(toPort, new AdvancedLinkFactory());
+        switch (type)
+      {
+        case 'default': {
+          this.fromPort = From.addPort(new DefaultPortModel(false, 'out'));
+          this.toPort = To.addPort(new DefaultPortModel(true, 'in'));
+          this.fromPort.link(this.toPort, new DefaultLinkFactory());
+          break;
+        }
+        case "advanced": {
+          this.fromPort = From.addPort(new ArrowPortModel(false, 'out'));
+          this.toPort = To.addPort(new ArrowPortModel(true, 'in'));
+          this.fromPort.link(this.toPort, new ArrowLinkFactory());
+          break;
+        }
+      }
 
-    this.setLocked(true);
-    this.setSourcePort(fromPort);
-    this.setTargetPort(toPort);
-    this.addLabel('Imports');
-  }
+      this.setLocked(true);
+      this.setSourcePort(this.fromPort);
+      this.setTargetPort(this.toPort);
+      this.addLabel(label);
+    }
 }
 
 export class AdvancedLinkModel extends DefaultLinkModel {
@@ -77,7 +73,7 @@ export class AdvancedLinkModel extends DefaultLinkModel {
   }
 }
 
-export class AdvancedPortModel extends DefaultPortModel {
+export class ArrowPortModel extends DefaultPortModel {
   createLinkModel(): AdvancedLinkModel | null {
     return new AdvancedLinkModel();
   }
@@ -211,7 +207,7 @@ export class AdvancedLinkWidget extends React.Component<AdvancedLinkWidgetProps>
   }
 }
 
-export class AdvancedLinkFactory extends DefaultLinkFactory {
+export class ArrowLinkFactory extends DefaultLinkFactory {
   constructor() {
     super('advanced');
   }

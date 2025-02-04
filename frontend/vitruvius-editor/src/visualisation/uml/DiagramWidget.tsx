@@ -7,7 +7,7 @@ import * as React from "react";
 import { MessageService } from "@theia/core";
 import { VisualisationWidget } from "../VisualisationWidget";
 import createEngine, {DiagramModel, CanvasWidget} from '@projectstorm/react-diagrams';
-import {AdvancedLinkFactory} from "./DiagramComponents";
+import {ArrowLinkFactory} from "./DiagramComponents";
 import {UMLDiagramParser} from "./UMLDiagramParser";
 
 /**
@@ -35,7 +35,7 @@ export class DiagramWidget extends VisualisationWidget<string> {
    */
   render(): React.ReactElement {
     const engine = createEngine();
-    engine.getLinkFactories().registerFactory(new AdvancedLinkFactory());
+    engine.getLinkFactories().registerFactory(new ArrowLinkFactory());
 
     const umlDiagramParser = new UMLDiagramParser();
     const umlDiagram = umlDiagramParser.parse(this.getContent());
