@@ -2,6 +2,7 @@ package tools.vitruv.vitruvAdapter.core.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 
 /**
  * This class is responsible for serializing the visualizer information and the list of windows to a json string.
@@ -43,12 +44,13 @@ class JsonViewInformation<E>(
      * @return The list of windows.
      */
     fun parseWindowsFromJson(json: String): List<Window<E>> {
-        val objectMapper = ObjectMapper()
+        val objectMapper = jacksonObjectMapper()
         val jsonNode = objectMapper.readTree(json)
         val windows = jsonNode.get("windows").map { windowNode ->
-            val name = windowNode.get("name").asText()
+
+            val name =  windowNode.get("name").asText()
             val contentNode = windowNode.get("content")
-            // Since "content" is a JSON string, extract the inner JSON string.
+
             val contentJsonString = if (contentNode.isTextual) {
                 contentNode.asText()
             } else {
