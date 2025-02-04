@@ -8,7 +8,7 @@ import { MessageService } from "@theia/core";
 import { VisualisationWidget } from "../VisualisationWidget";
 import createEngine, {DiagramModel, CanvasWidget} from '@projectstorm/react-diagrams';
 import {AdvancedLinkFactory, UMLArrowLink, UMLNode} from "./DiagramComponents";
-import {UMLDiagram} from "./DiagramContent";
+import {UMLDiagramParser} from "./UMLDiagramParser";
 
 /**
  * A Widget to visualize a UML Package Vitruvius view.
@@ -38,21 +38,9 @@ export class DiagramWidget extends VisualisationWidget<string> {
 
     const umlDiagramParser = new UMLDiagramParser();
     const umlDiagram = umlDiagramParser.parse(this.getContent());
-
-    const nodes: UMLNode[] = umlDiagram.getNodes();
-
-    const links: UMLArrowLink[] = umlDiagram.getLinks();
-    // umlDiagram.getLinks().forEach(relation => {
-    //   const fromNode = nodes.find(node => node.getClassID() === relation.fromID);
-    //   const toNode = nodes.find(node => node.getClassID() === relation.toID);
-    //   if (fromNode !== undefined && toNode !== undefined) {
-    //     links.push(new UMLArrowLink(fromNode, toNode));
-    //   }
-    // });
-
     const model = new DiagramModel();
-    nodes.forEach(component => model.addNode(component));
-    links.forEach(link => model.addLink(link));
+    umlDiagram.getNodes().forEach(component => model.addNode(component));
+    umlDiagram.getLinks().forEach(link => model.addLink(link));
     engine.setModel(model);
 
     return <CanvasWidget className="diagram-container" engine={engine} />;
@@ -65,19 +53,5 @@ export class DiagramWidget extends VisualisationWidget<string> {
    */
   handleChange(event: React.ChangeEvent<HTMLTextAreaElement>): void {
     this.content = event.target.value;
-  }
-}
-
-/**
- * A class used to fetch the Classes from the Backend.
- * Currently, the classes are hardcoded for demonstration purposes.
- */
-class UMLDiagramParser {
-
-  constructor() {
-  }
-
-  parse(content: string): UMLDiagram {
-    return new UMLDiagram();
   }
 }
