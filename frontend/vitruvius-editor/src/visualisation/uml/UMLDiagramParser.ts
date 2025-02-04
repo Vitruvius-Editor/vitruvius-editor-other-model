@@ -19,9 +19,9 @@ export class UMLDiagramParser {
         const nodes: UMLNode[] = [];
         const links: UMLArrowLink[] = [];
 
-        const data = JSON.parse(content);
-        this.nodesData = data.nodes;
-        this.idPairs = data.links;
+        // const data = JSON.parse(content);
+        // this.nodesData = data.nodes;
+        // this.idPairs = data.links;
 
         this.nodesData.forEach(data => {
             nodes.push(new UMLNode(data[0], data[1], data[2], data[3]));

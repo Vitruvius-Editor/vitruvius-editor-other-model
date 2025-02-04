@@ -7,7 +7,7 @@ import * as React from "react";
 import { MessageService } from "@theia/core";
 import { VisualisationWidget } from "../VisualisationWidget";
 import createEngine, {DiagramModel, CanvasWidget} from '@projectstorm/react-diagrams';
-import {AdvancedLinkFactory, UMLArrowLink, UMLNode} from "./DiagramComponents";
+import {AdvancedLinkFactory} from "./DiagramComponents";
 import {UMLDiagramParser} from "./UMLDiagramParser";
 
 /**
