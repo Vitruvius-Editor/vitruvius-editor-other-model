@@ -10,7 +10,6 @@ import { ConnectionService } from "../../backend-communication/ConnectionService
 import {VisualisationWidgetRegistry} from "../../visualisation/VisualisationWidgetRegistry";
 import {DisplayViewService} from "../../backend-communication/DisplayViewService";
 import {DisplayViewResolver} from "../../visualisation/DisplayViewResolver";
-import {Content} from "../../model/Content";
 import {VisualisationWidget} from "../../visualisation/VisualisationWidget";
 
 /**
