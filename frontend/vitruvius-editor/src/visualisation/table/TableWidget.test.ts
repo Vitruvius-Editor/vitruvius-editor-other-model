@@ -63,7 +63,7 @@ describe("TableWidget", () => {
     });
 
     it("should return the correct visualizer name", () => {
-        expect(widget.getVisualizerName()).toBe("TextVisualizer");
+        expect(widget.getVisualizerName()).toBe("TableVisualizer");
     });
 
     it("should return the content as a string", () => {
