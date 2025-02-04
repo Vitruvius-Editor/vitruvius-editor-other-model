@@ -11,6 +11,7 @@ data class ConnectionCreationRequest(
     val name: String,
     val description: String,
     val url: String,
+    var port: Int,
 )
 
 /**

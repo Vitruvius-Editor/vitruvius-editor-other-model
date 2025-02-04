@@ -26,12 +26,14 @@ describe("ConnectionService", () => {
           name: "Connection 1",
           description: "Description",
           url: "http://example.com",
+          port: 8080,
         },
         {
           uuid: generateUuid(),
           name: "Connection 2",
           description: "Description",
           url: "http://example.com",
+            port: 8080,
         },
       ];
       sendWebRequestStub.mockResolvedValue(mockConnections);
@@ -49,6 +51,7 @@ describe("ConnectionService", () => {
         name: "Connection 1",
         description: "Description",
         url: "http://example.com",
+        port: 8080,
       };
       sendWebRequestStub.mockResolvedValue(mockConnection);
 
@@ -82,11 +85,13 @@ describe("ConnectionService", () => {
         name: "Connection 1",
         description: "Description",
         url: "http://example.com",
+        port: 8080,
       };
       const connectionCreationRequest = {
         name: "Connection 1",
         description: "Description",
         url: "http://example.com",
+        port: 8080,
       };
       sendWebRequestStub.mockResolvedValue(mockConnection);
 
@@ -103,6 +108,7 @@ describe("ConnectionService", () => {
         name: "Connection",
         description: "Description",
         url: "http://example.com",
+        port: 8080,
       };
       const connectionUpdateRequest = { name: "Updated Connection" };
       sendWebRequestStub.mockResolvedValue(mockConnection);

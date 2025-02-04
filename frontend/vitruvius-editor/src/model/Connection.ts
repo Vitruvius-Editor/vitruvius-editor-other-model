@@ -21,4 +21,8 @@ export type Connection = {
    * The URL associated with the connection.
    */
   url: string;
+  /**
+   * The port associated with the connection.
+   */
+  port: number;
 };
