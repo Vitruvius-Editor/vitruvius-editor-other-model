@@ -5,6 +5,7 @@ import org.eclipse.uml2.uml.Class
 import org.eclipse.uml2.uml.Classifier
 import org.eclipse.uml2.uml.Interface
 import org.eclipse.uml2.uml.Package
+import org.eclipse.uml2.uml.ParameterDirectionKind
 import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.core.impl.abstractMapper.UmlViewMapper
@@ -43,13 +44,14 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                     UmlNode(nextURI, next.name, isAbstract, getUmlAttributes(next), getUmlMethods(next))
                 nodes.add(classNode)
 
-
                 if (next.interfaceRealizations.isNotEmpty()) {
                     next.interfaceRealizations.forEach { interfaceRealization ->
+                        val sourceURI = resource?.getURIFragment(next) ?: ""
+                        val targetURI = resource?.getURIFragment(interfaceRealization) ?: ""
                         val umlConnection = UmlConnection(
-                            resource?.getURIFragment(interfaceRealization) ?: "",
-                            resource?.getURIFragment(next) ?: "",
-                            resource?.getURIFragment(interfaceRealization.contract) ?: "",
+                            "$sourceURI$$targetURI",
+                            sourceURI,
+                            targetURI,
                             UmlConnectionType.IMPLEMENTS,
                             "",
                             "",
@@ -58,13 +60,14 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                         connections.add(umlConnection)
                     }
                 }
-
                 if (next.superClasses.isNotEmpty()) {
                     val superClass = next.superClasses.first()
+                    val sourceURI = resource?.getURIFragment(superClass) ?: ""
+                    val targetURI = resource?.getURIFragment(next) ?: ""
                     val umlConnection = UmlConnection(
-                        resource?.getURIFragment(superClass) ?: "",
-                        resource?.getURIFragment(next) ?: "",
-                        resource?.getURIFragment(superClass) ?: "",
+                        "$sourceURI$$targetURI",
+                        sourceURI,
+                        targetURI,
                         UmlConnectionType.EXTENDS,
                         "",
                         "",
@@ -75,17 +78,34 @@ class ClassDiagramViewMapper : UmlViewMapper() {
             }
             if (next is Interface) {
                 val interfaceNode =
-                    UmlNode(nextURI, next.name, "<<interface>>", getUmlAttributes(next), getUmlMethods(next))
+                    UmlNode(nextURI, next.name, "<<interface>>", listOf(), getUmlMethods(next))
                 nodes.add(interfaceNode)
-            }
 
+                if (next.redefinedInterfaces.isNotEmpty()) {
+                    next.redefinedInterfaces.forEach { redefinedInterface ->
+                        val sourceURI = resource?.getURIFragment(redefinedInterface) ?: ""
+                        val targetURI = resource?.getURIFragment(next) ?: ""
+                        val umlConnection = UmlConnection(
+                            "$sourceURI$$targetURI",
+                            sourceURI,
+                            targetURI,
+                            UmlConnectionType.EXTENDS,
+                            "",
+                            "",
+                            ""
+                        )
+                        connections.add(umlConnection)
+                    }
+                }
+            }
         }
         return UmlDiagram(nodes, connections)
     }
 
-    private fun getUmlAttributes(next: Classifier): List<UmlAttribute> {
+
+    private fun getUmlAttributes(next: Class): List<UmlAttribute> {
         val umlAttributes = mutableListOf<UmlAttribute>()
-        next.attributes.forEach {
+        next.ownedAttributes.forEach {
             val visibilitySymbol = getVisibilitySymbol(it.visibility.literal.lowercase())
             val umlVisibility = UmlVisibility.fromSymbol(visibilitySymbol) ?: UmlVisibility.PUBLIC
             umlAttributes.add(UmlAttribute(umlVisibility, it.name, it.type.name))
@@ -99,7 +119,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
             val visibilitySymbol = getVisibilitySymbol(it.visibility.literal.lowercase())
             val umlVisibility = UmlVisibility.fromSymbol(visibilitySymbol) ?: UmlVisibility.PUBLIC
             val umlParameters = mutableListOf<UmlParameter>()
-            it.ownedParameters.forEach { parameter ->
+            it.ownedParameters.filter { it.direction == ParameterDirectionKind.IN_LITERAL }.forEach { parameter ->
                 umlParameters.add(UmlParameter(parameter.name, parameter.type.name))
             }
             umlMethods.add(UmlMethod(umlVisibility, it.name, umlParameters, it.type.name))
@@ -138,7 +158,20 @@ class ClassDiagramViewMapper : UmlViewMapper() {
      * @return The names of the windows that are available in the view.
      */
     override fun mapViewToWindows(rootObjects: List<EObject>): Set<String> {
-        TODO("Not yet implemented")
+        val windows = mutableSetOf<String>()
+        for (rootObject in rootObjects) {
+            val iterator = rootObject.eAllContents()
+            while (iterator.hasNext()) {
+                val next = iterator.next()
+                if (next is Package) {
+                    windows.add(next.name)
+                }
+            }
+            if(rootObject is Package){
+                windows.add(rootObject.name)
+            }
+        }
+        return windows
     }
 
     /**
