@@ -7,6 +7,7 @@ package tools.vitruv.vitruvAdapter.core.impl
  * @param visualizerName The name of the visualizer.
  */
 enum class VisualizerType(val visualizerName: String) {
-    TextVisualizer("TextVisualizer"),
-    ClassTableView("TableVisualizer"),
+    TEXT_VISUALIZER("TextVisualizer"),
+    TABLE_VISUALIZER("TableVisualizer"),
+    UML_VISUALIZER("UmlVisualizer")
 }
