@@ -4,12 +4,17 @@ import {
 } from "@theia/core/shared/inversify";
 import * as React from "react";
 import { VisualisationWidget } from "../VisualisationWidget";
+import { Table } from "./Table";
+import { RowEntry } from "./RowEntry";
 
 /**
 * A Widget to visualize a table based Vitruvius view.
 */
 @injectable()
-export class TableWidget extends VisualisationWidget<TableEntry[]> {
+export class TableWidget extends VisualisationWidget<Table> {
+    getVisualizerName(): string {
+        return "TableVisualizer";
+    }
 	static readonly ID = "tablewidget:tablewidget";
 	static readonly LABEL = "TableWidget";
 
@@ -18,36 +23,47 @@ export class TableWidget extends VisualisationWidget<TableEntry[]> {
 	*/
 	@postConstruct()
 	protected init(): void {
-		this.doInit(TableWidget.ID, TableWidget.LABEL, []);
+		this.doInit(TableWidget.ID, TableWidget.LABEL, {rows: [], columns: []});
 	}
 
 	/**
 	* Renders the widget containing a text area to edit the content.
 	*/
 	render(): React.ReactElement {
-  let attributes = Object.keys(this.content[0] || {});
 	return (
 	  <div className="editor-container table-widget">
       <table>
         <thead>
           <tr>
-            {attributes.map(attribute => (
-              <th>{attribute}</th>
+            {this.content.columns.filter(column => column.shouldBeDisplayed).map(column => (
+              <th>{column.displayName}</th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {this.content.map(entry => (
+          {this.content.rows.map(row => (
             <tr>
-              {attributes.map(attribute => (
-                <td>{entry[attribute as keyof TableEntry].toString()}</td>
-              ))}
+              {this.content.columns.filter(column => column.shouldBeDisplayed).map(column => {
+				  if (column.editable) {
+					  return(<td><input className={'hidden-input'} defaultValue={row[column.fieldName as keyof RowEntry].toString()} onChange={(event) => this.handleChange(event, row.uuid, column.fieldName)}></input></td>)
+				  } else {
+					  return(<td>{row[column.fieldName as keyof RowEntry].toString()}</td>)
+				  }
+			  })}
             </tr>
           ))}
         </tbody>
       </table>
 	  </div>
 	);
+	}
+
+    getContentString(): string {
+        return JSON.stringify(this.content)
+    }
+
+	handleChange(event: React.ChangeEvent<HTMLInputElement>, uuid: string, propertyName: string): void {
+		(this.content.rows.find(row => row.uuid === uuid)as any)[propertyName]=event.target.value;
 	}
 }
 

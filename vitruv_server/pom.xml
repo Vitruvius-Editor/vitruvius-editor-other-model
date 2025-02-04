@@ -12,12 +12,24 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.code.style>official</kotlin.code.style>
         <kotlin.compiler.jvmTarget>17</kotlin.compiler.jvmTarget>
+        <repo.emf-compare.version>3.3</repo.emf-compare.version>
+        <repo.sdq-commons.version>2.2.0</repo.sdq-commons.version>
+        <repo.xannotations.version>1.6.0</repo.xannotations.version>
     </properties>
+    <pluginRepositories>
+        <!-- the plugin is hosted in OpenNTF's Maven repository -->
+        <pluginRepository>
+            <id>artifactory.openntf.org</id>
+            <name>artifactory.openntf.org</name>
+            <url>https://artifactory.openntf.org/openntf</url>
+        </pluginRepository>
+    </pluginRepositories>
     <repositories>
         <repository>
             <id>mavenCentral</id>
             <url>https://repo1.maven.org/maven2/</url>
         </repository>
+
 
         <!-- allow snapshots -->
         <repository>
@@ -30,6 +42,28 @@
             <releases>
                 <enabled>false</enabled>
             </releases>
+        </repository><!-- for p2 dependencies, `groupId` specifies the repository -->
+        <repository>
+            <id>emf-compare</id>
+            <name>EMF Compare</name>
+            <layout>p2</layout>
+            <url>https://download.eclipse.org/modeling/emf/compare/updates/releases/${repo.emf-compare.version}</url>
+        </repository>
+        <repository>
+            <id>sdq-commons</id>
+            <name>SDQ Commons</name>
+            <url>https://kit-sdq.github.io/updatesite/release/commons/${repo.sdq-commons.version}</url>
+            <layout>p2</layout>
+        </repository>
+        <repository>
+            <id>xannotations</id>
+            <name>XAnnotations</name>
+            <layout>p2</layout>
+            <url>https://kit-sdq.github.io/updatesite/release/xannotations/${repo.xannotations.version}</url>
+        </repository>
+        <repository>
+            <id>local-maven-repo</id>
+            <url>file:///${project.basedir}/Dependencies</url>
         </repository>
     </repositories>
 
@@ -58,6 +92,12 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.openntf.maven</groupId>
+                <artifactId>p2-layout-resolver</artifactId>
+                <version>1.7.0</version>
+                <extensions>true</extensions>
+            </plugin>
+            <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
             </plugin>
@@ -70,15 +110,48 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
                 <configuration>
-                    <mainClass>MainKt</mainClass>
+                    <mainClass>vitruv.tools.vitruvadpter.testServer.MainKt</mainClass>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.build.directory}/libs
+                            </outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>libs/</classpathPrefix>
+                            <mainClass>
+                                vitruv.tools.vitruvadpter.testServer.MainKt
+                            </mainClass>
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
         </plugins>
@@ -89,27 +162,6 @@
             <groupId>tools.vitruv</groupId>
             <artifactId>tools.vitruv.framework.remote</artifactId>
             <version>3.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore</artifactId>
-            <version>2.21.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.common</artifactId>
-            <version>2.21.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.mwe.utils</artifactId>
-            <version>1.12.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.mwe2.runtime</artifactId>
-            <version>2.20.0</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -143,54 +195,91 @@
             <artifactId>antlr-runtime</artifactId>
             <version>3.2</version>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-            <version>2.37.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.xtext</groupId>
-            <artifactId>org.eclipse.xtext</artifactId>
-            <version>2.36.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.xtext</groupId>
-            <artifactId>org.eclipse.xtext.common.types</artifactId>
-            <version>2.36.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.xtext</groupId>
-            <artifactId>org.eclipse.xtext.util</artifactId>
-            <version>2.36.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.xtext</groupId>
-            <artifactId>org.eclipse.xtext.xbase.lib</artifactId>
-            <version>2.36.0</version>
-        </dependency>
+
 
         <dependency>
             <groupId>local.uml2</groupId>
             <artifactId>uml</artifactId>
             <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/Dependencies/uml-5.0.0-v20140602-0749.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>local.uml2.types</groupId>
+            <groupId>local.uml2</groupId>
             <artifactId>types</artifactId>
             <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/Dependencies/types-2.0.0-v20140602-0749.jar</systemPath>
         </dependency>
 
         <dependency>
-            <groupId>local.uml2.common</groupId>
+            <groupId>local.uml2</groupId>
             <artifactId>common</artifactId>
             <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/Dependencies/common-2.0.0-v20140602-0749.jar</systemPath>
         </dependency>
+
+        <dependency>
+            <groupId>tools.mdsd</groupId>
+            <artifactId>jamopp.model</artifactId>
+            <version>6.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>tools.mdsd</groupId>
+            <artifactId>jamopp.parser</artifactId>
+            <version>6.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>tools.mdsd</groupId>
+            <artifactId>jamopp.resource</artifactId>
+            <version>6.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>tools.mdsd</groupId>
+            <artifactId>jamopp.printer</artifactId>
+            <version>6.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>tools.mdsd</groupId>
+            <artifactId>jamopp.parser.bcel</artifactId>
+            <version>6.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>tools.mdsd</groupId>
+            <artifactId>jamopp.parser.jdt</artifactId>
+            <version>6.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>tools.mdsd</groupId>
+            <artifactId>jamopp.parser.jdt.singlefile</artifactId>
+            <version>6.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>tools.mdsd</groupId>
+            <artifactId>jamopp.resolution</artifactId>
+            <version>6.0.0-SNAPSHOT</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/tools.vitruv/tools.vitruv.dsls.reactions.runtime -->
+        <dependency>
+            <groupId>tools.vitruv</groupId>
+            <artifactId>dsls.reactions.runtime</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>tools.vitruv</groupId>
+            <artifactId>tools.vitruv.applications.umljava</artifactId>
+            <version>3.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jdt</groupId>
+            <artifactId>org.eclipse.jdt.core</artifactId>
+            <version>3.38.0</version>
+        </dependency>
+
 
     </dependencies>
 

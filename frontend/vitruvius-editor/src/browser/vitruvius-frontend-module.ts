@@ -28,6 +28,7 @@ import {TableWidget} from "../visualisation/table/TableWidget";
 import {DiagramWidget} from "../visualisation/uml/DiagramWidget";
 import {DiagramVisualizer} from "../visualisation/uml/DiagramVisualizer";
 import {DiagramExtractor} from "../visualisation/uml/DiagramExtractor";
+import {VisualisationWidgetRegistry} from "../visualisation/VisualisationWidgetRegistry";
 
 /**
  * This ContainerModule binds the services and contributions of the frontend part of the application.
@@ -46,6 +47,7 @@ export default new ContainerModule((bind) => {
     bind(TableExtractor).toSelf().inSingletonScope();
     bind(DiagramVisualizer).toSelf().inSingletonScope();
     bind(DiagramExtractor).toSelf().inSingletonScope();
+    bind(VisualisationWidgetRegistry).toSelf().inSingletonScope();
     bind(DisplayViewResolver)
         .toDynamicValue((ctx) => {
             let displayViewResolver = new DisplayViewResolver();

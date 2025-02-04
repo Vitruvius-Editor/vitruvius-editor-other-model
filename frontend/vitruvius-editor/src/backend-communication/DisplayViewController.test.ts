@@ -1,180 +1,134 @@
-/*import { expect } from "chai";
-import { describe, it, beforeEach, afterEach } from "mocha";
-import sinon from "sinon";
 import { BackendServer } from "./BackendServer";
 import { DisplayViewService } from "./DisplayViewService";
 import { DisplayView } from "../model/DisplayView";
 import { Selector } from "../model/Selector";
-import {generateUuid} from "@theia/core";
+import { generateUuid } from "@theia/core";
 
 describe("DisplayViewService", () => {
-  let backendServer: BackendServer;
-  let displayViewService: DisplayViewService;
-  let sendWebRequestStub: sinon.SinonStub;
-  const connectionId = generateUuid();
+    let backendServer: BackendServer;
+    let displayViewService: DisplayViewService;
+    let sendWebRequestStub: jest.SpyInstance;
+    const connectionId = generateUuid();
 
-  beforeEach(() => {
-    backendServer = new BackendServer("http://localhost:8080");
-    displayViewService = new DisplayViewService(backendServer);
-    sendWebRequestStub = sinon.stub(backendServer, "sendWebRequest");
-  });
-
-  afterEach(() => {
-    sinon.restore();
-  });
-
-  describe("getDisplayViews", () => {
-    it("should return a list of display views", async () => {
-      const mockDisplayViews: DisplayView[] = [
-        {
-          name: "ClassDiagramDisplayView",
-          viewTypeName: "ClassDiagram",
-          viewMapperName: "ClassDiagramMapper",
-          contentSelectorName: "All",
-          windowSelectorName: "All",
-        },
-      ];
-      sendWebRequestStub.resolves(mockDisplayViews);
-
-      const displayViews = await displayViewService.getDisplayViews(connectionId);
-      expect(displayViews).to.deep.equal(mockDisplayViews);
-      expect(
-        sendWebRequestStub.calledOnceWith(
-          `/api/v1/connection/${connectionId}/displayViews`,
-          "GET",
-        ),
-      ).to.be.true;
-    });
-  });
-
-  describe("getDisplayViewWindows", () => {
-    it("should return a list of windows for a display view", async () => {
-      const mockWindows = [{ name: "Window 1" }];
-      sendWebRequestStub.resolves(mockWindows);
-
-      const windows =
-        await displayViewService.getDisplayViewWindows(connectionId, "DisplayView 1");
-      expect(windows).to.deep.equal(mockWindows);
-      expect(
-        sendWebRequestStub.calledOnceWith(
-          `/api/v1/connection/${connectionId}/displayView/DisplayView 1`,
-          "GET",
-        ),
-      ).to.be.true;
+    beforeEach(() => {
+        backendServer = new BackendServer("http://localhost:8080");
+        displayViewService = new DisplayViewService(backendServer);
+        sendWebRequestStub = jest.spyOn(backendServer, "sendWebRequest");
     });
 
-    it("should return null if the display view is not found", async () => {
-      sendWebRequestStub.resolves(null);
-
-      const windows = await displayViewService.getDisplayViewWindows(
-		  connectionId,
-        "NonExistentDisplayView",
-      );
-      expect(windows).to.be.null;
-      expect(
-        sendWebRequestStub.calledOnceWith(
-          `/api/v1/connection/${connectionId}/displayView/NonExistentDisplayView`,
-          "GET",
-        ),
-      ).to.be.true;
-    });
-  });
-  describe("getDisplayViewContent", () => {
-    it("should return the content of a display view", async () => {
-      const mockContent = "DisplayView Content";
-      const selector: Selector = { windows: ["Window1", "Window2"] };
-      sendWebRequestStub.resolves(mockContent);
-
-      const content = await displayViewService.getDisplayViewContent(
-		  connectionId,
-        "DisplayView 1",
-        selector,
-      );
-      expect(content).to.equal(mockContent);
-      expect(
-        sendWebRequestStub.calledOnceWith(
-          `/api/v1/connection/${connectionId}/displayView/DisplayView 1/content`,
-          "POST",
-          selector,
-        ),
-      ).to.be.true;
+    afterEach(() => {
+        jest.restoreAllMocks();
     });
 
-    it("should return null if the display view content is not found", async () => {
-      const selector: Selector = { windows: ["Window1", "Window2"] };
-      sendWebRequestStub.resolves(null);
+    describe("getDisplayViews", () => {
+        it("should return a list of display views", async () => {
+            const mockDisplayViews: DisplayView[] = [
+                {
+                    name: "ClassDiagramDisplayView",
+                    viewTypeName: "ClassDiagram",
+                    viewMapperName: "ClassDiagramMapper",
+                    contentSelectorName: "All",
+                    windowSelectorName: "All",
+                },
+            ];
+            sendWebRequestStub.mockResolvedValue(mockDisplayViews);
 
-      const content = await displayViewService.getDisplayViewContent(
-		  connectionId,
-        "NonExistentDisplayView",
-        selector,
-      );
-      expect(content).to.be.null;
-      expect(
-        sendWebRequestStub.calledOnceWith(
-          `/api/v1/connection/${connectionId}/displayView/NonExistentDisplayView/content`,
-          "POST",
-          selector,
-        ),
-      ).to.be.true;
-    });
-    it("should return null if the display view content is not found", async () => {
-      const selector: Selector = { windows: ["Window1", "Window2"] };
-      sendWebRequestStub.resolves(null);
-
-      const content = await displayViewService.getDisplayViewContent(
-		  connectionId,
-        "NonExistentDisplayView",
-        selector,
-      );
-      expect(content).to.be.null;
-      expect(
-        sendWebRequestStub.calledOnceWith(
-          `/api/v1/connection/${connectionId}/displayView/NonExistentDisplayView/content`,
-          "POST",
-          selector,
-        ),
-      ).to.be.true;
-    });
-  });
-
-  describe("updateDisplayViewContent", () => {
-    it("should update the content of a display view", async () => {
-      const mockUpdatedContent = "Updated DisplayView Content";
-      sendWebRequestStub.resolves(mockUpdatedContent);
-
-      const updatedContent = await displayViewService.updateDisplayViewContent(
-		  connectionId,
-        "DisplayView 1",
-        mockUpdatedContent,
-      );
-      expect(updatedContent).to.equal(mockUpdatedContent);
-      expect(
-        sendWebRequestStub.calledOnceWith(
-          `/api/v1/connection/${connectionId}/displayView/DisplayView 1`,
-          "PUT",
-          mockUpdatedContent,
-        ),
-      ).to.be.true;
+            const displayViews = await displayViewService.getDisplayViews(connectionId);
+            expect(displayViews).toEqual(mockDisplayViews);
+            expect(sendWebRequestStub).toHaveBeenCalledWith(
+                `/api/v1/connection/${connectionId}/displayViews`,
+                "GET"
+            );
+        });
     });
 
-    it("should return null if the display view content update fails", async () => {
-      const mockUpdatedContent = "Updated DisplayView Content";
-      sendWebRequestStub.resolves(null);
+    describe("getDisplayViewWindows", () => {
+        it("should return a list of windows for a display view", async () => {
+            const mockWindows = { windows: ["Window 1"] };
+            sendWebRequestStub.mockResolvedValue(mockWindows);
 
-      const updatedContent = await displayViewService.updateDisplayViewContent(
-		  connectionId,
-        "NonExistentDisplayView",
-        mockUpdatedContent,
-      );
-      expect(updatedContent).to.be.null;
-      expect(
-        sendWebRequestStub.calledOnceWith(
-          `/api/v1/connection/${connectionId}/displayView/NonExistentDisplayView`,
-          "PUT",
-          mockUpdatedContent,
-        ),
-      ).to.be.true;
+            const windows = await displayViewService.getDisplayViewWindows(connectionId, "DisplayView 1");
+            expect(windows).toEqual(mockWindows.windows);
+            expect(sendWebRequestStub).toHaveBeenCalledWith(
+                `/api/v1/connection/${connectionId}/displayView/DisplayView 1`,
+                "GET"
+            );
+        });
+
+        it("should return null if the display view is not found", async () => {
+            sendWebRequestStub.mockResolvedValue(Promise.reject("Not Found"));
+
+            const windows = await displayViewService.getDisplayViewWindows(connectionId, "NonExistentDisplayView");
+            expect(windows).toBeNull();
+            expect(sendWebRequestStub).toHaveBeenCalledWith(
+                `/api/v1/connection/${connectionId}/displayView/NonExistentDisplayView`,
+                "GET"
+            );
+        });
     });
-  });
-});*/
+
+    describe("getDisplayViewContent", () => {
+        it("should return the content of a display view", async () => {
+            const mockContent = { content: "DisplayView Content" };
+            const selector: Selector = { windows: ["Window1", "Window2"] };
+            sendWebRequestStub.mockResolvedValue(mockContent);
+
+            const content = await displayViewService.getDisplayViewContent(connectionId, "DisplayView 1", selector);
+            expect(content).toEqual(mockContent);
+            expect(sendWebRequestStub).toHaveBeenCalledWith(
+                `/api/v1/connection/${connectionId}/displayView/DisplayView 1`,
+                "POST",
+                selector
+            );
+        });
+
+        it("should return null if the display view content is not found", async () => {
+            const selector: Selector = { windows: ["Window1", "Window2"] };
+            sendWebRequestStub.mockResolvedValue(null);
+
+            const content = await displayViewService.getDisplayViewContent(connectionId, "NonExistentDisplayView", selector);
+            expect(content).toBeNull();
+            expect(sendWebRequestStub).toHaveBeenCalledWith(
+                `/api/v1/connection/${connectionId}/displayView/NonExistentDisplayView`,
+                "POST",
+                selector
+            );
+        });
+    });
+
+    describe("updateDisplayViewContent", () => {
+        it("should update the content of a display view", async () => {
+            const mockUpdatedContent = { visualizerName: "TextVisualizer", content: "Updated DisplayView Content", windows: [{name: "Window1", content: "foo"}] };
+            sendWebRequestStub.mockResolvedValue(mockUpdatedContent);
+
+            const updatedContent = await displayViewService.updateDisplayViewContent(
+                connectionId,
+                "DisplayView 1",
+                mockUpdatedContent
+            );
+            expect(updatedContent).toEqual(mockUpdatedContent);
+            expect(sendWebRequestStub).toHaveBeenCalledWith(
+                `/api/v1/connection/${connectionId}/displayView/DisplayView 1`,
+                "PUT",
+                mockUpdatedContent
+            );
+        });
+
+        it("should return null if the display view content update fails", async () => {
+            const mockUpdatedContent = { visualizerName: "TextVisualizer", content: "Updated DisplayView Content", windows: [{name: "Window1", content: "foo"}] };
+            sendWebRequestStub.mockResolvedValue(null);
+
+            const updatedContent = await displayViewService.updateDisplayViewContent(
+                connectionId,
+                "NonExistentDisplayView",
+                mockUpdatedContent
+            );
+            expect(updatedContent).toBeNull();
+            expect(sendWebRequestStub).toHaveBeenCalledWith(
+                `/api/v1/connection/${connectionId}/displayView/NonExistentDisplayView`,
+                "PUT",
+                mockUpdatedContent
+            );
+        });
+    });
+});

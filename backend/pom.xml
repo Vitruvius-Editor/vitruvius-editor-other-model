@@ -28,7 +28,7 @@
   </scm>
   <properties>
     <java.version>17</java.version>
-    <kotlin.version>2.1.0</kotlin.version>
+    <kotlin.version>2.1.10</kotlin.version>
     <repo.emf-compare.version>3.3</repo.emf-compare.version>
     <repo.sdq-commons.version>2.2.0</repo.sdq-commons.version>
     <repo.xannotations.version>1.6.0</repo.xannotations.version>
@@ -73,6 +73,10 @@
       <layout>p2</layout>
       <url>https://kit-sdq.github.io/updatesite/release/xannotations/${repo.xannotations.version}</url>
     </repository>
+    <repository>
+      <id>local-maven-repo</id>
+      <url>file:///${project.basedir}/Dependencies</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
@@ -98,13 +102,66 @@
     <dependency>
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-      <version>2.8.3</version>
+      <version>2.8.4</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/com.github.javaparser/javaparser-core -->
     <dependency>
       <groupId>com.github.javaparser</groupId>
       <artifactId>javaparser-core</artifactId>
       <version>3.26.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jdt</groupId>
+      <artifactId>org.eclipse.jdt.core</artifactId>
+      <version>3.40.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tools.mdsd</groupId>
+      <artifactId>jamopp.model</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tools.mdsd</groupId>
+      <artifactId>jamopp.parser</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tools.mdsd</groupId>
+      <artifactId>jamopp.resource</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tools.mdsd</groupId>
+      <artifactId>jamopp.printer</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tools.mdsd</groupId>
+      <artifactId>jamopp.parser.bcel</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tools.mdsd</groupId>
+      <artifactId>jamopp.parser.jdt</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tools.mdsd</groupId>
+      <artifactId>jamopp.parser.jdt.singlefile</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tools.mdsd</groupId>
+      <artifactId>jamopp.resolution</artifactId>
+      <version>6.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -158,26 +215,18 @@
       <groupId>local.uml2</groupId>
       <artifactId>uml</artifactId>
       <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/Dep/uml-5.0.0-v20140602-0749.jar</systemPath>
     </dependency>
-
     <dependency>
-      <groupId>local.uml2.types</groupId>
+      <groupId>local.uml2</groupId>
       <artifactId>types</artifactId>
       <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/Dep/types-2.0.0-v20140602-0749.jar</systemPath>
     </dependency>
 
     <dependency>
-      <groupId>local.uml2.common</groupId>
+      <groupId>local.uml2</groupId>
       <artifactId>common</artifactId>
       <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/Dep/common-2.0.0-v20140602-0749.jar</systemPath>
     </dependency>
-
     <dependency>
       <groupId>org.mockito.kotlin</groupId>
       <artifactId>mockito-kotlin</artifactId>

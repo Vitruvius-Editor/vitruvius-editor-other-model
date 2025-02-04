@@ -100,3 +100,13 @@
 .circle-port:hover{
 	background: mediumpurple;
 }
+
+.hidden-input {
+    border: none; /* Remove border */
+    background: transparent; /* Make background transparent */
+    outline: none; /* Remove outline */
+    width: 100%; /* Set full width */
+    height: 100%; /* Set full height */
+    font-family: inherit;
+    color: var(--theia-ui-font-color1);
+}
