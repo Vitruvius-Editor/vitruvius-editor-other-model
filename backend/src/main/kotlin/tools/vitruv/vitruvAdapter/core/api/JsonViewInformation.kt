@@ -47,8 +47,10 @@ class JsonViewInformation<E>(
         val objectMapper = jacksonObjectMapper()
         val jsonNode = objectMapper.readTree(json)
         val windows = jsonNode.get("windows").map { windowNode ->
+
             val name =  windowNode.get("name").asText()
             val contentNode = windowNode.get("content")
+
             val contentJsonString = if (contentNode.isTextual) {
                 contentNode.asText()
             } else {

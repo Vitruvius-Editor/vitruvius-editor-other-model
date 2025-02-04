@@ -88,8 +88,7 @@ class VitruviusService {
     ): String {
         setupConnection(connectionId)
         val displayView = vitruvAdapter.getDisplayView(displayViewName)?: throw DisplayViewNotFoundException()
-        vitruvAdapter.editDisplayView(displayView, updatedContent)
-        return updatedContent
+        return vitruvAdapter.editDisplayViewAndReturnNewContent(displayView, updatedContent)
     }
 
     /**

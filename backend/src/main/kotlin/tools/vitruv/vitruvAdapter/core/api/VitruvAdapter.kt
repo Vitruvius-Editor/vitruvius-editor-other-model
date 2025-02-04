@@ -130,6 +130,17 @@ class VitruvAdapter {
     }
 
     /**
+     * Edits the content of one or multiple [Window]s of a [DisplayView] and returns the new content if successful.
+     * @param displayView The DisplayView to edit.
+     * @param json The updated content that shall be synchronised with the Vitruvius server.
+     * @return The updated content if the update was successful.
+     */
+    fun editDisplayViewAndReturnNewContent(displayView: DisplayView, json: String): String {
+        editDisplayView(displayView, json)
+        return createWindowContent(displayView, collectWindowsFromJson(displayView, json))
+    }
+
+    /**
      * Collects the windows from the given json string.
      * @param displayView The DisplayView to collect the windows for.
      * @param json The json string to collect the windows from.
