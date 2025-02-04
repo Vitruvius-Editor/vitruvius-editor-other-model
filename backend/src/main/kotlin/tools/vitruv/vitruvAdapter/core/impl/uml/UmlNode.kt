@@ -1,6 +1,6 @@
 package tools.vitruv.vitruvAdapter.core.impl.uml
 
-class UmlNode(
+data class UmlNode(
     val uuid: String,
     val name: String,
     /**
