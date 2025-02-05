@@ -26,7 +26,7 @@ interface DisplayView {
      * The content selector for the display view.
      * This selector is used to select the content for the display view, for specific windows.
      */
-    val contentSelector: ContentSelector
+    val contentSelector: ContentSelector<Any?>
 }
 
 

@@ -6,37 +6,38 @@ import org.eclipse.uml2.uml.Package
 import org.eclipse.uml2.uml.VisibilityKind
 import tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier
 import tools.mdsd.jamopp.printer.JaMoPPPrinter
-import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
-import tools.vitruv.vitruvAdapter.core.api.ViewMapper
-import tools.vitruv.vitruvAdapter.core.api.Window
+import tools.vitruv.vitruvAdapter.core.api.*
 import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.TableDisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.impl.table.TableDTO
 import java.io.ByteArrayOutputStream
 
 class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
+
+
     /**
      * Maps the given view content to a json string, which can be displayed in the graphical editor.
-     * @param selectEObjects The view content to map.
+     * @param preMappedWindows the pre-mapped windows to map to windows.
      * @return The json string representing the view content.
      */
-    override fun mapEObjectsToWindowsContent(selectEObjects: List<EObject>): List<Window<TableDTO<ClassTableEntry>>> {
+    override fun mapEObjectsToWindowsContent(preMappedWindows: List<PreMappedWindow<TableDTO<ClassTableEntry>>>): List<Window<TableDTO<ClassTableEntry>>> {
         val windows = mutableListOf<Window<TableDTO<ClassTableEntry>>>()
-        for (rootObject in selectEObjects) {
-            if (rootObject !is Package) {
-                continue
-            }
-            val entries = mutableListOf<ClassTableEntry>()
-            rootObject.packagedElements.forEach { element ->
-                if (element !is Class) {
-                    return@forEach
+        for (preMappedWindow in preMappedWindows) {
+            for (rootObject in preMappedWindow.neededEObjects) {
+                if (rootObject !is Package) {
+                    continue
                 }
-                val javaClass = getJavaClassFromUmlClass(element, selectEObjects)
-                entries.add(createClassEntryFromUmlClass(element, javaClass))
+                val entries = mutableListOf<ClassTableEntry>()
+                rootObject.packagedElements.forEach { element ->
+                    if (element !is Class) {
+                        return@forEach
+                    }
+                    val javaClass = getJavaClassFromUmlClass(element, preMappedWindow.neededEObjects)
+                    entries.add(createClassEntryFromClass(element, javaClass))
+                    windows.add(preMappedWindow.createWindow(TableDTO.buildTableDTO(entries, ClassTableEntry::class)))
+                }
             }
-            val window = Window(rootObject.name, TableDTO.buildTableDTO(entries, ClassTableEntry::class))
-            windows.add(window)
         }
-        return windows
+        return windows.toList()
     }
 
     /**
@@ -48,30 +49,30 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
      * @return The view content.
      */
     override fun mapWindowsToEObjectsAndApplyChangesToEObjects(
-        oldEObjects: List<EObject>,
+        preMappedWindows: List<PreMappedWindow<TableDTO<ClassTableEntry>>>,
         windows: List<Window<TableDTO<ClassTableEntry>>>
     ): List<EObject> {
-        for (windows in windows) {
-            applyChangesToWindow(windows, oldEObjects)
+        val windowPairs = pairWindowsTogether(preMappedWindows, windows)
+        for (item in windowPairs) {
+            applyChangesToWindow(item.second, item.first)
         }
-        return oldEObjects
+        return listOf() //unnecesary return value, has to be changed
     }
 
 
 
-    private fun applyChangesToWindow(window: Window<TableDTO<ClassTableEntry>>, eObject: List<EObject>) {
-        for (eObject in eObject) {
+    private fun applyChangesToWindow(window: Window<TableDTO<ClassTableEntry>>, preMappedWindow: PreMappedWindow<TableDTO<ClassTableEntry>>) {
+        for (eObject in preMappedWindow.neededEObjects) {
             val rows = window.content.rows
             for (row in rows) {
-                val classEntry = row
-                val umlClass = eObject.eResource()?.getEObject(classEntry.uuid) as Class
-                umlClass.name = classEntry.name
-                umlClass.visibility = VisibilityKind.get(classEntry.visibility)
+                val umlClass = eObject.eResource()?.getEObject(row.uuid) as Class
+                umlClass.name = row.name
+                umlClass.visibility = VisibilityKind.get(row.visibility)
             }
         }
     }
 
-    private fun createClassEntryFromUmlClass(umlClass: Class, javaClass: ConcreteClassifier?): ClassTableEntry {
+    private fun createClassEntryFromClass(umlClass: Class, javaClass: ConcreteClassifier?): ClassTableEntry {
         val uuid = umlClass.eResource()?.getURIFragment(umlClass) ?: ""
         val name = umlClass.name ?: ""
         val visibility = umlClass.visibility.literal ?: ""
