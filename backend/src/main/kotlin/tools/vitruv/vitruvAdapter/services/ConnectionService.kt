@@ -32,7 +32,7 @@ class ConnectionService {
      * @return The Project object.
      */
     fun importConnection(connectionCreationRequest: ConnectionCreationRequest): ConnectionDetails {
-        val connection = ConnectionDetails(null, connectionCreationRequest.name, connectionCreationRequest.description, connectionCreationRequest.url);
+        val connection = ConnectionDetails(null, connectionCreationRequest.name, connectionCreationRequest.description, connectionCreationRequest.url, connectionCreationRequest.port);
         connectionRepository.save(connection);
         return connection;
     }
@@ -58,10 +58,11 @@ class ConnectionService {
         connectionId: UUID,
         editRequest: ConnectionEditRequest,
     ): ConnectionDetails {
-        var connection = getConnectionById(connectionId);
+        val connection = getConnectionById(connectionId);
         connection.name = editRequest.name;
         connection.description = editRequest.description;
         connection.url = editRequest.url;
+        connection.port = editRequest.port;
         connectionRepository.save(connection);
         return connection;
 

@@ -7,30 +7,20 @@ import org.eclipse.uml2.uml.Interface
 import org.eclipse.uml2.uml.Package
 import org.eclipse.uml2.uml.ParameterDirectionKind
 import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
+import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.core.impl.DisplayViewName
 import tools.vitruv.vitruvAdapter.core.impl.ViewRecommendation
 import tools.vitruv.vitruvAdapter.core.impl.abstractMapper.UmlViewMapper
 import tools.vitruv.vitruvAdapter.core.impl.uml.*
 
+/**
+ * Maps EObjects from the UML metamodel to class diagrams and vice versa.
+ * @see UmlViewMapper
+ * @see UmlDiagram
+ * @author
+ */
 class ClassDiagramViewMapper : UmlViewMapper() {
-    /**
-     * Maps the given view content to a list of windows.
-     * @param selectEObjects The view content to map.
-     * @return The windows representing the view content.
-     */
-    override fun mapEObjectsToWindowsContent(selectEObjects: List<EObject>): List<Window<UmlDiagram>> {
-        val windows = mutableListOf<Window<UmlDiagram>>()
-        for (eObject in selectEObjects) {
-            if (eObject !is Package) {
-                continue
-            }
-            val umlDiagram = mapPackageToUmlDiagram(eObject)
-            val window = Window(eObject.name, umlDiagram)
-            windows.add(window)
-        }
-        return windows
-    }
 
     private fun mapPackageToUmlDiagram(eObject: Package): UmlDiagram {
         val nodes = mutableListOf<UmlNode>()
@@ -143,16 +133,37 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         }
     }
 
+
     /**
-     * Maps the given json string to view content, compares it to [oldEObjects] and applies the changes to [oldEObjects].
+     * Maps the given view content to a list of windows.
+     * @param preMappedWindows the pre-mapped windows to map to windows.
+     * @return The windows representing the view content.
+     */
+    override fun mapEObjectsToWindowsContent(preMappedWindows: List<PreMappedWindow<UmlDiagram>>): List<Window<UmlDiagram>> {
+        val windows = mutableListOf<Window<UmlDiagram>>()
+        for (preMappedWindow in preMappedWindows) {
+            for (eObject in preMappedWindow.neededEObjects) {
+                if (eObject !is Package) {
+                    continue
+                }
+                val umlDiagram = mapPackageToUmlDiagram(eObject)
+                windows.add(preMappedWindow.createWindow(umlDiagram))
+            }
+        }
+
+        return windows
+    }
+
+    /**
+     * Maps the given json string to view content, compares it to [preMappedWindows] and applies the changes to the eObjects of [preMappedWindows].
      * Note that no changes will be applied to the model,
-     * this have to be done after this method with a View object, where the [oldEObjects] came from.
-     * @param oldEObjects The old EObjects to compare the windows to.
+     * this have to be done after this method with a View object, where the [preMappedWindows] came from.
+     * @param preMappedWindows The pre-mapped windows to compare the windows to.
      * @param windows the windows to map to EObjects.
      * @return The view content.
      */
     override fun mapWindowsToEObjectsAndApplyChangesToEObjects(
-        oldEObjects: List<EObject>,
+        preMappedWindows: List<PreMappedWindow<UmlDiagram>>,
         windows: List<Window<UmlDiagram>>
     ): List<EObject> {
         TODO("Not yet implemented")

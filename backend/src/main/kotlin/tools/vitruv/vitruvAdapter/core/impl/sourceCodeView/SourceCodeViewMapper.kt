@@ -12,6 +12,7 @@ import org.eclipse.jdt.core.ToolFactory
 import org.eclipse.jdt.core.formatter.CodeFormatter
 import org.eclipse.jface.text.Document
 import org.eclipse.text.edits.TextEdit
+import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 
 
 /**
@@ -20,24 +21,31 @@ import org.eclipse.text.edits.TextEdit
  */
 class SourceCodeViewMapper : TextViewMapper() {
 
-    override fun mapEObjectsToWindowsContent(rootObjects: List<EObject>): List<Window<String>> {
-        val windows = mutableSetOf<Window<String>>()
+    /**
+     * Maps the given view content to a list of windows.
+     * @param preMappedWindows the pre-mapped windows to map to windows.
+     * @return The windows representing the view content.
+     */
+    override fun mapEObjectsToWindowsContent(preMappedWindows: List<PreMappedWindow<String>>): List<Window<String>> {
+        val windows = mutableListOf<Window<String>>()
 
-        for (classifier in rootObjects) {
-            if (classifier is tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier) {
-                val outputStream = ByteArrayOutputStream()
-                JaMoPPPrinter.print(classifier, outputStream)
-                var window: Window<String>
-                val code = outputStream.toString()
-                val formattedCode = formatJavaCode(code)
-                window = if(formattedCode != null){
-                    Window(classifier.name, formattedCode)
-                }else{
-                    Window(classifier.name, code)
+        for (preMappedWindow in preMappedWindows) {
+            for (classifier in preMappedWindow.neededEObjects) {
+                if (classifier is tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier) {
+                    val outputStream = ByteArrayOutputStream()
+                    JaMoPPPrinter.print(classifier, outputStream)
+                    var window: Window<String>
+                    val code = outputStream.toString()
+                    val formattedCode = formatJavaCode(code)
+                    if(formattedCode != null){
+                        windows.add(preMappedWindow.createWindow(formattedCode))
+                    }else{
+                        windows.add(preMappedWindow.createWindow(code))
+                    }
                 }
-                windows.add(window)
             }
         }
+
         return windows.toList()
     }
 
@@ -64,8 +72,17 @@ class SourceCodeViewMapper : TextViewMapper() {
     }
 
 
+
+    /**
+     * Maps the given json string to view content, compares it to [preMappedWindows] and applies the changes to the eObjects of [preMappedWindows].
+     * Note that no changes will be applied to the model,
+     * this have to be done after this method with a View object, where the [preMappedWindows] came from.
+     * @param preMappedWindows The pre-mapped windows to compare the windows to.
+     * @param windows the windows to map to EObjects.
+     * @return The view content.
+     */
     override fun mapWindowsToEObjectsAndApplyChangesToEObjects(
-        oldEObjects: List<EObject>,
+        preMappedWindows: List<PreMappedWindow<String>>,
         windows: List<Window<String>>
     ): List<EObject> {
         TODO("Not yet implemented")

@@ -37,8 +37,8 @@ class ConnectionControllerTest {
     @Test
     fun testGetConnections() {
         val connections = setOf(
-            ConnectionDetails(UUID.randomUUID(), "Connection 1", "Description 1", "https://example.com/1"),
-            ConnectionDetails(UUID.randomUUID(), "Connection 2", "Description 2", "https://example.com/2")
+            ConnectionDetails(UUID.randomUUID(), "Connection 1", "Description 1", "https://example.com/1", 8080),
+            ConnectionDetails(UUID.randomUUID(), "Connection 2", "Description 2", "https://example.com/2", 8080)
         )
 
         whenever(connectionService.getConnections()).thenReturn(connections)
@@ -51,7 +51,7 @@ class ConnectionControllerTest {
 
     @Test
     fun testGetConnection() {
-        val connection = ConnectionDetails(UUID.randomUUID(), "Connection 1", "Description 1", "https://example.com/1")
+        val connection = ConnectionDetails(UUID.randomUUID(), "Connection 1", "Description 1", "https://example.com/1", 8080)
 
         whenever(connectionService.getConnectionById(any<UUID>())).thenAnswer {
             if (it.arguments[0] == connection.uuid) connection else throw ConnectionNotFoundException()
@@ -68,11 +68,11 @@ class ConnectionControllerTest {
     @Test
     fun testCreateConnection() {
         val uuid = UUID.randomUUID()
-        val connectionCreationRequest = ConnectionCreationRequest("Test Connection", "Description", "https://example.com")
+        val connectionCreationRequest = ConnectionCreationRequest("Test Connection", "Description", "https://example.com", 8080)
 
         whenever(connectionService.importConnection(any<ConnectionCreationRequest>())).thenAnswer {
             val arg: ConnectionCreationRequest = it.arguments[0] as ConnectionCreationRequest
-            ConnectionDetails(uuid, arg.name, arg.description, arg.url)
+            ConnectionDetails(uuid, arg.name, arg.description, arg.url, arg.port)
         }
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/connection")
@@ -83,13 +83,14 @@ class ConnectionControllerTest {
                 uuid,
                 connectionCreationRequest.name,
                 connectionCreationRequest.description,
-                connectionCreationRequest.url
+                connectionCreationRequest.url,
+                connectionCreationRequest.port
             ))))
     }
 
     @Test
     fun testDeleteConnection() {
-        val connection = ConnectionDetails(UUID.randomUUID(), "Connection 1", "Description 1", "https://example.com/1")
+        val connection = ConnectionDetails(UUID.randomUUID(), "Connection 1", "Description 1", "https://example.com/1", 8080)
 
         whenever(connectionService.deleteConnection(any<UUID>())).thenAnswer {
             if (it.arguments[0] == connection.uuid) connection else throw ConnectionNotFoundException()
@@ -105,13 +106,13 @@ class ConnectionControllerTest {
 
     @Test
     fun testEditConnection() {
-        val connection = ConnectionDetails(UUID.randomUUID(), "Connection 1", "Description 1", "https://example.com/1")
-        val connectionEditRequest = ConnectionEditRequest("Connection 2", "Description 2", "https://example.com/2")
+        val connection = ConnectionDetails(UUID.randomUUID(), "Connection 1", "Description 1", "https://example.com/1", 8080)
+        val connectionEditRequest = ConnectionEditRequest("Connection 2", "Description 2", "https://example.com/2", 8080)
 
         whenever(connectionService.editConnection(any<UUID>(), any<ConnectionEditRequest>())).thenAnswer {
             val arg: ConnectionEditRequest = it.arguments[1] as ConnectionEditRequest
             if (it.arguments[0] == connection.uuid) {
-                ConnectionDetails(connection.uuid, arg.name, arg.description, arg.url)
+                ConnectionDetails(connection.uuid, arg.name, arg.description, arg.url, arg.port)
             } else {
                 throw ConnectionNotFoundException()
             }
@@ -125,7 +126,8 @@ class ConnectionControllerTest {
                 connection.uuid,
                 connectionEditRequest.name,
                 connectionEditRequest.description,
-                connectionEditRequest.url
+                connectionEditRequest.url,
+                connectionEditRequest.port
             ))))
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/connection/${UUID.randomUUID()}")

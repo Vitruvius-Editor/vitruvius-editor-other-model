@@ -1,5 +1,5 @@
 import {DefaultLinkFactory, DefaultLinkModel, DefaultNodeModel, DefaultPortModel } from '@projectstorm/react-diagrams-defaults';
-import React from 'react';
+import * as React from 'react';
 import { DiagramEngine, LinkWidget, PointModel } from '@projectstorm/react-diagrams-core';
 import { DefaultLinkPointWidget, DefaultLinkSegmentWidget } from '@projectstorm/react-diagrams-defaults';
 
@@ -23,6 +23,7 @@ export class UMLNode extends DefaultNodeModel {
   }
 
   getPort() :DefaultPortModel {
+    //@ts-ignore
     return this.ports[0];
   }
 }
@@ -31,8 +32,8 @@ export class UMLNode extends DefaultNodeModel {
  * The UMLRelation class represents a general UML relation in the React diagram.
  */
 export class UMLRelation extends DefaultLinkModel {
-  private fromPort: DefaultPortModel | null;
-  private toPort: DefaultPortModel | null;
+  private readonly fromPort: DefaultPortModel | null;
+  private readonly toPort: DefaultPortModel | null;
     constructor(type: string, label: string, From : UMLNode, To : UMLNode) {
         super({
         type: 'advanced',
@@ -74,12 +75,12 @@ export class AdvancedLinkModel extends DefaultLinkModel {
 }
 
 export class ArrowPortModel extends DefaultPortModel {
-  createLinkModel(): AdvancedLinkModel | null {
+  createLinkModel(): AdvancedLinkModel {
     return new AdvancedLinkModel();
   }
 }
 
-const CustomLinkArrowWidget = (props) => {
+const CustomLinkArrowWidget = (props: { color?: any; point?: any; previousPoint?: any; }) => {
   const { point, previousPoint } = props;
 
   const angle =
@@ -130,6 +131,7 @@ export class AdvancedLinkWidget extends React.Component<AdvancedLinkWidgetProps>
 
   generateLink = (path: string, extraProps: any, id: string | number): JSX.Element => {
     return (
+        //@ts-ignore
         <DefaultLinkSegmentWidget
             key={`link-${id}`}
             path={path}
@@ -141,7 +143,7 @@ export class AdvancedLinkWidget extends React.Component<AdvancedLinkWidgetProps>
     );
   };
 
-  addPointToLink = (event: MouseEvent, index: number) => {
+  addPointToLink = (event: any, index: number) => {
     if (
         !event.shiftKey &&
         !this.props.link.isLocked() &&
@@ -164,6 +166,7 @@ export class AdvancedLinkWidget extends React.Component<AdvancedLinkWidgetProps>
             key={point.getID()}
             point={point as any}
             previousPoint={previousPoint as any}
+            //@ts-ignore
             colorSelected={this.props.link.getOptions().selectedColor}
             color={this.props.link.getOptions().color}
         />
@@ -216,7 +219,7 @@ export class ArrowLinkFactory extends DefaultLinkFactory {
     return new AdvancedLinkModel();
   }
 
-  generateReactWidget(event): JSX.Element {
+  generateReactWidget(event: { model: DefaultLinkModel; }): JSX.Element {
     return <AdvancedLinkWidget link={event.model} diagramEngine={this.engine} />;
   }
 }

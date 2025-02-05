@@ -31,23 +31,22 @@ export class UMLDiagramParser {
         this.nodesData.forEach(data => {
             if (data[0] === 'Class') {
                 const text = (
-                <>
+                <div>
                     {data[2]} <br />
-                <hr width="100%" size="2" color="black" noshade></hr>
+                    <hr /*width="100%" size="2" color="black" noshade*/></hr>
                 {data[3].map((attr, index) => (
                     <React.Fragment key={index}>
                         {attr} <br />
                         </React.Fragment>
                 ))}
-
-                <hr width="100%" size="2" color="black" noshade></hr>
+                <hr /*width="100%" size="2" color="black" noshade*/></hr>
                 {data[4].map((method, index) => (
                     <React.Fragment key={index}>
                         {method} <br />
                         </React.Fragment>
                 ))}
-                </>
-            )
+                </div>
+            )//@ts-ignore
                 nodes.push(new UMLNode(data[1], text));
             } else if (data[0] === 'Package') {
                 nodes.push(new UMLNode(data[1], data[2]));

@@ -1,12 +1,11 @@
 import {UMLNode, UMLRelation} from "./DiagramComponents";
-import {DefaultLinkModel} from "@projectstorm/react-diagrams-defaults";
 
 /**
  * A class to represent a UML Diagram.
  */
 export class UMLDiagram {
     nodes :UMLNode[];
-    links :DefaultLinkModel[];
+    links :UMLRelation[];
 
     constructor(nodes :UMLNode[], links :UMLRelation[]) {
         this.nodes = nodes;
