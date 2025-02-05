@@ -9,8 +9,6 @@ import { VisualisationWidget } from "../VisualisationWidget";
 import createEngine, {DiagramModel, CanvasWidget} from '@projectstorm/react-diagrams';
 import {ArrowLinkFactory} from "./DiagramComponents";
 import {UMLDiagramParser} from "./UMLDiagramParser";
-import {DiagramWidget} from "../../../lib/visualisation/uml/DiagramWidget";
-import React from "react";
 
 /**
  * A Widget to visualize a UML Package Vitruvius view.
