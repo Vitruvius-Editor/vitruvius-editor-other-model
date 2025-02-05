@@ -12,6 +12,7 @@ import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.core.impl.DisplayViewName
 import tools.vitruv.vitruvAdapter.core.impl.ViewRecommendation
 import tools.vitruv.vitruvAdapter.core.impl.abstractMapper.UmlViewMapper
+import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.UmlDisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.impl.uml.*
 
 /**
@@ -196,7 +197,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
      * @return The display content of this view mapper.
      */
     override fun getDisplayContent(): DisplayContentMapper<UmlDiagram> {
-        TODO("Not yet implemented")
+        return UmlDisplayContentMapper()
     }
 
 }
