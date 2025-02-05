@@ -9,6 +9,8 @@ import tools.mdsd.jamopp.printer.JaMoPPPrinter
 import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.api.ViewMapper
 import tools.vitruv.vitruvAdapter.core.api.Window
+import tools.vitruv.vitruvAdapter.core.impl.DisplayViewName
+import tools.vitruv.vitruvAdapter.core.impl.ViewRecommendation
 import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.TableDisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.impl.table.TableDTO
 import java.io.ByteArrayOutputStream
@@ -82,8 +84,10 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
         val attributeCount = umlClass.attributes.size
         val methodCount = umlClass.operations.size
         val linesOfCode = getClassLinesOfCode(javaClass)
+        val viewRecommendations = listOf(ViewRecommendation(DisplayViewName.SOURCE_CODE.viewName, name))
         return ClassTableEntry(
             uuid,
+            viewRecommendations,
             name,
             visibility,
             isAbstract,

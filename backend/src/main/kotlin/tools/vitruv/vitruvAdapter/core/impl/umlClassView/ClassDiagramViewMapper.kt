@@ -8,6 +8,8 @@ import org.eclipse.uml2.uml.Package
 import org.eclipse.uml2.uml.ParameterDirectionKind
 import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.api.Window
+import tools.vitruv.vitruvAdapter.core.impl.DisplayViewName
+import tools.vitruv.vitruvAdapter.core.impl.ViewRecommendation
 import tools.vitruv.vitruvAdapter.core.impl.abstractMapper.UmlViewMapper
 import tools.vitruv.vitruvAdapter.core.impl.uml.*
 
@@ -39,9 +41,11 @@ class ClassDiagramViewMapper : UmlViewMapper() {
             val next = iterator.next()
             val nextURI = resource?.getURIFragment(next) ?: ""
             if (next is Class) {
+                val viewRecommendations = mutableListOf<ViewRecommendation>()
+                viewRecommendations.add(ViewRecommendation(DisplayViewName.SOURCE_CODE.viewName, next.name))
                 val isAbstract = if (next.isAbstract) "<<abstract>>" else "<<class>>"
                 val classNode =
-                    UmlNode(nextURI, next.name, isAbstract, getUmlAttributes(next), getUmlMethods(next))
+                    UmlNode(nextURI, next.name, isAbstract, getUmlAttributes(next), getUmlMethods(next), viewRecommendations.toList())
                 nodes.add(classNode)
 
                 if (next.interfaceRealizations.isNotEmpty()) {
@@ -77,8 +81,10 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                 }
             }
             if (next is Interface) {
+                val viewRecommendations = mutableListOf<ViewRecommendation>()
+                viewRecommendations.add(ViewRecommendation(DisplayViewName.SOURCE_CODE.viewName, next.name))
                 val interfaceNode =
-                    UmlNode(nextURI, next.name, "<<interface>>", listOf(), getUmlMethods(next))
+                    UmlNode(nextURI, next.name, "<<interface>>", listOf(), getUmlMethods(next), viewRecommendations)
                 nodes.add(interfaceNode)
 
                 if (next.redefinedInterfaces.isNotEmpty()) {

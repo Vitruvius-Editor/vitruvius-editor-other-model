@@ -1,5 +1,6 @@
 package tools.vitruv.vitruvAdapter.core.impl.classTableView
 
+import tools.vitruv.vitruvAdapter.core.impl.ViewRecommendation
 import tools.vitruv.vitruvAdapter.core.impl.table.ColumnInfo
 
 
@@ -9,6 +10,8 @@ import tools.vitruv.vitruvAdapter.core.impl.table.ColumnInfo
 data class ClassTableEntry(
     @ColumnInfo(false, "", false)
     val uuid: String,
+    @ColumnInfo(false, "", false)
+    val viewRecommendations: List<ViewRecommendation>,
     @ColumnInfo(true, "Name", true)
     val name: String,
     @ColumnInfo(true, "Visibility", true)
