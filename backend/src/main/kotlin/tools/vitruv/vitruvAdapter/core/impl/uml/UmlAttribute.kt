@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 @JsonSerialize(using = UmlAttributeSerializer::class)
 @JsonDeserialize(using = UmlAttributeDeserializer::class)
 data class UmlAttribute(
+    val uuid: String,
     val visibility: UmlVisibility,
     val name: String,
     val type: String

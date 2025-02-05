@@ -62,9 +62,9 @@ class TestVitruvAdapter {
 
         //umll
         val umlNodes = listOf(
-            UmlNode("", "Class1", "",
+            UmlNode("", "Class1", "<<class>>",
                 listOf(UmlAttribute(UmlVisibility.PUBLIC, "attribute1", "String")), listOf(), listOf()),
-            UmlNode("", "Class2", "",
+            UmlNode("", "Class2", "<<class>>",
                 listOf(UmlAttribute(UmlVisibility.PUBLIC, "attribute2", "int")), listOf(), listOf())
         )
         val umlConnections = listOf<UmlConnection>()
@@ -76,9 +76,9 @@ class TestVitruvAdapter {
         println(newContentString)
 
         val secondUmlNodes = listOf(
-            UmlNode("/0/Class1", "Class1", "",
-                listOf(UmlAttribute(UmlVisibility.PUBLIC, "attribute3", "String")), listOf(), listOf()),
-            UmlNode("/0/Class2", "Class2", "",
+            UmlNode("/0/Class1", "Class1", "<<class>>",
+                listOf(UmlAttribute(UmlVisibility.PUBLIC, "attribute1", "String")), listOf(), listOf()),
+            UmlNode("/0/Class2", "Class2", "<<class>>",
                 listOf(UmlAttribute(UmlVisibility.PUBLIC, "attribute2", "int")), listOf(), listOf())
         )
         val secondUmlConnections = listOf(

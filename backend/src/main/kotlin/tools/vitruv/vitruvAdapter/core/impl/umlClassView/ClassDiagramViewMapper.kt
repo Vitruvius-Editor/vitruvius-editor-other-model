@@ -171,72 +171,77 @@ class ClassDiagramViewMapper : UmlViewMapper() {
     }
 
     private fun applyChangesToWindow(preMappedWindow: PreMappedWindow<UmlDiagram>, window: Window<UmlDiagram>) {
-        val checkedClasses = mutableListOf<Class>()
+        val checkedClasses = mutableListOf<PackageableElement>()
         for (eObject in preMappedWindow.neededEObjects) {
             if (eObject !is Package) {
                 continue
             }
-            checkedClasses.addAll(eObject.packagedElements.filterIsInstance<Class>())
+            checkedClasses.addAll(eObject.packagedElements.filterIsInstance<PackageableElement>())
             for (node in window.content.nodes) {
-                val umlClass = eObject.eResource()?.getEObject(node.uuid) as Class?
-                if (umlClass == null) {
-                    val newClass = eObject.createOwnedClass(node.name, false)
-                    newClass.name = node.name
-                    node.attributes.forEach() { createAttributeForUmlAttributeInClass(newClass, it) }
-                    node.methods.forEach() { createMethodFromUmlMethodInClass(newClass, it) }
-                    eObject.packagedElements.add(newClass)
+                val umlElement = eObject.eResource()?.getEObject(node.uuid)
+                if (umlElement == null) {
+                    if (node.nodeType == "<<class>>") {
+                        val newClass = eObject.createOwnedClass(node.name, false)
+                        newClass.name = node.name
+                        node.attributes.forEach { createAttributeForUmlAttributeInClass(newClass, it) }
+                        node.methods.forEach { createMethodFromUmlMethodInClass(newClass, it) }
+                        eObject.packagedElements.add(newClass)
+                    }else if(node.nodeType == "<<interface>>"){
+                        val newInterface = eObject.createOwnedInterface(node.name)
+                        newInterface.name = node.name
+                        node.methods.forEach { createMethodFromUmlMethodInInterface(newInterface, it) }
+                        eObject.packagedElements.add(newInterface)
+                    }
                     continue
                 }
-                checkedClasses.remove(umlClass)
-                if (umlClass.name != node.name) {
-                    umlClass.name = node.name
-                }
-                for (attribute in node.attributes) {
-                    val umlAttribute = umlClass.ownedAttributes.find { it.name == attribute.name }
-                    if (umlAttribute == null) {
-                        createAttributeForUmlAttributeInClass(umlClass, attribute)
-                    } else {
-                        if (umlAttribute.visibility.literal.lowercase() != attribute.visibility.symbol) {
-                            umlAttribute.visibility = VisibilityKind.get(attribute.visibility.symbol)
-                        }
-                        if (umlAttribute.name != attribute.name) {
-                            umlAttribute.name = attribute.name
-                        }
-                        if (umlAttribute.type.name != attribute.type) {
-                            umlAttribute.type = umlClass.model.getOwnedType(attribute.type)
-                        }
-                    }
-                }
-
-                for (methods in node.methods) {
-                    val umlOperation = umlClass.operations.find { it.name == methods.name }
-                    if (umlOperation == null) {
-                        createMethodFromUmlMethodInClass(umlClass, methods)
-                    } else {
-                        if (umlOperation.visibility.literal.lowercase() != methods.visibility.symbol) {
-                            umlOperation.visibility = VisibilityKind.get(methods.visibility.symbol)
-                        }
-                        if (umlOperation.name != methods.name) {
-                            umlOperation.name = methods.name
-                        }
-                        if (umlOperation.type.name != methods.returnType) {
-                            umlOperation.type = umlClass.model.getOwnedType(methods.returnType)
-                        }
-                    }
-                }
+                checkedClasses.remove(umlElement)
                 val connections = findAllConnectionsForSourceCodeUUID(node.uuid, window.content.connections)
-                if (umlClass.isAbstract) {
-                    val extendsConnection = connections.find { it.connectionType == UmlConnectionType.EXTENDS }
-                    if (extendsConnection == null) {
-                        umlClass.superClasses.clear()
+                if (umlElement is Class) {
+                    if (umlElement.name != node.name) {
+                        umlElement.name = node.name
                     }
-                }
-                for (interfaceRealization in umlClass.interfaceRealizations) {
-                    val implementsConnection = connections.find {
-                        it.connectionType == UmlConnectionType.IMPLEMENTS
-                                && it.targetNodeUUID == interfaceRealization.eResource().getURIFragment(interfaceRealization.contract) }
-                    if (implementsConnection == null) {
-                        interfaceRealization.destroy()
+                    for (attribute in node.attributes) {
+                        val umlAttribute = umlElement.ownedAttributes.find { it.name == attribute.name }
+                        if (umlAttribute == null) {
+                            createAttributeForUmlAttributeInClass(umlElement, attribute)
+                        } else {
+                            editAttributeProperties(umlAttribute, attribute, umlElement)
+                        }
+                    }
+
+                    for (methods in node.methods) {
+                        val umlOperation = umlElement.operations.find { it.name == methods.name }
+                        if (umlOperation == null) {
+                            createMethodFromUmlMethodInClass(umlElement, methods)
+                        } else {
+                            editOperationProperties(umlOperation, methods, umlElement)
+                        }
+                    }
+                    if (umlElement.superClasses.isEmpty()) {
+                        val extendsConnection = connections.find { it.connectionType == UmlConnectionType.EXTENDS }
+                        if (extendsConnection == null) {
+                            umlElement.superClasses.clear()
+                        }
+                    }
+                    for (interfaceRealization in umlElement.interfaceRealizations) {
+                        val implementsConnection = connections.find {
+                            it.connectionType == UmlConnectionType.IMPLEMENTS
+                                    && it.targetNodeUUID == interfaceRealization.eResource().getURIFragment(interfaceRealization.contract) }
+                        if (implementsConnection == null) {
+                            interfaceRealization.destroy()
+                        }
+                    }
+                } else if (umlElement is Interface) {
+                    if (umlElement.name != node.name) {
+                        umlElement.name = node.name
+                    }
+                    for (methods in node.methods) {
+                        val umlOperation = umlElement.operations.find { it.name == methods.name }
+                        if (umlOperation == null) {
+                            createMethodFromUmlMethodInInterface(umlElement, methods)
+                        } else {
+                            editOperationProperties(umlOperation, methods, umlElement)
+                        }
                     }
                 }
 
@@ -254,10 +259,8 @@ class ClassDiagramViewMapper : UmlViewMapper() {
 
                     if (connection.connectionType == UmlConnectionType.EXTENDS) {
                         if (targetClass is Class && sourceClass is Class) {
-                            sourceClass.superClasses.clear()
                             sourceClass.createGeneralization(targetClass)
                         } else if (targetClass is Interface && sourceClass is Interface) {
-                            sourceClass.redefinedInterfaces.clear()
                             sourceClass.createGeneralization(targetClass)
                         } else {
                             throw IllegalStateException("Extends can only be used between two classes or interfaces.")
@@ -287,6 +290,52 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         }
     }
 
+    private fun editAttributeProperties(
+        attribute: Property,
+        umlAttribute: UmlAttribute,
+        umlElement: Class
+    ) {
+        editVisibility(attribute, umlAttribute.visibility)
+        if (attribute.name != attribute.name) {
+            attribute.name = attribute.name
+        }
+        if (attribute.type.name != umlAttribute.type) {
+            val type = umlElement.model.getOwnedType(umlAttribute.type)
+            if (type == null) {
+                val newType = UMLFactory.eINSTANCE.createPrimitiveType()
+                newType.name = umlAttribute.type
+                umlElement.`package`.packagedElements.add(newType)
+                attribute.type = newType
+            } else {
+                attribute.type = type
+            }
+
+        }
+    }
+
+    private fun editVisibility(
+        namedElement: NamedElement,
+        visibility: UmlVisibility
+    ) {
+        if (namedElement.visibility.literal.lowercase() != visibility.symbol) {
+            namedElement.visibility = VisibilityKind.get(visibility.symbol)
+        }
+    }
+
+    private fun editOperationProperties(
+        operation: Operation,
+        umlMethod: UmlMethod,
+        classifier: Classifier
+    ) {
+        editVisibility(operation, umlMethod.visibility)
+        if (operation.name != umlMethod.name) {
+            operation.name = umlMethod.name
+        }
+        if (operation.type.name != umlMethod.returnType) {
+            operation.type = classifier.model.getOwnedType(umlMethod.returnType)
+        }
+    }
+
     private fun createMethodFromUmlMethodInClass(
         umlClass: Class,
         methods: UmlMethod
@@ -297,6 +346,17 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         umlClass.operations.add(newOperation)
     }
 
+
+    private fun createMethodFromUmlMethodInInterface(
+        umlInterface: Interface,
+        methods: UmlMethod
+    ) {
+        val newOperation = umlInterface.createOwnedOperation(methods.name, null, null, null)
+        newOperation.name = methods.name
+        newOperation.type = umlInterface.model.getOwnedType(methods.returnType)
+        umlInterface.operations.add(newOperation)
+    }
+
     private fun createAttributeForUmlAttributeInClass(umlClass: Class, umlAttribute: UmlAttribute) {
         val newAttribute = umlClass.createOwnedPort(umlAttribute.name, null)
         newAttribute.name = umlAttribute.name
@@ -304,8 +364,10 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         if (type == null) {
             type = UMLFactory.eINSTANCE.createPrimitiveType()
             type.name = umlAttribute.type
+            umlClass.`package`.packagedElements.add(type)
         }
         newAttribute.type = type
+
         umlClass.ownedAttributes.add(newAttribute)
     }
 
