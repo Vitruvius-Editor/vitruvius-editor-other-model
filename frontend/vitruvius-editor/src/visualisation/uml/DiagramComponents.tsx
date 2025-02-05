@@ -1,5 +1,9 @@
 import {DefaultLinkFactory, DefaultLinkModel, DefaultNodeModel, DefaultPortModel } from '@projectstorm/react-diagrams-defaults';
+<<<<<<< HEAD
 import * as React from 'react';
+=======
+import React from 'react';
+>>>>>>> parent of d6f6901 (Revert "Merge pull request #69 from Vitruvius-Editor/frontend/diagrams")
 import { DiagramEngine, LinkWidget, PointModel } from '@projectstorm/react-diagrams-core';
 import { DefaultLinkPointWidget, DefaultLinkSegmentWidget } from '@projectstorm/react-diagrams-defaults';
 
