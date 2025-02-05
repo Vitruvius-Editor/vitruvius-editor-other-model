@@ -4,10 +4,10 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.uml2.uml.ParameterDirectionKind
 import org.eclipse.uml2.uml.UMLFactory
 import org.eclipse.uml2.uml.VisibilityKind
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.UmlDisplayContentMapper
+import tools.vitruv.vitruvAdapter.core.api.Window
+import tools.vitruv.vitruvAdapter.core.impl.uml.*
 
 class ClassDiagramViewMapperTest {
 
@@ -102,6 +102,32 @@ class ClassDiagramViewMapperTest {
         for (content in contents) {
             println(content.content.toString())
         }
+
+
+    }
+
+    @Test
+    fun testEditContentButOnlyCreatingClasses() {
+        val viewMapper = ClassDiagramViewMapper()
+        val contentSelector = ClassDiagramContentSelector()
+        val umlNodes = listOf(
+            UmlNode("", "Class1", "",
+            listOf(UmlAttribute(UmlVisibility.PUBLIC, "attribute1", "String")), listOf(), listOf()),
+            UmlNode("", "Class2", "",
+                listOf(UmlAttribute(UmlVisibility.PUBLIC, "attribute2", "int")), listOf(), listOf())
+        )
+        val umlConnections = listOf<UmlConnection>()
+        val testUmlDiagram = UmlDiagram(umlNodes, umlConnections)
+        val umlPackage = UMLFactory.eINSTANCE.createPackage()
+        umlPackage.name = "examplePackage"
+        val oldEObjects = listOf<EObject>(umlPackage)
+        val contentSelection = contentSelector.applySelection(oldEObjects, viewMapper.mapViewToWindows(oldEObjects))
+        viewMapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            contentSelection,
+            listOf(Window("examplePackage", testUmlDiagram))
+        )
+        println(oldEObjects)
+
 
 
     }
