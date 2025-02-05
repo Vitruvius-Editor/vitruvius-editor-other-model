@@ -1,10 +1,14 @@
 package vitruv.tools.vitruvadpter.testServer
 
+
 import org.eclipse.emf.common.util.BasicEList
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EPackage
+import org.eclipse.emf.ecore.plugin.EcorePlugin
 import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.emf.ecore.resource.ResourceSet
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 import org.eclipse.uml2.uml.Type
 import org.eclipse.uml2.uml.UMLFactory
@@ -12,16 +16,26 @@ import org.eclipse.uml2.uml.UMLPackage
 import org.eclipse.uml2.uml.VisibilityKind
 import org.eclipse.uml2.uml.internal.impl.LiteralIntegerImpl
 import org.eclipse.uml2.uml.internal.impl.UMLPackageImpl
-import tools.mdsd.jamopp.model.java.*
+import org.eclipse.uml2.uml.internal.resource.UML22UMLResourceFactoryImpl
+import org.eclipse.uml2.uml.internal.resource.UML22UMLResourceImpl
+import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl
+import org.eclipse.uml2.uml.resource.UML22UMLResource
+import tools.mdsd.jamopp.model.java.JavaPackage
 import tools.mdsd.jamopp.model.java.classifiers.ClassifiersFactory
+import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.mdsd.jamopp.model.java.containers.ContainersFactory
 import tools.mdsd.jamopp.model.java.impl.JavaPackageImpl
 import tools.mdsd.jamopp.model.java.members.MembersFactory
+import tools.mdsd.jamopp.model.java.types.TypesFactory
+import tools.vitruv.applications.umljava.JavaToUmlChangePropagationSpecification
+import tools.vitruv.applications.umljava.UmlToJavaChangePropagationSpecification
+import tools.vitruv.applications.util.temporary.java.JamoppLibraryHelper
+import tools.vitruv.applications.util.temporary.java.JavaSetup
 import tools.vitruv.change.atomic.AtomicPackage
 import tools.vitruv.change.atomic.impl.AtomicPackageImpl
 import tools.vitruv.change.correspondence.CorrespondencePackage
 import tools.vitruv.change.correspondence.impl.CorrespondencePackageImpl
-import tools.vitruv.change.interaction.UserInteractionFactory
+import tools.vitruv.change.utils.ProjectMarker
 import tools.vitruv.framework.remote.server.VirtualModelInitializer
 import tools.vitruv.framework.remote.server.VitruvServer
 import tools.vitruv.framework.views.View
@@ -29,50 +43,83 @@ import tools.vitruv.framework.views.ViewType
 import tools.vitruv.framework.views.impl.IdentityMappingViewType
 import tools.vitruv.framework.vsum.VirtualModel
 import tools.vitruv.framework.vsum.VirtualModelBuilder
+import java.io.FileInputStream
 import java.io.IOException
+import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
-
+import tools.mdsd.jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser
 
 /**
  * Initializes the server
  */
 
 class ServerInitializer {
-    val rootPath: Path = Path.of("vitruv_server/src/main/resources/model")
 
-    val viewTypes: Map<String, ViewType<*>> = createViewTypes()
-
-    val javaPath: Path = Path.of("vitruv_server/src/main/resources/model/java")
-    val umlPath: Path = Path.of("vitruv_server/src/main/resources/model/uml")
-    val javaUri: URI = URI.createFileURI(javaPath.toString())
-    val umlUri: URI = URI.createFileURI(umlPath.toString())
-
-    val vsum: VirtualModel = init()
     val serverPort: Int = 8000
+    lateinit var viewTypes: Map<String, ViewType<*>>
+    lateinit var vsum: VirtualModel
+    lateinit var javaPath: Path
+    lateinit var umlPath: Path
+    lateinit var javaUri: URI
+    lateinit var umlUri: URI
 
     /**
      * Initializes the server
      */
-    fun initialize(): VitruvServer {
+    fun initialize(rootPath: Path): VitruvServer {
+        javaPath = rootPath.resolve("model/java")
+        umlPath = rootPath.resolve("model/uml")
+        javaUri = URI.createFileURI(javaPath.toString())
+        umlUri = URI.createFileURI(umlPath.toString())
         registerRegistry()
+        if (Files.exists(rootPath)) {
+            deletePath(rootPath)
+        } else {
+            Files.createDirectories(rootPath)
+        }
+        ProjectMarker.markAsProjectRootFolder(rootPath)
+        viewTypes = createViewTypes()
+        vsum = init(rootPath)
         val vitruvServer = VitruvServer(VirtualModelInitializer { vsum }, serverPort, "localhost")
-        generatePackage()
-
-       genrateJavaCode()
+        //generatePackage()
+        genrateJavaCode()
         return vitruvServer
     }
 
-    private fun genrateJavaCode(){
+    private fun registerRegistry() {
+        EcorePlugin.ExtensionProcessor.process(null)
+
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", XMIResourceFactoryImpl())
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("uml", UMLResourceFactoryImpl())
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("uml2", UML22UMLResourceFactoryImpl())
+
+
+        EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE)
+        EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackage.eINSTANCE)
+        EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackageImpl.eINSTANCE)
+        EPackage.Registry.INSTANCE.put(CorrespondencePackage.eNS_URI, CorrespondencePackageImpl.eINSTANCE)
+        EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackageImpl.eINSTANCE)
+        EPackage.Registry.INSTANCE.put(AtomicPackage.eNS_URI, AtomicPackageImpl.eINSTANCE)
+
+        JamoppLibraryHelper.registerStdLib()
+        JavaSetup.prepareFactories()
+        JavaSetup.resetClasspathAndRegisterStandardLibrary()
+
+
+        print(Resource.Factory.Registry.INSTANCE.extensionToFactoryMap)
+    }
+
+    private fun genrateJavaCode() {
 
         val fileName = "TestClass.java"
-        try{
-//            val inputStream: InputStream = FileInputStream("C:\\Users\\amira\\Desktop\\vitruvius-editor2\\vitruv_server\\src\\main\\resources\\TestClass.java")
-//            val rootw = JaMoPPJDTSingleFileParser().parse(fileName, inputStream) as CompilationUnit
+        try {
+            val inputStream: InputStream = FileInputStream("vitruv_server/src/main/resources/Dodo.java")
+            val rootw = JaMoPPJDTSingleFileParser().parse(fileName, inputStream) as CompilationUnit
+            val classs = rootw.classifiers[0] as tools.mdsd.jamopp.model.java.classifiers.Class
+
+
 //
-//
-//
-////
 //            val classJava = ClassifiersFactory.eINSTANCE.createClass()
 //            val obejectClass = classJava.objectClass
 //
@@ -89,7 +136,7 @@ class ServerInitializer {
             member.name = "myIntAttribute"
             root.members.add(member)
 
-            val intType = tools.mdsd.jamopp.model.java.types.TypesFactory.eINSTANCE.createInt()
+            val intType = TypesFactory.eINSTANCE.createInt()
             member.typeReference = intType
 
 
@@ -100,36 +147,29 @@ class ServerInitializer {
             member1.name = "myIntAttribute1"
             root.members.add(member1)
             val intType1 = tools.mdsd.jamopp.model.java.types.TypesFactory.eINSTANCE.createInt()
-            member1.typeReference = intType1
+            member1.typeReference = intType
 
 
-
-
-            val javaPackage = ContainersFactory.eINSTANCE.createCompilationUnit()
+            val javaPackage = ContainersFactory.eINSTANCE.createPackage()
             javaPackage.name = "exampleCompilationUnit"
-            javaPackage.classifiers.add(root)
-            javaPackage.classifiers.add(newClass)
+//            javaPackage.classifiers.add(root)
+//            javaPackage.classifiers.add(newClass)
+            //javaPackage.classifiers.add(classs)
 
 
             val view = getJavaView().withChangeDerivingTrait()
             view.registerRoot(javaPackage, javaUri)
             view.commitChanges()
             view.close()
-        } catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
 
 
-    private fun registerRegistry() {
-        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", XMIResourceFactoryImpl())
 
-        EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackageImpl.eINSTANCE)
-        EPackage.Registry.INSTANCE.put(CorrespondencePackage.eNS_URI, CorrespondencePackageImpl.eINSTANCE)
-        EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackageImpl.eINSTANCE)
-        EPackage.Registry.INSTANCE.put(AtomicPackage.eNS_URI, AtomicPackageImpl.eINSTANCE)
-    }
+
 
     /**
      * Returns the JAVA view
@@ -182,8 +222,6 @@ class ServerInitializer {
         umlClass.createInterfaceRealization("interfaceRealization", umlInterface)
 
 
-
-
         val attribute = umlClass.createOwnedAttribute("myIntAttribute", null)
         attribute.visibility = VisibilityKind.PUBLIC_LITERAL
 
@@ -208,7 +246,7 @@ class ServerInitializer {
             System.out.println("Hello World");
         """.trimIndent()
         )
-        
+
         var view = getUMLView().withChangeDerivingTrait()
         view.registerRoot(examplePackage, umlUri)
         view.commitChanges()
@@ -232,18 +270,15 @@ class ServerInitializer {
         return viewTypes
     }
 
-    private fun init(): VirtualModel {
-        if (Files.exists(rootPath)) {
-            deletePath(rootPath)
-        } else {
-            Files.createDirectories(rootPath)
-        }
-
+    private fun init(rootPath: Path): VirtualModel {
+        val uml2JavaPropagation = UmlToJavaChangePropagationSpecification()
+        val java2UmlPropagation = JavaToUmlChangePropagationSpecification()
         return VirtualModelBuilder()
+            .withChangePropagationSpecification(uml2JavaPropagation)
+            .withChangePropagationSpecification(java2UmlPropagation)
             .withStorageFolder(rootPath)
-            .withUserInteractor(UserInteractionFactory.instance.createUserInteractor(
-                UserInteractionFactory.instance.createPredefinedInteractionResultProvider(null)))
             .withViewTypes(viewTypes.values)
+            .withUserInteractorForResultProvider(TestInteractionResultProvider())
             .buildAndInitialize()
     }
 
@@ -262,5 +297,5 @@ class ServerInitializer {
             }
         }
     }
-}
 
+}
