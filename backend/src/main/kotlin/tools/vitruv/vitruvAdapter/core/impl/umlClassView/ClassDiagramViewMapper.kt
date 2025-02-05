@@ -101,7 +101,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         next.ownedAttributes.forEach {
             val visibilitySymbol = getVisibilitySymbol(it.visibility.literal.lowercase())
             val umlVisibility = UmlVisibility.fromSymbol(visibilitySymbol) ?: UmlVisibility.PUBLIC
-            umlAttributes.add(UmlAttribute(umlVisibility, it.name, it.type.name))
+            umlAttributes.add(UmlAttribute(umlVisibility, it.name?:"", it.type?.name?: ""))
         }
         return umlAttributes
     }
@@ -113,9 +113,9 @@ class ClassDiagramViewMapper : UmlViewMapper() {
             val umlVisibility = UmlVisibility.fromSymbol(visibilitySymbol) ?: UmlVisibility.PUBLIC
             val umlParameters = mutableListOf<UmlParameter>()
             it.ownedParameters.filter { it.direction == ParameterDirectionKind.IN_LITERAL }.forEach { parameter ->
-                umlParameters.add(UmlParameter(parameter.name, parameter.type.name))
+                umlParameters.add(UmlParameter(parameter.name ?:"", parameter.type?.name ?:""))
             }
-            umlMethods.add(UmlMethod(umlVisibility, it.name, umlParameters, it.type.name))
+            umlMethods.add(UmlMethod(umlVisibility, it.name ?:"", umlParameters, it.type?.name?:""))
         }
         return umlMethods
     }
