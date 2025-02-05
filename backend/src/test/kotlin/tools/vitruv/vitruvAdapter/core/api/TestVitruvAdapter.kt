@@ -36,10 +36,10 @@ class TestVitruvAdapter {
         val contentSelector = SourceCodeContentSelector()
         displayViewRepository = DefaultDisplayViewRepositoryFactory().createDisplayViewRepository()
         val sourceCodeDisplayView = GenericDisplayView("SourceCode", "UML", SourceCodeViewMapper() as ViewMapper<Any?>, AllSelector(),
-            contentSelector)
+            contentSelector as ContentSelector<Any?>)
         val classTableContentSelector = ClassTableContentSelector()
         val classTableDisplayView = GenericDisplayView("ClassTable", "UML", ClassTableViewMapper() as ViewMapper<Any?>, AllSelector(),
-            classTableContentSelector)
+            classTableContentSelector as ContentSelector<Any?>)
 
         adapter.connectClient(vitruvClient)
         displayViewRepository.registerDisplayView(sourceCodeDisplayView)

@@ -2,30 +2,32 @@ package tools.vitruv.vitruvAdapter.core.impl.umlPackageView
 
 import org.eclipse.emf.ecore.EObject
 import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
+import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.core.impl.abstractMapper.UmlViewMapper
 import tools.vitruv.vitruvAdapter.core.impl.uml.UmlDiagram
 
 class PackageDiagramViewMapper: UmlViewMapper() {
+
     /**
      * Maps the given view content to a list of windows.
-     * @param selectEObjects The view content to map.
+     * @param preMappedWindows the pre-mapped windows to map to windows.
      * @return The windows representing the view content.
      */
-    override fun mapEObjectsToWindowsContent(selectEObjects: List<EObject>): List<Window<UmlDiagram>> {
+    override fun mapEObjectsToWindowsContent(preMappedWindows: List<PreMappedWindow<UmlDiagram>>): List<Window<UmlDiagram>> {
         TODO("Not yet implemented")
     }
 
     /**
-     * Maps the given json string to view content, compares it to [oldEObjects] and applies the changes to [oldEObjects].
+     * Maps the given json string to view content, compares it to [preMappedWindows] and applies the changes to the eObjects of [preMappedWindows].
      * Note that no changes will be applied to the model,
-     * this have to be done after this method with a View object, where the [oldEObjects] came from.
-     * @param oldEObjects The old EObjects to compare the windows to.
+     * this have to be done after this method with a View object, where the [preMappedWindows] came from.
+     * @param preMappedWindows The pre-mapped windows to compare the windows to.
      * @param windows the windows to map to EObjects.
      * @return The view content.
      */
     override fun mapWindowsToEObjectsAndApplyChangesToEObjects(
-        oldEObjects: List<EObject>,
+        preMappedWindows: List<PreMappedWindow<UmlDiagram>>,
         windows: List<Window<UmlDiagram>>
     ): List<EObject> {
         TODO("Not yet implemented")

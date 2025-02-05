@@ -6,7 +6,7 @@ import tools.vitruv.framework.views.View
 /**
  * The content selector selects the elements that are contained in the windows.
  */
-interface ContentSelector {
+interface ContentSelector<E> {
 
     /**
      * Selects the view elements that are needed for the windows.
@@ -14,7 +14,7 @@ interface ContentSelector {
      * @param windows the elements to select
      * @return the pre-mapped windows, which contain the name of the window and the EObjects that are needed to map the window.
      */
-    fun applySelection(rootObjects: List<EObject>, windows: Set<String>) : List<PreMappedWindow>
+    fun applySelection(rootObjects: List<EObject>, windows: Set<String>) : List<PreMappedWindow<E>>
 
     companion object {
         /**

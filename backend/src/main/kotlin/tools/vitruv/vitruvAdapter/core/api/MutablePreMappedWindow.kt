@@ -17,7 +17,7 @@ data class MutablePreMappedWindow(val name: String, val neededEObjects: MutableL
     /**
      * Converts this MutablePreMappedWindow to a PreMappedWindow.
      */
-    fun toPreMappedWindow(): PreMappedWindow {
+    fun <E> toPreMappedWindow(): PreMappedWindow<E> {
         return PreMappedWindow(name, neededEObjects)
     }
 }
