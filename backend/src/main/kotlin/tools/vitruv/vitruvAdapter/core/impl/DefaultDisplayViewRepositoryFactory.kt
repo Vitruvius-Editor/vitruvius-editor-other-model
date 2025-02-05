@@ -10,6 +10,7 @@ import tools.vitruv.vitruvAdapter.core.impl.classTableView.ClassTableViewMapper
 import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeViewMapper
 import tools.vitruv.vitruvAdapter.core.impl.selector.AllSelector
 import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeContentSelector
+import tools.vitruv.vitruvAdapter.core.impl.umlClassView.ClassDiagramViewMapper
 
 /**
  * Default implementation of a [DisplayViewRepositoryFactory]. This implementation creates a new
@@ -27,6 +28,7 @@ class DefaultDisplayViewRepositoryFactory : DisplayViewRepositoryFactory() {
         displayViewRepository.registerDisplayView(GenericDisplayView("ClassTable", "UML", ClassTableViewMapper() as ViewMapper<Any?>, AllSelector(),
             ClassTableContentSelector() as ContentSelector<Any?>
         ))
+        displayViewRepository.registerDisplayView(GenericDisplayView("ClassDiagram", "UML", ClassDiagramViewMapper() as ViewMapper<Any?>, AllSelector(), ClassTableContentSelector()))
         return displayViewRepository;
     }
 }
