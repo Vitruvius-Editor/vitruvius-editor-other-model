@@ -22,4 +22,6 @@ data class ConnectionDetails(
     var description: String,
     @Column(nullable = false)
     var url: String,
+    @Column(nullable = false)
+    var port: Int,
 )

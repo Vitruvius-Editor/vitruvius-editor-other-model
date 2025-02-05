@@ -26,7 +26,7 @@ describe("VisualisationWidgetRegistry", () => {
         registry = new VisualisationWidgetRegistry();
         mockWidget = new MockVisualisationWidget();
         displayView = { name: "TestView", viewTypeName: "TestType", viewMapperName: "TestMapper", contentSelectorName: "TestSelector", windowSelectorName: "TestWindow" };
-        connection = { uuid: generateUuid(), name: "TestConnection", description: "TestDescription", url: "http://test.com" };
+        connection = { uuid: generateUuid(), name: "TestConnection", description: "TestDescription", url: "http://test.com", port: 1234 };
     });
 
     it("should register a widget", () => {
@@ -55,7 +55,7 @@ describe("VisualisationWidgetRegistry", () => {
 
     it("should get widgets by connection", () => {
         registry.registerWidget(mockWidget, displayView, connection);
-        const anotherConnection = { uuid: generateUuid(), name: "AnotherConnection", description: "AnotherDescription", url: "http://another.com" };
+        const anotherConnection = { uuid: generateUuid(), name: "AnotherConnection", description: "AnotherDescription", url: "http://another.com", port: 4321 };
         const anotherWidget = new MockVisualisationWidget();
         registry.registerWidget(anotherWidget, displayView, anotherConnection);
         const widgetsByConnection = registry.getWidgetsByConnection(connection);

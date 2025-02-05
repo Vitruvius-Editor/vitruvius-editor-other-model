@@ -16,7 +16,8 @@ data class ConnectionResponse(
     val description: String,
     val uuid: UUID?,
     val url: String,
+    val port: Int,
 )
 {
-    constructor(connectionDetails: ConnectionDetails): this(connectionDetails.name, connectionDetails.description, connectionDetails.uuid, connectionDetails.url)
+    constructor(connectionDetails: ConnectionDetails): this(connectionDetails.name, connectionDetails.description, connectionDetails.uuid, connectionDetails.url, connectionDetails.port)
 }

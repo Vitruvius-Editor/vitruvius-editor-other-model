@@ -1,5 +1,6 @@
-/*package tools.vitruv.vitruvAdapter.services
+package tools.vitruv.vitruvAdapter.services
 
+import org.eclipse.emf.ecore.EObject
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -15,15 +16,17 @@ import tools.vitruv.vitruvAdapter.exception.ConnectionNotFoundException
 import tools.vitruv.vitruvAdapter.exception.DisplayViewNotFoundException
 import tools.vitruv.vitruvAdapter.exception.VitruviusConnectFailedException
 import tools.vitruv.vitruvAdapter.model.ConnectionDetails
-import tools.vitruv.vitruvAdapter.vitruv.api.ContentSelector
-import tools.vitruv.vitruvAdapter.vitruv.api.DisplayView
-import tools.vitruv.vitruvAdapter.vitruv.api.ViewMapper
-import tools.vitruv.vitruvAdapter.vitruv.api.VitruvAdapter
-import tools.vitruv.vitruvAdapter.vitruv.impl.DisplayViewRepository
-import tools.vitruv.vitruvAdapter.vitruv.impl.GenericDisplayView
-import tools.vitruv.vitruvAdapter.vitruv.impl.mapper.ClassDiagramViewMapper
-import tools.vitruv.vitruvAdapter.vitruv.impl.mapper.SourceCodeViewMapper
-import tools.vitruv.vitruvAdapter.vitruv.impl.selector.AllSelector
+import tools.vitruv.vitruvAdapter.core.api.ContentSelector
+import tools.vitruv.vitruvAdapter.core.api.DisplayView
+import tools.vitruv.vitruvAdapter.core.api.ViewMapper
+import tools.vitruv.vitruvAdapter.core.api.VitruvAdapter
+import tools.vitruv.vitruvAdapter.core.impl.DisplayViewRepository
+import tools.vitruv.vitruvAdapter.core.impl.GenericDisplayView
+import tools.vitruv.vitruvAdapter.core.impl.classTableView.ClassTableViewMapper
+import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.TextDisplayContentMapper;
+import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.TableDisplayContentMapper;
+import tools.vitruv.vitruvAdapter.core.impl.selector.AllSelector
+import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeViewMapper
 import java.util.*
 import kotlin.test.assertEquals
 
@@ -47,14 +50,15 @@ class VitruviusServiceTests {
     @BeforeEach
     fun beforeEach() {
         uuid = UUID.randomUUID()
-        connection = ConnectionDetails(uuid, "Example", "Example connection", "https://example.com")
+        connection = ConnectionDetails(uuid, "Example", "Example connection", "https://example.com", 8080)
         val contentSelector = object : ContentSelector {
-            override fun applySelection(viewSelector: ViewSelector, windows: Set<String>) {
+            override fun applySelection(rootObjects: List<EObject>, windows: Set<String>): List<EObject> {
+                return rootObjects
             }
         }
         displayViews = listOf(
             GenericDisplayView("DisplayView 1", "ExampleViewType", SourceCodeViewMapper() as ViewMapper<Any?>, AllSelector(), contentSelector),
-            GenericDisplayView("DisplayView 2", "ExampleViewType", ClassDiagramViewMapper() as ViewMapper<Any?>, AllSelector(), contentSelector),
+            GenericDisplayView("DisplayView 2", "ExampleViewType", ClassTableViewMapper() as ViewMapper<Any?>, AllSelector(), contentSelector),
         )
         MockitoAnnotations.openMocks(this)
         whenever(connectionService.getConnectionById(any<UUID>())).thenAnswer {
@@ -112,4 +116,4 @@ class VitruviusServiceTests {
         assertThrows<VitruviusConnectFailedException> { vitruviusService.getDisplayViewContent(uuid, displayViews[1].name, WindowSelectionRequest(setOf("Window 1", "Window 2"))) }
         assertThrows<VitruviusConnectFailedException> { vitruviusService.editDisplayViewContent(uuid, displayViews[0].name, "Updated Content") }
     }
-}*/
+}

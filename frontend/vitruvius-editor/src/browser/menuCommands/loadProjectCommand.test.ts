@@ -40,7 +40,7 @@ describe("VitruviusLoadProjectContribution", () => {
     });
 
     it("should show quick pick items when executing the command", async () => {
-        const connections: Connection[] = [{ name: "TestConnection", description: "TestDescription", url: "http://test.url", uuid: "test-uuid" }];
+        const connections: Connection[] = [{ name: "TestConnection", description: "TestDescription", url: "http://test.url", uuid: "test-uuid", port: 1234 }];
         connectionService.getConnections.mockResolvedValue(connections);
 
         contribution.registerCommands(commandRegistry);

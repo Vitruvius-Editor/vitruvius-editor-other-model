@@ -55,7 +55,7 @@ describe("VisualisationWidget", () => {
 
     it("should store and restore state", () => {
         const displayView: DisplayView = {name: 'display-view', viewTypeName: 'view-type', viewMapperName: 'view-mapper', windowSelectorName: 'window-selector', contentSelectorName: 'content-selector'};
-        const connection: Connection = {name: 'connection', description: 'connection-description', url: 'http://localhost:8080', uuid: 'connection-uuid'};
+        const connection: Connection = {name: 'connection', description: 'connection-description', url: 'http://localhost:8080', uuid: 'connection-uuid', port: 8080};
         visualisationWidgetRegistry.getWidgets.mockReturnValue([{ widget, displayView, connection }]);
 
         const state = widget.storeState();

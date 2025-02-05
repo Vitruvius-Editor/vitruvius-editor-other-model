@@ -30,8 +30,8 @@ class ConnectionServiceTest {
 
     @BeforeEach
     fun setup() {
-        connection1 = ConnectionDetails(UUID.randomUUID(), "Connection 1", "Description 1", "https://example.com/1")
-        connection2 = ConnectionDetails(UUID.randomUUID(), "Connection 2", "Description 2", "https://example.com/2")
+        connection1 = ConnectionDetails(UUID.randomUUID(), "Connection 1", "Description 1", "https://example.com/1", 8080)
+        connection2 = ConnectionDetails(UUID.randomUUID(), "Connection 2", "Description 2", "https://example.com/2", 8080)
     }
 
     @Test
@@ -48,7 +48,7 @@ class ConnectionServiceTest {
 
     @Test
     fun testImportConnection() {
-        val request = ConnectionCreationRequest("New Connection", "Description", "https://example.com/new")
+        val request = ConnectionCreationRequest("New Connection", "Description", "https://example.com/new", 8080)
         whenever(connectionRepository.save(any<ConnectionDetails>())).thenAnswer(AdditionalAnswers.returnsFirstArg<ConnectionDetails>())
 
         val result = connectionService.importConnection(request)
@@ -74,7 +74,7 @@ class ConnectionServiceTest {
     @Test
     fun testEditConnection() {
         val connectionId = connection1.uuid as UUID
-        val editRequest = ConnectionEditRequest("Edited Name", "Edited Description", "https://example.com/edited")
+        val editRequest = ConnectionEditRequest("Edited Name", "Edited Description", "https://example.com/edited", 8080)
 
         whenever(connectionRepository.findByUuid(connectionId)).thenReturn(connection1)
         whenever(connectionRepository.save(any<ConnectionDetails>())).thenReturn(connection1)

@@ -31,43 +31,31 @@ export class VitruviusImportProjectContribution implements CommandContribution {
   @inject(DisplayViewWidgetContribution)
   protected readonly displayViewWidgetContribution!: DisplayViewWidgetContribution;
 
-  /**
-   * Register the command to import a new project into the server.
-   * @param registry The command registry to register the command.
-   */
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(ImportProjectCommand, {
-      execute: () => {
-        // Ask the user for the projects name, description and the URL of the Vitruvius server via the quick input service.
-        this.quickInputService
-          .input({ title: "Enter the projects name." })
-          .then((name) => {
-            this.quickInputService
-              .input({ title: "Enter a description for the project." })
-              .then((description) => {
-                this.quickInputService
-                  .input({ title: "Enter the URL of the Vitruvius server." })
-                  .then((url) => {
-                    // Create a new connection with the given parameters and load the project if successful.
-                    this.connectionService
-                      .createConnection({
-                        name: name ?? "",
-                        description: description ?? "",
-                        url: url ?? "",
-                      })
-                      .then((connection) => {
-                        this.displayViewWidgetContribution.widget.then(
-                          (widget) => widget.loadProject(connection),
-                        );
-                      })
-                      .catch((_err) =>
-                        this.messageService.error(
-                          "Couldn't connect to backend.",
-                        ),
-                      );
-                  });
-              });
-          });
+      execute: async () => {
+        try {
+          const name = await this.quickInputService.input({ title: "Enter the project's name." });
+          const description = await this.quickInputService.input({ title: "Enter a description for the project." });
+          const hostname = await this.quickInputService.input({ title: "Enter the hostname of the Vitruvius server." });
+          const port = await this.quickInputService.input({ title: "Enter the port of the Vitruvius server" });
+
+          if (name && description && hostname && port) {
+            const connection = await this.connectionService.createConnection({
+              name,
+              description,
+              url: hostname,
+              port: parseInt(port),
+            });
+
+            const widget = await this.displayViewWidgetContribution.widget;
+            await widget.loadProject(connection);
+          } else {
+            await this.messageService.error("All fields are required.");
+          }
+        } catch (error) {
+          await this.messageService.error("Couldn't connect to backend.");
+        }
       },
     });
   }
