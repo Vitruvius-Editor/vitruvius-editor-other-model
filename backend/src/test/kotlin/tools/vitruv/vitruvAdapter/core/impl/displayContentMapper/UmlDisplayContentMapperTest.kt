@@ -45,10 +45,12 @@ class UmlDisplayContentMapperTest {
     "Class1",
     "Class",
     listOf(attribute),
-    listOf(method)
+    listOf(method),
+    listOf()
    ),
     UmlNode(
      "2",
+
      "Class2",
      "Class",
      listOf(attribute2),
@@ -56,8 +58,9 @@ class UmlDisplayContentMapperTest {
       UmlVisibility.PUBLIC,
       "method2",
       methodParameters,
-      "Object"
-     ))
+      "Object",
+     )),
+     listOf()
     )
   )
 

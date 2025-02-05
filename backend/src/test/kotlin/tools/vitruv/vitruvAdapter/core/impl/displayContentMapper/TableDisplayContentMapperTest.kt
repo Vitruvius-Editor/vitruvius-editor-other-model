@@ -15,6 +15,7 @@ class TableDisplayContentMapperTest {
       listOf(
        ClassTableEntry(
         uuid = "uuid",
+        viewRecommendations = listOf(),
         name = "name",
         visibility = "visibility",
         isFinal = true,
@@ -27,6 +28,7 @@ class TableDisplayContentMapperTest {
        ),
        ClassTableEntry(
         uuid = "uui2d",
+        viewRecommendations = listOf(),
         name = "name",
         visibility = "visibi2lity",
         isFinal = true,

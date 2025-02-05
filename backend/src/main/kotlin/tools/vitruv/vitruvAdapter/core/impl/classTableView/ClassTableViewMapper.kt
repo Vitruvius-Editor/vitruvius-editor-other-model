@@ -8,6 +8,7 @@ import tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier
 import tools.mdsd.jamopp.printer.JaMoPPPrinter
 
 import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
+import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 import tools.vitruv.vitruvAdapter.core.api.ViewMapper
 import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.core.impl.DisplayViewName

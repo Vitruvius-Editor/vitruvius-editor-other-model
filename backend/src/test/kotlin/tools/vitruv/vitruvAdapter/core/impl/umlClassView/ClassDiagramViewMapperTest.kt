@@ -97,11 +97,10 @@ class ClassDiagramViewMapperTest {
         val mapper = ClassDiagramViewMapper()
         val windows = mapper.mapViewToWindows(eobjects)
         windows.forEach(::println)
-        val contentMapper = UmlDisplayContentMapper()
-        val contents = mapper.mapEObjectsToWindowsContent(eobjects)
+
+        val contents = mapper.mapEObjectsToWindowsContent(ClassDiagramContentSelector().applySelection(eobjects, windows))
         for (content in contents) {
-            val json = contentMapper.parseContent(content.content)
-            println(json)
+            println(content.content.toString())
         }
 
 

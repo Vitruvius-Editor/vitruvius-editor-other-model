@@ -99,6 +99,7 @@ class SourceCodeViewMapperTest {
         expected.add("TestClass")
         expected.add("TestClass2")
         assertEquals(expected, windows)
+
     }
 
 }
