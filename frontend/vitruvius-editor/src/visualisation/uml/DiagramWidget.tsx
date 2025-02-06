@@ -4,6 +4,7 @@ import {
   postConstruct,
 } from "@theia/core/shared/inversify";
 import * as React from "react";
+import styled from '@emotion/styled';
 import { MessageService } from "@theia/core";
 import { VisualisationWidget } from "../VisualisationWidget";
 import createEngine, {
@@ -55,27 +56,20 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
     umlDiagram.links.forEach(link => model.addLink(link));
     this.engine.setModel(model);
 
-    // this.dagre();
-
     return (
         <div className="editor-container">
+          <DemoButton onClick={this.dagre()}>Re-distribute</DemoButton>
           <CanvasWidget className="diagram-container" engine={this.engine} />
         </div>
     );
   }
 
   dagre() {
-    this.redistribute();
-    this.refreshLinks();
-  }
-
-  redistribute() {
     autoDistribute(this.engine);
-  }
-
-  refreshLinks() {
     autoRefreshLinks(this.engine);
   }
+
+
 
   /**
    * Parses the diagram content and creates a DiagramContent object.
@@ -169,3 +163,19 @@ function autoRefreshLinks(engine: DiagramEngine) {
 function reroute(engine: DiagramEngine) {
   engine.getLinkFactories().getFactory<PathFindingLinkFactory>(PathFindingLinkFactory.NAME).calculateRoutingMatrix();
 }
+
+export const DemoButton = styled.button`
+	background: rgb(60, 60, 60);
+	font-size: 14px;
+	padding: 5px 10px;
+	border: none;
+	color: white;
+	outline: none;
+	cursor: pointer;
+	margin: 2px;
+	border-radius: 3px;
+
+	&:hover {
+		background: rgb(0, 192, 255);
+	}
+`;
