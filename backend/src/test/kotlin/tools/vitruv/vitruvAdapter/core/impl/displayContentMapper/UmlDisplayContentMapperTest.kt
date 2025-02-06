@@ -11,33 +11,53 @@ class UmlDisplayContentMapperTest {
 
 
   val attribute = UmlAttribute(
+   "",
    UmlVisibility.PUBLIC,
    "attribute1",
-   "String"
+   UmlType(
+    "",
+    "Int"
+   )
   )
 
   val methodParameters = listOf(
     UmlParameter(
+     "",
      "attribute1",
-     "String"
+     UmlType(
+      "",
+      "Int"
+     )
     ),
     UmlParameter(
+     "",
      "attribute2",
-     "Object"
+        UmlType(
+        "",
+        "String"
+        )
     )
   )
 
   val method = UmlMethod(
+   "",
    UmlVisibility.PUBLIC,
    "method1",
    listOf(),
-   "String"
+   UmlType(
+    "",
+    "Object"
+   )
   )
 
   val attribute2 = UmlAttribute(
+   "",
    UmlVisibility.PUBLIC,
    "attribute2",
-   "String"
+   UmlType(
+    "",
+    "String"
+   )
   )
   val umlNodes = listOf(
    UmlNode(
@@ -55,10 +75,14 @@ class UmlDisplayContentMapperTest {
      "Class",
      listOf(attribute2),
      listOf(UmlMethod(
+      "",
       UmlVisibility.PUBLIC,
       "method2",
       methodParameters,
-      "Object",
+      UmlType(
+       "",
+       "String"
+      ),
      )),
      listOf()
     )
