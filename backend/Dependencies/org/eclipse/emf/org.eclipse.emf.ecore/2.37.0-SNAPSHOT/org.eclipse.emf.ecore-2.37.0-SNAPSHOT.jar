@@ -1,0 +1,18 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Thu Feb 06 16:10:59 CET 2025
+file\:////home/yannis/Documents/KIT/PSE/vitruvius-editor/backend/Dependencies/.error=
+file\:////home/yannis/Documents/KIT/PSE/vitruvius-editor/backend/Dependencies/.lastUpdated=1738854655011
+file\:////home/yannis/Documents/KIT/PSE/vitruvius-editor/vitruv_server/Dependencies/.error=
+file\:////home/yannis/Documents/KIT/PSE/vitruvius-editor/vitruv_server/Dependencies/.lastUpdated=1738854659611
+https\://download.eclipse.org/modeling/emf/compare/updates/releases/3.3/.error=
+https\://download.eclipse.org/modeling/emf/compare/updates/releases/3.3/.lastUpdated=1738854655005
+https\://kit-sdq.github.io/updatesite/release/commons/2.2.0/.error=
+https\://kit-sdq.github.io/updatesite/release/commons/2.2.0/.lastUpdated=1738854655007
+https\://kit-sdq.github.io/updatesite/release/xannotations/1.6.0/.error=
+https\://kit-sdq.github.io/updatesite/release/xannotations/1.6.0/.lastUpdated=1738854655009
+https\://oss.sonatype.org/content/repositories/snapshots/.error=
+https\://oss.sonatype.org/content/repositories/snapshots/.lastUpdated=1738854659608
+https\://repo.eclipse.org/content/repositories/eclipse-snapshots/.error=
+https\://repo.eclipse.org/content/repositories/eclipse-snapshots/.lastUpdated=1738854655120
+https\://repo1.maven.org/maven2/.error=
+https\://repo1.maven.org/maven2/.lastUpdated=1738854659503
