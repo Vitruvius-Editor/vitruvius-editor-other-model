@@ -63,9 +63,12 @@ class TestVitruvAdapter {
         //umll
         val umlNodes = listOf(
             UmlNode("", "Class1", "<<class>>",
-                listOf(UmlAttribute(UmlVisibility.PUBLIC, "attribute1", "String")), listOf(), listOf()),
+                listOf(UmlAttribute("", UmlVisibility.PUBLIC, "attribute1", UmlType("", "Int"))), listOf(), listOf()),
             UmlNode("", "Class2", "<<class>>",
-                listOf(UmlAttribute(UmlVisibility.PUBLIC, "attribute2", "int")), listOf(), listOf())
+                listOf(UmlAttribute("", UmlVisibility.PUBLIC, "attribute2", UmlType("", "String"))), listOf(), listOf()),
+            UmlNode("", "Interface3", "<<interface>>",
+                listOf(), listOf(UmlMethod("", UmlVisibility.PUBLIC, "foo", listOf(UmlParameter("", "foo1", UmlType("", "String"))), UmlType("", "String"))), listOf()),
+
         )
         val umlConnections = listOf<UmlConnection>()
         val testUmlDiagram = UmlDiagram(umlNodes, umlConnections)
@@ -77,12 +80,18 @@ class TestVitruvAdapter {
 
         val secondUmlNodes = listOf(
             UmlNode("/0/Class1", "Class1", "<<class>>",
-                listOf(UmlAttribute(UmlVisibility.PUBLIC, "attribute1", "String")), listOf(), listOf()),
+                listOf(UmlAttribute("/0/Class1/attribute1", UmlVisibility.PUBLIC, "attribute1",
+                    UmlType("", "String"))), listOf(), listOf()),
             UmlNode("/0/Class2", "Class2", "<<class>>",
-                listOf(UmlAttribute(UmlVisibility.PUBLIC, "attribute2", "int")), listOf(), listOf())
+                listOf(UmlAttribute("/0/Class2/attribute2", UmlVisibility.PUBLIC, "attribute2",
+                    UmlType("/0/Class1", "Class1"))), listOf(), listOf()),
+            UmlNode("/0/Interface3", "Interface3", "<<interface>>",
+                listOf(), listOf(UmlMethod("/0/Interface3/foo", UmlVisibility.PUBLIC, "foo", listOf(UmlParameter("", "foo1", UmlType("", "String"))), UmlType("", "String"))), listOf())
+
         )
         val secondUmlConnections = listOf(
-            UmlConnection("", "/0/Class1", "/0/Class2", UmlConnectionType.EXTENDS, "", "", ""))
+            UmlConnection("", "/0/Class1", "/0/Class2", UmlConnectionType.EXTENDS, "", "", ""),
+            UmlConnection("", "/0/Class1", "/0/Interface3", UmlConnectionType.IMPLEMENTS, "", "", ""))
         val secondTestUmlDiagram = UmlDiagram(secondUmlNodes, secondUmlConnections)
         val secondWindow = Window("examplePackage2", secondTestUmlDiagram)
 

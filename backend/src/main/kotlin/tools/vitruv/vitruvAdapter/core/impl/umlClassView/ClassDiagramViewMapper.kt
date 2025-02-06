@@ -6,6 +6,7 @@ import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.core.impl.DisplayViewName
+import tools.vitruv.vitruvAdapter.core.impl.EUtils
 import tools.vitruv.vitruvAdapter.core.impl.ViewRecommendation
 import tools.vitruv.vitruvAdapter.core.impl.abstractMapper.UmlViewMapper
 import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.UmlDisplayContentMapper
@@ -101,7 +102,10 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         next.ownedAttributes.forEach {
             val visibilitySymbol = getVisibilitySymbol(it.visibility.literal.lowercase())
             val umlVisibility = UmlVisibility.fromSymbol(visibilitySymbol) ?: UmlVisibility.PUBLIC
-            umlAttributes.add(UmlAttribute(umlVisibility, it.name, it.type.name))
+            umlAttributes.add(
+                UmlAttribute(EUtils.getUUIDForEObject(it), umlVisibility, it.name,
+                    UmlType(EUtils.getUUIDForEObject(it.type), it.type.name)
+                ))
         }
         return umlAttributes
     }
@@ -113,9 +117,9 @@ class ClassDiagramViewMapper : UmlViewMapper() {
             val umlVisibility = UmlVisibility.fromSymbol(visibilitySymbol) ?: UmlVisibility.PUBLIC
             val umlParameters = mutableListOf<UmlParameter>()
             it.ownedParameters.filter { it.direction == ParameterDirectionKind.IN_LITERAL }.forEach { parameter ->
-                umlParameters.add(UmlParameter(parameter.name, parameter.type.name))
+                umlParameters.add(UmlParameter(EUtils.getUUIDForEObject(parameter), parameter.type.name, UmlType(EUtils.getUUIDForEObject(parameter.type), parameter.type.name)))
             }
-            umlMethods.add(UmlMethod(umlVisibility, it.name, umlParameters, it.type.name))
+            umlMethods.add(UmlMethod(it.eResource().getURIFragment(it), umlVisibility, it.name, umlParameters, UmlType(EUtils.getUUIDForEObject(it.type), it.type.name)))
         }
         return umlMethods
     }
@@ -200,24 +204,33 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                     if (umlElement.name != node.name) {
                         umlElement.name = node.name
                     }
-                    for (attribute in node.attributes) {
-                        val umlAttribute = umlElement.ownedAttributes.find { it.name == attribute.name }
-                        if (umlAttribute == null) {
-                            createAttributeForUmlAttributeInClass(umlElement, attribute)
+                    for (umlAttribute in node.attributes) {
+                        val attribute = umlElement.eResource().getEObject(umlAttribute.uuid)
+                        if (attribute == null) {
+                            createAttributeForUmlAttributeInClass(umlElement, umlAttribute)
                         } else {
-                            editAttributeProperties(umlAttribute, attribute, umlElement)
+                            if (attribute is Property) {
+                                editAttributeProperties(attribute, umlAttribute, umlElement)
+                            } else {
+                                throw IllegalStateException("The attribute with the UUID ${umlAttribute.uuid} could not be linked to a attribute.")
+                            }
                         }
                     }
 
-                    for (methods in node.methods) {
-                        val umlOperation = umlElement.operations.find { it.name == methods.name }
-                        if (umlOperation == null) {
-                            createMethodFromUmlMethodInClass(umlElement, methods)
+                    for (method in node.methods) {
+                        val operation = umlElement.eResource().getEObject(method.uuid)
+
+                        if (operation == null) {
+                            createMethodFromUmlMethodInClass(umlElement, method)
                         } else {
-                            editOperationProperties(umlOperation, methods, umlElement)
+                            if (operation is Operation) {
+                                editOperationProperties(operation, method, umlElement)
+                            } else {
+                                throw IllegalStateException("The operation with the UUID ${method.uuid} could not be linked to a operation.")
+                            }
                         }
                     }
-                    if (umlElement.superClasses.isEmpty()) {
+                    if (umlElement.superClasses.isNotEmpty()) {
                         val extendsConnection = connections.find { it.connectionType == UmlConnectionType.EXTENDS }
                         if (extendsConnection == null) {
                             umlElement.superClasses.clear()
@@ -286,7 +299,9 @@ class ClassDiagramViewMapper : UmlViewMapper() {
             }
         }
         for (checkedClass in checkedClasses) {
-            checkedClass.destroy()
+            if (checkedClass is Class || checkedClass is Interface) {
+                checkedClass.destroy()
+            }
         }
     }
 
@@ -296,20 +311,12 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         umlElement: Class
     ) {
         editVisibility(attribute, umlAttribute.visibility)
-        if (attribute.name != attribute.name) {
-            attribute.name = attribute.name
+        if (attribute.name != umlAttribute.name) {
+            attribute.name = umlAttribute.name
         }
-        if (attribute.type.name != umlAttribute.type) {
-            val type = umlElement.model.getOwnedType(umlAttribute.type)
-            if (type == null) {
-                val newType = UMLFactory.eINSTANCE.createPrimitiveType()
-                newType.name = umlAttribute.type
-                umlElement.`package`.packagedElements.add(newType)
-                attribute.type = newType
-            } else {
-                attribute.type = type
-            }
-
+        if (EUtils.getUUIDForEObject(attribute.type) != umlAttribute.type.uuid) {
+            val type = getTypeOrPrimitiveType(umlAttribute.type.name, umlElement.`package`)
+            attribute.type = type
         }
     }
 
@@ -331,19 +338,37 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         if (operation.name != umlMethod.name) {
             operation.name = umlMethod.name
         }
-        if (operation.type.name != umlMethod.returnType) {
-            operation.type = classifier.model.getOwnedType(umlMethod.returnType)
+        if (operation.type != getTypeOrPrimitiveType(umlMethod.returnType.name, classifier.`package`)) {
+            val type = getTypeOrPrimitiveType(umlMethod.returnType.name, classifier.`package`)
+            operation.type = type
+        }
+        for (parameter in umlMethod.parameters) {
+            val ownedParameter = operation.ownedParameters.find { it.name == parameter.name }
+            if (ownedParameter == null) {
+                operation.createOwnedParameter(parameter.name, getTypeOrPrimitiveType(parameter.type.name, classifier.`package`))
+            } else {
+                if (ownedParameter.type != getTypeOrPrimitiveType(parameter.type.name, classifier.`package`)) {
+                    ownedParameter.type = getTypeOrPrimitiveType(parameter.type.name, classifier.`package`)
+                }
+            }
         }
     }
 
     private fun createMethodFromUmlMethodInClass(
         umlClass: Class,
-        methods: UmlMethod
+        umlMethod: UmlMethod
     ) {
-        val newOperation = umlClass.createOwnedOperation(methods.name, null, null, null)
-        newOperation.name = methods.name
-        newOperation.type = umlClass.model.getOwnedType(methods.returnType)
-        umlClass.operations.add(newOperation)
+        val newOperation = umlClass.createOwnedOperation(umlMethod.name, null, null, null)
+        newOperation.name = umlMethod.name
+        val type = getType(umlMethod.returnType.name, umlClass.`package`)
+        newOperation.type = type
+        for (parameter in umlMethod.parameters) {
+            newOperation.createOwnedParameter(
+                parameter.name,
+                getTypeOrPrimitiveType(parameter.type.name, umlClass.`package`)
+            )
+        }
+
     }
 
 
@@ -353,26 +378,39 @@ class ClassDiagramViewMapper : UmlViewMapper() {
     ) {
         val newOperation = umlInterface.createOwnedOperation(methods.name, null, null, null)
         newOperation.name = methods.name
-        newOperation.type = umlInterface.model.getOwnedType(methods.returnType)
-        umlInterface.operations.add(newOperation)
+
+        val type = getTypeOrPrimitiveType(methods.returnType.name, umlInterface.`package`)
+        newOperation.type = type
     }
 
     private fun createAttributeForUmlAttributeInClass(umlClass: Class, umlAttribute: UmlAttribute) {
-        val newAttribute = umlClass.createOwnedPort(umlAttribute.name, null)
+        val newAttribute = umlClass.createOwnedAttribute(umlAttribute.name, null)
         newAttribute.name = umlAttribute.name
-        var type = umlClass.model?.getOwnedType(umlAttribute.type)
-        if (type == null) {
-            type = UMLFactory.eINSTANCE.createPrimitiveType()
-            type.name = umlAttribute.type
-            umlClass.`package`.packagedElements.add(type)
-        }
-        newAttribute.type = type
-
-        umlClass.ownedAttributes.add(newAttribute)
+        newAttribute.type = getTypeOrPrimitiveType(umlAttribute.type.name, umlClass.`package`)
     }
 
     private fun findAllConnectionsForSourceCodeUUID(sourceCodeUUID: String, connections: List<UmlConnection>): List<UmlConnection> {
         return connections.filter { it.sourceNodeUUID == sourceCodeUUID }
+    }
+
+    private fun getTypeOrPrimitiveType(typeName: String, umlPackage: Package): Type{
+        val type = getType(typeName, umlPackage)
+        if(type != null){
+            return type
+        }
+        return createPrimitiveTypeInPackage(umlPackage, typeName)
+    }
+
+    private fun createPrimitiveTypeInPackage(umlPackage: Package, typeName: String): Type{
+        val type = UMLFactory.eINSTANCE.createPrimitiveType()
+        type.name = typeName
+        umlPackage.packagedElements.add(type)
+        return type
+    }
+
+    private fun getType(typeName: String, umlPackage: Package): Type? {
+        val type = umlPackage.getOwnedType(typeName)
+        return type
     }
 
 

@@ -112,9 +112,9 @@ class ClassDiagramViewMapperTest {
         val contentSelector = ClassDiagramContentSelector()
         val umlNodes = listOf(
             UmlNode("", "Class1", "",
-            listOf(UmlAttribute(UmlVisibility.PUBLIC, "attribute1", "String")), listOf(), listOf()),
+            listOf(UmlAttribute("", UmlVisibility.PUBLIC, "attribute1", UmlType("", "String"))), listOf(), listOf()),
             UmlNode("", "Class2", "",
-                listOf(UmlAttribute(UmlVisibility.PUBLIC, "attribute2", "int")), listOf(), listOf())
+                listOf(UmlAttribute("", UmlVisibility.PUBLIC, "attribute2", UmlType("", "Int"))), listOf(), listOf())
         )
         val umlConnections = listOf<UmlConnection>()
         val testUmlDiagram = UmlDiagram(umlNodes, umlConnections)
