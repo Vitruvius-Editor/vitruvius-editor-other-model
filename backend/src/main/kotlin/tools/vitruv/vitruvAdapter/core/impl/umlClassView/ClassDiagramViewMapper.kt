@@ -200,7 +200,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                 checkedClasses.remove(umlElement)
                 val connections = findAllConnectionsForSourceCodeUUID(node.uuid, window.content.connections)
                 if (umlElement is Class) {
-                    if (umlElement.name != node.name) {
+                    if (umlElement.name == null || umlElement.name != node.name) {
                         umlElement.name = node.name
                     }
                     for (umlAttribute in node.attributes) {
@@ -310,7 +310,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         umlElement: Class
     ) {
         editVisibility(attribute, umlAttribute.visibility)
-        if (attribute.name != umlAttribute.name) {
+        if (attribute.name == null || attribute.name != umlAttribute.name) {
             attribute.name = umlAttribute.name
         }
         if (EUtils.getUUIDForEObject(attribute.type) != umlAttribute.type.uuid) {
@@ -323,7 +323,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         namedElement: NamedElement,
         visibility: UmlVisibility
     ) {
-        if (namedElement.visibility.literal.lowercase() != visibility.symbol) {
+        if (namedElement.visibility == null || namedElement.visibility.literal.lowercase() != visibility.symbol) {
             namedElement.visibility = VisibilityKind.get(visibility.symbol)
         }
     }
@@ -334,10 +334,10 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         classifier: Classifier
     ) {
         editVisibility(operation, umlMethod.visibility)
-        if (operation.name != umlMethod.name) {
+        if (operation.name == null || operation.name != umlMethod.name) {
             operation.name = umlMethod.name
         }
-        if (operation.type != getTypeOrPrimitiveType(umlMethod.returnType.name, classifier.`package`)) {
+        if (operation.type == null || operation.type != getTypeOrPrimitiveType(umlMethod.returnType.name, classifier.`package`)) {
             val type = getTypeOrPrimitiveType(umlMethod.returnType.name, classifier.`package`)
             operation.type = type
         }
@@ -346,7 +346,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
             if (ownedParameter == null) {
                 operation.createOwnedParameter(parameter.name, getTypeOrPrimitiveType(parameter.type.name, classifier.`package`))
             } else {
-                if (ownedParameter.type != getTypeOrPrimitiveType(parameter.type.name, classifier.`package`)) {
+                if (ownedParameter.type == null || ownedParameter.type != getTypeOrPrimitiveType(parameter.type.name, classifier.`package`)) {
                     ownedParameter.type = getTypeOrPrimitiveType(parameter.type.name, classifier.`package`)
                 }
             }
