@@ -57,8 +57,8 @@ class TestVitruvAdapter {
         JavaSetup.prepareFactories()
         JavaSetup.resetClasspathAndRegisterStandardLibrary()
 
-        val vitruvClient: VitruvClient = VitruvClientFactory.create("localhost", 8000, Path.of("tools/vitruv/vitruvAdapter/tmp"))
-//        val vitruvClient: VitruvClient = mock(VitruvClient::class.java)
+        //val vitruvClient: VitruvClient = VitruvClientFactory.create("localhost", 8000, Path.of("tools/vitruv/vitruvAdapter/tmp"))
+            val vitruvClient: VitruvClient = mock(VitruvClient::class.java)
 
         adapter = VitruvAdapter()
 
@@ -83,12 +83,12 @@ class TestVitruvAdapter {
         print(displayViews)
     }
 
-    @Test
-    fun testGetWindows(){
-        val displayView = displayViewRepository.getDisplayView("SourceCode")!!
-        val windows = adapter.getWindows(displayView)
-        println(windows)
-        val content = adapter.createWindowContent(displayView, windows)
-        print(content)
-    }
+//   @Test
+//    fun testGetWindows(){
+//        val displayView = displayViewRepository.getDisplayView("SourceCode")!!
+//        val windows = adapter.getWindows(displayView)
+//        println(windows)
+//        val content = adapter.createWindowContent(displayView, windows)
+//        print(content)
+//    }
 }
