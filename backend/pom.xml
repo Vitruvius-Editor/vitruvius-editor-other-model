@@ -77,6 +77,15 @@
       <id>local-maven-repo</id>
       <url>file:///${project.basedir}/Dependencies</url>
     </repository>
+    <repository>
+      <id>eclipse-snapshots</id>
+      <url>https://repo.eclipse.org/content/repositories/eclipse-snapshots/</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+
+
   </repositories>
   <dependencies>
     <dependency>
