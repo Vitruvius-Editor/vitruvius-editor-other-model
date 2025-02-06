@@ -27,7 +27,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         val resource = eObject.eResource()
         while (iterator.hasNext()) {
             val next = iterator.next()
-            val nextURI = resource?.getURIFragment(next) ?: ""
+            val nextURI = EUtils.getUUIDForEObject(next)
             if (next is Class) {
                 val viewRecommendations = mutableListOf<ViewRecommendation>()
                 viewRecommendations.add(ViewRecommendation(DisplayViewName.SOURCE_CODE.viewName, next.name))
@@ -38,8 +38,8 @@ class ClassDiagramViewMapper : UmlViewMapper() {
 
                 if (next.interfaceRealizations.isNotEmpty()) {
                     next.interfaceRealizations.forEach { interfaceRealization ->
-                        val sourceURI = resource?.getURIFragment(next) ?: ""
-                        val targetURI = resource?.getURIFragment(interfaceRealization) ?: ""
+                        val sourceURI = EUtils.getUUIDForEObject(next)
+                        val targetURI = EUtils.getUUIDForEObject(interfaceRealization.contract)
                         val umlConnection = UmlConnection(
                             "$sourceURI$$targetURI",
                             sourceURI,
@@ -54,8 +54,8 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                 }
                 if (next.superClasses.isNotEmpty()) {
                     val superClass = next.superClasses.first()
-                    val sourceURI = resource?.getURIFragment(superClass) ?: ""
-                    val targetURI = resource?.getURIFragment(next) ?: ""
+                    val sourceURI = EUtils.getUUIDForEObject(superClass)
+                    val targetURI = EUtils.getUUIDForEObject(next)
                     val umlConnection = UmlConnection(
                         "$sourceURI$$targetURI",
                         sourceURI,
@@ -77,8 +77,8 @@ class ClassDiagramViewMapper : UmlViewMapper() {
 
                 if (next.redefinedInterfaces.isNotEmpty()) {
                     next.redefinedInterfaces.forEach { redefinedInterface ->
-                        val sourceURI = resource?.getURIFragment(redefinedInterface) ?: ""
-                        val targetURI = resource?.getURIFragment(next) ?: ""
+                        val sourceURI = EUtils.getUUIDForEObject(redefinedInterface)
+                        val targetURI = EUtils.getUUIDForEObject(next)
                         val umlConnection = UmlConnection(
                             "$sourceURI$$targetURI",
                             sourceURI,
@@ -119,7 +119,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
             it.ownedParameters.filter { it.direction == ParameterDirectionKind.IN_LITERAL }.forEach { parameter ->
                 umlParameters.add(UmlParameter(EUtils.getUUIDForEObject(parameter), parameter.type.name, UmlType(EUtils.getUUIDForEObject(parameter.type), parameter.type.name)))
             }
-            umlMethods.add(UmlMethod(it.eResource().getURIFragment(it), umlVisibility, it.name, umlParameters, UmlType(EUtils.getUUIDForEObject(it.type), it.type.name)))
+            umlMethods.add(UmlMethod(EUtils.getUUIDForEObject(it), umlVisibility, it.name, umlParameters, UmlType(EUtils.getUUIDForEObject(it.type), it.type.name)))
         }
         return umlMethods
     }
@@ -239,7 +239,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                     for (interfaceRealization in umlElement.interfaceRealizations) {
                         val implementsConnection = connections.find {
                             it.connectionType == UmlConnectionType.IMPLEMENTS
-                                    && it.targetNodeUUID == interfaceRealization.eResource().getURIFragment(interfaceRealization.contract) }
+                                    && it.targetNodeUUID == EUtils.getUUIDForEObject(interfaceRealization.contract) }
                         if (implementsConnection == null) {
                             interfaceRealization.destroy()
                         }
