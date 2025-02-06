@@ -7,6 +7,9 @@ class EUtils private constructor() {
     companion object {
 
         fun getUUIDForEObject(eObject: EObject): String {
+            if (eObject.eResource() == null) {
+                return ""
+            }
             return eObject.eResource().getURIFragment(eObject)
         }
 
