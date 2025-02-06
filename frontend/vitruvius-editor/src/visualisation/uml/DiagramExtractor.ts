@@ -6,6 +6,11 @@ import { VisualisationWidget } from "../VisualisationWidget";
 @injectable()
 export class DiagramExtractor implements Extractor {
   extractContent(widget: VisualisationWidget<any>): Promise<Content> {
-    throw new Error("Method not implemented.");
+    return new Promise((resolve, _refuse) => resolve({visualizerName: 'UmlVisualizer', windows: [
+        {
+          name: widget.getLabel(),
+          content: widget.getContent()
+        }
+      ]}))
   }
 }

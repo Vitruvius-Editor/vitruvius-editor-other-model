@@ -1,13 +1,12 @@
 import {UMLDiagram} from "./DiagramContent";
 import {UMLNode, UMLRelation} from "./DiagramComponents";
 import React from "react";
+import {Diagram} from "./Diagram";
 
 /**
- * A class to parse a UML Diagram from a string.
- * The string should be in JSON format and contain the nodes and links of the diagram.
- * Currently, the parsing is commented out and the nodes and links are hardcoded for testing/demonstration purposes.
- */
-export class UMLDiagramParser {
+* A class to build the JSX Elements of a Diagram from the Diagram type.
+*/
+export class UMLDiagramBuilder {
 
     // The example nodes and links data
     nodesData :[string, string, string, string[], string[]][] = [
@@ -19,46 +18,41 @@ export class UMLDiagramParser {
     constructor() {
     }
 
-    parse(content: string): UMLDiagram {
+    parse(diagram: Diagram, type: "Class" | "Package"): UMLDiagram {
         const nodes: UMLNode[] = [];
         const links: UMLRelation[] = [];
 
-        // Uncomment the following lines to parse the content
-        // const data = JSON.parse(content);
-        // this.nodesData = data.nodes;
-        // this.idPairs = data.links;
-
-        this.nodesData.forEach(data => {
-            if (data[0] === 'Class') {
+        diagram.nodes.forEach(data => {
+            if (type === 'Class') {
                 const text = (
                 <div>
-                    {data[2]} <br />
+                    {data.name} <br />
                     <hr /*width="100%" size="2" color="black" noshade*/></hr>
-                {data[3].map((attr, index) => (
+                {data.attributes.map((attr, index) => (
                     <React.Fragment key={index}>
-                        {attr} <br />
+                        {attr.visibility} {attr.name}: {attr.type.name} <br />
                         </React.Fragment>
                 ))}
                 <hr /*width="100%" size="2" color="black" noshade*/></hr>
-                {data[4].map((method, index) => (
+                {data.methods.map((method, index) => (
                     <React.Fragment key={index}>
-                        {method} <br />
+                        {method.visibility} {method.name}({method.parameters.map(param => `${param.name}: ${param.type.name}`).reduce((prev, curr) => `${prev}, ${curr}`, "").slice(2)}): {method.returnType.name} <br />
                         </React.Fragment>
                 ))}
                 </div>
             )//@ts-ignore
-                nodes.push(new UMLNode(data[1], text));
-            } else if (data[0] === 'Package') {
-                nodes.push(new UMLNode(data[1], data[2]));
+                nodes.push(new UMLNode(data.uuid, text));
+            } else if (type === 'Package') {
+                nodes.push(new UMLNode(data.uuid, data.name));
             }
 
         });
 
-        this.linkData.forEach(link => {
-            const fromNode = nodes.find(node => node.getClassID() === link[2]);
-            const toNode = nodes.find(node => node.getClassID() === link[3]);
+        diagram.connections.forEach(link => {
+            const fromNode = nodes.find(node => node.getClassID() === link.sourceNodeUUID);
+            const toNode = nodes.find(node => node.getClassID() === link.targetNodeUUID);
             if (fromNode !== undefined && toNode !== undefined) {
-                links.push(new UMLRelation(link[0], link[1], fromNode, toNode));
+                links.push(new UMLRelation("advanced", link.uuid, fromNode, toNode));
             }
         });
 

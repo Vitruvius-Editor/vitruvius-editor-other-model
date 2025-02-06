@@ -100,26 +100,25 @@ class ClassDiagramViewMapper : UmlViewMapper() {
     private fun getUmlAttributes(next: Class): List<UmlAttribute> {
         val umlAttributes = mutableListOf<UmlAttribute>()
         next.ownedAttributes.forEach {
-            val visibilitySymbol = getVisibilitySymbol(it.visibility.literal.lowercase())
+            val visibilitySymbol = getVisibilitySymbol(it.visibility?.literal?.lowercase() ?: UmlVisibility.PUBLIC.symbol)
             val umlVisibility = UmlVisibility.fromSymbol(visibilitySymbol) ?: UmlVisibility.PUBLIC
             umlAttributes.add(
-                UmlAttribute(EUtils.getUUIDForEObject(it), umlVisibility, it.name,
-                    UmlType(EUtils.getUUIDForEObject(it.type), it.type.name)
-                ))
+                UmlAttribute(EUtils.getUUIDForEObject(it), umlVisibility, it.name?:"not_defined",
+                    UmlType(EUtils.getUUIDForEObject(it.type), it.type?.name?: "Object")))
         }
         return umlAttributes
     }
 
     private fun getUmlMethods(next: Classifier): List<UmlMethod> {
         val umlMethods = mutableListOf<UmlMethod>()
-        next.operations.forEach {
-            val visibilitySymbol = getVisibilitySymbol(it.visibility.literal.lowercase())
+        next.operations.forEach { operation ->
+            val visibilitySymbol = getVisibilitySymbol(operation.visibility?.literal?.lowercase() ?: UmlVisibility.PUBLIC.symbol)
             val umlVisibility = UmlVisibility.fromSymbol(visibilitySymbol) ?: UmlVisibility.PUBLIC
             val umlParameters = mutableListOf<UmlParameter>()
-            it.ownedParameters.filter { it.direction == ParameterDirectionKind.IN_LITERAL }.forEach { parameter ->
-                umlParameters.add(UmlParameter(EUtils.getUUIDForEObject(parameter), parameter.type.name, UmlType(EUtils.getUUIDForEObject(parameter.type), parameter.type.name)))
+            operation.ownedParameters.filter { it.direction == ParameterDirectionKind.IN_LITERAL }.forEach { parameter ->
+            umlParameters.add(UmlParameter(EUtils.getUUIDForEObject(parameter), parameter.type?.name?:"not_defined", UmlType(EUtils.getUUIDForEObject(parameter.type), parameter.type?.name?:"Object")))
             }
-            umlMethods.add(UmlMethod(EUtils.getUUIDForEObject(it), umlVisibility, it.name, umlParameters, UmlType(EUtils.getUUIDForEObject(it.type), it.type.name)))
+            umlMethods.add(UmlMethod(EUtils.getUUIDForEObject(operation), umlVisibility, operation.name?:"not_defined", umlParameters, UmlType(EUtils.getUUIDForEObject(operation.type), operation.type?.name?:"Object")))
         }
         return umlMethods
     }
@@ -201,7 +200,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                 checkedClasses.remove(umlElement)
                 val connections = findAllConnectionsForSourceCodeUUID(node.uuid, window.content.connections)
                 if (umlElement is Class) {
-                    if (umlElement.name != node.name) {
+                    if (umlElement.name == null || umlElement.name != node.name) {
                         umlElement.name = node.name
                     }
                     for (umlAttribute in node.attributes) {
@@ -311,7 +310,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         umlElement: Class
     ) {
         editVisibility(attribute, umlAttribute.visibility)
-        if (attribute.name != umlAttribute.name) {
+        if (attribute.name == null || attribute.name != umlAttribute.name) {
             attribute.name = umlAttribute.name
         }
         if (EUtils.getUUIDForEObject(attribute.type) != umlAttribute.type.uuid) {
@@ -324,7 +323,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         namedElement: NamedElement,
         visibility: UmlVisibility
     ) {
-        if (namedElement.visibility.literal.lowercase() != visibility.symbol) {
+        if (namedElement.visibility == null || namedElement.visibility.literal.lowercase() != visibility.symbol) {
             namedElement.visibility = VisibilityKind.get(visibility.symbol)
         }
     }
@@ -335,10 +334,10 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         classifier: Classifier
     ) {
         editVisibility(operation, umlMethod.visibility)
-        if (operation.name != umlMethod.name) {
+        if (operation.name == null || operation.name != umlMethod.name) {
             operation.name = umlMethod.name
         }
-        if (operation.type != getTypeOrPrimitiveType(umlMethod.returnType.name, classifier.`package`)) {
+        if (operation.type == null || operation.type != getTypeOrPrimitiveType(umlMethod.returnType.name, classifier.`package`)) {
             val type = getTypeOrPrimitiveType(umlMethod.returnType.name, classifier.`package`)
             operation.type = type
         }
@@ -347,7 +346,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
             if (ownedParameter == null) {
                 operation.createOwnedParameter(parameter.name, getTypeOrPrimitiveType(parameter.type.name, classifier.`package`))
             } else {
-                if (ownedParameter.type != getTypeOrPrimitiveType(parameter.type.name, classifier.`package`)) {
+                if (ownedParameter.type == null || ownedParameter.type != getTypeOrPrimitiveType(parameter.type.name, classifier.`package`)) {
                     ownedParameter.type = getTypeOrPrimitiveType(parameter.type.name, classifier.`package`)
                 }
             }

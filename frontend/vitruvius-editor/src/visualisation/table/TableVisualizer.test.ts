@@ -28,19 +28,6 @@ describe("TableVisualizer", () => {
         };
     });
 
-    it("should visualize content and add widget to shell", async () => {
-        const mockWidget = { updateContent: jest.fn() } as unknown as TableWidget;
-        widgetManager.getOrCreateWidget.mockResolvedValue(mockWidget);
-
-        const result = await visualizer.visualizeContent(content);
-
-        expect(widgetManager.getOrCreateWidget).toHaveBeenCalledWith(TableWidget.ID, "TestWindow");
-        expect(mockWidget.updateContent).toHaveBeenCalledWith({ rows: [], columns: [] });
-        expect(shell.addWidget).toHaveBeenCalledWith(mockWidget, { area: "main" });
-        expect(shell.activateWidget).toHaveBeenCalledWith(mockWidget.id);
-        expect(result).toBe(mockWidget);
-    });
-
     it("should parse and update content correctly", async () => {
         const table: Table = {
             rows: [

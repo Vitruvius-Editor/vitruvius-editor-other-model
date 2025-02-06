@@ -8,13 +8,14 @@ import { MessageService } from "@theia/core";
 import { VisualisationWidget } from "../VisualisationWidget";
 import createEngine, {DiagramModel, CanvasWidget} from '@projectstorm/react-diagrams';
 import {ArrowLinkFactory} from "./DiagramComponents";
-import {UMLDiagramParser} from "./UMLDiagramParser";
+import {UMLDiagramBuilder} from "./UMLDiagramParser";
+import {Diagram} from "./Diagram";
 
 /**
  * A Widget to visualize a UML Package Vitruvius view.
  */
 @injectable()
-export class DiagramWidget extends VisualisationWidget<string> {
+export class DiagramWidget extends VisualisationWidget<Diagram> {
   static readonly ID = "packagediagramwidget:packagediagramwidget";
   static readonly LABEL = "DiagramWidget";
 
@@ -26,7 +27,7 @@ export class DiagramWidget extends VisualisationWidget<string> {
    */
   @postConstruct()
   protected init(): void {
-    this.doInit(DiagramWidget.ID, DiagramWidget.LABEL, "/*Initial Content*/");
+    this.doInit(DiagramWidget.ID, DiagramWidget.LABEL, { nodes: [], connections: [] });
   }
 
   /**
@@ -37,23 +38,16 @@ export class DiagramWidget extends VisualisationWidget<string> {
     const engine = createEngine();
     engine.getLinkFactories().registerFactory(new ArrowLinkFactory());
 
-    const umlDiagramParser = new UMLDiagramParser();
-    const umlDiagram = umlDiagramParser.parse(this.getContent());
+    const umlDiagramParser = new UMLDiagramBuilder();
+    const umlDiagram = umlDiagramParser.parse(this.content, "Class");
     const model = new DiagramModel();
     umlDiagram.getNodes().forEach(component => model.addNode(component));
     umlDiagram.getLinks().forEach(link => model.addLink(link));
     engine.setModel(model);
 
-    return <CanvasWidget className="diagram-container" engine={engine} />;
-  }
-
-
-  /**
-   * Handles the change event of the diagram area and updates the content.
-   * @param event
-   */
-  handleChange(event: React.ChangeEvent<HTMLTextAreaElement>): void {
-    this.content = event.target.value;
+    return <div className="diagram-container">
+        <CanvasWidget engine={engine} />
+        </div>;
   }
 
   getVisualizerName(): string {
