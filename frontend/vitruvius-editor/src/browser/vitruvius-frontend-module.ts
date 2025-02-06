@@ -60,7 +60,7 @@ export default new ContainerModule((bind) => {
                 ctx.container.get(TableVisualizer),
                 ctx.container.get(TableExtractor));
             displayViewResolver.registerDisplayView(
-                "DiagramVisualizer",
+                "UmlVisualizer",
                 ctx.container.get(DiagramVisualizer),
                 ctx.container.get(DiagramExtractor));
             return displayViewResolver;
