@@ -261,7 +261,6 @@
             <artifactId>jamopp.resolution</artifactId>
             <version>6.0.0-SNAPSHOT</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/tools.vitruv/tools.vitruv.dsls.reactions.runtime -->
         <dependency>
             <groupId>tools.vitruv</groupId>
             <artifactId>dsls.reactions.runtime</artifactId>
