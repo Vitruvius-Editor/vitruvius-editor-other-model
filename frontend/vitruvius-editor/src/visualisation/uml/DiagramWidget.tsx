@@ -45,7 +45,9 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
     umlDiagram.getLinks().forEach(link => model.addLink(link));
     engine.setModel(model);
 
-    return <CanvasWidget className="diagram-container" engine={engine} />;
+    return <div className="diagram-container">
+        <CanvasWidget engine={engine} />
+        </div>;
   }
 
   getVisualizerName(): string {
