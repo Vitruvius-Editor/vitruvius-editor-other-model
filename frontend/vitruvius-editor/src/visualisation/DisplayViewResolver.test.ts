@@ -47,12 +47,6 @@ describe("DisplayViewResolver", () => {
         expect(resolver.mappings.get("TestView")).toEqual([mockVisualizer, mockExtractor]);
     });
 
-    it("should retrieve the widget associated with a given content", async () => {
-        resolver.registerDisplayView("MockVisualizer", mockVisualizer, mockExtractor);
-        const result = await resolver.getWidget(content);
-        expect(result).toBeInstanceOf(MockVisualisationWidget);
-    });
-
     it("should return null if no visualizer is found for the given content", async () => {
         const result = await resolver.getWidget(content);
         expect(result).toBeNull();

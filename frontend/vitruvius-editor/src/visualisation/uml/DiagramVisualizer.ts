@@ -18,8 +18,6 @@ export class DiagramVisualizer implements Visualizer {
       .then(widget => {
         let diagram = JSON.parse(contentWindow.content);
         (widget as DiagramWidget).updateContent(diagram);
-		this.shell.addWidget(widget, { area: "main" });
-		this.shell.activateWidget(widget.id);
         (widget as DiagramWidget).update();
         return widget as VisualisationWidget<string>;
       })
