@@ -48,9 +48,8 @@ export default new ContainerModule((bind) => {
     bind(DiagramVisualizer).toSelf().inSingletonScope();
     bind(DiagramExtractor).toSelf().inSingletonScope();
     bind(VisualisationWidgetRegistry).toSelf().inSingletonScope();
-    bind(DisplayViewResolver)
-        .toDynamicValue((ctx) => {
-            let displayViewResolver = new DisplayViewResolver();
+    bind(DisplayViewResolver).toSelf().inSingletonScope()
+        .onActivation((ctx, displayViewResolver) => {
             displayViewResolver.registerDisplayView(
                 "TextVisualizer",
                 ctx.container.get(SourceCodeVisualizer),
@@ -64,8 +63,7 @@ export default new ContainerModule((bind) => {
                 ctx.container.get(DiagramVisualizer),
                 ctx.container.get(DiagramExtractor));
             return displayViewResolver;
-        })
-        .inSingletonScope();
+        });
 
     // Factory for creating a TextWidget
     bind(WidgetFactory).toDynamicValue((ctx) => ({
