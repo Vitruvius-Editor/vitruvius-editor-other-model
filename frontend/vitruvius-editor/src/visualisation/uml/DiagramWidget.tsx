@@ -6,7 +6,14 @@ import {
 import * as React from "react";
 import { MessageService } from "@theia/core";
 import { VisualisationWidget } from "../VisualisationWidget";
-import createEngine, { DiagramModel, CanvasWidget } from '@projectstorm/react-diagrams';
+import createEngine, {
+  DiagramModel,
+  CanvasWidget,
+  DagreEngine,
+  DiagramEngine,
+  PathFindingLinkFactory,
+} from '@projectstorm/react-diagrams';
+import { useLayoutEffect } from 'react';
 import { ArrowLinkFactory, DiagramContent, UMLNode, UMLRelation } from "./DiagramComponents";
 import { Diagram } from "./Diagram";
 
@@ -36,6 +43,19 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
   render(): React.ReactElement {
     const engine = createEngine();
     engine.getLinkFactories().registerFactory(new ArrowLinkFactory());
+
+    useLayoutEffect(() => {
+      redistribute();
+      refreshLinks();
+    }, []);
+
+    const redistribute = () => {
+      autoDistribute(engine);
+    };
+
+    const refreshLinks = () => {
+      autoRefreshLinks(engine);
+    };
 
     const umlDiagram = this.createDiagramContent(this.content, "Class");
     const model = new DiagramModel();
@@ -104,4 +124,41 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
   getVisualizerName(): string {
     return "DiagramVisualizer";
   }
+}
+
+function genDagreEngine() {
+  return new DagreEngine({
+    graph: {
+      rankdir: 'RL',
+      ranker: 'longest-path',
+      marginx: 25,
+      marginy: 25
+    },
+    includeLinks: true,
+    nodeMargin: 25
+  });
+}
+
+function autoDistribute(engine: DiagramEngine) {
+  const model = engine.getModel();
+
+  const dagreEngine = genDagreEngine();
+  dagreEngine.redistribute(model);
+
+  reroute(engine);
+  engine.repaintCanvas();
+}
+
+function autoRefreshLinks(engine: DiagramEngine) {
+  const model = engine.getModel();
+
+  const dagreEngine = genDagreEngine();
+  dagreEngine.refreshLinks(model);
+
+  reroute(engine);
+  engine.repaintCanvas();
+}
+
+function reroute(engine: DiagramEngine) {
+  engine.getLinkFactories().getFactory<PathFindingLinkFactory>(PathFindingLinkFactory.NAME).calculateRoutingMatrix();
 }
