@@ -28,7 +28,7 @@ class DefaultDisplayViewRepositoryFactory : DisplayViewRepositoryFactory() {
         displayViewRepository.registerDisplayView(GenericDisplayView("ClassTable", "UML", ClassTableViewMapper() as ViewMapper<Any?>, AllSelector(),
             ClassTableContentSelector() as ContentSelector<Any?>
         ))
-        displayViewRepository.registerDisplayView(GenericDisplayView("ClassDiagram", "UML", ClassDiagramViewMapper() as ViewMapper<Any?>, AllSelector(), ClassTableContentSelector()))
+        displayViewRepository.registerDisplayView(GenericDisplayView("ClassDiagram", "UML", ClassDiagramViewMapper() as ViewMapper<Any?>, AllSelector(), ClassTableContentSelector() as ContentSelector<Any?>))
         return displayViewRepository;
     }
 }
