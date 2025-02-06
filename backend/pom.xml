@@ -165,6 +165,49 @@
     </dependency>
 
     <dependency>
+      <groupId>org.eclipse</groupId>
+      <artifactId>common</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse</groupId>
+      <artifactId>common</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse</groupId>
+      <artifactId>emf.mapping</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse</groupId>
+      <artifactId>uml2.uml.resource</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse</groupId>
+      <artifactId>uml2.uml.standard</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tools.vitruv</groupId>
+      <artifactId>tools.vitruv.applications.util.temporary</artifactId>
+      <version>3.0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tools.vitruv</groupId>
+      <artifactId>tools.vitruv.applications.umljava</artifactId>
+      <version>3.0.1-SNAPSHOT</version>
+    </dependency>
+
+
+
+    <dependency>
       <groupId>tools.vitruv</groupId>
       <artifactId>tools.vitruv.framework.remote</artifactId>
       <version>3.1.0</version>
@@ -234,66 +277,17 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>java-uml</groupId>
-      <artifactId>common</artifactId>
-      <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/Dependencies/java-uml/common-2.0.0-v20140602-0749.jar</systemPath>
-    </dependency>
-
-    <dependency>
-      <groupId>java-uml</groupId>
-      <artifactId>mapping.ecore</artifactId>
-      <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/Dependencies/java-uml/org.eclipse.emf.mapping.ecore2xml-2.13.0.jar</systemPath>
-    </dependency>
-
-    <dependency>
-      <groupId>java-uml</groupId>
-      <artifactId>uml.resource</artifactId>
-      <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/Dependencies/java-uml/org.eclipse.uml2.uml.resources-3.1.0.v201005031530.jar</systemPath>
-    </dependency>
-
-    <dependency>
-      <groupId>java-uml</groupId>
-      <artifactId>standard</artifactId>
-      <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/Dependencies/java-uml/standard-1.0.0-v20140602-0749.jar</systemPath>
-    </dependency>
-
-    <dependency>
-      <groupId>java-uml</groupId>
-      <artifactId>umljava</artifactId>
-      <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/Dependencies/java-uml/tools.vitruv.applications.umljava-3.0.1-SNAPSHOT.jar</systemPath>
-    </dependency>
-
-    <dependency>
-      <groupId>java-uml</groupId>
-      <artifactId>util.temp</artifactId>
-      <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/Dependencies/java-uml/tools.vitruv.applications.util.temporary-3.0.1-SNAPSHOT.jar</systemPath>
-    </dependency>
-    <dependency>
-      <groupId>java-uml</groupId>
-      <artifactId>testutil</artifactId>
-      <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/Dependencies/java-uml/tools.vitruv.change.testutils.integration-3.2.0-SNAPSHOT.jar</systemPath>
-    </dependency>
-
 
     <dependency>
       <groupId>org.eclipse.platform</groupId>
       <artifactId>org.eclipse.core.runtime</artifactId>
       <version>3.30.0</version> <!-- Check the latest stable version -->
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+      <version>2.38.0</version>
+      <scope>compile</scope>
     </dependency>
 
   </dependencies>

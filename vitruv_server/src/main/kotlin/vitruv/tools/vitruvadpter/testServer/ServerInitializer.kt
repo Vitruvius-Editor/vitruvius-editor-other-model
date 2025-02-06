@@ -15,6 +15,8 @@ import org.eclipse.uml2.uml.UMLFactory
 import org.eclipse.uml2.uml.UMLPackage
 import org.eclipse.uml2.uml.VisibilityKind
 import org.eclipse.uml2.uml.internal.impl.LiteralIntegerImpl
+import org.eclipse.uml2.uml.internal.impl.ModelImpl
+import org.eclipse.uml2.uml.internal.impl.PackageImpl
 import org.eclipse.uml2.uml.internal.impl.UMLPackageImpl
 import org.eclipse.uml2.uml.internal.resource.UML22UMLResourceFactoryImpl
 import org.eclipse.uml2.uml.internal.resource.UML22UMLResourceImpl
@@ -24,6 +26,7 @@ import tools.mdsd.jamopp.model.java.JavaPackage
 import tools.mdsd.jamopp.model.java.classifiers.ClassifiersFactory
 import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.mdsd.jamopp.model.java.containers.ContainersFactory
+import tools.mdsd.jamopp.model.java.containers.Package
 import tools.mdsd.jamopp.model.java.impl.JavaPackageImpl
 import tools.mdsd.jamopp.model.java.members.MembersFactory
 import tools.mdsd.jamopp.model.java.types.TypesFactory
@@ -49,6 +52,8 @@ import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import tools.mdsd.jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser
+import tools.vitruv.framework.remote.client.VitruvClientFactory
+import java.nio.file.Paths
 
 /**
  * Initializes the server
@@ -63,6 +68,7 @@ class ServerInitializer {
     lateinit var umlPath: Path
     lateinit var javaUri: URI
     lateinit var umlUri: URI
+    lateinit var server: VitruvServer
 
     /**
      * Initializes the server
@@ -81,33 +87,26 @@ class ServerInitializer {
         ProjectMarker.markAsProjectRootFolder(rootPath)
         viewTypes = createViewTypes()
         vsum = init(rootPath)
-        val vitruvServer = VitruvServer(VirtualModelInitializer { vsum }, serverPort, "localhost")
+
+        server = VitruvServer(VirtualModelInitializer { vsum }, serverPort, "localhost")
         //generatePackage()
         genrateJavaCode()
-        return vitruvServer
+
+        return server
     }
 
     private fun registerRegistry() {
-        EcorePlugin.ExtensionProcessor.process(null)
-
         Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", XMIResourceFactoryImpl())
         Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("uml", UMLResourceFactoryImpl())
-        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("uml2", UML22UMLResourceFactoryImpl())
-
-
-        EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE)
         EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackage.eINSTANCE)
-        EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackageImpl.eINSTANCE)
+        EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE)
         EPackage.Registry.INSTANCE.put(CorrespondencePackage.eNS_URI, CorrespondencePackageImpl.eINSTANCE)
-        EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackageImpl.eINSTANCE)
         EPackage.Registry.INSTANCE.put(AtomicPackage.eNS_URI, AtomicPackageImpl.eINSTANCE)
 
-        JamoppLibraryHelper.registerStdLib()
         JavaSetup.prepareFactories()
         JavaSetup.resetClasspathAndRegisterStandardLibrary()
 
-
-        print(Resource.Factory.Registry.INSTANCE.extensionToFactoryMap)
+        EcorePlugin.ExtensionProcessor.process(null)
     }
 
     private fun genrateJavaCode() {
@@ -151,7 +150,7 @@ class ServerInitializer {
 
 
             val javaPackage = ContainersFactory.eINSTANCE.createPackage()
-            javaPackage.name = "exampleCompilationUnit"
+            javaPackage.name = "testPackage"
 //            javaPackage.classifiers.add(root)
 //            javaPackage.classifiers.add(newClass)
             //javaPackage.classifiers.add(classs)
@@ -164,25 +163,6 @@ class ServerInitializer {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-    }
-
-
-
-
-
-
-    /**
-     * Returns the JAVA view
-     */
-    fun getJavaView(): View {
-        return getView("JAVA", javaUri)
-    }
-
-    /**
-     * Returns the UML view
-     */
-    fun getUMLView(): View {
-        return getView("UML", umlUri)
     }
 
     private fun generatePackage() {
@@ -254,6 +234,20 @@ class ServerInitializer {
 
     }
 
+
+    /**
+     * Returns the JAVA view
+     */
+    fun getJavaView(): View {
+        return getView("JAVA", javaUri)
+    }
+
+    /**
+     * Returns the UML view
+     */
+    fun getUMLView(): View {
+        return getView("UML", umlUri)
+    }
 
     private fun getView(viewTypeName: String, srcUri: URI): View {
         var selector = vsum.createSelector(viewTypes[viewTypeName])

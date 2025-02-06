@@ -34,22 +34,18 @@ import tools.vitruv.vitruvAdapter.exception.DisplayViewException
 class VitruvAdapter {
     init {
 
-        EcorePlugin.ExtensionProcessor.process(null)
-
-
         Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", XMIResourceFactoryImpl())
         Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("uml", UMLResourceFactoryImpl())
-
-        EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE)
-        EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackage.eINSTANCE)
+        EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackageImpl.eINSTANCE)
         EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackageImpl.eINSTANCE)
         EPackage.Registry.INSTANCE.put(CorrespondencePackage.eNS_URI, CorrespondencePackageImpl.eINSTANCE)
         EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackageImpl.eINSTANCE)
         EPackage.Registry.INSTANCE.put(AtomicPackage.eNS_URI, AtomicPackageImpl.eINSTANCE)
 
-        JamoppLibraryHelper.registerStdLib()
         JavaSetup.prepareFactories()
         JavaSetup.resetClasspathAndRegisterStandardLibrary()
+
+        EcorePlugin.ExtensionProcessor.process(null)
 
     }
     private var vitruvClient: VitruvClient? = null

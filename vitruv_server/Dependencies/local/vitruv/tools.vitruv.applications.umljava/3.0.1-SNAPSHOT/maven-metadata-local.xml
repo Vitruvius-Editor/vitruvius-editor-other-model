@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>tools.vitruv</groupId>
+  <artifactId>tools.vitruv.applications.umljava</artifactId>
+  <versioning>
+    <lastUpdated>20250206132746</lastUpdated>
+    <snapshot>
+      <localCopy>true</localCopy>
+    </snapshot>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>3.0.1-SNAPSHOT</value>
+        <updated>20250206132746</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>3.0.1-SNAPSHOT</value>
+        <updated>20250206132746</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+  <version>3.0.1-SNAPSHOT</version>
+</metadata>

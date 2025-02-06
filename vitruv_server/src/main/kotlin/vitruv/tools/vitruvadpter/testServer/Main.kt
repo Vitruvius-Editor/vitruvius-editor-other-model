@@ -27,18 +27,15 @@ import java.nio.file.Paths
  */
 
 fun main() {
-    val serverInitializer = ServerInitializer()
+
     val rootPath: Path = Paths.get("target", "root").toAbsolutePath()
-    print(rootPath)
-//    val rootPath: Path = Paths.get("vitruv_server/src/main/resources/")
+    val serverInitializer = ServerInitializer()
     val server = serverInitializer.initialize(rootPath)
     server.start()
     println("Vitruvius server started on: " + serverInitializer.serverPort)
 
 
-
     //testJavaView(serverInitializer)
-
 
 
     //clientTest(serverInitializer)
