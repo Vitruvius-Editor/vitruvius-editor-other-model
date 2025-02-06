@@ -6,7 +6,11 @@ class EUtils private constructor() {
 
     companion object {
 
-        fun getUUIDForEObject(eObject: EObject): String {
+        fun getUUIDForEObject(eObject: EObject?): String {
+            if (eObject == null) {
+                return ""
+            }
+
             if (eObject.eResource() == null) {
                 return ""
             }

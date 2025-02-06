@@ -100,26 +100,25 @@ class ClassDiagramViewMapper : UmlViewMapper() {
     private fun getUmlAttributes(next: Class): List<UmlAttribute> {
         val umlAttributes = mutableListOf<UmlAttribute>()
         next.ownedAttributes.forEach {
-            val visibilitySymbol = getVisibilitySymbol(it.visibility.literal.lowercase())
+            val visibilitySymbol = getVisibilitySymbol(it.visibility?.literal?.lowercase() ?: UmlVisibility.PUBLIC.symbol)
             val umlVisibility = UmlVisibility.fromSymbol(visibilitySymbol) ?: UmlVisibility.PUBLIC
             umlAttributes.add(
-                UmlAttribute(EUtils.getUUIDForEObject(it), umlVisibility, it.name,
-                    UmlType(EUtils.getUUIDForEObject(it.type), it.type.name)
-                ))
+                UmlAttribute(EUtils.getUUIDForEObject(it), umlVisibility, it.name?:"not_defined",
+                    UmlType(EUtils.getUUIDForEObject(it.type), it.type?.name?: "Object")))
         }
         return umlAttributes
     }
 
     private fun getUmlMethods(next: Classifier): List<UmlMethod> {
         val umlMethods = mutableListOf<UmlMethod>()
-        next.operations.forEach {
-            val visibilitySymbol = getVisibilitySymbol(it.visibility.literal.lowercase())
+        next.operations.forEach { operation ->
+            val visibilitySymbol = getVisibilitySymbol(operation.visibility?.literal?.lowercase() ?: UmlVisibility.PUBLIC.symbol)
             val umlVisibility = UmlVisibility.fromSymbol(visibilitySymbol) ?: UmlVisibility.PUBLIC
             val umlParameters = mutableListOf<UmlParameter>()
-            it.ownedParameters.filter { it.direction == ParameterDirectionKind.IN_LITERAL }.forEach { parameter ->
-            umlParameters.add(UmlParameter(EUtils.getUUIDForEObject(parameter), parameter.type.name, UmlType(EUtils.getUUIDForEObject(parameter.type), parameter.type.name)))
+            operation.ownedParameters.filter { it.direction == ParameterDirectionKind.IN_LITERAL }.forEach { parameter ->
+            umlParameters.add(UmlParameter(EUtils.getUUIDForEObject(parameter), parameter.type?.name?:"not_defined", UmlType(EUtils.getUUIDForEObject(parameter.type), parameter.type?.name?:"Object")))
             }
-            umlMethods.add(UmlMethod(EUtils.getUUIDForEObject(it), umlVisibility, it.name, umlParameters, UmlType(EUtils.getUUIDForEObject(it.type), it.type.name)))
+            umlMethods.add(UmlMethod(EUtils.getUUIDForEObject(operation), umlVisibility, operation.name?:"not_defined", umlParameters, UmlType(EUtils.getUUIDForEObject(operation.type), operation.type?.name?:"Object")))
         }
         return umlMethods
     }
