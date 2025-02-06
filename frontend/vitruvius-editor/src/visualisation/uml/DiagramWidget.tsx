@@ -13,7 +13,6 @@ import createEngine, {
   DiagramEngine,
   PathFindingLinkFactory,
 } from '@projectstorm/react-diagrams';
-import { useLayoutEffect } from 'react';
 import { ArrowLinkFactory, DiagramContent, UMLNode, UMLRelation } from "./DiagramComponents";
 import { Diagram } from "./Diagram";
 
@@ -24,6 +23,8 @@ import { Diagram } from "./Diagram";
 export class DiagramWidget extends VisualisationWidget<Diagram> {
   static readonly ID = "packagediagramwidget:packagediagramwidget";
   static readonly LABEL = "DiagramWidget";
+
+  protected engine: DiagramEngine;
 
   @inject(MessageService)
   protected readonly messageService!: MessageService;
@@ -36,38 +37,44 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
     this.doInit(DiagramWidget.ID, DiagramWidget.LABEL, { nodes: [], connections: [] });
   }
 
+  constructor(props: any) {
+    super(props);
+    this.engine = createEngine();
+  }
+
   /**
    * Renders the widget containing the content as a UML Package Diagram given from the Backend.
    * Uses the Parser to parse the content and create the diagram.
    */
   render(): React.ReactElement {
-    const engine = createEngine();
-    engine.getLinkFactories().registerFactory(new ArrowLinkFactory());
-
-    useLayoutEffect(() => {
-      redistribute();
-      refreshLinks();
-    }, []);
-
-    const redistribute = () => {
-      autoDistribute(engine);
-    };
-
-    const refreshLinks = () => {
-      autoRefreshLinks(engine);
-    };
+    this.engine.getLinkFactories().registerFactory(new ArrowLinkFactory());
 
     const umlDiagram = this.createDiagramContent(this.content, "Class");
     const model = new DiagramModel();
     umlDiagram.nodes.forEach(component => model.addNode(component));
     umlDiagram.links.forEach(link => model.addLink(link));
-    engine.setModel(model);
+    this.engine.setModel(model);
+
+    // this.dagre();
 
     return (
         <div className="editor-container">
-          <CanvasWidget className="diagram-container" engine={engine} />
+          <CanvasWidget className="diagram-container" engine={this.engine} />
         </div>
     );
+  }
+
+  dagre() {
+    this.redistribute();
+    this.refreshLinks();
+  }
+
+  redistribute() {
+    autoDistribute(this.engine);
+  }
+
+  refreshLinks() {
+    autoRefreshLinks(this.engine);
   }
 
   /**
