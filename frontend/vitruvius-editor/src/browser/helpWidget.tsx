@@ -23,7 +23,7 @@ export class HelpWidget extends ReactWidget {
 
   render(): React.ReactElement {
     return (
-      <div>
+      <div className="editor-container">
         <h1>Help</h1>
         { this.getHtmlContent() }
       </div>

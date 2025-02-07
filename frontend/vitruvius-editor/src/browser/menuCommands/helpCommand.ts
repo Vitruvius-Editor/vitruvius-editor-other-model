@@ -4,8 +4,7 @@ import {
   CommandRegistry,
 } from "@theia/core";
 import { inject, injectable } from "@theia/core/shared/inversify";
-import { HelpWidget } from "../helpWidget";
-import { WidgetManager} from "@theia/core/lib/browser";
+import {HelpWidgetContribution} from "../helpWidgetContribution";
 
 /**
  * Command to show the help dialog.
@@ -20,8 +19,8 @@ export const HelpCommand: Command = {
  */
 @injectable()
 export class VitruviusHelpCommandContribution implements CommandContribution {
-  @inject(WidgetManager)
-  protected readonly widgetManager!: WidgetManager;
+  @inject(HelpWidgetContribution)
+  protected readonly helpWidgetContribution!: HelpWidgetContribution;
 
   /**
    * Register the command to show the help dialog.
@@ -34,7 +33,6 @@ export class VitruviusHelpCommandContribution implements CommandContribution {
   }
 
   protected async openHelpWidget(): Promise<void> {
-    const widget = await this.widgetManager.getOrCreateWidget<HelpWidget>(HelpWidget.ID);
-    widget.show();
+      this.helpWidgetContribution.openView();
   }
 }
