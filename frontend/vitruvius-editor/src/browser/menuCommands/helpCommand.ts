@@ -33,6 +33,6 @@ export class VitruviusHelpCommandContribution implements CommandContribution {
   }
 
   protected async openHelpWidget(): Promise<void> {
-      this.helpWidgetContribution.openView();
+      await this.helpWidgetContribution.openView();
   }
 }
