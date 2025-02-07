@@ -7,32 +7,20 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.plugin.EcorePlugin
 import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.emf.ecore.resource.ResourceSet
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 import org.eclipse.uml2.uml.Type
 import org.eclipse.uml2.uml.UMLFactory
 import org.eclipse.uml2.uml.UMLPackage
 import org.eclipse.uml2.uml.VisibilityKind
 import org.eclipse.uml2.uml.internal.impl.LiteralIntegerImpl
-import org.eclipse.uml2.uml.internal.impl.ModelImpl
-import org.eclipse.uml2.uml.internal.impl.PackageImpl
-import org.eclipse.uml2.uml.internal.impl.UMLPackageImpl
-import org.eclipse.uml2.uml.internal.resource.UML22UMLResourceFactoryImpl
-import org.eclipse.uml2.uml.internal.resource.UML22UMLResourceImpl
 import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl
-import org.eclipse.uml2.uml.resource.UML22UMLResource
 import tools.mdsd.jamopp.model.java.JavaPackage
 import tools.mdsd.jamopp.model.java.classifiers.ClassifiersFactory
 import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.mdsd.jamopp.model.java.containers.ContainersFactory
-import tools.mdsd.jamopp.model.java.containers.Package
-import tools.mdsd.jamopp.model.java.impl.JavaPackageImpl
 import tools.mdsd.jamopp.model.java.members.MembersFactory
 import tools.mdsd.jamopp.model.java.types.TypesFactory
-import tools.vitruv.applications.umljava.JavaToUmlChangePropagationSpecification
-import tools.vitruv.applications.umljava.UmlToJavaChangePropagationSpecification
-import tools.vitruv.applications.util.temporary.java.JamoppLibraryHelper
+import tools.mdsd.jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser
 import tools.vitruv.applications.util.temporary.java.JavaSetup
 import tools.vitruv.change.atomic.AtomicPackage
 import tools.vitruv.change.atomic.impl.AtomicPackageImpl
@@ -51,9 +39,6 @@ import java.io.IOException
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
-import tools.mdsd.jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser
-import tools.vitruv.framework.remote.client.VitruvClientFactory
-import java.nio.file.Paths
 
 /**
  * Initializes the server
@@ -62,6 +47,7 @@ import java.nio.file.Paths
 class ServerInitializer {
 
     val serverPort: Int = 8000
+    val host: String = "localhost"
     lateinit var viewTypes: Map<String, ViewType<*>>
     lateinit var vsum: VirtualModel
     lateinit var javaPath: Path
@@ -78,38 +64,27 @@ class ServerInitializer {
         umlPath = rootPath.resolve("model/uml")
         javaUri = URI.createFileURI(javaPath.toString())
         umlUri = URI.createFileURI(umlPath.toString())
-        registerRegistry()
+        registerFactories()
+
         if (Files.exists(rootPath)) {
             deletePath(rootPath)
         } else {
             Files.createDirectories(rootPath)
         }
+
         ProjectMarker.markAsProjectRootFolder(rootPath)
+
         viewTypes = createViewTypes()
         vsum = init(rootPath)
 
-        server = VitruvServer(VirtualModelInitializer { vsum }, serverPort, "localhost")
-        //generatePackage()
-        genrateJavaCode()
-
+        server = VitruvServer(VirtualModelInitializer { vsum }, serverPort, host)
+        generatePackage()
+        generateJavaCode()
         return server
     }
 
-    private fun registerRegistry() {
-        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", XMIResourceFactoryImpl())
-        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("uml", UMLResourceFactoryImpl())
-        EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackage.eINSTANCE)
-        EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE)
-        EPackage.Registry.INSTANCE.put(CorrespondencePackage.eNS_URI, CorrespondencePackageImpl.eINSTANCE)
-        EPackage.Registry.INSTANCE.put(AtomicPackage.eNS_URI, AtomicPackageImpl.eINSTANCE)
 
-        JavaSetup.prepareFactories()
-        JavaSetup.resetClasspathAndRegisterStandardLibrary()
-
-        EcorePlugin.ExtensionProcessor.process(null)
-    }
-
-    private fun genrateJavaCode() {
+    private fun generateJavaCode() {
 
         val fileName = "TestClass.java"
         try {
@@ -237,17 +212,25 @@ class ServerInitializer {
     }
 
 
-    /**
-     * Returns the JAVA view
-     */
-    fun getJavaView(): View {
+    private fun registerFactories() {
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", XMIResourceFactoryImpl())
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("uml", UMLResourceFactoryImpl())
+        EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackage.eINSTANCE)
+        EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE)
+        EPackage.Registry.INSTANCE.put(CorrespondencePackage.eNS_URI, CorrespondencePackageImpl.eINSTANCE)
+        EPackage.Registry.INSTANCE.put(AtomicPackage.eNS_URI, AtomicPackageImpl.eINSTANCE)
+
+        JavaSetup.prepareFactories()
+        JavaSetup.resetClasspathAndRegisterStandardLibrary()
+
+        EcorePlugin.ExtensionProcessor.process(null)
+    }
+
+    private fun getJavaView(): View {
         return getView("JAVA", javaUri)
     }
 
-    /**
-     * Returns the UML view
-     */
-    fun getUMLView(): View {
+    private fun getUMLView(): View {
         return getView("UML", umlUri)
     }
 
@@ -267,11 +250,10 @@ class ServerInitializer {
     }
 
     private fun init(rootPath: Path): VirtualModel {
-        val uml2JavaPropagation = UmlToJavaChangePropagationSpecification()
-        val java2UmlPropagation = JavaToUmlChangePropagationSpecification()
         return VirtualModelBuilder()
-//            .withChangePropagationSpecification(uml2JavaPropagation)
-//            .withChangePropagationSpecification(java2UmlPropagation)
+            //change propagation specification commented out because it's not working on client side
+//            .withChangePropagationSpecification(UmlToJavaChangePropagationSpecification())
+//            .withChangePropagationSpecification(JavaToUmlChangePropagationSpecification())
             .withStorageFolder(rootPath)
             .withViewTypes(viewTypes.values)
             .withUserInteractorForResultProvider(TestInteractionResultProvider())
