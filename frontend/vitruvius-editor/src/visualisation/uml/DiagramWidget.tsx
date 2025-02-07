@@ -15,7 +15,7 @@ import createEngine, {
 } from '@projectstorm/react-diagrams';
 import { DefaultDiagramState } from '@projectstorm/react-diagrams';
 import { ArrowLinkFactory, DiagramContent, UMLNode, UMLRelation } from "./DiagramComponents";
-import { Diagram } from "./Diagram";
+import { Diagram, visibilitySymbol } from "./Diagram";
 
 /**
  * A Widget to visualize a UML Package Vitruvius view.
@@ -103,13 +103,13 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
               <hr />
               {data.attributes.map((attr, index) => (
                   <React.Fragment key={index}>
-                    {attr.visibility} {attr.name}: {attr.type.name} <br />
+                    {visibilitySymbol(attr.visibility)} {attr.name}: {attr.type.name} <br />
                   </React.Fragment>
               ))}
               <hr />
               {data.methods.map((method, index) => (
                   <React.Fragment key={index}>
-                    {method.visibility} {method.name}({method.parameters.map(param => `${param.name}: ${param.type.name}`).reduce((prev, curr) => `${prev}, ${curr}`, "").slice(2)}): {method.returnType.name} <br />
+                    {visibilitySymbol(method.visibility)} {method.name}({method.parameters.map(param => `${param.name}: ${param.type.name}`).reduce((prev, curr) => `${prev}, ${curr}`, "").slice(2)}): {method.returnType.name} <br />
                   </React.Fragment>
               ))}
             </div>
@@ -125,7 +125,10 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
       const fromNode = nodes.find(node => node.getClassID() === link.sourceNodeUUID);
       const toNode = nodes.find(node => node.getClassID() === link.targetNodeUUID);
       if (fromNode !== undefined && toNode !== undefined) {
-        links.push(new UMLRelation("advanced", link.uuid, fromNode, toNode));
+        switch(link.connectionType) {
+            case "association": links.push(new UMLRelation("default", link.uuid, fromNode, toNode));
+            default: links.push(new UMLRelation("advanced", link.uuid, fromNode, toNode));
+        } 
       }
     });
 

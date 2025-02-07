@@ -19,6 +19,7 @@ import tools.vitruv.framework.remote.client.VitruvClientFactory
 import java.io.FileInputStream
 import java.io.InputStream
 import java.nio.file.Path
+import java.nio.file.Paths
 
 
 /**
@@ -26,15 +27,15 @@ import java.nio.file.Path
  */
 
 fun main() {
+
+    val rootPath: Path = Paths.get("target", "root").toAbsolutePath()
     val serverInitializer = ServerInitializer()
-    val server = serverInitializer.initialize()
+    val server = serverInitializer.initialize(rootPath)
     server.start()
     println("Vitruvius server started on: " + serverInitializer.serverPort)
 
 
-
     //testJavaView(serverInitializer)
-
 
 
     //clientTest(serverInitializer)

@@ -72,7 +72,10 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
         for (eObject in preMappedWindow.neededEObjects) {
             val rows = window.content.rows
             for (row in rows) {
-                val umlClass = eObject.eResource()?.getEObject(row.uuid) as Class
+                val umlClass = eObject.eResource()?.getEObject(row.uuid)
+                if (umlClass == null || umlClass !is Class) {
+                    continue
+                }
                 umlClass.name = row.name
                 umlClass.visibility = VisibilityKind.get(row.visibility)
             }

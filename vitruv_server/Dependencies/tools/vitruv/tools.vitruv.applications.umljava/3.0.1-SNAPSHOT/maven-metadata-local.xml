@@ -3,7 +3,7 @@
   <groupId>tools.vitruv</groupId>
   <artifactId>tools.vitruv.applications.umljava</artifactId>
   <versioning>
-    <lastUpdated>20250203145003</lastUpdated>
+    <lastUpdated>20250206132746</lastUpdated>
     <snapshot>
       <localCopy>true</localCopy>
     </snapshot>
@@ -11,12 +11,12 @@
       <snapshotVersion>
         <extension>jar</extension>
         <value>3.0.1-SNAPSHOT</value>
-        <updated>20250203145003</updated>
+        <updated>20250206132746</updated>
       </snapshotVersion>
       <snapshotVersion>
         <extension>pom</extension>
         <value>3.0.1-SNAPSHOT</value>
-        <updated>20250203145003</updated>
+        <updated>20250206132746</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.eclipse.emf</groupId>
+  <artifactId>org.eclipse.emf.common</artifactId>
+  <versioning>
+    <versions>
+      <version>2.31.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20250206152322</lastUpdated>
+  </versioning>
+</metadata>
