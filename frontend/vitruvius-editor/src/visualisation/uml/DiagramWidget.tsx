@@ -65,14 +65,14 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
     this.disableDrag();
 
     const DiagramComponent: React.FC = () => {
-        React.useLayoutEffect(() => {
-            this.dagre();
-        }, [])
-        return (
-            <div className="editor-container">
-          <CanvasWidget className="diagram-container" engine={this.engine} />
-        </div> 
-        )
+      React.useLayoutEffect(() => {
+        this.dagre();
+      }, [])
+      return (
+          <div className="editor-container">
+            <CanvasWidget className="diagram-container" engine={this.engine} />
+          </div>
+      )
     }
 
     return <DiagramComponent/>;
@@ -82,8 +82,6 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
     autoDistribute(this.engine);
     autoRefreshLinks(this.engine);
   }
-
-
 
   /**
    * Parses the diagram content and creates a DiagramContent object.
@@ -126,9 +124,9 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
       const toNode = nodes.find(node => node.getClassID() === link.targetNodeUUID);
       if (fromNode !== undefined && toNode !== undefined) {
         switch(link.connectionType) {
-            case "association": links.push(new UMLRelation("default", link.uuid, fromNode, toNode));
-            default: links.push(new UMLRelation("advanced", link.uuid, fromNode, toNode));
-        } 
+          case "association": links.push(new UMLRelation("default", link.uuid, fromNode, toNode));
+          default: links.push(new UMLRelation("advanced", link.uuid, fromNode, toNode));
+        }
       }
     });
 
@@ -152,6 +150,10 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
   }
 }
 
+/**
+ * Generates a Dagre engine with specific configurations.
+ * @returns A configured DagreEngine instance.
+ */
 function genDagreEngine() {
   return new DagreEngine({
     graph: {
@@ -165,6 +167,10 @@ function genDagreEngine() {
   });
 }
 
+/**
+ * Distributes nodes in the diagram using the Dagre engine.
+ * @param engine The DiagramEngine instance.
+ */
 function autoDistribute(engine: DiagramEngine) {
   const model = engine.getModel();
 
@@ -175,6 +181,10 @@ function autoDistribute(engine: DiagramEngine) {
   engine.repaintCanvas();
 }
 
+/**
+ * Refreshes links in the diagram using the Dagre engine.
+ * @param engine The DiagramEngine instance.
+ */
 function autoRefreshLinks(engine: DiagramEngine) {
   const model = engine.getModel();
 
@@ -185,7 +195,10 @@ function autoRefreshLinks(engine: DiagramEngine) {
   engine.repaintCanvas();
 }
 
+/**
+ * Reroutes links in the diagram.
+ * @param engine The DiagramEngine instance.
+ */
 function reroute(engine: DiagramEngine) {
   engine.getLinkFactories().getFactory<PathFindingLinkFactory>(PathFindingLinkFactory.NAME).calculateRoutingMatrix();
 }
-
