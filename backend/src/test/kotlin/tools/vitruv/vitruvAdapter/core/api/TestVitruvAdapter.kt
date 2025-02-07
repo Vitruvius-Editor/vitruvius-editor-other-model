@@ -87,8 +87,6 @@ class TestVitruvAdapter {
         print(displayViews)
     }
 
-
-=======
 //    @Test
 //    fun testClassDiagram(){
 //        val displayView = displayViewRepository.getDisplayView("ClassDiagram")!!
