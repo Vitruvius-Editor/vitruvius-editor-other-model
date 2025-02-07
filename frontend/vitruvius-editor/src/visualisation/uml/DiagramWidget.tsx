@@ -4,9 +4,8 @@ import {
   postConstruct,
 } from "@theia/core/shared/inversify";
 import * as React from "react";
-import { useLayoutEffect } from "react";
 import { MessageService } from "@theia/core";
-import { VisualisationWidget } from "../VisualisationWidget";
+import { VisualisationWidget, VisualisationWidgetState } from "../VisualisationWidget";
 import createEngine, {
   DiagramModel,
   CanvasWidget,
@@ -65,19 +64,18 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
     this.engine.setModel(model);
     this.disableDrag();
 
-    // useLayoutEffect is supposed to be called after the first render, but it doesn't work here yet
-
-    // useLayoutEffect(() => {
-    //   this.dagre();
-    // }, []);
-
-    // this.dagre();
-
-    return (
-        <div className="editor-container">
+    const DiagramComponent: React.FC = () => {
+        React.useLayoutEffect(() => {
+            this.dagre();
+        }, [])
+        return (
+            <div className="editor-container">
           <CanvasWidget className="diagram-container" engine={this.engine} />
-        </div>
-    );
+        </div> 
+        )
+    }
+
+    return <DiagramComponent/>;
   }
 
   dagre() {
@@ -141,6 +139,14 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
   getVisualizerName(): string {
     return "DiagramVisualizer";
   }
+
+  override restoreState(oldState: object): void {
+    let typedState = oldState as VisualisationWidgetState<Diagram>;
+    this.setLabel(typedState.label);
+    this.updateContent(typedState.content);
+    this.visualisationWidgetRegistry.registerWidget(this, typedState.displayView, typedState.connection);
+    this.dagre()
+  }
 }
 
 function genDagreEngine() {
@@ -179,3 +185,4 @@ function autoRefreshLinks(engine: DiagramEngine) {
 function reroute(engine: DiagramEngine) {
   engine.getLinkFactories().getFactory<PathFindingLinkFactory>(PathFindingLinkFactory.NAME).calculateRoutingMatrix();
 }
+
