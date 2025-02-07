@@ -4,8 +4,8 @@ import { ReactWidget } from "@theia/core/lib/browser/widgets/react-widget";
 
 @injectable()
 export class HelpWidget extends ReactWidget {
-  static readonly ID = "help:widget";
-  static readonly LABEL = "Help";
+  static readonly ID = "widget:display-help";
+  static readonly LABEL = "Vitruvius Help";
 
   @postConstruct()
   protected init(): void {
@@ -25,15 +25,13 @@ export class HelpWidget extends ReactWidget {
     return (
       <div>
         <h1>Help</h1>
-        <div dangerouslySetInnerHTML={{ __html: this.getHtmlContent() }} />
+        { this.getHtmlContent() }
       </div>
     );
   }
 
-  protected getHtmlContent(): string {
+  protected getHtmlContent(): React.ReactElement {
     // Replace this with your actual HTML content
-    return `
-      <p>This is the help content.</p>
-    `;
+    return (<p>This is the help content.</p>);
   }
 }
