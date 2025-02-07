@@ -21,7 +21,7 @@ class DefaultDisplayViewRepositoryFactory : DisplayViewRepositoryFactory() {
     @Bean
     override fun createDisplayViewRepository(): DisplayViewRepository {
         // Create and register all required DisplayViews here
-        var displayViewRepository = DisplayViewRepository()
+        val displayViewRepository = DisplayViewRepository()
         displayViewRepository.registerDisplayView(GenericDisplayView(DisplayViewName.SOURCE_CODE.viewName, "UML", SourceCodeViewMapper() as ViewMapper<Any?>, AllSelector(),
             SourceCodeContentSelector() as ContentSelector<Any?>
         ))
@@ -29,6 +29,6 @@ class DefaultDisplayViewRepositoryFactory : DisplayViewRepositoryFactory() {
             ClassTableContentSelector() as ContentSelector<Any?>
         ))
         displayViewRepository.registerDisplayView(GenericDisplayView(DisplayViewName.CLASS_DIAGRAM.viewName, "UML", ClassDiagramViewMapper() as ViewMapper<Any?>, AllSelector(), ClassTableContentSelector() as ContentSelector<Any?>))
-        return displayViewRepository;
+        return displayViewRepository
     }
 }
