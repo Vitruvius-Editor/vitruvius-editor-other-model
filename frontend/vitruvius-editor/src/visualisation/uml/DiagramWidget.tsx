@@ -14,6 +14,7 @@ import createEngine, {
   DiagramEngine,
   PathFindingLinkFactory,
 } from '@projectstorm/react-diagrams';
+import { DefaultDiagramState } from '@projectstorm/react-diagrams';
 import { ArrowLinkFactory, DiagramContent, UMLNode, UMLRelation } from "./DiagramComponents";
 import { Diagram } from "./Diagram";
 
@@ -43,6 +44,13 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
     this.engine = createEngine();
   }
 
+  disableDrag = () => {
+    const state = this.engine.getStateMachine().getCurrentState();
+    if (state instanceof DefaultDiagramState) {
+      state.dragCanvas.config.allowDrag = false;
+    }
+  };
+
   /**
    * Renders the widget containing the content as a UML Package Diagram given from the Backend.
    * Uses the Parser to parse the content and create the diagram.
@@ -55,10 +63,11 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
     umlDiagram.nodes.forEach(component => model.addNode(component));
     umlDiagram.links.forEach(link => model.addLink(link));
     this.engine.setModel(model);
+    this.disableDrag();
 
-    useLayoutEffect(() => {
-      this.dagre();
-    }, []);
+    // useLayoutEffect(() => {
+    //   this.dagre();
+    // }, []);
 
     return (
         <div className="editor-container">
