@@ -90,7 +90,10 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
       const fromNode = nodes.find(node => node.getClassID() === link.sourceNodeUUID);
       const toNode = nodes.find(node => node.getClassID() === link.targetNodeUUID);
       if (fromNode !== undefined && toNode !== undefined) {
-        links.push(new UMLRelation("advanced", link.uuid, fromNode, toNode));
+        switch(link.connectionType) {
+            case "association": links.push(new UMLRelation("default", link.uuid, fromNode, toNode));
+            default: links.push(new UMLRelation("advanced", link.uuid, fromNode, toNode));
+        } 
       }
     });
 

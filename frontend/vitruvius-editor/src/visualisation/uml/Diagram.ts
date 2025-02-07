@@ -42,13 +42,15 @@ export type DiagramConnection = {
     uuid: string,
     sourceNodeUUID: string,
     targetNodeUUID: string,
-    connectionType: string,
+    connectionType: ConnectionType,
     sourceMultiplicity: string,
     targetMultiplicity: string,
     connectionName: string,
 };
 
 export type VisibilityModifier = "PUBLIC" | "PRIVATE" | "PROTECTED"; 
+
+export type ConnectionType = "extends" | "implements" | "association" | "import";
 
 export function visibilitySymbol(visibilityModifier: VisibilityModifier): string {
     switch(visibilityModifier) {
