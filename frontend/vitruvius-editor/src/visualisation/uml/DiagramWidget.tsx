@@ -5,8 +5,15 @@ import {
 } from "@theia/core/shared/inversify";
 import * as React from "react";
 import { MessageService } from "@theia/core";
-import { VisualisationWidget } from "../VisualisationWidget";
-import createEngine, { DiagramModel, CanvasWidget } from '@projectstorm/react-diagrams';
+import { VisualisationWidget, VisualisationWidgetState } from "../VisualisationWidget";
+import createEngine, {
+  DiagramModel,
+  CanvasWidget,
+  DagreEngine,
+  DiagramEngine,
+  PathFindingLinkFactory,
+} from '@projectstorm/react-diagrams';
+import { DefaultDiagramState } from '@projectstorm/react-diagrams';
 import { ArrowLinkFactory, DiagramContent, UMLNode, UMLRelation } from "./DiagramComponents";
 import { Diagram, visibilitySymbol } from "./Diagram";
 
@@ -17,6 +24,8 @@ import { Diagram, visibilitySymbol } from "./Diagram";
 export class DiagramWidget extends VisualisationWidget<Diagram> {
   static readonly ID = "packagediagramwidget:packagediagramwidget";
   static readonly LABEL = "DiagramWidget";
+
+  protected engine: DiagramEngine;
 
   @inject(MessageService)
   protected readonly messageService!: MessageService;
@@ -29,26 +38,52 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
     this.doInit(DiagramWidget.ID, DiagramWidget.LABEL, { nodes: [], connections: [] });
   }
 
+  constructor(props: any) {
+    super(props);
+    this.engine = createEngine();
+  }
+
+  disableDrag = () => {
+    const state = this.engine.getStateMachine().getCurrentState();
+    if (state instanceof DefaultDiagramState) {
+      state.dragCanvas.config.allowDrag = false;
+    }
+  };
+
   /**
    * Renders the widget containing the content as a UML Package Diagram given from the Backend.
    * Uses the Parser to parse the content and create the diagram.
    */
   render(): React.ReactElement {
-    const engine = createEngine();
-    engine.getLinkFactories().registerFactory(new ArrowLinkFactory());
+    this.engine.getLinkFactories().registerFactory(new ArrowLinkFactory());
 
     const umlDiagram = this.createDiagramContent(this.content, "Class");
     const model = new DiagramModel();
     umlDiagram.nodes.forEach(component => model.addNode(component));
     umlDiagram.links.forEach(link => model.addLink(link));
-    engine.setModel(model);
+    this.engine.setModel(model);
+    this.disableDrag();
 
-    return (
-        <div className="editor-container">
-          <CanvasWidget className="diagram-container" engine={engine} />
-        </div>
-    );
+    const DiagramComponent: React.FC = () => {
+        React.useLayoutEffect(() => {
+            this.dagre();
+        }, [])
+        return (
+            <div className="editor-container">
+          <CanvasWidget className="diagram-container" engine={this.engine} />
+        </div> 
+        )
+    }
+
+    return <DiagramComponent/>;
   }
+
+  dagre() {
+    autoDistribute(this.engine);
+    autoRefreshLinks(this.engine);
+  }
+
+
 
   /**
    * Parses the diagram content and creates a DiagramContent object.
@@ -107,4 +142,50 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
   getVisualizerName(): string {
     return "DiagramVisualizer";
   }
+
+  override restoreState(oldState: object): void {
+    let typedState = oldState as VisualisationWidgetState<Diagram>;
+    this.setLabel(typedState.label);
+    this.updateContent(typedState.content);
+    this.visualisationWidgetRegistry.registerWidget(this, typedState.displayView, typedState.connection);
+    this.dagre()
+  }
 }
+
+function genDagreEngine() {
+  return new DagreEngine({
+    graph: {
+      rankdir: 'RL',
+      ranker: 'longest-path',
+      marginx: 25,
+      marginy: 25
+    },
+    includeLinks: true,
+    nodeMargin: 25
+  });
+}
+
+function autoDistribute(engine: DiagramEngine) {
+  const model = engine.getModel();
+
+  const dagreEngine = genDagreEngine();
+  dagreEngine.redistribute(model);
+
+  reroute(engine);
+  engine.repaintCanvas();
+}
+
+function autoRefreshLinks(engine: DiagramEngine) {
+  const model = engine.getModel();
+
+  const dagreEngine = genDagreEngine();
+  dagreEngine.refreshLinks(model);
+
+  reroute(engine);
+  engine.repaintCanvas();
+}
+
+function reroute(engine: DiagramEngine) {
+  engine.getLinkFactories().getFactory<PathFindingLinkFactory>(PathFindingLinkFactory.NAME).calculateRoutingMatrix();
+}
+

@@ -78,4 +78,4 @@ export abstract class VisualisationWidget<T> extends ReactWidget implements Stat
 
 }
 
-type VisualisationWidgetState<T> = { content: T, label: string, displayView: DisplayView, connection: Connection };
+export type VisualisationWidgetState<T> = { content: T, label: string, displayView: DisplayView, connection: Connection };
