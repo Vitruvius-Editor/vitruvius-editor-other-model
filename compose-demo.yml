@@ -10,6 +10,7 @@ services:
       - "3000:3000"
     depends_on:
       - backend
+    network_mode: host
 
   backend:
     build:
@@ -18,13 +19,13 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/myapp
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/myapp  # Change db to localhost
       - SPRING_DATASOURCE_USERNAME=myuser
       - SPRING_DATASOURCE_PASSWORD=mypassword
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     depends_on:
       - db
-      - vitruvius
+    network_mode: host
 
   db:
     image: postgres:17.2
@@ -34,12 +35,13 @@ services:
       - POSTGRES_DB=myapp
     volumes:
       - db-data:/var/lib/postgresql/data
+    network_mode: host  # Use host network
 
   vitruvius:
     build:
       context: ./vitruv_server
       dockerfile: Dockerfile
+    network_mode: host  # Use host network
 
 volumes:
   db-data:
-

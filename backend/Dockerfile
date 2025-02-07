@@ -16,11 +16,11 @@ COPY src/ src/
 RUN mvn clean package -DskipTests
 
 # Runtime stage
-FROM openjdk:17-jdk-slim
+FROM maven:3.9.9-eclipse-temurin-17
 WORKDIR /backend
 
 # Create a non-root user
-RUN useradd -m -u 1000 appuser
+RUN useradd -m -u 2000 appuser
 USER appuser
 
 # Copy the built application from the build stage
