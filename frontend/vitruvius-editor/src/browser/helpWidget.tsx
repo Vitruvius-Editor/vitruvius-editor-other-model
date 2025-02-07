@@ -37,9 +37,8 @@ export class HelpWidget extends ReactWidget {
           <p>Diese Anleitung beschreibt die Nutzung des Vitruvius-Editor-Plugins in Eclipse Theia.</p>
 
             <h2>Benutzeroberfläche (GUI)</h2>
-            <img src="./VitruviusHelpImage.png" alt="Vitruvius Help Image" />
-            <p>In der oberen Toolbar befindet sich ganz rechts (Punkt A) ein neues Menü mit dem Titel &quot;Vitruvius&quot;. Darüber sind alle hier beschriebenen Befehle schnell erreichbar.</p>
-            <p>Auf der linken Seite (Punkt B) gibt es einen neuen Tab namens &quot;Vitruvius&quot;. Über diesen Tab kann das Fenster geöffnet werden, in dem alle verfügbaren Views angezeigt werden.</p>
+            <p>In der oberen Toolbar befindet sich ganz rechts ein neues Menü mit dem Titel &quot;Vitruvius&quot;. Darüber sind alle hier beschriebenen Befehle schnell erreichbar.</p>
+            <p>Auf der linken Seite gibt es einen neuen Tab namens &quot;Vitruvius&quot;. Über diesen Tab kann das Fenster geöffnet werden, in dem alle verfügbaren Views angezeigt werden.</p>
 
             <h2>Vitruvius-Editor starten</h2>
             <p>Mit Dockerfile starten.</p>
