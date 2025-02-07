@@ -24,9 +24,7 @@ export const RefreshProjectCommand: Command = {
  * Command contribution for the refresh project command.
  */
 @injectable()
-export class VitruviusRefreshProjectContribution
-  implements CommandContribution
-{
+export class VitruviusRefreshProjectContribution implements CommandContribution {
   @inject(MessageService)
   protected readonly messageService!: MessageService;
   @inject(ConnectionService)
@@ -34,7 +32,7 @@ export class VitruviusRefreshProjectContribution
   @inject(QuickPickService)
   protected readonly quickPickService!: QuickPickService;
   @inject(VisualisationWidgetRegistry)
-  protected readonly visualisationWidgetRegsitry!: VisualisationWidgetRegistry;
+  protected readonly visualisationWidgetRegistry!: VisualisationWidgetRegistry;
   @inject(DisplayViewService)
   protected readonly displayViewService!: DisplayViewService;
   @inject(DisplayViewResolver)
@@ -46,26 +44,29 @@ export class VitruviusRefreshProjectContribution
    */
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(RefreshProjectCommand, {
-      execute: () => {
-        let items = this.visualisationWidgetRegsitry.getWidgets().map(widgetData => {
+      execute: async () => {
+        const items = this.visualisationWidgetRegistry.getWidgets().map(widgetData => {
           return {
             label: `${widgetData.displayView.name} - ${widgetData.widget.getLabel()}`,
-            execute: () => {
-              this.displayViewResolver.getContent(widgetData.widget)?.then(content => {
-                this.displayViewService.updateDisplayViewContent(widgetData.connection.uuid, widgetData.displayView.name, content).then(res => {
-                    if (res !== null) {
-                        widgetData.widget.close();
-                        (this.displayViewResolver.getWidget(res) as Promise<VisualisationWidget<any>>).then(widget => {
-                            this.visualisationWidgetRegsitry.registerWidget(widget, widgetData.displayView, widgetData.connection);
-                            widget.show();
-                        })
-                    } else {
-                        this.messageService.error("Invalid update!");
-                    }
-                }).catch(_error => this.messageService.error("Error updating the window."));
-              })
+            execute: async () => {
+              try {
+                const content = await this.displayViewResolver.getContent(widgetData.widget);
+                if (content) {
+                  const res = await this.displayViewService.updateDisplayViewContent(widgetData.connection.uuid, widgetData.displayView.name, content);
+                  if (res !== null) {
+                    widgetData.widget.close();
+                    const widget = await this.displayViewResolver.getWidget(res) as VisualisationWidget<any>;
+                    this.visualisationWidgetRegistry.registerWidget(widget, widgetData.displayView, widgetData.connection);
+                    widget.show();
+                  } else {
+                    await this.messageService.error("Invalid update!");
+                  }
+                }
+              } catch (error) {
+                this.messageService.error("Error updating the window.");
+              }
             }
-          }
+          };
         });
         this.quickPickService.show(items);
       }
