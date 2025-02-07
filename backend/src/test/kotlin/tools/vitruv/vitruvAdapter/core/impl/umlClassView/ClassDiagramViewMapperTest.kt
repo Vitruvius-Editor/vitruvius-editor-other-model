@@ -13,6 +13,10 @@ class ClassDiagramViewMapperTest {
 
 
     lateinit var eobjects : List<EObject>
+    lateinit var otherEObjets : List<EObject>
+    lateinit var otherEObjectsAfterChangingOneTime : List<EObject>
+    val mapper = ClassDiagramViewMapper()
+
     @BeforeEach
     fun setUp() {
         val factory = UMLFactory.eINSTANCE
@@ -89,6 +93,10 @@ class ClassDiagramViewMapperTest {
         // 5. Package the model in a list for further processing or saving.
         // ---------------------------------------------------
          eobjects = listOf(examplePackage)
+        val umlPackage = UMLFactory.eINSTANCE.createPackage()
+        umlPackage.name = "examplePackage2"
+        otherEObjets = listOf(umlPackage)
+
     }
 
 
@@ -127,10 +135,50 @@ class ClassDiagramViewMapperTest {
             listOf(Window("examplePackage", testUmlDiagram))
         )
         println(oldEObjects)
-
-
-
     }
+
+        @Test
+    fun testMoreEditing() {
+            //umll
+            val umlNodes = listOf(
+                UmlNode(
+                    "", "Class1", "<<class>>",
+                    listOf(UmlAttribute("", UmlVisibility.PUBLIC, "attribute1", UmlType("", "Int"))), listOf(), listOf()
+                ),
+                UmlNode(
+                    "",
+                    "Class2",
+                    "<<class>>",
+                    listOf(UmlAttribute("", UmlVisibility.PUBLIC, "attribute2", UmlType("", "String"))),
+                    listOf(),
+                    listOf()
+                ),
+                UmlNode(
+                    "",
+                    "Interface3",
+                    "<<interface>>",
+                    listOf(),
+                    listOf(
+                        UmlMethod(
+                            "",
+                            UmlVisibility.PUBLIC,
+                            "foo",
+                            listOf(UmlParameter("", "foo1", UmlType("", "String"))),
+                            UmlType("", "String")
+                        )
+                    ),
+                    listOf()
+                ),
+
+                )
+            val umlConnections = listOf<UmlConnection>()
+            val testUmlDiagram = UmlDiagram(umlNodes, umlConnections)
+            val window = Window("examplePackage2", testUmlDiagram)
+            mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+                ClassDiagramContentSelector().applySelection(otherEObjets, mapper.mapViewToWindows(otherEObjets)),
+                listOf(window)
+            )
+        }
 
 
 }

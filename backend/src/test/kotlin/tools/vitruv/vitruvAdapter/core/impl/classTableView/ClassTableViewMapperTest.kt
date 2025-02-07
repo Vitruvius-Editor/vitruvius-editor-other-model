@@ -15,61 +15,66 @@ import java.io.InputStream
 
 class ClassTableViewMapperTest {
 
- lateinit var preMappedWindows : List<PreMappedWindow<TableDTO<ClassTableEntry>>>
- lateinit var eObjects : List<EObject>
- @BeforeEach
- fun initEOBjects() {
+    lateinit var preMappedWindows: List<PreMappedWindow<TableDTO<ClassTableEntry>>>
+    lateinit var eObjects: List<EObject>
+    val mapper = ClassTableViewMapper()
 
-    val factory = UMLFactory.eINSTANCE
-    val examplePackage = factory.createPackage()
-    examplePackage.name = "examplePackage"
+    @BeforeEach
+    fun initEOBjects() {
 
-    val umlClass = examplePackage.createOwnedClass("Class1", false)
-     val class2 = examplePackage.createOwnedClass("Class2", true)
+        val factory = UMLFactory.eINSTANCE
+        val examplePackage = factory.createPackage()
+        examplePackage.name = "examplePackage"
 
-
-    val attribute = umlClass.createOwnedAttribute("myIntAttribute", null)
-
-
-    attribute.visibility = org.eclipse.uml2.uml.VisibilityKind.PUBLIC_LITERAL
-
-     val inputStream: InputStream = FileInputStream("src/test/kotlin/tools/vitruv/vitruvAdapter/core/impl/classTableView/class1")
-    val rootw = JaMoPPJDTSingleFileParser().parse("class1", inputStream) as CompilationUnit
-     val class1 = rootw.classifiers[0] as tools.mdsd.jamopp.model.java.classifiers.Class
-     val packageName = class1.`package`.name
+        val umlClass = examplePackage.createOwnedClass("Class1", false)
+        val class2 = examplePackage.createOwnedClass("Class2", true)
 
 
+        val attribute = umlClass.createOwnedAttribute("myIntAttribute", null)
 
 
+        attribute.visibility = org.eclipse.uml2.uml.VisibilityKind.PUBLIC_LITERAL
 
+        val inputStream: InputStream =
+            FileInputStream("src/test/kotlin/tools/vitruv/vitruvAdapter/core/impl/classTableView/class1")
+        val rootw = JaMoPPJDTSingleFileParser().parse("class1", inputStream) as CompilationUnit
+        val class1 = rootw.classifiers[0] as tools.mdsd.jamopp.model.java.classifiers.Class
+        val packageName = class1.`package`.name
 
 
 
-     preMappedWindows = ClassTableContentSelector().applySelection(listOf(examplePackage, rootw), setOf("examplePackage"))
-     eObjects = listOf(examplePackage, rootw)
 
- }
 
- @Test
- fun testCreateContent() {
-  val mapper = ClassTableViewMapper()
-  val windows = mapper.mapViewToWindows(eObjects)
-  windows.forEach(::println)
 
-  val contents = mapper.mapEObjectsToWindowsContent(preMappedWindows)
-     for (content in contents) {
-         println(content.content.toString())
-     }
 
-//
-//     val newClass1DTO = ClassTableEntry("", "Class1", "private", false, false, "", listOf(), 1, 0, 0)
-//     val newClass2DTO = ClassTableEntry("", "Class2", "public", true, false, "", listOf(), 0, 0, 0)
-//     val newWindow = Window("examplePackage", TableDTO.buildTableDTO(listOf(newClass1DTO, newClass2DTO), ClassTableEntry::class))
-//     mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(eobjects, listOf(newWindow))
 
-     print(eObjects)
+        preMappedWindows =
+            ClassTableContentSelector().applySelection(listOf(examplePackage, rootw), setOf("examplePackage"))
+        eObjects = listOf(examplePackage, rootw)
 
-  }
+    }
+
+    @Test
+    fun testWindows() {
+        val windows = mapper.mapViewToWindows(eObjects)
+        windows.forEach(::println)
+    }
+
+    @Test
+    fun testCreateContent() {
+        val contents = mapper.mapEObjectsToWindowsContent(preMappedWindows)
+        for (content in contents) {
+            println(content.content.toString())
+        }
+        print(eObjects)
+    }
+
+    @Test
+    fun testEditContent() {
+        val contents = mapper.mapEObjectsToWindowsContent(preMappedWindows)
+        val newContents = mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(preMappedWindows, contents)
+        println(newContents)
+    }
 
 
 }
