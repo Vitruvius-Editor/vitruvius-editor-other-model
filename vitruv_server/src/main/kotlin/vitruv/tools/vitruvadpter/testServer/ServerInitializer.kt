@@ -18,7 +18,9 @@ import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl
 import tools.mdsd.jamopp.model.java.JavaPackage
 import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.mdsd.jamopp.model.java.containers.ContainersFactory
+import tools.mdsd.jamopp.model.java.expressions.ExpressionsFactory
 import tools.mdsd.jamopp.model.java.impl.JavaPackageImpl
+import tools.mdsd.jamopp.model.java.literals.LiteralsFactory
 import tools.vitruv.applications.util.temporary.java.*
 import tools.vitruv.change.atomic.AtomicPackage
 import tools.vitruv.change.atomic.impl.AtomicPackageImpl
@@ -33,6 +35,8 @@ import tools.vitruv.framework.views.impl.IdentityMappingViewType
 import tools.vitruv.framework.vsum.VirtualModel
 import tools.vitruv.framework.vsum.VirtualModelBuilder
 import java.io.IOException
+import java.math.BigDecimal
+import java.math.BigInteger
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -96,10 +100,20 @@ class ServerInitializer {
 
         val fieldA =
             JavaMemberAndParameterUtil.createJavaAttribute("fieldA", intType, JavaVisibility.PRIVATE, false, false)
+
+        val fieldAInitialValue = LiteralsFactory.eINSTANCE.createDecimalIntegerLiteral()
+        fieldAInitialValue.decimalValue = BigInteger.valueOf(5)
+        fieldA.initialValue = fieldAInitialValue
+
         testClass1.members.add(fieldA)
         val fieldB =
             JavaMemberAndParameterUtil.createJavaAttribute("fieldB", booleanType, JavaVisibility.PRIVATE, true, true)
+
+        val fieldBInitialValue = LiteralsFactory.eINSTANCE.createBooleanLiteral()
+        fieldBInitialValue.isValue = false
+        fieldB.initialValue = fieldBInitialValue
         testClass1.members.add(fieldB)
+
         val param1 = JavaMemberAndParameterUtil.createJavaParameter("param1", intType)
         val param2 = JavaMemberAndParameterUtil.createJavaParameter("param2", booleanType)
         val classMethod1 = JavaMemberAndParameterUtil.createJavaClassMethod(
