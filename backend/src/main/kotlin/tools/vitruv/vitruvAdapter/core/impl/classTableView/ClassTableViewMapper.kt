@@ -18,6 +18,10 @@ import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.TableDisplayCon
 import tools.vitruv.vitruvAdapter.core.impl.table.TableDTO
 import java.io.ByteArrayOutputStream
 
+/**
+ * Represents a class table view mapper.
+ * This class is responsible for mapping the view content of a class table to windows and vice versa.
+ */
 class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
 
 
@@ -47,14 +51,7 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
         return windows.toList()
     }
 
-    /**
-     * Maps the given json string to view content, compares it to [oldEObjects] and applies the changes to [oldEObjects].
-     * Note that no changes will be applied to the model,
-     * this have to be done after this method with a View object, where the [oldEObjects] came from.
-     * @param oldEObjects The old EObjects to compare the windows to.
-     * @param windows the windows to map to EObjects.
-     * @return The view content.
-     */
+
     override fun mapWindowsToEObjectsAndApplyChangesToEObjects(
         preMappedWindows: List<PreMappedWindow<TableDTO<ClassTableEntry>>>,
         windows: List<Window<TableDTO<ClassTableEntry>>>
@@ -89,7 +86,7 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
         val isAbstract = umlClass.isAbstract
         val isFinal = umlClass.isFinalSpecialization
         val superClassName = umlClass.superClasses.firstOrNull()?.name ?: ""
-        val interfaces = umlClass.usedInterfaces.map { it.name } ?: emptyList()
+        val interfaces = umlClass.usedInterfaces.map { it.name }
         val attributeCount = umlClass.attributes.size
         val methodCount = umlClass.operations.size
         val linesOfCode = getClassLinesOfCode(javaClass)
@@ -109,13 +106,13 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
         )
     }
 
-    private fun getJavaClassFromUmlClass(umlClass: Class, rootObjects: List<EObject>): tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier? {
+    private fun getJavaClassFromUmlClass(umlClass: Class, rootObjects: List<EObject>): ConcreteClassifier? {
         for(rootObject in rootObjects){
             if(rootObject is tools.mdsd.jamopp.model.java.containers.JavaRoot){
                 val iterator = rootObject.eAllContents()
                 while (iterator.hasNext()) {
                     val next = iterator.next()
-                    if (next is tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier) {
+                    if (next is ConcreteClassifier) {
                         if(next.name == umlClass.name ){
                             return next
                         }

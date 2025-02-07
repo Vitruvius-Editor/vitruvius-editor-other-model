@@ -7,33 +7,21 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.plugin.EcorePlugin
 import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.emf.ecore.resource.ResourceSet
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 import org.eclipse.uml2.uml.Type
 import org.eclipse.uml2.uml.UMLFactory
 import org.eclipse.uml2.uml.UMLPackage
 import org.eclipse.uml2.uml.VisibilityKind
 import org.eclipse.uml2.uml.internal.impl.LiteralIntegerImpl
-import org.eclipse.uml2.uml.internal.impl.ModelImpl
-import org.eclipse.uml2.uml.internal.impl.PackageImpl
-import org.eclipse.uml2.uml.internal.impl.UMLPackageImpl
-import org.eclipse.uml2.uml.internal.resource.UML22UMLResourceFactoryImpl
-import org.eclipse.uml2.uml.internal.resource.UML22UMLResourceImpl
 import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl
-import org.eclipse.uml2.uml.resource.UML22UMLResource
 import tools.mdsd.jamopp.model.java.JavaPackage
 import tools.mdsd.jamopp.model.java.classifiers.ClassifiersFactory
 import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.mdsd.jamopp.model.java.containers.ContainersFactory
-import tools.mdsd.jamopp.model.java.containers.Package
-import tools.mdsd.jamopp.model.java.impl.JavaPackageImpl
+import tools.mdsd.jamopp.model.java.literals.LiteralsFactory
 import tools.mdsd.jamopp.model.java.members.MembersFactory
 import tools.mdsd.jamopp.model.java.types.TypesFactory
-import tools.vitruv.applications.umljava.JavaToUmlChangePropagationSpecification
-import tools.vitruv.applications.umljava.UmlToJavaChangePropagationSpecification
-import tools.vitruv.applications.util.temporary.java.JamoppLibraryHelper
-import tools.vitruv.applications.util.temporary.java.JavaSetup
+import tools.vitruv.applications.util.temporary.java.*
 import tools.vitruv.change.atomic.AtomicPackage
 import tools.vitruv.change.atomic.impl.AtomicPackageImpl
 import tools.vitruv.change.correspondence.CorrespondencePackage
@@ -46,14 +34,10 @@ import tools.vitruv.framework.views.ViewType
 import tools.vitruv.framework.views.impl.IdentityMappingViewType
 import tools.vitruv.framework.vsum.VirtualModel
 import tools.vitruv.framework.vsum.VirtualModelBuilder
-import java.io.FileInputStream
 import java.io.IOException
-import java.io.InputStream
+import java.math.BigInteger
 import java.nio.file.Files
 import java.nio.file.Path
-import tools.mdsd.jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser
-import tools.vitruv.framework.remote.client.VitruvClientFactory
-import java.nio.file.Paths
 
 /**
  * Initializes the server
@@ -62,6 +46,7 @@ import java.nio.file.Paths
 class ServerInitializer {
 
     val serverPort: Int = 8000
+    val host: String = "localhost"
     lateinit var viewTypes: Map<String, ViewType<*>>
     lateinit var vsum: VirtualModel
     lateinit var javaPath: Path
@@ -78,96 +63,85 @@ class ServerInitializer {
         umlPath = rootPath.resolve("model/uml")
         javaUri = URI.createFileURI(javaPath.toString())
         umlUri = URI.createFileURI(umlPath.toString())
-        registerRegistry()
+        registerFactories()
+
         if (Files.exists(rootPath)) {
             deletePath(rootPath)
         } else {
             Files.createDirectories(rootPath)
         }
+
         ProjectMarker.markAsProjectRootFolder(rootPath)
+
         viewTypes = createViewTypes()
         vsum = init(rootPath)
 
-        server = VitruvServer(VirtualModelInitializer { vsum }, serverPort, "localhost")
-        //generatePackage()
-        genrateJavaCode()
-
+        server = VitruvServer(VirtualModelInitializer { vsum }, serverPort, host)
+        generateUmlExampleModel()
+        generateJavaExampleModel()
         return server
     }
 
-    private fun registerRegistry() {
-        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", XMIResourceFactoryImpl())
-        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("uml", UMLResourceFactoryImpl())
-        EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackage.eINSTANCE)
-        EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE)
-        EPackage.Registry.INSTANCE.put(CorrespondencePackage.eNS_URI, CorrespondencePackageImpl.eINSTANCE)
-        EPackage.Registry.INSTANCE.put(AtomicPackage.eNS_URI, AtomicPackageImpl.eINSTANCE)
 
-        JavaSetup.prepareFactories()
-        JavaSetup.resetClasspathAndRegisterStandardLibrary()
-
-        EcorePlugin.ExtensionProcessor.process(null)
+    private fun generateJavaExampleModel() {
+        val view = getJavaView().withChangeDerivingTrait()
+        view.registerRoot(createPackageModel(), javaUri)
+        view.commitChanges()
+        view.close()
     }
 
-    private fun genrateJavaCode() {
+    fun createPackageModel(): CompilationUnit {
+        val root = ClassifiersFactory.eINSTANCE.createClass()
+        root.name = "Class1"
+        root.makePublic()
+        val member = MembersFactory.eINSTANCE.createField()
+        member.name = "myIntAttribute"
+        root.members.add(member)
 
-        val fileName = "TestClass.java"
-        try {
-            val inputStream: InputStream = FileInputStream("vitruv_server/src/main/resources/Dodo.java")
-            val rootw = JaMoPPJDTSingleFileParser().parse(fileName, inputStream) as CompilationUnit
-            val classs = rootw.classifiers[0] as tools.mdsd.jamopp.model.java.classifiers.Class
+        val intType = TypesFactory.eINSTANCE.createInt()
 
+        val booleanType = TypesFactory.eINSTANCE.createBoolean()
+        member.typeReference = intType
 
-//
-//            val classJava = ClassifiersFactory.eINSTANCE.createClass()
-//            val obejectClass = classJava.objectClass
-//
-//            for (classifier in root.classifiers){
-//                if(classifier is Class){
-//                    classifier.defaultExtends = null
-//                }
-//            }
-            val umlPackage = UMLFactory.eINSTANCE.createPackage()
-            umlPackage.name = "examplePackage2"
-
-            val root = ClassifiersFactory.eINSTANCE.createClass()
-            root.name = "Dodo"
-            root.makePublic()
-            val member = MembersFactory.eINSTANCE.createField()
-            member.name = "myIntAttribute"
-            root.members.add(member)
-
-            val intType = TypesFactory.eINSTANCE.createInt()
-            member.typeReference = intType
+        val member1 = MembersFactory.eINSTANCE.createField()
+        member1.name = "myBooleanAttribute"
+        root.members.add(member1)
+        val intType1 = TypesFactory.eINSTANCE.createInt()
+        member1.typeReference = booleanType
+        val initialValue1 = LiteralsFactory.eINSTANCE.createBooleanLiteral()
+        initialValue1.isValue = true
+        member1.initialValue = initialValue1
 
 
-            val newClass = ClassifiersFactory.eINSTANCE.createClass()
-            newClass.name = "Dodo1"
-            root.makePublic()
-            val member1 = MembersFactory.eINSTANCE.createField()
-            member1.name = "myIntAttribute1"
-            root.members.add(member1)
-            val intType1 = tools.mdsd.jamopp.model.java.types.TypesFactory.eINSTANCE.createInt()
-            member1.typeReference = intType
+        val newClass = ClassifiersFactory.eINSTANCE.createClass()
+        newClass.name = "Class2"
+        root.makePublic()
+
+        val member2 = MembersFactory.eINSTANCE.createField()
+        member2.name = "myIntAttribute2"
+        newClass.members.add(member2)
+        val intType2 = TypesFactory.eINSTANCE.createInt()
+        member2.typeReference = intType2
+
+        val member3 = MembersFactory.eINSTANCE.createField()
+        member3.name = "myIntAttribute3"
+        newClass.members.add(member3)
+        val intType3 = TypesFactory.eINSTANCE.createInt()
+        member3.typeReference = intType3
+
+        val initialValue = LiteralsFactory.eINSTANCE.createDecimalIntegerLiteral()
+        initialValue.decimalValue = BigInteger.valueOf(5)
+        member2.initialValue = initialValue
 
 
-            val javaPackage = ContainersFactory.eINSTANCE.createPackage()
-            javaPackage.name = "testPackage"
-//            javaPackage.classifiers.add(root)
-//            javaPackage.classifiers.add(newClass)
-            //javaPackage.classifiers.add(classs)
-
-
-            val view = getJavaView().withChangeDerivingTrait()
-            view.registerRoot(umlPackage, umlUri)
-            view.commitChanges()
-            view.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        val javaPackage = ContainersFactory.eINSTANCE.createCompilationUnit()
+        javaPackage.name = "exampleCompilationUnit"
+        javaPackage.classifiers.add(root)
+        javaPackage.classifiers.add(newClass)
+        return javaPackage
     }
 
-    private fun generatePackage() {
+    private fun generateUmlExampleModel() {
         val factory = UMLFactory.eINSTANCE
         val examplePackage = factory.createPackage()
         examplePackage.name = "examplePackage"
@@ -237,17 +211,25 @@ class ServerInitializer {
     }
 
 
-    /**
-     * Returns the JAVA view
-     */
-    fun getJavaView(): View {
+    private fun registerFactories() {
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", XMIResourceFactoryImpl())
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("uml", UMLResourceFactoryImpl())
+        EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackage.eINSTANCE)
+        EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE)
+        EPackage.Registry.INSTANCE.put(CorrespondencePackage.eNS_URI, CorrespondencePackageImpl.eINSTANCE)
+        EPackage.Registry.INSTANCE.put(AtomicPackage.eNS_URI, AtomicPackageImpl.eINSTANCE)
+
+        JavaSetup.prepareFactories()
+        JavaSetup.resetClasspathAndRegisterStandardLibrary()
+
+        EcorePlugin.ExtensionProcessor.process(null)
+    }
+
+    private fun getJavaView(): View {
         return getView("JAVA", javaUri)
     }
 
-    /**
-     * Returns the UML view
-     */
-    fun getUMLView(): View {
+    private fun getUMLView(): View {
         return getView("UML", umlUri)
     }
 
@@ -267,11 +249,10 @@ class ServerInitializer {
     }
 
     private fun init(rootPath: Path): VirtualModel {
-        val uml2JavaPropagation = UmlToJavaChangePropagationSpecification()
-        val java2UmlPropagation = JavaToUmlChangePropagationSpecification()
         return VirtualModelBuilder()
-//            .withChangePropagationSpecification(uml2JavaPropagation)
-//            .withChangePropagationSpecification(java2UmlPropagation)
+            //change propagation specification commented out because it's not working on client side
+//            .withChangePropagationSpecification(UmlToJavaChangePropagationSpecification())
+//            .withChangePropagationSpecification(JavaToUmlChangePropagationSpecification())
             .withStorageFolder(rootPath)
             .withViewTypes(viewTypes.values)
             .withUserInteractorForResultProvider(TestInteractionResultProvider())

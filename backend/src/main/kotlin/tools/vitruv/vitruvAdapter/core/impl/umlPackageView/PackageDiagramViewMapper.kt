@@ -7,6 +7,10 @@ import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.core.impl.abstractMapper.UmlViewMapper
 import tools.vitruv.vitruvAdapter.core.impl.uml.UmlDiagram
 
+/**
+ * Represents a package diagram view mapper.
+ * This class is responsible for mapping the view content of a package diagram to windows and vice versa.
+ */
 class PackageDiagramViewMapper: UmlViewMapper() {
 
     /**

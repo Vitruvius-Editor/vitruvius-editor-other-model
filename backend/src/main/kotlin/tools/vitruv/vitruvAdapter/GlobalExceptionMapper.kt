@@ -13,16 +13,34 @@ import tools.vitruv.vitruvAdapter.exception.VitruviusConnectFailedException
  */
 @ControllerAdvice
 class GlobalExceptionMapper {
+    /**
+     * Maps a [ConnectionNotFoundException] to a 404 NOT FOUND response.
+     * @param e The exception that was thrown.
+     * @return A 404 NOT FOUND response.
+     * @see ConnectionNotFoundException
+     */
     @ExceptionHandler(ConnectionNotFoundException::class)
     fun handleConnectionNotFoundException(e: ConnectionNotFoundException): ResponseEntity<String> {
         return ResponseEntity("Connection not found", HttpStatus.NOT_FOUND)
     }
 
+    /**
+     * Maps a [DisplayViewNotFoundException] to a 404 NOT FOUND response.
+     * @param e The exception that was thrown.
+     * @return A 404 NOT FOUND response.
+     * @see DisplayViewNotFoundException
+     */
     @ExceptionHandler(DisplayViewNotFoundException::class)
     fun handleDisplayViewNotFoundException(e: DisplayViewNotFoundException): ResponseEntity<String> {
         return ResponseEntity("Display view not found", HttpStatus.NOT_FOUND)
     }
 
+    /**
+     * Maps a [VitruviusConnectFailedException] to a 502 BAD GATEWAY response.
+     * @param e The exception that was thrown.
+     * @return A 502 BAD GATEWAY response.
+     * @see VitruviusConnectFailedException
+     */
     @ExceptionHandler(VitruviusConnectFailedException::class)
     fun handleVitruviusConnectFailedException(e: VitruviusConnectFailedException): ResponseEntity<String> {
         return ResponseEntity("Could not connect to Vitruvius", HttpStatus.BAD_GATEWAY)
