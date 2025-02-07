@@ -3,6 +3,9 @@ package tools.vitruv.vitruvAdapter.core.impl.displayContentMapper
 import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.impl.VisualizerType
 
+/**
+ * This class is used to map the content of a window to a string.
+ */
 class TextDisplayContentMapper: DisplayContentMapper<String> {
 
     /**

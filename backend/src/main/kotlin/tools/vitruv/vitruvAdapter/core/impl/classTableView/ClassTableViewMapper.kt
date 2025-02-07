@@ -18,6 +18,10 @@ import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.TableDisplayCon
 import tools.vitruv.vitruvAdapter.core.impl.table.TableDTO
 import java.io.ByteArrayOutputStream
 
+/**
+ * Represents a class table view mapper.
+ * This class is responsible for mapping the view content of a class table to windows and vice versa.
+ */
 class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
 
 

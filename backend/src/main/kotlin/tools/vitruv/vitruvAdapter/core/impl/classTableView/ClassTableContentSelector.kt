@@ -7,6 +7,9 @@ import tools.mdsd.jamopp.model.java.containers.JavaRoot
 import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 import tools.vitruv.vitruvAdapter.core.impl.table.TableDTO
 
+/**
+ * Selects the content of a class table.
+ */
 class ClassTableContentSelector: ContentSelector<TableDTO<ClassTableEntry>> {
 
     override fun applySelection(

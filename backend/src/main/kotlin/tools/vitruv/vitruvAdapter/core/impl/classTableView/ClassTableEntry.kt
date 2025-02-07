@@ -6,6 +6,18 @@ import tools.vitruv.vitruvAdapter.core.impl.table.ColumnInfo
 
 /**
  * Represents a single entry in the class table.
+ * @param uuid The unique identifier of the class.
+ * @param viewRecommendations The view recommendations for the class.
+ * @param name The name of the class.
+ * @param visibility The visibility of the class.
+ * @param isAbstract Whether the class is abstract.
+ * @param isFinal Whether the class is final.
+ * @param superClassName The name of the superclass.
+ * @param interfaces The names of the interfaces the class implements.
+ * @param attributeCount The number of attributes the class has.
+ * @param methodCount The number of methods the class has.
+ * @param linesOfCode The number of lines of code in the class.
+ * @see ViewRecommendation
  */
 data class ClassTableEntry(
     @ColumnInfo(false, "", false)
