@@ -4,6 +4,10 @@ import tools.vitruv.vitruvAdapter.core.api.DisplayView
 
 /**
  * A response for a display view.
+ * @param name The name of the display view.
+ * @param viewTypeName The type of the view.
+ * @param viewMapperName The name of the view mapper.
+ * @param windowSelectorName The name of the window selector.
  */
 
 data class DisplayViewResponse(
