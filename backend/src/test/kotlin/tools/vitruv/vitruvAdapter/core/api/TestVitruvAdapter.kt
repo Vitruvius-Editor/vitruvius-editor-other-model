@@ -27,9 +27,13 @@ import tools.vitruv.vitruvAdapter.core.impl.DisplayViewRepository
 import tools.vitruv.vitruvAdapter.core.impl.GenericDisplayView
 import tools.vitruv.vitruvAdapter.core.impl.classTableView.ClassTableContentSelector
 import tools.vitruv.vitruvAdapter.core.impl.classTableView.ClassTableViewMapper
+import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.UmlDisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeViewMapper
 import tools.vitruv.vitruvAdapter.core.impl.selector.AllSelector
 import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeContentSelector
+import tools.vitruv.vitruvAdapter.core.impl.uml.*
+import tools.vitruv.vitruvAdapter.core.impl.umlClassView.ClassDiagramContentSelector
+import tools.vitruv.vitruvAdapter.core.impl.umlClassView.ClassDiagramViewMapper
 import java.nio.file.Path
 
 
@@ -57,8 +61,8 @@ class TestVitruvAdapter {
         JavaSetup.prepareFactories()
         JavaSetup.resetClasspathAndRegisterStandardLibrary()
 
-        //val vitruvClient: VitruvClient = VitruvClientFactory.create("localhost", 8000, Path.of("tools/vitruv/vitruvAdapter/tmp"))
-            val vitruvClient: VitruvClient = mock(VitruvClient::class.java)
+        val vitruvClient: VitruvClient = mock(VitruvClient::class.java)
+        
 
         adapter = VitruvAdapter()
 
@@ -70,11 +74,11 @@ class TestVitruvAdapter {
         val classTableContentSelector = ClassTableContentSelector()
         val classTableDisplayView = GenericDisplayView("ClassTable", "UML", ClassTableViewMapper() as ViewMapper<Any?>, AllSelector(),
             classTableContentSelector as ContentSelector<Any?>)
-
-        adapter.connectClient(vitruvClient)
-        displayViewRepository.registerDisplayView(sourceCodeDisplayView)
-        displayViewRepository.registerDisplayView(classTableDisplayView)
+        val classDiagramView = GenericDisplayView("ClassDiagram", "UML", ClassDiagramViewMapper() as ViewMapper<Any?>, AllSelector(),
+            ClassDiagramContentSelector() as ContentSelector<Any?>)
+        displayViewRepository.registerDisplayViews(setOf(sourceCodeDisplayView, classTableDisplayView, classDiagramView))
         adapter.setDisplayViewContainer(displayViewRepository)
+        adapter.connectClient(vitruvClient)
     }
 
     @Test
@@ -83,7 +87,56 @@ class TestVitruvAdapter {
         print(displayViews)
     }
 
-//   @Test
+
+=======
+//    @Test
+//    fun testClassDiagram(){
+//        val displayView = displayViewRepository.getDisplayView("ClassDiagram")!!
+//        val jsonViewInformation = JsonViewInformation(displayView.viewMapper.getDisplayContent())
+//
+//        //umll
+//        val umlNodes = listOf(
+//            UmlNode("", "Class1", "<<class>>",
+//                listOf(UmlAttribute("", UmlVisibility.PUBLIC, "attribute1", UmlType("", "Int"))), listOf(), listOf()),
+//            UmlNode("", "Class2", "<<class>>",
+//                listOf(UmlAttribute("", UmlVisibility.PUBLIC, "attribute2", UmlType("", "String"))), listOf(), listOf()),
+//            UmlNode("", "Interface3", "<<interface>>",
+//                listOf(), listOf(UmlMethod("", UmlVisibility.PUBLIC, "foo", listOf(UmlParameter("", "foo1", UmlType("", "String"))), UmlType("", "String"))), listOf()),
+//
+//        )
+//        val umlConnections = listOf<UmlConnection>()
+//        val testUmlDiagram = UmlDiagram(umlNodes, umlConnections)
+//        val window = Window("examplePackage2", testUmlDiagram)
+//
+//        val json = jsonViewInformation.parseWindowsToJson(listOf(window as Window<Any?>))
+//        val newContentString = adapter.editDisplayViewAndReturnNewContent(displayView, json)
+//        println(newContentString)
+//
+//        val secondUmlNodes = listOf(
+//            UmlNode("/0/Class1", "Class1", "<<class>>",
+//                listOf(UmlAttribute("/0/Class1/attribute1", UmlVisibility.PUBLIC, "attribute1",
+//                    UmlType("", "String"))), listOf(), listOf()),
+//            UmlNode("/0/Class2", "Class2", "<<class>>",
+//                listOf(UmlAttribute("/0/Class2/attribute2", UmlVisibility.PUBLIC, "attribute2",
+//                    UmlType("/0/Class1", "Class1"))), listOf(), listOf()),
+//            UmlNode("/0/Interface3", "Interface3", "<<interface>>",
+//                listOf(), listOf(UmlMethod("/0/Interface3/foo", UmlVisibility.PUBLIC, "foo", listOf(UmlParameter("", "foo1", UmlType("", "String"))), UmlType("", "String"))), listOf())
+//
+//        )
+//        val secondUmlConnections = listOf(
+//            UmlConnection("", "/0/Class1", "/0/Class2", UmlConnectionType.EXTENDS, "", "", ""),
+//            UmlConnection("", "/0/Class1", "/0/Interface3", UmlConnectionType.IMPLEMENTS, "", "", ""))
+//        val secondTestUmlDiagram = UmlDiagram(secondUmlNodes, secondUmlConnections)
+//        val secondWindow = Window("examplePackage2", secondTestUmlDiagram)
+//
+//        val json2 = jsonViewInformation.parseWindowsToJson(listOf(secondWindow as Window<Any?>))
+//        val newContentString2 = adapter.editDisplayViewAndReturnNewContent(displayView, json2)
+//
+//        println(newContentString2)
+//    }
+
+//    @Test
+
 //    fun testGetWindows(){
 //        val displayView = displayViewRepository.getDisplayView("SourceCode")!!
 //        val windows = adapter.getWindows(displayView)

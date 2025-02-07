@@ -127,6 +127,8 @@ class ServerInitializer {
 //                    classifier.defaultExtends = null
 //                }
 //            }
+            val umlPackage = UMLFactory.eINSTANCE.createPackage()
+            umlPackage.name = "examplePackage2"
 
             val root = ClassifiersFactory.eINSTANCE.createClass()
             root.name = "Dodo"
@@ -157,7 +159,7 @@ class ServerInitializer {
 
 
             val view = getJavaView().withChangeDerivingTrait()
-            view.registerRoot(javaPackage, javaUri)
+            view.registerRoot(umlPackage, umlUri)
             view.commitChanges()
             view.close()
         } catch (e: Exception) {

@@ -1,8 +1,9 @@
 import { Visualizer } from "./Visualizer";
 import { Extractor } from "./Extractor";
-import { injectable } from "@theia/core/shared/inversify";
+import {inject, injectable} from "@theia/core/shared/inversify";
 import { Content } from "../model/Content";
 import { VisualisationWidget } from "./VisualisationWidget";
+import {ApplicationShell} from "@theia/core/lib/browser/shell/application-shell";
 
 /**
  * The DisplayViewResolver class is responsible for managing the registration and resolution
@@ -11,6 +12,7 @@ import { VisualisationWidget } from "./VisualisationWidget";
 @injectable()
 export class DisplayViewResolver {
   readonly mappings: Map<string, [Visualizer, Extractor]>;
+  @inject(ApplicationShell) protected readonly shell: ApplicationShell;
 
   /**
    * Creates a new DisplayViewResolver instance.
@@ -39,11 +41,19 @@ export class DisplayViewResolver {
    * @param content - The content for which the widget is being retrieved.
    */
   getWidget(content: Content): Promise<VisualisationWidget<any>> | null {
-    return (
-      this.mappings
-        .get(content.visualizerName)?.[0]
-        .visualizeContent(content) ?? null
-    );
+    let widget
+        = this.mappings.get(content.visualizerName)?.[0].visualizeContent(content);
+    if (widget !== undefined) {
+      return widget.then(w => {
+        this.shell.addWidget(w, { area: "main", mode: "tab-before" })
+            .then(() => {
+              this.shell.activateWidget(w.id);
+            });
+        return w;
+      })
+    } else {
+      return widget ?? null;
+    }
   }
 
   /**

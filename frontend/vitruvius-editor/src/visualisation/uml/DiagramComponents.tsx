@@ -1,4 +1,4 @@
-import {DefaultLinkFactory, DefaultLinkModel, DefaultNodeModel, DefaultPortModel } from '@projectstorm/react-diagrams-defaults';
+import { DefaultLinkFactory, DefaultLinkModel, DefaultNodeModel, DefaultPortModel } from '@projectstorm/react-diagrams-defaults';
 import * as React from 'react';
 import { DiagramEngine, LinkWidget, PointModel } from '@projectstorm/react-diagrams-core';
 import { DefaultLinkPointWidget, DefaultLinkSegmentWidget } from '@projectstorm/react-diagrams-defaults';
@@ -7,22 +7,27 @@ import { DefaultLinkPointWidget, DefaultLinkSegmentWidget } from '@projectstorm/
  * The UMLNode class represents a UML class node in the React diagram.
  */
 export class UMLNode extends DefaultNodeModel {
-  classID: string
+  classID: string;
 
-  constructor(classID :string, text: string) {
+  constructor(classID: string, text: string) {
     super({
       name: text,
       color: 'rgb(145, 145, 145)'
     });
     this.classID = classID;
-    // this.addPort(new AdvancedPortModel(true, 'a'));
   }
 
-  getClassID() {
+  /**
+   * Returns the class ID of the UML node.
+   */
+  getClassID(): string {
     return this.classID;
   }
 
-  getPort() :DefaultPortModel {
+  /**
+   * Returns the first port of the UML node.
+   */
+  getPort(): DefaultPortModel {
     //@ts-ignore
     return this.ports[0];
   }
@@ -34,37 +39,45 @@ export class UMLNode extends DefaultNodeModel {
 export class UMLRelation extends DefaultLinkModel {
   private readonly fromPort: DefaultPortModel | null;
   private readonly toPort: DefaultPortModel | null;
-    constructor(type: string, label: string, From : UMLNode, To : UMLNode) {
-        super({
-        type: 'advanced',
-        curvyness: 0,
-        color: 'black',
-        selectedColor: 'black'
-        });
 
-        switch (type)
-      {
-        case 'default': {
-          this.fromPort = From.addPort(new DefaultPortModel(false, 'out'));
-          this.toPort = To.addPort(new DefaultPortModel(true, 'in'));
-          this.fromPort.link(this.toPort, new DefaultLinkFactory());
-          break;
-        }
-        case "advanced": {
-          this.fromPort = From.addPort(new ArrowPortModel(false, 'out'));
-          this.toPort = To.addPort(new ArrowPortModel(true, 'in'));
-          this.fromPort.link(this.toPort, new ArrowLinkFactory());
-          break;
-        }
+  constructor(type: string, label: string, from: UMLNode, to: UMLNode) {
+    super({
+      type: 'advanced',
+      curvyness: 0,
+      color: 'black',
+      selectedColor: 'black'
+    });
+
+    switch (type) {
+      case 'default': {
+        this.fromPort = from.addPort(new DefaultPortModel(false, 'out'));
+        this.toPort = to.addPort(new DefaultPortModel(true, 'in'));
+        this.fromPort.link(this.toPort, new DefaultLinkFactory());
+        break;
       }
-
-      this.setLocked(true);
-      this.setSourcePort(this.fromPort);
-      this.setTargetPort(this.toPort);
-      this.addLabel(label);
+      case 'advanced': {
+        this.fromPort = from.addPort(new ArrowPortModel(false, 'out'));
+        this.toPort = to.addPort(new ArrowPortModel(true, 'in'));
+        this.fromPort.link(this.toPort, new ArrowLinkFactory());
+        break;
+      }
+      default: {
+        this.fromPort = null;
+        this.toPort = null;
+        break;
+      }
     }
+
+    this.setLocked(true);
+    this.setSourcePort(this.fromPort);
+    this.setTargetPort(this.toPort);
+    this.addLabel(label);
+  }
 }
 
+/**
+ * The AdvancedLinkModel class represents an advanced link model in the React diagram.
+ */
 export class AdvancedLinkModel extends DefaultLinkModel {
   constructor() {
     super({
@@ -74,12 +87,18 @@ export class AdvancedLinkModel extends DefaultLinkModel {
   }
 }
 
+/**
+ * The ArrowPortModel class represents a port model with arrow links in the React diagram.
+ */
 export class ArrowPortModel extends DefaultPortModel {
   createLinkModel(): AdvancedLinkModel {
     return new AdvancedLinkModel();
   }
 }
 
+/**
+ * CustomLinkArrowWidget component renders an arrow at the end of a link.
+ */
 const CustomLinkArrowWidget = (props: { color?: any; point?: any; previousPoint?: any; }) => {
   const { point, previousPoint } = props;
 
@@ -92,10 +111,9 @@ const CustomLinkArrowWidget = (props: { color?: any; point?: any; previousPoint?
           180) /
       Math.PI;
 
-  //translate(50, -10),
   return (
-      <g className="arrow" transform={'translate(' + point.getPosition().x + ', ' + point.getPosition().y + ')'}>
-        <g style={{ transform: 'rotate(' + angle + 'deg)' }}>
+      <g className="arrow" transform={`translate(${point.getPosition().x}, ${point.getPosition().y})`}>
+        <g style={{ transform: `rotate(${angle}deg)` }}>
           <g transform={'translate(0, -3)'}>
             <polygon
                 points="0,10 8,30 -8,30"
@@ -117,6 +135,9 @@ export interface AdvancedLinkWidgetProps {
   selected?: (event: MouseEvent) => any;
 }
 
+/**
+ * AdvancedLinkWidget component renders an advanced link with points and arrows.
+ */
 export class AdvancedLinkWidget extends React.Component<AdvancedLinkWidgetProps> {
   generatePoint = (point: PointModel): JSX.Element => {
     return (
@@ -166,7 +187,7 @@ export class AdvancedLinkWidget extends React.Component<AdvancedLinkWidgetProps>
             key={point.getID()}
             point={point as any}
             previousPoint={previousPoint as any}
-            //@ts-ignore
+            // @ts-ignore
             colorSelected={this.props.link.getOptions().selectedColor}
             color={this.props.link.getOptions().color}
         />
@@ -174,11 +195,9 @@ export class AdvancedLinkWidget extends React.Component<AdvancedLinkWidgetProps>
   }
 
   render() {
-    //ensure id is present for all points on the path
-    var points = this.props.link.getPoints();
-    var paths = [];
+    const points = this.props.link.getPoints();
+    const paths = [];
 
-    //draw the multiple anchors and complex line instead
     for (let j = 0; j < points.length - 1; j++) {
       paths.push(
           this.generateLink(
@@ -195,7 +214,6 @@ export class AdvancedLinkWidget extends React.Component<AdvancedLinkWidgetProps>
       );
     }
 
-    //render the circles
     for (let i = 1; i < points.length - 1; i++) {
       paths.push(this.generatePoint(points[i]));
     }
@@ -210,6 +228,9 @@ export class AdvancedLinkWidget extends React.Component<AdvancedLinkWidgetProps>
   }
 }
 
+/**
+ * The ArrowLinkFactory class generates advanced link models and widgets.
+ */
 export class ArrowLinkFactory extends DefaultLinkFactory {
   constructor() {
     super('advanced');
@@ -223,3 +244,5 @@ export class ArrowLinkFactory extends DefaultLinkFactory {
     return <AdvancedLinkWidget link={event.model} diagramEngine={this.engine} />;
   }
 }
+
+export type DiagramContent = { nodes: UMLNode[], links: UMLRelation[] };

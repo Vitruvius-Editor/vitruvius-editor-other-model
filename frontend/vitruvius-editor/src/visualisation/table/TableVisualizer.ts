@@ -19,8 +19,6 @@ export class TableVisualizer implements Visualizer {
 				.getOrCreateWidget(TableWidget.ID, contentWindow.name)
 				.then(widget => {
 						(widget as TableWidget).updateContent(parsed);
-						this.shell.addWidget(widget, { area: "main" });
-						this.shell.activateWidget(widget.id);
 						return widget as VisualisationWidget<string>;
 				})
   }
