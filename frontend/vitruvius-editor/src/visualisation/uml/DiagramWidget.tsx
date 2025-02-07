@@ -65,9 +65,13 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
     this.engine.setModel(model);
     this.disableDrag();
 
+    // useLayoutEffect is supposed to be called after the first render, but it doesn't work here yet
+
     // useLayoutEffect(() => {
     //   this.dagre();
     // }, []);
+
+    // this.dagre();
 
     return (
         <div className="editor-container">
