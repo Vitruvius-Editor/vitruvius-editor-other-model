@@ -29,6 +29,8 @@ import {DiagramWidget} from "../visualisation/uml/DiagramWidget";
 import {DiagramVisualizer} from "../visualisation/uml/DiagramVisualizer";
 import {DiagramExtractor} from "../visualisation/uml/DiagramExtractor";
 import {VisualisationWidgetRegistry} from "../visualisation/VisualisationWidgetRegistry";
+import {HelpWidgetContribution} from "./helpWidgetContribution";
+import {HelpWidget} from "./helpWidget";
 
 /**
  * This ContainerModule binds the services and contributions of the frontend part of the application.
@@ -121,6 +123,20 @@ export default new ContainerModule((bind) => {
             id: DisplayViewWidget.ID,
             createWidget: () =>
                 ctx.container.get<DisplayViewWidget>(DisplayViewWidget),
+        }))
+        .inSingletonScope();
+
+    // All bindings for the widget that shows the help dialog
+    bindViewContribution(bind, HelpWidgetContribution);
+    bind(FrontendApplicationContribution).toService(
+        HelpWidgetContribution,
+    );
+    bind(HelpWidget).toSelf();
+    bind(WidgetFactory)
+        .toDynamicValue((ctx) => ({
+            id: HelpWidget.ID,
+            createWidget: () =>
+                ctx.container.get<HelpWidget>(HelpWidget),
         }))
         .inSingletonScope();
 });
