@@ -13,14 +13,14 @@ import org.eclipse.uml2.uml.UMLFactory
 import org.eclipse.uml2.uml.UMLPackage
 import org.eclipse.uml2.uml.VisibilityKind
 import org.eclipse.uml2.uml.internal.impl.LiteralIntegerImpl
-import org.eclipse.uml2.uml.internal.impl.UMLPackageImpl
 import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl
 import tools.mdsd.jamopp.model.java.JavaPackage
+import tools.mdsd.jamopp.model.java.classifiers.ClassifiersFactory
 import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.mdsd.jamopp.model.java.containers.ContainersFactory
-import tools.mdsd.jamopp.model.java.expressions.ExpressionsFactory
-import tools.mdsd.jamopp.model.java.impl.JavaPackageImpl
 import tools.mdsd.jamopp.model.java.literals.LiteralsFactory
+import tools.mdsd.jamopp.model.java.members.MembersFactory
+import tools.mdsd.jamopp.model.java.types.TypesFactory
 import tools.vitruv.applications.util.temporary.java.*
 import tools.vitruv.change.atomic.AtomicPackage
 import tools.vitruv.change.atomic.impl.AtomicPackageImpl
@@ -35,7 +35,6 @@ import tools.vitruv.framework.views.impl.IdentityMappingViewType
 import tools.vitruv.framework.vsum.VirtualModel
 import tools.vitruv.framework.vsum.VirtualModelBuilder
 import java.io.IOException
-import java.math.BigDecimal
 import java.math.BigInteger
 import java.nio.file.Files
 import java.nio.file.Path
@@ -92,63 +91,53 @@ class ServerInitializer {
     }
 
     fun createPackageModel(): CompilationUnit {
+        val root = ClassifiersFactory.eINSTANCE.createClass()
+        root.name = "Class1"
+        root.makePublic()
+        val member = MembersFactory.eINSTANCE.createField()
+        member.name = "myIntAttribute"
+        root.members.add(member)
+
+        val intType = TypesFactory.eINSTANCE.createInt()
+
+        val booleanType = TypesFactory.eINSTANCE.createBoolean()
+        member.typeReference = intType
+
+        val member1 = MembersFactory.eINSTANCE.createField()
+        member1.name = "myBooleanAttribute"
+        root.members.add(member1)
+        val intType1 = TypesFactory.eINSTANCE.createInt()
+        member1.typeReference = booleanType
+        val initialValue1 = LiteralsFactory.eINSTANCE.createBooleanLiteral()
+        initialValue1.isValue = true
+        member1.initialValue = initialValue1
+
+
+        val newClass = ClassifiersFactory.eINSTANCE.createClass()
+        newClass.name = "Class2"
+        root.makePublic()
+
+        val member2 = MembersFactory.eINSTANCE.createField()
+        member2.name = "myIntAttribute2"
+        newClass.members.add(member2)
+        val intType2 = TypesFactory.eINSTANCE.createInt()
+        member2.typeReference = intType2
+
+        val member3 = MembersFactory.eINSTANCE.createField()
+        member3.name = "myIntAttribute3"
+        newClass.members.add(member3)
+        val intType3 = TypesFactory.eINSTANCE.createInt()
+        member3.typeReference = intType3
+
+        val initialValue = LiteralsFactory.eINSTANCE.createDecimalIntegerLiteral()
+        initialValue.decimalValue = BigInteger.valueOf(5)
+        member2.initialValue = initialValue
+
+
         val javaPackage = ContainersFactory.eINSTANCE.createCompilationUnit()
-        javaPackage.name = "examplePackage"
-        val intType = JavaStandardType.createJavaPrimitiveType("int")
-        val booleanType = JavaStandardType.createJavaPrimitiveType("boolean")
-        val testClass1 = JavaContainerAndClassifierUtil.createJavaClass("Class1", JavaVisibility.PUBLIC, true, false)
-
-        val fieldA =
-            JavaMemberAndParameterUtil.createJavaAttribute("fieldA", intType, JavaVisibility.PRIVATE, false, false)
-
-        val fieldAInitialValue = LiteralsFactory.eINSTANCE.createDecimalIntegerLiteral()
-        fieldAInitialValue.decimalValue = BigInteger.valueOf(5)
-        fieldA.initialValue = fieldAInitialValue
-
-        testClass1.members.add(fieldA)
-        val fieldB =
-            JavaMemberAndParameterUtil.createJavaAttribute("fieldB", booleanType, JavaVisibility.PRIVATE, true, true)
-
-        val fieldBInitialValue = LiteralsFactory.eINSTANCE.createBooleanLiteral()
-        fieldBInitialValue.isValue = false
-        fieldB.initialValue = fieldBInitialValue
-        testClass1.members.add(fieldB)
-
-        val param1 = JavaMemberAndParameterUtil.createJavaParameter("param1", intType)
-        val param2 = JavaMemberAndParameterUtil.createJavaParameter("param2", booleanType)
-        val classMethod1 = JavaMemberAndParameterUtil.createJavaClassMethod(
-            "method1",
-            intType,
-            JavaVisibility.PUBLIC,
-            false,
-            false,
-            listOf(param1, param2)
-        )
-        testClass1.members.add(classMethod1)
-
-
-        val testClass2 = JavaContainerAndClassifierUtil.createJavaClass("Class2", JavaVisibility.PUBLIC, false, false)
-        val fieldC =
-            JavaMemberAndParameterUtil.createJavaAttribute("fieldC", intType, JavaVisibility.PRIVATE, false, false)
-        testClass2.members.add(fieldC)
-        val fieldD =
-            JavaMemberAndParameterUtil.createJavaAttribute("fieldD", booleanType, JavaVisibility.PRIVATE, true, true)
-        testClass2.members.add(fieldD)
-        val classMethod2 = JavaMemberAndParameterUtil.createJavaClassMethod(
-            "add",
-            intType,
-            JavaVisibility.PUBLIC,
-            false,
-            false,
-            listOf(param1, param2)
-        )
-
-
-        testClass2.members.add(classMethod2)
-
-
-        javaPackage.classifiers.add(testClass1)
-        javaPackage.classifiers.add(testClass2)
+        javaPackage.name = "exampleCompilationUnit"
+        javaPackage.classifiers.add(root)
+        javaPackage.classifiers.add(newClass)
         return javaPackage
     }
 
