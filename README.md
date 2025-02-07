@@ -59,6 +59,24 @@ If you prefer not to use Docker, you can build and run the Vitruvius Editor manu
 
 4. Once you have built both the frontend and backend components, you can start the Vitruvius Editor server and access it at `http://localhost:3000`.
 
+## Demo Project
+
+To run the demo project, you can use the `compose-demo.yml` file. This file contains the necessary configuration to set up and run the demo with an example Vitruvius server using Docker Compose.
+
+### Running the Demo
+
+To run the demo, execute the following command:
+
+```sh
+sudo docker-compose -f compose-demo.yml up
+```
+
+**Notice:** Root privileges are required to run the demo compose because it uses Docker's host networking feature.
+
+### Loading the demo project
+
+After starting the containers navigate to [http://localhost:3000](http://localhost:3000) and select the import option in the Vitruvius menu. Select any name and description and set the hostname to **localhost** and the port to **8000**.
+
 ## License
 
 Vitruvius Editor is licensed under the [Eclipse Public License 2.0](LICENSE).
