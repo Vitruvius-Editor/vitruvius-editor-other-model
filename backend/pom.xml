@@ -77,6 +77,15 @@
       <id>local-maven-repo</id>
       <url>file:///${project.basedir}/Dependencies</url>
     </repository>
+    <repository>
+      <id>eclipse-snapshots</id>
+      <url>https://repo.eclipse.org/content/repositories/eclipse-snapshots/</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+
+
   </repositories>
   <dependencies>
     <dependency>
@@ -165,6 +174,49 @@
     </dependency>
 
     <dependency>
+      <groupId>org.eclipse</groupId>
+      <artifactId>common</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse</groupId>
+      <artifactId>common</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse</groupId>
+      <artifactId>emf.mapping</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse</groupId>
+      <artifactId>uml2.uml.resource</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse</groupId>
+      <artifactId>uml2.uml.standard</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tools.vitruv</groupId>
+      <artifactId>tools.vitruv.applications.util.temporary</artifactId>
+      <version>3.0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tools.vitruv</groupId>
+      <artifactId>tools.vitruv.applications.umljava</artifactId>
+      <version>3.0.1-SNAPSHOT</version>
+    </dependency>
+
+
+
+    <dependency>
       <groupId>tools.vitruv</groupId>
       <artifactId>tools.vitruv.framework.remote</artifactId>
       <version>3.1.0</version>
@@ -210,7 +262,7 @@
       <version>${kotlin.version}</version>
       <scope>test</scope>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.eclipse.uml2/org.eclipse.uml2.uml.ecore.importer -->
+
     <dependency>
       <groupId>local.uml2</groupId>
       <artifactId>uml</artifactId>
@@ -233,6 +285,20 @@
       <version>5.4.0</version> <!-- or the latest version -->
       <scope>test</scope>
     </dependency>
+
+
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.core.runtime</artifactId>
+      <version>3.30.0</version> <!-- Check the latest stable version -->
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+      <version>2.38.0</version>
+      <scope>compile</scope>
+    </dependency>
+
   </dependencies>
   <build>
     <sourceDirectory>src/main/kotlin</sourceDirectory>

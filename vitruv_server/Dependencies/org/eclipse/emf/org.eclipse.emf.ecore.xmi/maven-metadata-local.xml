@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.eclipse.emf</groupId>
+  <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+  <versioning>
+    <versions>
+      <version>2.38.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20250206152525</lastUpdated>
+  </versioning>
+</metadata>

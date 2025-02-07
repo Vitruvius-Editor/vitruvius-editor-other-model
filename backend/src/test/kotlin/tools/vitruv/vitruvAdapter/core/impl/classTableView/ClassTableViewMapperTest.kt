@@ -29,6 +29,8 @@ class ClassTableViewMapperTest {
 
 
     val attribute = umlClass.createOwnedAttribute("myIntAttribute", null)
+
+
     attribute.visibility = org.eclipse.uml2.uml.VisibilityKind.PUBLIC_LITERAL
 
      val inputStream: InputStream = FileInputStream("src/test/kotlin/tools/vitruv/vitruvAdapter/core/impl/classTableView/class1")

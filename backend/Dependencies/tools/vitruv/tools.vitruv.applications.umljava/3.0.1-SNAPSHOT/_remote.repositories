@@ -1,4 +1,4 @@
 #NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
-#Mon Feb 03 15:50:17 CET 2025
-tools.vitruv.applications.umljava-3.0.1-SNAPSHOT.jar>=
+#Thu Feb 06 14:27:46 CET 2025
 tools.vitruv.applications.umljava-3.0.1-SNAPSHOT.pom>=
+tools.vitruv.applications.umljava-3.0.1-SNAPSHOT.jar>=

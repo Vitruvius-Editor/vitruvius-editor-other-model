@@ -1,13 +1,18 @@
 package tools.vitruv.vitruvAdapter.core.api
 
 import org.eclipse.emf.ecore.EPackage
+import org.eclipse.emf.ecore.plugin.EcorePlugin
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 import org.eclipse.uml2.uml.UMLPackage
 import org.eclipse.uml2.uml.internal.impl.UMLPackageImpl
+import org.eclipse.uml2.uml.internal.resource.UML22UMLResourceFactoryImpl
+import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl
 import org.springframework.stereotype.Service
 import tools.mdsd.jamopp.model.java.JavaPackage
 import tools.mdsd.jamopp.model.java.impl.JavaPackageImpl
+import tools.vitruv.applications.util.temporary.java.JamoppLibraryHelper
+import tools.vitruv.applications.util.temporary.java.JavaSetup
 import tools.vitruv.change.atomic.AtomicPackage
 import tools.vitruv.change.atomic.impl.AtomicPackageImpl
 import tools.vitruv.change.correspondence.CorrespondencePackage
@@ -28,11 +33,20 @@ import tools.vitruv.vitruvAdapter.exception.DisplayViewException
 @Service
 class VitruvAdapter {
     init {
+
         Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", XMIResourceFactoryImpl())
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("uml", UMLResourceFactoryImpl())
+        EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackageImpl.eINSTANCE)
         EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackageImpl.eINSTANCE)
         EPackage.Registry.INSTANCE.put(CorrespondencePackage.eNS_URI, CorrespondencePackageImpl.eINSTANCE)
         EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackageImpl.eINSTANCE)
         EPackage.Registry.INSTANCE.put(AtomicPackage.eNS_URI, AtomicPackageImpl.eINSTANCE)
+
+        JavaSetup.prepareFactories()
+        JavaSetup.resetClasspathAndRegisterStandardLibrary()
+
+        EcorePlugin.ExtensionProcessor.process(null)
+
     }
     private var vitruvClient: VitruvClient? = null
     private var displayViewContainer: DisplayViewContainer? = null
