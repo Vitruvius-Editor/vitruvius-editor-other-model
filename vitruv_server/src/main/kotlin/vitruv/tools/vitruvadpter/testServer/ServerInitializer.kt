@@ -13,15 +13,13 @@ import org.eclipse.uml2.uml.UMLFactory
 import org.eclipse.uml2.uml.UMLPackage
 import org.eclipse.uml2.uml.VisibilityKind
 import org.eclipse.uml2.uml.internal.impl.LiteralIntegerImpl
+import org.eclipse.uml2.uml.internal.impl.UMLPackageImpl
 import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl
 import tools.mdsd.jamopp.model.java.JavaPackage
-import tools.mdsd.jamopp.model.java.classifiers.ClassifiersFactory
 import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.mdsd.jamopp.model.java.containers.ContainersFactory
-import tools.mdsd.jamopp.model.java.members.MembersFactory
-import tools.mdsd.jamopp.model.java.types.TypesFactory
-import tools.mdsd.jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser
-import tools.vitruv.applications.util.temporary.java.JavaSetup
+import tools.mdsd.jamopp.model.java.impl.JavaPackageImpl
+import tools.vitruv.applications.util.temporary.java.*
 import tools.vitruv.change.atomic.AtomicPackage
 import tools.vitruv.change.atomic.impl.AtomicPackageImpl
 import tools.vitruv.change.correspondence.CorrespondencePackage
@@ -34,9 +32,7 @@ import tools.vitruv.framework.views.ViewType
 import tools.vitruv.framework.views.impl.IdentityMappingViewType
 import tools.vitruv.framework.vsum.VirtualModel
 import tools.vitruv.framework.vsum.VirtualModelBuilder
-import java.io.FileInputStream
 import java.io.IOException
-import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -78,71 +74,71 @@ class ServerInitializer {
         vsum = init(rootPath)
 
         server = VitruvServer(VirtualModelInitializer { vsum }, serverPort, host)
-        generatePackage()
-        generateJavaCode()
+        generateUmlExampleModel()
+        generateJavaExampleModel()
         return server
     }
 
 
-    private fun generateJavaCode() {
-
-        val fileName = "TestClass.java"
-        try {
-            val inputStream: InputStream = FileInputStream("vitruv_server/src/main/resources/Dodo.java")
-            val rootw = JaMoPPJDTSingleFileParser().parse(fileName, inputStream) as CompilationUnit
-            val classs = rootw.classifiers[0] as tools.mdsd.jamopp.model.java.classifiers.Class
-
-
-//
-//            val classJava = ClassifiersFactory.eINSTANCE.createClass()
-//            val obejectClass = classJava.objectClass
-//
-//            for (classifier in root.classifiers){
-//                if(classifier is Class){
-//                    classifier.defaultExtends = null
-//                }
-//            }
-            val umlPackage = UMLFactory.eINSTANCE.createPackage()
-            umlPackage.name = "examplePackage2"
-
-            val root = ClassifiersFactory.eINSTANCE.createClass()
-            root.name = "Dodo"
-            root.makePublic()
-            val member = MembersFactory.eINSTANCE.createField()
-            member.name = "myIntAttribute"
-            root.members.add(member)
-
-            val intType = TypesFactory.eINSTANCE.createInt()
-            member.typeReference = intType
-
-
-            val newClass = ClassifiersFactory.eINSTANCE.createClass()
-            newClass.name = "Dodo1"
-            root.makePublic()
-            val member1 = MembersFactory.eINSTANCE.createField()
-            member1.name = "myIntAttribute1"
-            root.members.add(member1)
-            val intType1 = tools.mdsd.jamopp.model.java.types.TypesFactory.eINSTANCE.createInt()
-            member1.typeReference = intType
-
-
-            val javaPackage = ContainersFactory.eINSTANCE.createPackage()
-            javaPackage.name = "testPackage"
-//            javaPackage.classifiers.add(root)
-//            javaPackage.classifiers.add(newClass)
-            //javaPackage.classifiers.add(classs)
-
-
-            val view = getJavaView().withChangeDerivingTrait()
-            view.registerRoot(umlPackage, umlUri)
-            view.commitChanges()
-            view.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+    private fun generateJavaExampleModel() {
+        val view = getJavaView().withChangeDerivingTrait()
+        view.registerRoot(createPackageModel(), javaUri)
+        view.commitChanges()
+        view.close()
     }
 
-    private fun generatePackage() {
+    fun createPackageModel(): CompilationUnit {
+        val javaPackage = ContainersFactory.eINSTANCE.createCompilationUnit()
+        javaPackage.name = "examplePackage"
+        val intType = JavaStandardType.createJavaPrimitiveType("int")
+        val booleanType = JavaStandardType.createJavaPrimitiveType("boolean")
+        val testClass1 = JavaContainerAndClassifierUtil.createJavaClass("Class1", JavaVisibility.PUBLIC, true, false)
+
+        val fieldA =
+            JavaMemberAndParameterUtil.createJavaAttribute("fieldA", intType, JavaVisibility.PRIVATE, false, false)
+        testClass1.members.add(fieldA)
+        val fieldB =
+            JavaMemberAndParameterUtil.createJavaAttribute("fieldB", booleanType, JavaVisibility.PRIVATE, true, true)
+        testClass1.members.add(fieldB)
+        val param1 = JavaMemberAndParameterUtil.createJavaParameter("param1", intType)
+        val param2 = JavaMemberAndParameterUtil.createJavaParameter("param2", booleanType)
+        val classMethod1 = JavaMemberAndParameterUtil.createJavaClassMethod(
+            "method1",
+            intType,
+            JavaVisibility.PUBLIC,
+            false,
+            false,
+            listOf(param1, param2)
+        )
+        testClass1.members.add(classMethod1)
+
+
+        val testClass2 = JavaContainerAndClassifierUtil.createJavaClass("Class2", JavaVisibility.PUBLIC, false, false)
+        val fieldC =
+            JavaMemberAndParameterUtil.createJavaAttribute("fieldC", intType, JavaVisibility.PRIVATE, false, false)
+        testClass2.members.add(fieldC)
+        val fieldD =
+            JavaMemberAndParameterUtil.createJavaAttribute("fieldD", booleanType, JavaVisibility.PRIVATE, true, true)
+        testClass2.members.add(fieldD)
+        val classMethod2 = JavaMemberAndParameterUtil.createJavaClassMethod(
+            "add",
+            intType,
+            JavaVisibility.PUBLIC,
+            false,
+            false,
+            listOf(param1, param2)
+        )
+
+
+        testClass2.members.add(classMethod2)
+
+
+        javaPackage.classifiers.add(testClass1)
+        javaPackage.classifiers.add(testClass2)
+        return javaPackage
+    }
+
+    private fun generateUmlExampleModel() {
         val factory = UMLFactory.eINSTANCE
         val examplePackage = factory.createPackage()
         examplePackage.name = "examplePackage"
