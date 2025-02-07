@@ -8,7 +8,7 @@ export type DiagramNode = {
     name: string,
     attributes: {
         uuid: string,
-        visibility: "PUBLIC" | "PRIVATE" | "PROTECTED",
+        visibility: VisibilityModifier,
         name: string,
         type: {
             uuid: string,
@@ -17,7 +17,7 @@ export type DiagramNode = {
     }[],
     methods: {
         uuid: string,
-        visibility: "PUBLIC" | "PRIVATE" | "PROTECTED",
+        visibility: VisibilityModifier,
         name: string,
         parameters: {
             uuid: string,
@@ -47,3 +47,14 @@ export type DiagramConnection = {
     targetMultiplicity: string,
     connectionName: string,
 };
+
+export type VisibilityModifier = "PUBLIC" | "PRIVATE" | "PROTECTED"; 
+
+export function visibilitySymbol(visibilityModifier: VisibilityModifier): string {
+    switch(visibilityModifier) {
+        case "PUBLIC": return "+";
+        case "PRIVATE": return "-";
+        case "PROTECTED": return "#";
+        default: return "";
+    }
+}
