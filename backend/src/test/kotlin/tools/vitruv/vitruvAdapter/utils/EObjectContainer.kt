@@ -1,11 +1,15 @@
 package tools.vitruv.vitruvAdapter.utils
 
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.uml2.uml.Package
 import org.eclipse.uml2.uml.PackageableElement
 import org.eclipse.uml2.uml.UMLFactory
+import tools.mdsd.jamopp.model.java.classifiers.Class
 import tools.mdsd.jamopp.model.java.classifiers.ClassifiersFactory
 import tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier
+import tools.mdsd.jamopp.model.java.classifiers.Interface
 import tools.mdsd.jamopp.model.java.containers.ContainersFactory
+import tools.mdsd.jamopp.model.java.containers.JavaRoot
 import tools.mdsd.jamopp.model.java.literals.LiteralsFactory
 import tools.mdsd.jamopp.model.java.members.MembersFactory
 import tools.mdsd.jamopp.model.java.parameters.ParametersFactory
@@ -23,39 +27,79 @@ class EObjectContainer private constructor() {
         /**
          * Returns a container with a Java and Uml Class, only containing attributes.
          */
-        fun getContainer1(): List<EObject> {
+        fun getContainer1AsRootObjects(): List<EObject> {
+            val javaPackage = getJavaPackage1()
+            val umlPackage = getUmlPackage1()
+            addClassifiersToJavaPackage(listOf(getJavaClass1()), javaPackage)
+            addClassifiersToUmlPackage(listOf(getUmlClass1()), umlPackage)
             return listOf(getJavaPackage1(), getUmlPackage1())
         }
 
-        private fun getJavaPackage1(): EObject {
-            val javaPackage = ContainersFactory.eINSTANCE.createPackage()
-            javaPackage.name = "examplePackage"
-            javaPackage.classifiers.add(getJavaClass1() as ConcreteClassifier?)
-            return javaPackage
+        /**
+         * Returns a container with a Java and Uml Class, containing attributes and methods.
+         */
+        fun getContainer2AsRootObjects(): List<EObject> {
+            val javaPackage = getJavaPackage1()
+            val umlPackage = getUmlPackage1()
+            addClassifiersToJavaPackage(listOf(getJavaClass1(), getJavaClass2()), javaPackage)
+            addClassifiersToUmlPackage(listOf(getUmlClass1(), getUmlClass2()), umlPackage)
+            return listOf(getJavaPackage1(), getUmlPackage1())
         }
 
-        private fun getUmlPackage1(): EObject {
-            val umlPackage = UMLFactory.eINSTANCE.createPackage()
-            umlPackage.name = "examplePackage"
-            umlPackage.packagedElements.add(getUmlClass1() as PackageableElement?)
-            return umlPackage
+        /**
+         * Returns a container with a Java and Uml Class, containing attributes, methods and interfaces.
+         */
+        fun getContainer3AsRootObjects(): List<EObject> {
+            val javaPackage = getJavaPackage1()
+            val umlPackage = getUmlPackage1()
+            addClassifiersToJavaPackage(listOf(getJavaClass1(), getJavaClass2(), getJavaInterface1()), javaPackage)
+            addClassifiersToUmlPackage(listOf(getUmlClass1(), getUmlClass2(), getUmlInterface1()), umlPackage)
+            return listOf(getJavaPackage1(), getUmlPackage1())
+        }
+
+        /**
+         * Returns a container with a Java and Uml Class, only containing attributes.
+         */
+        fun getContainer1(): List<EObject> {
+            return listOf(getJavaClass1(), getUmlClass1())
         }
 
         /**
          * Returns a container with a Java and Uml Class, containing attributes and methods.
          */
         fun getContainer2(): List<EObject> {
-            return listOf(getJavaClass1(), getUmlClass1(), getJavaClass2(), getUmlClass2())
+            return listOf(getJavaClass1(), getJavaClass2(), getUmlClass1(), getUmlClass2())
         }
 
         /**
          * Returns a container with a Java and Uml Class, containing attributes, methods and interfaces.
          */
         fun getContainer3(): List<EObject> {
-            return listOf(getJavaClass1(), getUmlClass1(), getJavaClass2(), getUmlClass2(), getJavaInterface1(), getUmlInterface1())
+            return listOf(getJavaClass1(), getJavaClass2(), getJavaInterface1(), getUmlClass1(), getUmlClass2(), getUmlInterface1())
         }
 
-        private fun getJavaClass1(): EObject {
+
+        private fun addClassifiersToUmlPackage(umlElements: List<PackageableElement>, umlPackage: Package) {
+            umlPackage.packagedElements.addAll(umlElements)
+        }
+
+        private fun addClassifiersToJavaPackage(javaElements: List<ConcreteClassifier>, javaPackage: JavaRoot) {
+            javaPackage.classifiersInSamePackage.addAll(javaElements)
+        }
+
+        private fun getJavaPackage1(): JavaRoot {
+            val javaPackage = ContainersFactory.eINSTANCE.createPackage()
+            javaPackage.name = "examplePackage"
+            return javaPackage
+        }
+
+        private fun getUmlPackage1(): Package {
+            val umlPackage = UMLFactory.eINSTANCE.createPackage()
+            umlPackage.name = "examplePackage"
+            return umlPackage
+        }
+
+        private fun getJavaClass1(): Class {
             val javaClass = ClassifiersFactory.eINSTANCE.createClass()
             javaClass.name = "Class1"
             javaClass.makePublic()
@@ -82,7 +126,7 @@ class EObjectContainer private constructor() {
             return javaClass
         }
 
-        private fun getJavaClass2(): EObject {
+        private fun getJavaClass2(): Class {
             val javaClass = ClassifiersFactory.eINSTANCE.createClass()
             javaClass.name = "Class2"
             javaClass.makePublic()
@@ -111,21 +155,24 @@ class EObjectContainer private constructor() {
             parameter.name = "myParameter"
             parameter.typeReference = intType2
             method.parameters.add(parameter)
+
+            val block = StatementsFactory.eINSTANCE.createBlock()
             val statement = StatementsFactory.eINSTANCE.createReturn()
             val value = LiteralsFactory.eINSTANCE.createDecimalIntegerLiteral()
             value.decimalValue = BigInteger.valueOf(5)
             statement.returnValue = value
-            method.block.statements.add(statement )
+            method.statement = block
+            method.block.statements.add(statement)
             javaClass.members.add(method)
 
 
             val javaPackage = ContainersFactory.eINSTANCE.createCompilationUnit()
             javaPackage.name = "exampleCompilationUnit"
             javaPackage.classifiers.add(javaClass)
-            return javaPackage
+            return javaClass
         }
 
-        private fun getJavaInterface1(): EObject {
+        private fun getJavaInterface1(): Interface {
             val javaInterface = ClassifiersFactory.eINSTANCE.createInterface()
             javaInterface.name = "Interface1"
             javaInterface.makePublic()
@@ -145,7 +192,7 @@ class EObjectContainer private constructor() {
             return javaInterface
         }
 
-        private fun getUmlInterface1(): EObject {
+        private fun getUmlInterface1(): org.eclipse.uml2.uml.Interface {
             val umlInterface = UMLFactory.eINSTANCE.createInterface()
             umlInterface.name = "Interface1"
             val method = UMLFactory.eINSTANCE.createOperation()
@@ -162,7 +209,7 @@ class EObjectContainer private constructor() {
             return umlInterface
         }
 
-        private fun getUmlClass1(): EObject {
+        private fun getUmlClass1(): org.eclipse.uml2.uml.Class {
             val umlClass = UMLFactory.eINSTANCE.createClass()
             umlClass.name = "Class1"
             val attribute = UMLFactory.eINSTANCE.createProperty()
@@ -177,7 +224,7 @@ class EObjectContainer private constructor() {
             return umlClass
         }
 
-        private fun getUmlClass2(): EObject {
+        private fun getUmlClass2(): org.eclipse.uml2.uml.Class {
             val umlClass = UMLFactory.eINSTANCE.createClass()
             umlClass.name = "Class2"
             val attribute = UMLFactory.eINSTANCE.createProperty()

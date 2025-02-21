@@ -121,9 +121,10 @@ class SourceCodeViewMapper : TextViewMapper() {
 
     override fun mapViewToWindows(rootObjects: List<EObject>): Set<String> {
         val windows = mutableSetOf<String>()
-        for (rootObjet in rootObjects) {
-            if (rootObjet is JavaRoot) {
-                val iterator = rootObjet.eAllContents()
+        for (rootObject in rootObjects) {
+            if (rootObject is JavaRoot) {
+                println(rootObject.eContents())
+                val iterator = rootObject.eAllContents()
                 while (iterator.hasNext()) {
                     val next = iterator.next()
                     if (next is tools.mdsd.jamopp.model.java.classifiers.Class || next is tools.mdsd.jamopp.model.java.classifiers.Interface || next is tools.mdsd.jamopp.model.java.classifiers.Enumeration) {
