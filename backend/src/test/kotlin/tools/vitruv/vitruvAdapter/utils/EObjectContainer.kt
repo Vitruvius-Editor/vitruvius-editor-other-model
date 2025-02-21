@@ -1,8 +1,10 @@
 package tools.vitruv.vitruvAdapter.utils
 
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.uml2.uml.PackageableElement
 import org.eclipse.uml2.uml.UMLFactory
 import tools.mdsd.jamopp.model.java.classifiers.ClassifiersFactory
+import tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier
 import tools.mdsd.jamopp.model.java.containers.ContainersFactory
 import tools.mdsd.jamopp.model.java.literals.LiteralsFactory
 import tools.mdsd.jamopp.model.java.members.MembersFactory
@@ -22,7 +24,21 @@ class EObjectContainer private constructor() {
          * Returns a container with a Java and Uml Class, only containing attributes.
          */
         fun getContainer1(): List<EObject> {
-            return listOf(getJavaClass1(), getUmlClass1())
+            return listOf(getJavaPackage1(), getUmlPackage1())
+        }
+
+        private fun getJavaPackage1(): EObject {
+            val javaPackage = ContainersFactory.eINSTANCE.createPackage()
+            javaPackage.name = "examplePackage"
+            javaPackage.classifiers.add(getJavaClass1() as ConcreteClassifier?)
+            return javaPackage
+        }
+
+        private fun getUmlPackage1(): EObject {
+            val umlPackage = UMLFactory.eINSTANCE.createPackage()
+            umlPackage.name = "examplePackage"
+            umlPackage.packagedElements.add(getUmlClass1() as PackageableElement?)
+            return umlPackage
         }
 
         /**
