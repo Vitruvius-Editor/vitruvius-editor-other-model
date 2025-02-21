@@ -112,8 +112,8 @@ class SourceCodeViewMapper : TextViewMapper() {
                 if (method == null) {
                     continue
                 }
-                method.block.statements.clear()
-                method.block.statements.addAll(existingMethod.block.statements)
+                existingMethod.block.statements.clear()
+                existingMethod.block.statements.addAll(method.block.statements)
             }
         }
     }
@@ -123,7 +123,6 @@ class SourceCodeViewMapper : TextViewMapper() {
         val windows = mutableSetOf<String>()
         for (rootObject in rootObjects) {
             if (rootObject is JavaRoot) {
-                println(rootObject.eContents())
                 val iterator = rootObject.eAllContents()
                 while (iterator.hasNext()) {
                     val next = iterator.next()
