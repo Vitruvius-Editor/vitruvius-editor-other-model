@@ -12,6 +12,8 @@ import org.eclipse.jdt.core.ToolFactory
 import org.eclipse.jdt.core.formatter.CodeFormatter
 import org.eclipse.jface.text.Document
 import org.eclipse.text.edits.TextEdit
+import tools.mdsd.jamopp.model.java.classifiers.Class
+import tools.mdsd.jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser
 import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 
 
@@ -37,9 +39,9 @@ class SourceCodeViewMapper : TextViewMapper() {
                     var window: Window<String>
                     val code = outputStream.toString()
                     val formattedCode = formatJavaCode(code)
-                    if(formattedCode != null){
+                    if (formattedCode != null) {
                         windows.add(preMappedWindow.createWindow(formattedCode))
-                    }else{
+                    } else {
                         windows.add(preMappedWindow.createWindow(code))
                     }
                 }
@@ -72,7 +74,6 @@ class SourceCodeViewMapper : TextViewMapper() {
     }
 
 
-
     /**
      * Maps the given json string to view content, compares it to [preMappedWindows] and applies the changes to the eObjects of [preMappedWindows].
      * Note that no changes will be applied to the model,
@@ -85,8 +86,38 @@ class SourceCodeViewMapper : TextViewMapper() {
         preMappedWindows: List<PreMappedWindow<String>>,
         windows: List<Window<String>>
     ): List<EObject> {
-        TODO("Not yet implemented")
+        val windowPairs = pairWindowsTogether(preMappedWindows, windows)
+        for (item in windowPairs) {
+            applyChangesToWindow(item.first, item.second)
+        }
+        return listOf() //unnecessary return value, has to be changed
     }
+
+    private fun applyChangesToWindow(preMappedWindow: PreMappedWindow<String>, window: Window<String>) {
+        val root = JaMoPPJDTSingleFileParser().parse(window.name, window.content.byteInputStream()) as JavaRoot
+        val javaClassifier = root.classifiersInSamePackage.find { it.name == window.name }
+        if (javaClassifier == null) {
+            return
+        }
+        val javaClass = javaClassifier as Class
+        for (neededEObject in preMappedWindow.neededEObjects) {
+            if (neededEObject !is Class) {
+                continue
+            }
+            if (neededEObject.name != javaClass.name) {
+                continue
+            }
+            for (existingMethod in neededEObject.methods) {
+                val method = javaClass.methods.find { it.name == existingMethod.name }
+                if (method == null) {
+                    continue
+                }
+                method.block.statements.clear()
+                method.block.statements.addAll(existingMethod.block.statements)
+            }
+        }
+    }
+}
 
     override fun mapViewToWindows(rootObjects: List<EObject>): Set<String> {
         val windows = mutableSetOf<String>()
