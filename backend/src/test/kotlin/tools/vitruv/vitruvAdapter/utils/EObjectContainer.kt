@@ -25,6 +25,20 @@ class EObjectContainer private constructor() {
             return listOf(getJavaClass1(), getUmlClass1())
         }
 
+        /**
+         * Returns a container with a Java and Uml Class, containing attributes and methods.
+         */
+        fun getContainer2(): List<EObject> {
+            return listOf(getJavaClass1(), getUmlClass1(), getJavaClass2(), getUmlClass2())
+        }
+
+        /**
+         * Returns a container with a Java and Uml Class, containing attributes, methods and interfaces.
+         */
+        fun getContainer3(): List<EObject> {
+            return listOf(getJavaClass1(), getUmlClass1(), getJavaClass2(), getUmlClass2(), getJavaInterface1(), getUmlInterface1())
+        }
+
         private fun getJavaClass1(): EObject {
             val javaClass = ClassifiersFactory.eINSTANCE.createClass()
             javaClass.name = "Class1"
@@ -93,6 +107,43 @@ class EObjectContainer private constructor() {
             javaPackage.name = "exampleCompilationUnit"
             javaPackage.classifiers.add(javaClass)
             return javaPackage
+        }
+
+        private fun getJavaInterface1(): EObject {
+            val javaInterface = ClassifiersFactory.eINSTANCE.createInterface()
+            javaInterface.name = "Interface1"
+            javaInterface.makePublic()
+
+            val method = MembersFactory.eINSTANCE.createInterfaceMethod()
+            method.name = "myMethod"
+            method.makePublic()
+            method.typeReference = TypesFactory.eINSTANCE.createInt()
+            val parameter = ParametersFactory.eINSTANCE.createCatchParameter()
+            parameter.name = "myParameter"
+            parameter.typeReference = TypesFactory.eINSTANCE.createInt()
+            method.parameters.add(parameter)
+            javaInterface.members.add(method)
+            val compilationUnit = ContainersFactory.eINSTANCE.createCompilationUnit()
+            compilationUnit.name = "exampleCompilationUnit"
+            compilationUnit.classifiers.add(javaInterface)
+            return javaInterface
+        }
+
+        private fun getUmlInterface1(): EObject {
+            val umlInterface = UMLFactory.eINSTANCE.createInterface()
+            umlInterface.name = "Interface1"
+            val method = UMLFactory.eINSTANCE.createOperation()
+            method.name = "myMethod"
+            method.visibility = org.eclipse.uml2.uml.VisibilityKind.PUBLIC_LITERAL
+            method.type = UMLFactory.eINSTANCE.createPrimitiveType()
+            method.type.name = "int"
+            val parameter = UMLFactory.eINSTANCE.createParameter()
+            parameter.name = "myParameter"
+            parameter.type = UMLFactory.eINSTANCE.createPrimitiveType()
+            parameter.type.name = "int"
+            method.ownedParameters.add(parameter)
+            umlInterface.ownedOperations.add(method)
+            return umlInterface
         }
 
         private fun getUmlClass1(): EObject {
