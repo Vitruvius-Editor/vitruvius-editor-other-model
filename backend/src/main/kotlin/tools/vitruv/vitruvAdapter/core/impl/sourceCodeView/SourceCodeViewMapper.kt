@@ -117,7 +117,7 @@ class SourceCodeViewMapper : TextViewMapper() {
             }
         }
     }
-}
+
 
     override fun mapViewToWindows(rootObjects: List<EObject>): Set<String> {
         val windows = mutableSetOf<String>()
