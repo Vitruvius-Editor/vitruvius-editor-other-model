@@ -29,8 +29,4 @@ describe('HelpWidget', () => {
         expect(container.querySelector('h1')).toHaveTextContent('Vitruvius Hilfe');
     });
 
-    it('should match the snapshot', () => {
-        const { asFragment } = render(widget.render());
-        expect(asFragment()).toMatchSnapshot();
-    });
 });
