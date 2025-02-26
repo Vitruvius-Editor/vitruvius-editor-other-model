@@ -1,0 +1,4 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Wed Feb 26 22:04:03 CET 2025
+org.eclipse.core.contenttype-3.9.600-SNAPSHOT.jar>=
+org.eclipse.core.contenttype-3.9.600-SNAPSHOT.pom>=
