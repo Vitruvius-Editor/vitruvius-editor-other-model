@@ -17,12 +17,6 @@ class SourceCodeViewMapperTest {
 
     private val mapper = SourceCodeViewMapper()
 
-    @BeforeEach
-    fun initObjects() {
-
-
-    }
-
     @Test
     fun testMapToWindows() {
         val windows = mapper.mapViewToWindows(EObjectContainer.getContainer1AsRootObjects())
