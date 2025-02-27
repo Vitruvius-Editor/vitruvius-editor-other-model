@@ -2,6 +2,7 @@ package tools.vitruv.vitruvAdapter.utils
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.emf.ecore.resource.impl.ResourceImpl
 import org.mockito.Mockito
 
 /**
@@ -20,12 +21,14 @@ class EResourceMock private constructor() {
          */
         fun mockERessourceForEObjects(eObjects: List<EObject>): List<EObject>{
             val mockedEObjects = mutableListOf<EObject>()
-            val mockedRessource: Resource = Mockito.mock(Resource::class.java)
+            val resource = ResourceImpl()
+            //val mockedRessource: Resource = Mockito.mock(Resource::class.java)
+            val mockedRessource: Resource = Mockito.spy(resource)
             for (eObject in eObjects) {
                 val eObjectSpy = Mockito.spy(eObject)
                 Mockito.doReturn(mockedRessource).`when`(eObjectSpy).eResource()
-                val uuid = getFakeUUID(eObjectSpy)
-                Mockito.`when`(mockedRessource.getURIFragment(Mockito.eq(eObjectSpy))).thenReturn(uuid)
+                val uuid = getFakeUUID(eObject)
+                Mockito.`when`(mockedRessource.getURIFragment(eObject)).thenReturn(uuid)
                 mockedEObjects.add(eObjectSpy)
             }
             return mockedEObjects
@@ -39,11 +42,13 @@ class EResourceMock private constructor() {
          * @return The EObject with mocked EResource.
          */
         fun <T:EObject> mockERessourceForEObject(eObject: T): T {
-            val mockedRessource: Resource = Mockito.mock(Resource::class.java)
+            val resource = ResourceImpl()
+            //val mockedRessource: Resource = Mockito.mock(Resource::class.java)
+            val mockedRessource: Resource = Mockito.spy(resource)
             val eObjectSpy = Mockito.spy(eObject)
             Mockito.doReturn(mockedRessource).`when`(eObjectSpy).eResource()
-            val uuid = getFakeUUID(eObjectSpy)
-            Mockito.`when`(mockedRessource.getURIFragment(Mockito.eq(eObjectSpy))).thenReturn(uuid)
+            val uuid = getFakeUUID(eObject)
+            Mockito.`when`(mockedRessource.getURIFragment(eObject)).thenReturn(uuid)
             return eObjectSpy
         }
 

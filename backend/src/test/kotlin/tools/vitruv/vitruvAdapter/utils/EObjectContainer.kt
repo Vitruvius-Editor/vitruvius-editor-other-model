@@ -33,7 +33,7 @@ class EObjectContainer private constructor() {
             val umlPackage = getUmlPackage1()
             addClassifiersToCompilationUnit(listOf(getJavaClass1()), javaPackage)
             addClassifiersToUmlPackage(listOf(getUmlClass1()), umlPackage)
-            return EResourceMock.mockERessourceForEObjects(listOf(javaPackage, umlPackage))
+            return listOf(javaPackage, umlPackage)
         }
 
         /**
@@ -44,7 +44,7 @@ class EObjectContainer private constructor() {
             val umlPackage = getUmlPackage1()
             addClassifiersToCompilationUnit(listOf(getJavaClass1(), getJavaClass2()), javaPackage)
             addClassifiersToUmlPackage(listOf(getUmlClass1(), getUmlClass2()), umlPackage)
-            return EResourceMock.mockERessourceForEObjects(listOf(javaPackage, umlPackage))
+            return listOf(javaPackage, umlPackage)
         }
 
         /**
@@ -55,28 +55,28 @@ class EObjectContainer private constructor() {
             val umlPackage = getUmlPackage1()
             addClassifiersToCompilationUnit(listOf(getJavaClass1(), getJavaClass2(), getJavaInterface1()), javaPackage)
             addClassifiersToUmlPackage(listOf(getUmlClass1(), getUmlClass2(), getUmlInterface1()), umlPackage)
-            return EResourceMock.mockERessourceForEObjects(listOf(javaPackage, umlPackage))
+            return listOf(javaPackage, umlPackage)
         }
 
         /**
          * Returns a container with a Java and Uml Class, only containing attributes.
          */
         fun getContainer1(): List<EObject> {
-            return EResourceMock.mockERessourceForEObjects(listOf(getJavaClass1(), getUmlClass1()))
+            return listOf(getJavaClass1(), getUmlClass1())
         }
 
         /**
          * Returns a container with a Java and Uml Class, containing attributes and methods.
          */
         fun getContainer2(): List<EObject> {
-            return EResourceMock.mockERessourceForEObjects(listOf(getJavaClass1(), getJavaClass2(), getUmlClass1(), getUmlClass2()))
+            return listOf(getJavaClass1(), getJavaClass2(), getUmlClass1(), getUmlClass2())
         }
 
         /**
          * Returns a container with a Java and Uml Class, containing attributes, methods and interfaces.
          */
         fun getContainer3(): List<EObject> {
-            return EResourceMock.mockERessourceForEObjects(listOf(getJavaClass1(), getJavaClass2(), getJavaInterface1(), getUmlClass1(), getUmlClass2(), getUmlInterface1()))
+            return listOf(getJavaClass1(), getJavaClass2(), getJavaInterface1(), getUmlClass1(), getUmlClass2(), getUmlInterface1())
         }
 
 

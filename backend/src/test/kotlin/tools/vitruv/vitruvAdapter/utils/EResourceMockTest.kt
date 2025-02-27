@@ -14,8 +14,8 @@ class EResourceMockTest {
         class2.name = "Class2"
         val eObjects = listOf(class1, class2)
         val mockedEObjects = EResourceMock.mockERessourceForEObjects(eObjects)
-        assertEquals(EResourceMock.getFakeUUID(mockedEObjects[0]), mockedEObjects[0].eResource().getURIFragment(mockedEObjects[0]))
-        assertEquals(EResourceMock.getFakeUUID(mockedEObjects[1]), mockedEObjects[1].eResource().getURIFragment(mockedEObjects[1]))
+        assertEquals(EResourceMock.getFakeUUID(class1), mockedEObjects[0].eResource().getURIFragment(class1))
+        assertEquals(EResourceMock.getFakeUUID(class2), mockedEObjects[1].eResource().getURIFragment(class2))
     }
 
     @Test
@@ -23,6 +23,6 @@ class EResourceMockTest {
         val class1 = UMLFactory.eINSTANCE.createClass()
         class1.name = "Class1"
         val class1Mocked = EResourceMock.mockERessourceForEObject(class1)
-        assertEquals(EResourceMock.getFakeUUID(class1Mocked), class1Mocked.eResource().getURIFragment(class1Mocked))
+        assertEquals(EResourceMock.getFakeUUID(class1), class1Mocked.eResource().getURIFragment(class1))
     }
 }
