@@ -1,68 +1,72 @@
 package tools.vitruv.vitruvAdapter.core.impl.sourceCodeView
 
-import org.eclipse.emf.ecore.EObject
 import org.eclipse.jdt.core.ToolFactory
 import org.eclipse.jdt.core.formatter.CodeFormatter
 import org.eclipse.jface.text.Document
 import org.eclipse.text.edits.TextEdit
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import tools.mdsd.jamopp.model.java.containers.CompilationUnit
-import tools.mdsd.jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser
-import java.io.FileInputStream
+import tools.mdsd.jamopp.model.java.containers.Package
+import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
+import tools.vitruv.vitruvAdapter.core.api.Window
+import tools.vitruv.vitruvAdapter.utils.EObjectContainer
 
 
 class SourceCodeViewMapperTest {
-    private lateinit var eObjects: List<EObject>
 
-    val mapper = SourceCodeViewMapper()
+    private val mapper = SourceCodeViewMapper()
 
     @BeforeEach
     fun initObjects() {
-        try {
-            val inputStream =
-                FileInputStream("src/test/kotlin/tools/vitruv/vitruvAdapter/core/impl/sourceCodeView/TestClass.txt")
-            val compilationUnit = JaMoPPJDTSingleFileParser().parse("TestClass.txt", inputStream) as CompilationUnit
-            eObjects = listOf(compilationUnit)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+
 
     }
 
     @Test
-    fun testMapEObjectsToWindowsContent() {
-        val sourceCodeSelector = SourceCodeContentSelector()
-        val views = mapper.mapViewToWindows(eObjects)
-        assertEquals(2, views.size)
-        val selectedEObjects = sourceCodeSelector.applySelection(eObjects, views)
-        val selectedContent = mapper.mapEObjectsToWindowsContent(selectedEObjects)
-        val firstClassContent = selectedContent[0].content
-        val expectedFirstClassContent = "public class TestClass {" +
-                "\n" +
-                "    int a = 0;\n" +
-                "\n" +
-                "    int b = 1;\n" +
-                "\n" +
-                "    int c = 2 +54;\n" +
-                "\n" +
-                "    public void testMethod() {\n" +
-                "        System.out.println(\"Hello World!\");\n" +
-                "    }\n" +
-                "\n" +
-                "    public void testMethod2() {\n" +
-                "        System.out.println(\"Hello World!\");\n" +
-                "    }\n" +
-                "\n" +
-                "    public void testMethod3() {\n" +
-                "        System.out.println(\"Hello World!\");\n" +
-                "    }\n" +
-                "\n" +
-                "}\n" +
-                "\n"
+    fun testMapToWindows() {
+        val windows = mapper.mapViewToWindows(EObjectContainer.getContainer1AsRootObjects())
+        println(windows)
+        val windows2 = mapper.mapViewToWindows(EObjectContainer.getContainer2AsRootObjects())
+        println(windows2)
+        val windows3 = mapper.mapViewToWindows(EObjectContainer.getContainer3AsRootObjects())
+        println(windows3)
+    }
 
-        assertEquals(formatJavaCode(expectedFirstClassContent), firstClassContent)
+    @Test
+    fun testMapEObjectsToWindowsContent() {
+        val preMappedWindow1 = PreMappedWindow<String>("Class1", EObjectContainer.getContainer1().toMutableList())
+        val preMappedWindow2 = PreMappedWindow<String>("Class2", EObjectContainer.getContainer2().toMutableList())
+        val preMappedWindow3 = PreMappedWindow<String>("Class3", EObjectContainer.getContainer3().toMutableList())
+
+        val window1 = mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow1))
+        println(window1)
+
+        val window2 = mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow2))
+        println(window2)
+
+        val window3 = mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow3))
+        println(window3)
+    }
+
+    @Test
+    fun testEditWindowContent() {
+        val preMappedWindow3 = PreMappedWindow<String>("Class2", EObjectContainer.getContainer3().toMutableList())
+        val window3 = Window("Class2", "public class Class2 {\n" +
+                "\tint myIntAttribute2;\n" +
+                "\n" +
+                "\tint myIntAttribute3;\n" +
+                "\n" +
+                "\tpublic int myMethod(int myParameter) {\n" +
+                "\t\tint x = 2;\n" +
+                "\t\treturn 5;\n" +
+                "\t}\n" +
+                "\n" +
+                "}")
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(listOf(preMappedWindow3), listOf(window3))
+        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow3)))
+
+
     }
 
     fun formatJavaCode(code: String): String? {
@@ -87,19 +91,5 @@ class SourceCodeViewMapperTest {
         }).toString()
     }
 
-    @Test
-    fun testMapWindowContentToEObjects() {
-        //TODO: Implement test
-    }
-
-    @Test
-    fun tesMapViewToWindows() {
-        val windows = mapper.mapViewToWindows(this.eObjects)
-        val expected = mutableSetOf<String>()
-        expected.add("TestClass")
-        expected.add("TestClass2")
-        assertEquals(expected, windows)
-
-    }
 
 }

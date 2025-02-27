@@ -62,10 +62,8 @@ class TestVitruvAdapter {
         JavaSetup.resetClasspathAndRegisterStandardLibrary()
 
         val vitruvClient: VitruvClient = mock(VitruvClient::class.java)
-        
 
         adapter = VitruvAdapter()
-
 
         val contentSelector = SourceCodeContentSelector()
         displayViewRepository = DefaultDisplayViewRepositoryFactory().createDisplayViewRepository()
