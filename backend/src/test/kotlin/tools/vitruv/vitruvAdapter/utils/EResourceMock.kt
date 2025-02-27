@@ -31,6 +31,22 @@ class EResourceMock private constructor() {
             return mockedEObjects
         }
 
+        /**
+         * This method is used to mock an EResource for an EObject.
+         * This is needed to get the UUID Fragment of an EObject, by the EResource, which may not exist for an EObject.
+         * The mocked EResource will return the getFakeUUID(eObject) for the getUUIDFragment(eObject) call.
+         * @param eObject The EObject for which the EResource should be mocked.
+         * @return The EObject with mocked EResource.
+         */
+        fun <T:EObject> mockERessourceForEObject(eObject: T): T {
+            val mockedRessource: Resource = Mockito.mock(Resource::class.java)
+            val eObjectSpy = Mockito.spy(eObject)
+            Mockito.doReturn(mockedRessource).`when`(eObjectSpy).eResource()
+            val uuid = getFakeUUID(eObjectSpy)
+            Mockito.`when`(mockedRessource.getURIFragment(Mockito.eq(eObjectSpy))).thenReturn(uuid)
+            return eObjectSpy
+        }
+
 
         /**
          * This method is used to get a fake UUID for an EObject.
