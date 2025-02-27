@@ -77,4 +77,10 @@ class ClassTableViewMapperTest {
     }
 
 
+    @Test
+    fun testGetDisplayContent() {
+        println(mapper.getDisplayContent())
+    }
+
+
 }
