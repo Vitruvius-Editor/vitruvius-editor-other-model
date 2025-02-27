@@ -20,8 +20,14 @@ class SourceCodeContentSelectorTest {
      */
     @Test
     fun testApplySelection() {
-        val selectedObjects = selector.applySelection(EObjectContainer.getContainer1(), setOf("Class1"))
-        println(selectedObjects)
-        TODO("Add assertions")
+        val javaPackage = EObjectContainer.getContainer1AsRootObjects()
+        val selectedObjects = selector.applySelection(javaPackage, setOf("Class1"))
+        val javaCompilationUnit = javaPackage[0] as CompilationUnit
+        val javaClass = javaCompilationUnit.classifiers[0]
+
+        val expectedSelectedWindows = listOf(
+            PreMappedWindow<String>("Class1", mutableListOf(javaClass))
+        )
+        assertEquals(expectedSelectedWindows, selectedObjects)
     }
 }
