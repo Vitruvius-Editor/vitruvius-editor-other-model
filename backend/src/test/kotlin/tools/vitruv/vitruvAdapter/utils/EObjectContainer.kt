@@ -1,6 +1,7 @@
 package tools.vitruv.vitruvAdapter.utils
 
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emfcloud.jackson.utils.EObjects
 import org.eclipse.uml2.uml.Package
 import org.eclipse.uml2.uml.PackageableElement
 import org.eclipse.uml2.uml.UMLFactory
@@ -32,7 +33,7 @@ class EObjectContainer private constructor() {
             val umlPackage = getUmlPackage1()
             addClassifiersToCompilationUnit(listOf(getJavaClass1()), javaPackage)
             addClassifiersToUmlPackage(listOf(getUmlClass1()), umlPackage)
-            return listOf(javaPackage, umlPackage)
+            return EResourceMock.mockERessourceForEObjects(listOf(javaPackage, umlPackage))
         }
 
         /**
@@ -43,7 +44,7 @@ class EObjectContainer private constructor() {
             val umlPackage = getUmlPackage1()
             addClassifiersToCompilationUnit(listOf(getJavaClass1(), getJavaClass2()), javaPackage)
             addClassifiersToUmlPackage(listOf(getUmlClass1(), getUmlClass2()), umlPackage)
-            return listOf(javaPackage, umlPackage)
+            return EResourceMock.mockERessourceForEObjects(listOf(javaPackage, umlPackage))
         }
 
         /**
@@ -54,28 +55,28 @@ class EObjectContainer private constructor() {
             val umlPackage = getUmlPackage1()
             addClassifiersToCompilationUnit(listOf(getJavaClass1(), getJavaClass2(), getJavaInterface1()), javaPackage)
             addClassifiersToUmlPackage(listOf(getUmlClass1(), getUmlClass2(), getUmlInterface1()), umlPackage)
-            return listOf(javaPackage, umlPackage)
+            return EResourceMock.mockERessourceForEObjects(listOf(javaPackage, umlPackage))
         }
 
         /**
          * Returns a container with a Java and Uml Class, only containing attributes.
          */
         fun getContainer1(): List<EObject> {
-            return listOf(getJavaClass1(), getUmlClass1())
+            return EResourceMock.mockERessourceForEObjects(listOf(getJavaClass1(), getUmlClass1()))
         }
 
         /**
          * Returns a container with a Java and Uml Class, containing attributes and methods.
          */
         fun getContainer2(): List<EObject> {
-            return listOf(getJavaClass1(), getJavaClass2(), getUmlClass1(), getUmlClass2())
+            return EResourceMock.mockERessourceForEObjects(listOf(getJavaClass1(), getJavaClass2(), getUmlClass1(), getUmlClass2()))
         }
 
         /**
          * Returns a container with a Java and Uml Class, containing attributes, methods and interfaces.
          */
         fun getContainer3(): List<EObject> {
-            return listOf(getJavaClass1(), getJavaClass2(), getJavaInterface1(), getUmlClass1(), getUmlClass2(), getUmlInterface1())
+            return EResourceMock.mockERessourceForEObjects(listOf(getJavaClass1(), getJavaClass2(), getJavaInterface1(), getUmlClass1(), getUmlClass2(), getUmlInterface1()))
         }
 
 
@@ -90,13 +91,13 @@ class EObjectContainer private constructor() {
         private fun getCompilationUnit1(): CompilationUnit {
             val javaPackage = ContainersFactory.eINSTANCE.createCompilationUnit()
             javaPackage.name = "examplePackage"
-            return javaPackage
+            return EResourceMock.mockERessourceForEObject(javaPackage)
         }
 
         private fun getUmlPackage1(): Package {
             val umlPackage = UMLFactory.eINSTANCE.createPackage()
             umlPackage.name = "examplePackage"
-            return umlPackage
+            return EResourceMock.mockERessourceForEObject(umlPackage)
         }
 
         private fun getJavaClass1(): Class {
@@ -110,14 +111,14 @@ class EObjectContainer private constructor() {
 
             val member1 = MembersFactory.eINSTANCE.createField()
             member1.name = "myBooleanAttribute"
-            javaClass.members.add(member1)
+            javaClass.members.add(EResourceMock.mockERessourceForEObject(member1))
             member1.typeReference = booleanType
             val initialValue1 = LiteralsFactory.eINSTANCE.createBooleanLiteral()
             initialValue1.isValue = true
             member1.initialValue = initialValue1
 
 
-            return javaClass
+            return EResourceMock.mockERessourceForEObject(javaClass)
         }
 
         private fun getJavaClass2(): Class {
@@ -129,13 +130,13 @@ class EObjectContainer private constructor() {
             member2.name = "myIntAttribute2"
             val intType2 = TypesFactory.eINSTANCE.createInt()
             member2.typeReference = intType2
-            javaClass.members.add(member2)
+            javaClass.members.add(EResourceMock.mockERessourceForEObject(member2))
 
             val member3 = MembersFactory.eINSTANCE.createField()
             member3.name = "myIntAttribute3"
             val intType3 = TypesFactory.eINSTANCE.createInt()
             member3.typeReference = intType3
-            javaClass.members.add(member3)
+            javaClass.members.add(EResourceMock.mockERessourceForEObject(member3))
 
 
 
@@ -146,7 +147,7 @@ class EObjectContainer private constructor() {
             val parameter = ParametersFactory.eINSTANCE.createCatchParameter()
             parameter.name = "myParameter"
             parameter.typeReference = TypesFactory.eINSTANCE.createInt()
-            method.parameters.add(parameter)
+            method.parameters.add(EResourceMock.mockERessourceForEObject(parameter))
 
             val block = StatementsFactory.eINSTANCE.createBlock()
             val statement = StatementsFactory.eINSTANCE.createReturn()
@@ -155,9 +156,9 @@ class EObjectContainer private constructor() {
             statement.returnValue = value
             method.statement = block
             method.block.statements.add(statement)
-            javaClass.members.add(method)
+            javaClass.members.add(EResourceMock.mockERessourceForEObject(method))
 
-            return javaClass
+            return EResourceMock.mockERessourceForEObject(javaClass)
         }
 
         private fun getJavaInterface1(): Interface {
@@ -172,11 +173,11 @@ class EObjectContainer private constructor() {
             val parameter = ParametersFactory.eINSTANCE.createCatchParameter()
             parameter.name = "myInterfaceParameter"
             parameter.typeReference = TypesFactory.eINSTANCE.createBoolean()
-            method.parameters.add(parameter)
+            method.parameters.add(EResourceMock.mockERessourceForEObject(parameter))
             method.statement = StatementsFactory.eINSTANCE.createBlock()
-            javaInterface.members.add(method)
+            javaInterface.members.add(EResourceMock.mockERessourceForEObject(method))
 
-            return javaInterface
+            return EResourceMock.mockERessourceForEObject(javaInterface)
         }
 
         private fun getUmlInterface1(): org.eclipse.uml2.uml.Interface {
@@ -191,9 +192,9 @@ class EObjectContainer private constructor() {
             parameter.name = "myParameter"
             parameter.type = UMLFactory.eINSTANCE.createPrimitiveType()
             parameter.type.name = "int"
-            method.ownedParameters.add(parameter)
-            umlInterface.ownedOperations.add(method)
-            return umlInterface
+            method.ownedParameters.add(EResourceMock.mockERessourceForEObject(parameter))
+            umlInterface.ownedOperations.add(EResourceMock.mockERessourceForEObject(method))
+            return EResourceMock.mockERessourceForEObject(umlInterface)
         }
 
         private fun getUmlClass1(): org.eclipse.uml2.uml.Class {
@@ -208,7 +209,9 @@ class EObjectContainer private constructor() {
             attribute2.name = "myBooleanAttribute"
             attribute2.type = UMLFactory.eINSTANCE.createPrimitiveType()
             attribute2.type.name = "boolean"
-            return umlClass
+            umlClass.ownedAttributes.add(EResourceMock.mockERessourceForEObject(attribute))
+            umlClass.ownedAttributes.add(EResourceMock.mockERessourceForEObject(attribute2))
+            return EResourceMock.mockERessourceForEObject(umlClass)
         }
 
         private fun getUmlClass2(): org.eclipse.uml2.uml.Class {
@@ -235,9 +238,11 @@ class EObjectContainer private constructor() {
             parameter.type.name = "int"
             method.type = UMLFactory.eINSTANCE.createPrimitiveType()
             method.type.name = "int"
-            method.ownedParameters.add(parameter)
-            umlClass.ownedOperations.add(method)
-            return umlClass
+            method.ownedParameters.add(EResourceMock.mockERessourceForEObject(parameter))
+            umlClass.ownedOperations.add(EResourceMock.mockERessourceForEObject(method))
+            umlClass.ownedAttributes.add(EResourceMock.mockERessourceForEObject(attribute))
+            umlClass.ownedAttributes.add(EResourceMock.mockERessourceForEObject(attribute2))
+            return EResourceMock.mockERessourceForEObject(umlClass)
         }
 
     }
