@@ -111,7 +111,7 @@ class EObjectContainer private constructor() {
 
             val member1 = MembersFactory.eINSTANCE.createField()
             member1.name = "myBooleanAttribute"
-            javaClass.members.add(EResourceMock.mockERessourceForEObject(member1))
+            javaClass.members.add(member1)
             member1.typeReference = booleanType
             val initialValue1 = LiteralsFactory.eINSTANCE.createBooleanLiteral()
             initialValue1.isValue = true
