@@ -60,7 +60,7 @@ describe("DiagramWidget", () => {
 
 
     it("should return the correct visualizer name", () => {
-        expect(widget.getVisualizerName()).toBe("DiagramVisualizer");
+        expect(widget.getVisualizerName()).toBe("UmlVisualizer");
     });
 
 });
