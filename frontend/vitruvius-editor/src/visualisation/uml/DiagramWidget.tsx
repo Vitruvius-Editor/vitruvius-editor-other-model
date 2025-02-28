@@ -93,32 +93,36 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
     const nodes: UMLNode[] = [];
     const links: UMLRelation[] = [];
 
+    const handleInputChange = (event: React.FormEvent<HTMLSpanElement>, data: any, key: string) => {
+      data[key] = event.currentTarget.textContent || "";
+    };
+
     diagram.nodes.forEach(data => {
       if (type === 'Class') {
         const text = (
             <div>
-              <span contentEditable spellCheck={false}>{data.name}</span> <br />
+              <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, data, 'name')}>{data.name}</span> <br />
               <hr />
               {data.attributes.map((attr, index) => (
                   <React.Fragment key={index}>
-                    <span contentEditable spellCheck={false}>{visibilitySymbol(attr.visibility)}</span>
-                    <span contentEditable spellCheck={false}>{attr.name}</span>:
-                    <span contentEditable spellCheck={false}>{attr.type.name}</span> <br />
+                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, attr, 'visibility')}>{visibilitySymbol(attr.visibility)}</span>
+                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, attr, 'name')}>{attr.name}</span>:
+                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, attr.type, 'name')}>{attr.type.name}</span> <br />
                   </React.Fragment>
               ))}
               <hr />
               {data.methods.map((method, index) => (
                   <React.Fragment key={index}>
-                    <span contentEditable spellCheck={false}>{visibilitySymbol(method.visibility)}</span>
-                    <span contentEditable spellCheck={false}>{method.name}</span>(
+                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, method, 'visibility')}>{visibilitySymbol(method.visibility)}</span>
+                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, method, 'name')}>{method.name}</span>(
                     {method.parameters.map((param, index) => (
                         <React.Fragment key={param.uuid}>
-                          <span contentEditable spellCheck={false}>{param.name}</span>:
-                          <span contentEditable spellCheck={false}>{param.type.name}</span>{index != method.parameters.length-1 ? "," : ""}
+                          <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, param, 'name')}>{param.name}</span>:
+                          <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, param.type, 'name')}>{param.type.name}</span>{index != method.parameters.length-1 ? "," : ""}
                         </React.Fragment>
                     )).reduce((prev, curr) => [prev, curr], []).slice(0, -1)}
                     ):
-                    <span contentEditable spellCheck={false}>{method.returnType.name}</span> <br />
+                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, method.returnType, 'name')}>{method.returnType.name}</span> <br />
                   </React.Fragment>
               ))}
             </div>
@@ -149,7 +153,7 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
    * @returns The name of the visualizer.
    */
   getVisualizerName(): string {
-    return "DiagramVisualizer";
+    return "UmlVisualizer";
   }
 
   override restoreState(oldState: object): void {
