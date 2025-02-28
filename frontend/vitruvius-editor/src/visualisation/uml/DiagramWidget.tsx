@@ -97,17 +97,28 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
       if (type === 'Class') {
         const text = (
             <div>
-              {data.name} <br />
+              <span contentEditable spellCheck={false}>{data.name}</span> <br />
               <hr />
               {data.attributes.map((attr, index) => (
                   <React.Fragment key={index}>
-                    {visibilitySymbol(attr.visibility)} {attr.name}: {attr.type.name} <br />
+                    <span contentEditable spellCheck={false}>{visibilitySymbol(attr.visibility)}</span>
+                    <span contentEditable spellCheck={false}>{attr.name}</span>:
+                    <span contentEditable spellCheck={false}>{attr.type.name}</span> <br />
                   </React.Fragment>
               ))}
               <hr />
               {data.methods.map((method, index) => (
                   <React.Fragment key={index}>
-                    {visibilitySymbol(method.visibility)} {method.name}({method.parameters.map(param => `${param.name}: ${param.type.name}`).reduce((prev, curr) => `${prev}, ${curr}`, "").slice(2)}): {method.returnType.name} <br />
+                    <span contentEditable spellCheck={false}>{visibilitySymbol(method.visibility)}</span>
+                    <span contentEditable spellCheck={false}>{method.name}</span>(
+                    {method.parameters.map((param, index) => (
+                        <React.Fragment key={param.uuid}>
+                          <span contentEditable spellCheck={false}>{param.name}</span>:
+                          <span contentEditable spellCheck={false}>{param.type.name}</span>{index != method.parameters.length-1 ? "," : ""}
+                        </React.Fragment>
+                    )).reduce((prev, curr) => [prev, curr], []).slice(0, -1)}
+                    ):
+                    <span contentEditable spellCheck={false}>{method.returnType.name}</span> <br />
                   </React.Fragment>
               ))}
             </div>
@@ -133,7 +144,7 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
     return { nodes, links };
   }
 
-  /**
+   /**
    * Returns the name of the visualizer.
    * @returns The name of the visualizer.
    */
