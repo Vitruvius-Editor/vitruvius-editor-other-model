@@ -30,7 +30,7 @@ jobs:
         context: ./frontend
         file: ./frontend/Dockerfile
         push: ${{ github.event_name == 'push' }}
-        tags: ghcr.io/${{ github.repository.toLowerCase() }}/vitruvius-editor-frontend:latest
+        tags: ghcr.io/vitruvius-editor/vitruvius-editor-frontend:latest
         
     - name: Build Backend Docker image  
       uses: docker/build-push-action@v2
@@ -38,7 +38,7 @@ jobs:
         context: ./backend
         file: ./backend/Dockerfile
         push: ${{ github.event_name == 'push' }}
-        tags: ghcr.io/${{ github.repository.toLowerCase() }}/vitruvius-editor-backend:latest
+        tags: ghcr.io/vitruvius-editor/vitruvius-editor-backend:latest
 
     - name: Build Test Server Docker image
       uses: docker/build-push-action@v2
@@ -46,4 +46,4 @@ jobs:
         context: ./vitruv_server
         file: ./vitruv_server/Dockerfile
         push: ${{ github.event_name == 'push' }}
-        tags: ghcr.io/${{ github.repository.toLowerCase() }}/vitruvius-server:latest
+        tags: ghcr.io/vitruvius-editor/vitruvius-server:latest
