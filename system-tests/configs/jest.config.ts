@@ -12,5 +12,6 @@ export default async (): Promise<Config.InitialOptions> => ({
         "\\.(css|less|scss|sass)$": "identity-obj-proxy",
     },
     setupFilesAfterEnv: ['<rootDir>/test-setup.ts'],
+    runner: 'jest-serial-runner',
 });
 
