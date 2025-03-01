@@ -1,7 +1,7 @@
-node_modules
-.browser_modules
-lib
-*.log
-*-app/*
-!*-app/package.json
-vitruvius-editor/coverage
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
