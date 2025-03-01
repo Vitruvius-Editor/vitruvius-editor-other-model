@@ -1,4 +1,8 @@
 import { test, expect } from '@playwright/test';
+import {beforeEach, afterEach} from '../hooks';
+
+test.beforeEach(beforeEach);
+test.afterEach(afterEach);
 
 test('has title', async ({ page }) => {
   await page.goto('https://playwright.dev/');
