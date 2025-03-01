@@ -11,42 +11,30 @@ import tools.mdsd.jamopp.model.java.containers.Package
 import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.utils.EObjectContainer
+import kotlin.test.assertEquals
 
 
 class SourceCodeViewMapperTest {
 
     private val mapper = SourceCodeViewMapper()
 
-    @BeforeEach
-    fun initObjects() {
-
-
-    }
-
     @Test
     fun testMapToWindows() {
         val windows = mapper.mapViewToWindows(EObjectContainer.getContainer1AsRootObjects())
-        println(windows)
-        val windows2 = mapper.mapViewToWindows(EObjectContainer.getContainer2AsRootObjects())
-        println(windows2)
-        val windows3 = mapper.mapViewToWindows(EObjectContainer.getContainer3AsRootObjects())
-        println(windows3)
+        assertEquals(setOf<String>("Class1"), windows)
     }
 
     @Test
     fun testMapEObjectsToWindowsContent() {
         val preMappedWindow1 = PreMappedWindow<String>("Class1", EObjectContainer.getContainer1().toMutableList())
-        val preMappedWindow2 = PreMappedWindow<String>("Class2", EObjectContainer.getContainer2().toMutableList())
-        val preMappedWindow3 = PreMappedWindow<String>("Class3", EObjectContainer.getContainer3().toMutableList())
+        val windowSourceCode = "public class Class1 {\r\n" +
+                "\tboolean myBooleanAttribute = true;\r\n" +
+                "\r\n" +
+                "}\r\n"
+        val expectedWindow = Window("Class1", formatJavaCode(windowSourceCode))
 
         val window1 = mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow1))
-        println(window1)
-
-        val window2 = mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow2))
-        println(window2)
-
-        val window3 = mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow3))
-        println(window3)
+        assertEquals(listOf(expectedWindow), window1)
     }
 
     @Test
@@ -65,11 +53,9 @@ class SourceCodeViewMapperTest {
                 "}")
         mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(listOf(preMappedWindow3), listOf(window3))
         println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow3)))
-
-
     }
 
-    fun formatJavaCode(code: String): String? {
+    fun formatJavaCode(code: String): String {
         // Create a CodeFormatter with default options (you can also supply a map for custom settings)
         val formatter: CodeFormatter = ToolFactory.createCodeFormatter(null)
         // Format the code as a compilation unit (use CodeFormatter.K_COMPILATION_UNIT)
@@ -87,7 +73,7 @@ class SourceCodeViewMapperTest {
             textEdit.apply(document)
             document.get()
         } else {
-            null // formatting failed
+            code // formatting failed
         }).toString()
     }
 

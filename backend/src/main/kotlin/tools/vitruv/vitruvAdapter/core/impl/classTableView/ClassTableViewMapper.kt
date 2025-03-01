@@ -44,8 +44,8 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
                     }
                     val javaClass = getJavaClassFromUmlClass(element, preMappedWindow.neededEObjects)
                     entries.add(createClassEntryFromClass(element, javaClass))
-                    windows.add(preMappedWindow.createWindow(TableDTO.buildTableDTO(entries, ClassTableEntry::class)))
                 }
+                windows.add(preMappedWindow.createWindow(TableDTO.buildTableDTO(entries, ClassTableEntry::class)))
             }
         }
         return windows.toList()

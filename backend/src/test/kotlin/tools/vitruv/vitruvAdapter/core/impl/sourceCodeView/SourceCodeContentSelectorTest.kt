@@ -7,34 +7,27 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.mdsd.jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser
 import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
+import tools.vitruv.vitruvAdapter.utils.EObjectContainer
 import java.io.FileInputStream
 
-
 class SourceCodeContentSelectorTest {
-    private lateinit var eObjects: MutableList<EObject>
-    private lateinit var expectedEObjects : MutableList<EObject>
 
-    @BeforeEach
-    fun initObjects() {
-        try {
-            val inputStream =
-                FileInputStream("src/test/kotlin/tools/vitruv/vitruvAdapter/core/impl/sourceCodeView/TestClass.txt")
-            val compilationUnit = JaMoPPJDTSingleFileParser().parse("TestClass.txt", inputStream) as CompilationUnit
-            eObjects = mutableListOf(compilationUnit)
-            expectedEObjects = mutableListOf((compilationUnit as CompilationUnit).classifiers.first())
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+    private val selector = SourceCodeContentSelector()
 
-    }
 
+    /**
+     * @author Amir, Nico
+     */
     @Test
     fun testApplySelection() {
-        val sourceCodeSelector = SourceCodeContentSelector()
-        val selectedObjects = sourceCodeSelector.applySelection(eObjects, setOf("TestClass"))
+        val javaPackage = EObjectContainer.getContainer1AsRootObjects()
+        val selectedObjects = selector.applySelection(javaPackage, setOf("Class1"))
+        val javaCompilationUnit = javaPackage[0] as CompilationUnit
+        val javaClass = javaCompilationUnit.classifiers[0]
 
-        val expectedObjects = listOf(PreMappedWindow<String>("TestClass", expectedEObjects))
-        assertEquals(expectedObjects, selectedObjects)
+        val expectedSelectedWindows = listOf(
+            PreMappedWindow<String>("Class1", mutableListOf(javaClass))
+        )
+        assertEquals(expectedSelectedWindows, selectedObjects)
     }
-
 }

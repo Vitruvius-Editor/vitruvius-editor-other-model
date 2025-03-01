@@ -36,7 +36,6 @@ class SourceCodeViewMapper : TextViewMapper() {
                 if (classifier is tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier) {
                     val outputStream = ByteArrayOutputStream()
                     JaMoPPPrinter.print(classifier, outputStream)
-                    var window: Window<String>
                     val code = outputStream.toString()
                     val formattedCode = formatJavaCode(code)
                     if (formattedCode != null) {
@@ -69,8 +68,8 @@ class SourceCodeViewMapper : TextViewMapper() {
             textEdit.apply(document)
             document.get()
         } else {
-            null // formatting failed
-        }).toString()
+            code
+        })
     }
 
 

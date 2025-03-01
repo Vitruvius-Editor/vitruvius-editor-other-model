@@ -45,10 +45,10 @@ class ClassTableContentSelector: ContentSelector<TableDTO<ClassTableEntry>> {
 
                         }
                     }
-                    if (windows.contains(ePackage.name)){
-                        ContentSelector.findPreMappedWindow(mutablePreMappedWindows, ePackage.name)?.addEObject(next)
 
-                    }
+                }
+                if (windows.contains(ePackage.name)){
+                    ContentSelector.findPreMappedWindow(mutablePreMappedWindows, ePackage.name)?.addEObject(ePackage)
                 }
             }
         }
