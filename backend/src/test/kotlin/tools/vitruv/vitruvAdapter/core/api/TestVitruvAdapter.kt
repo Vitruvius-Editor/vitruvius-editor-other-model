@@ -31,31 +31,29 @@ import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.UmlDisplayConte
 import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeViewMapper
 import tools.vitruv.vitruvAdapter.core.impl.selector.AllSelector
 import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeContentSelector
-import tools.vitruv.vitruvAdapter.core.impl.uml.*
 import tools.vitruv.vitruvAdapter.core.impl.umlClassView.ClassDiagramContentSelector
 import tools.vitruv.vitruvAdapter.core.impl.umlClassView.ClassDiagramViewMapper
-import java.nio.file.Path
 
 
 class TestVitruvAdapter {
-    lateinit var adapter: VitruvAdapter
-    lateinit var displayViewRepository: DisplayViewRepository
+    private lateinit var adapter: VitruvAdapter
+    private lateinit var displayViewRepository: DisplayViewRepository
 
     @BeforeEach
     fun initVitruvAdapter() {
         EcorePlugin.ExtensionProcessor.process(null)
 
-        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", XMIResourceFactoryImpl())
-        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("uml", UMLResourceFactoryImpl())
-        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("uml2", UML22UMLResourceFactoryImpl())
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap["*"] = XMIResourceFactoryImpl()
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap["uml"] = UMLResourceFactoryImpl()
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap["uml2"] = UML22UMLResourceFactoryImpl()
 
 
-        EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE)
-        EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackage.eINSTANCE)
-        EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackageImpl.eINSTANCE)
-        EPackage.Registry.INSTANCE.put(CorrespondencePackage.eNS_URI, CorrespondencePackageImpl.eINSTANCE)
-        EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackageImpl.eINSTANCE)
-        EPackage.Registry.INSTANCE.put(AtomicPackage.eNS_URI, AtomicPackageImpl.eINSTANCE)
+        EPackage.Registry.INSTANCE[JavaPackage.eNS_URI] = JavaPackage.eINSTANCE
+        EPackage.Registry.INSTANCE[UMLPackage.eNS_URI] = UMLPackage.eINSTANCE
+        EPackage.Registry.INSTANCE[JavaPackage.eNS_URI] = JavaPackageImpl.eINSTANCE
+        EPackage.Registry.INSTANCE[CorrespondencePackage.eNS_URI] = CorrespondencePackageImpl.eINSTANCE
+        EPackage.Registry.INSTANCE[UMLPackage.eNS_URI] = UMLPackageImpl.eINSTANCE
+        EPackage.Registry.INSTANCE[AtomicPackage.eNS_URI] = AtomicPackageImpl.eINSTANCE
 
         JamoppLibraryHelper.registerStdLib()
         JavaSetup.prepareFactories()
