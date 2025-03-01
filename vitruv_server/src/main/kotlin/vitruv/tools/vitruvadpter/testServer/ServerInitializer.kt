@@ -45,10 +45,7 @@ import java.nio.file.Path
  * Initializes the server
  */
 
-class ServerInitializer {
-
-    val serverPort: Int = 8000
-    val host: String = "localhost"
+class ServerInitializer(val host: String, val serverPort: Int) {
     lateinit var viewTypes: Map<String, ViewType<*>>
     lateinit var vsum: VirtualModel
     lateinit var javaPath: Path
