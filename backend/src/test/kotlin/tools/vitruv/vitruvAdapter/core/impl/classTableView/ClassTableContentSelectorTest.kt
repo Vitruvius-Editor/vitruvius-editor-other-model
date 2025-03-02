@@ -15,11 +15,17 @@ class ClassTableContentSelectorTest {
      */
     @org.junit.jupiter.api.Test
     fun testApplySelection() {
-        val javaPackage = EObjectContainer.getContainer1AsRootObjects()
-        val selectedObjects = selector.applySelection(javaPackage, setOf("examplePackage"))
-        val classTableWindow = PreMappedWindow<TableDTO<ClassTableEntry>>("examplePackage", javaPackage as MutableList<EObject>)
+        val container = EObjectContainer.getContainerWith2Packages()
+        val selectedObjects = selector.applySelection(container, setOf("examplePackage", "examplePackage2"))
+        val javaPackage1 = container[2]
+        val javaPackage2 = container[3]
+        val umlPackage1 = container[0]
+        val umlPackage2 = container[1]
+        val classTableWindow = PreMappedWindow<TableDTO<ClassTableEntry>>("examplePackage", mutableListOf(umlPackage1, javaPackage1))
+        val classTableWindow2 = PreMappedWindow<TableDTO<ClassTableEntry>>("examplePackage2", mutableListOf(umlPackage2, javaPackage2))
         val expectedSelectedWindows = listOf(
-            classTableWindow
+            classTableWindow,
+            classTableWindow2
         )
         assertEquals(expectedSelectedWindows, selectedObjects)
     }

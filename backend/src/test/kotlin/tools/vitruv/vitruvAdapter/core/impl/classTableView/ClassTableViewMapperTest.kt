@@ -8,18 +8,24 @@ import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.mdsd.jamopp.model.java.containers.JavaRoot
 import tools.mdsd.jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser
 import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
+import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.core.impl.table.TableDTO
+import tools.vitruv.vitruvAdapter.utils.EObjectContainer
 import java.io.FileInputStream
 import java.io.InputStream
+import kotlin.test.assertEquals
 
 class ClassTableViewMapperTest {
 
     private lateinit var preMappedWindows: List<PreMappedWindow<TableDTO<ClassTableEntry>>>
     private lateinit var preMappedWindowsNested: List<PreMappedWindow<TableDTO<ClassTableEntry>>>
+    private lateinit var eObjectPreMappedWindows: List<PreMappedWindow<TableDTO<ClassTableEntry>>>
+
 
     private lateinit var eObjects: List<EObject>
     private lateinit var eObjectsNotAPackage: List<EObject>
     private lateinit var eObjectsNestedPackage: List<EObject>
+
 
     private val mapper = ClassTableViewMapper()
 
@@ -58,39 +64,38 @@ class ClassTableViewMapperTest {
             ClassTableContentSelector().applySelection(listOf(examplePackageNested, rootw),
                 setOf("examplePackageNested"))
 
-        eObjects = listOf(examplePackage, rootw)
+        eObjects = EObjectContainer.getContainer3AsRootObjects()
+        eObjectPreMappedWindows = listOf(PreMappedWindow<TableDTO<ClassTableEntry>>("examplePackage", eObjects as MutableList<EObject>))
         eObjectsNotAPackage = listOf(examplePackageImport, examplePackageImport, rootw)
         eObjectsNestedPackage = listOf(examplePackageNested, rootw)
 
     }
 
     @Test
-    fun testWindows() {
+    fun testMapViewToWindows() {
         val windows = mapper.mapViewToWindows(eObjects)
-        windows.forEach(::println)
+        val expectedWindows = setOf<String>("examplePackage")
+        assertEquals(expectedWindows, windows)
     }
 
     @Test
     fun testWindowsNotAPackage() {
-
         val windows = mapper.mapViewToWindows(eObjectsNotAPackage)
-        windows.forEach(::println)
+        assertEquals(emptySet<String>(), windows)
     }
 
     @Test
     fun testWindowsNestedPackage() {
-
         val windows = mapper.mapViewToWindows(eObjectsNestedPackage)
-        windows.forEach(::println)
+        val expectedWindows = setOf<String>("examplePackageNested", "nestedPackage", "examplePackage")
+        assertEquals(expectedWindows, windows)
     }
 
     @Test
     fun testCreateContent() {
-        val contents = mapper.mapEObjectsToWindowsContent(preMappedWindows)
-        for (content in contents) {
-            println(content.content.toString())
-        }
-        print(eObjects)
+        val contents = mapper.mapEObjectsToWindowsContent(eObjectPreMappedWindows)
+        assertEquals("Class1", contents[0].content.rows[0].name)
+        assertEquals(5, contents[0].content.rows[0].linesOfCode)
     }
 
     @Test
@@ -118,12 +123,6 @@ class ClassTableViewMapperTest {
 
     @Test
     fun testGetDisplayContent() {
-        println(mapper.getDisplayContent())
+        assertEquals("TableVisualizer", mapper.getDisplayContent().getVisualizerName())
     }
-
-    @Test
-    fun testMapEObjectsToWindowsContentWithNesting() {
-        println(mapper.mapEObjectsToWindowsContent(preMappedWindowsNested))
-    }
-
 }
