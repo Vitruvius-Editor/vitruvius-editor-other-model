@@ -58,6 +58,18 @@ class EObjectContainer private constructor() {
             return listOf(javaPackage, umlPackage)
         }
 
+        fun getContainerWith2Packages(): List<EObject> {
+            val javaPackage1 = getCompilationUnit1()
+            val javaPackage2 = getCompilationUnit2()
+            val umlPackage1 = getUmlPackage1()
+            val umlPackage2 = getUmlPackage2()
+            addClassifiersToCompilationUnit(listOf(getJavaClass1()), javaPackage1)
+            addClassifiersToCompilationUnit(listOf(getJavaClass2()), javaPackage2)
+            addClassifiersToUmlPackage(listOf(getUmlClass1()), umlPackage1)
+            addClassifiersToUmlPackage(listOf(getUmlClass2()), umlPackage2)
+            return listOf(javaPackage1, javaPackage2, umlPackage1, umlPackage2)
+        }
+
         /**
          * Returns a container with a Java and Uml Class, only containing attributes.
          */
@@ -94,9 +106,21 @@ class EObjectContainer private constructor() {
             return EResourceMock.mockERessourceForEObject(javaPackage)
         }
 
+        private fun getCompilationUnit2(): CompilationUnit {
+            val javaPackage = ContainersFactory.eINSTANCE.createCompilationUnit()
+            javaPackage.name = "examplePackage2"
+            return EResourceMock.mockERessourceForEObject(javaPackage)
+        }
+
         private fun getUmlPackage1(): Package {
             val umlPackage = UMLFactory.eINSTANCE.createPackage()
             umlPackage.name = "examplePackage"
+            return EResourceMock.mockERessourceForEObject(umlPackage)
+        }
+
+        private fun getUmlPackage2(): Package {
+            val umlPackage = UMLFactory.eINSTANCE.createPackage()
+            umlPackage.name = "examplePackage2"
             return EResourceMock.mockERessourceForEObject(umlPackage)
         }
 
