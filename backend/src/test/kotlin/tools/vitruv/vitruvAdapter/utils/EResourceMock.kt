@@ -27,8 +27,8 @@ class EResourceMock private constructor() {
             for (eObject in eObjects) {
                 val eObjectSpy = Mockito.spy(eObject)
                 Mockito.doReturn(mockedRessource).`when`(eObjectSpy).eResource()
-                val uuid = getFakeUUID(eObject)
-                Mockito.`when`(mockedRessource.getURIFragment(eObject)).thenReturn(uuid)
+                val uuid = getFakeUUID(eObjectSpy)
+                Mockito.`when`(mockedRessource.getURIFragment(eObjectSpy)).thenReturn(uuid)
                 mockedEObjects.add(eObjectSpy)
             }
             return mockedEObjects
@@ -47,8 +47,8 @@ class EResourceMock private constructor() {
             val mockedRessource: Resource = Mockito.spy(resource)
             val eObjectSpy = Mockito.spy(eObject)
             Mockito.doReturn(mockedRessource).`when`(eObjectSpy).eResource()
-            val uuid = getFakeUUID(eObject)
-            Mockito.`when`(mockedRessource.getURIFragment(eObject)).thenReturn(uuid)
+            val uuid = getFakeUUID(eObjectSpy)
+            Mockito.`when`(mockedRessource.getURIFragment(eObjectSpy)).thenReturn(uuid)
             return eObjectSpy
         }
 
@@ -60,7 +60,7 @@ class EResourceMock private constructor() {
          * @return The fake UUID for the EObject.
          */
         fun getFakeUUID(eObject: EObject): String {
-            return eObject.toString()
+            return eObject.toString().hashCode().toString()
         }
     }
 }
