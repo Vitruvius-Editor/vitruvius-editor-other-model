@@ -113,7 +113,9 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
             </div>
         );
         // @ts-ignore
-        nodes.push(new UMLNode(data.uuid, text));
+        const item = new UMLNode(data.uuid, text);
+        item.registerListener({eventDidFire: this.handleEvent});
+        nodes.push(item);
       } else if (type === 'Package') {
         nodes.push(new UMLNode(data.uuid, data.name));
       }
@@ -147,6 +149,16 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
     this.updateContent(typedState.content);
     this.visualisationWidgetRegistry.registerWidget(this, typedState.displayView, typedState.connection);
     this.dagre()
+  }
+
+  handleEvent = (eventDidFire :any) => {
+    // change the color of the selected node for testing purposes
+    if (eventDidFire.function === 'selectionChanged') {
+      const node = eventDidFire.entity as UMLNode;
+      node.getOptions().color = 'rgb(255, 0, 0)';
+      node.getOptions().name = 'Selected';
+      this.engine.repaintCanvas();
+    }
   }
 }
 
