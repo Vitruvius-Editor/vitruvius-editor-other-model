@@ -153,6 +153,7 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
 
   handleEvent = (eventDidFire :any) => {
     // change the color of the selected node for testing purposes
+    // put logic for opening the corresponding text view here
     if (eventDidFire.function === 'selectionChanged') {
       const node = eventDidFire.entity as UMLNode;
       node.getOptions().color = 'rgb(255, 0, 0)';
