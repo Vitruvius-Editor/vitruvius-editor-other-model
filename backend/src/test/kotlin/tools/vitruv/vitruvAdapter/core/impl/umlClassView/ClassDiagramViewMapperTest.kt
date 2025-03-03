@@ -20,6 +20,7 @@ class ClassDiagramViewMapperTest {
  private lateinit var eObjects: List<EObject>
  private lateinit var eObjectsNotAPackage: List<EObject>
  private lateinit var eObjectsNestedPackage: List<EObject>
+ private lateinit var eObjectsClassExtends: List<EObject>
 
  @BeforeEach
  fun initEObjects() {
@@ -57,9 +58,10 @@ class ClassDiagramViewMapperTest {
   val class1 = rootw.classifiers[0] as tools.mdsd.jamopp.model.java.classifiers.Class
   val class1packageName = class1.`package`.name
 
-  eObjects = EObjectContainer.getConatinerWithClassExtends()
+  eObjects = EObjectContainer.getContainer3AsRootObjects()
   eObjectsNotAPackage = listOf(examplePackageImport, examplePackageImport, rootw)
   eObjectsNestedPackage = listOf(examplePackageNested, rootw)
+  eObjectsClassExtends = EObjectContainer.getContainerWithClassExtends()
 
  }
 
@@ -88,7 +90,7 @@ class ClassDiagramViewMapperTest {
   */
  @Test
  fun testMapEObjectsToWindowsContent() {
-    val preMappedWindow1 = PreMappedWindow<UmlDiagram>("examplePackage", eObjects.toMutableList())
+    val preMappedWindow1 = PreMappedWindow<UmlDiagram>("examplePackage", eObjectsClassExtends.toMutableList())
     val window1 = mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow1))
     print(window1)
  }

@@ -70,17 +70,18 @@ class EObjectContainer private constructor() {
             return listOf(javaPackage1, javaPackage2, umlPackage1, umlPackage2)
         }
 
-        fun getConatinerWithClassExtends(): List<EObject> {
+        fun getContainerWithClassExtends(): List<EObject> {
             val umlPackage = getUmlPackage1()
             val umlClass1 = getUmlClass1()
             val umlClass2 = getUmlClass2()
+            val umlClass3 = getUmlClass3()
             val umlInterface = umlPackage.createOwnedInterface("Interface1")
-            val umlInterfaceRealization = umlClass1.createInterfaceRealization("interfaceRealization1",umlInterface)
+            val umlInterfaceRealization = umlClass1.createInterfaceRealization("interfaceRealization1", umlInterface)
             val umlInterface2 = umlPackage.createOwnedInterface("Interface2")
             umlInterface.redefinedInterfaces.add(umlInterface2)
             umlClass1.interfaceRealizations.add(umlInterfaceRealization)
             umlClass1.superClasses.add(umlClass2)
-            addClassifiersToUmlPackage(listOf(umlClass1, umlClass2, umlInterface, umlInterface2), umlPackage)
+            addClassifiersToUmlPackage(listOf(umlClass1, umlClass2, umlClass3, umlInterface, umlInterface2), umlPackage)
             return listOf(umlPackage)
         }
 
@@ -143,8 +144,6 @@ class EObjectContainer private constructor() {
             javaClass.name = "Class1"
             javaClass.makePublic()
 
-
-
             val booleanType = TypesFactory.eINSTANCE.createBoolean()
 
             val member1 = MembersFactory.eINSTANCE.createField()
@@ -154,7 +153,6 @@ class EObjectContainer private constructor() {
             val initialValue1 = LiteralsFactory.eINSTANCE.createBooleanLiteral()
             initialValue1.isValue = true
             member1.initialValue = initialValue1
-
 
             return EResourceMock.mockERessourceForEObject(javaClass)
         }
@@ -175,8 +173,6 @@ class EObjectContainer private constructor() {
             val intType3 = TypesFactory.eINSTANCE.createInt()
             member3.typeReference = intType3
             javaClass.members.add(EResourceMock.mockERessourceForEObject(member3))
-
-
 
             val method = MembersFactory.eINSTANCE.createClassMethod()
             method.name = "myMethod"
@@ -280,6 +276,27 @@ class EObjectContainer private constructor() {
             umlClass.ownedOperations.add(EResourceMock.mockERessourceForEObject(method))
             umlClass.ownedAttributes.add(EResourceMock.mockERessourceForEObject(attribute))
             umlClass.ownedAttributes.add(EResourceMock.mockERessourceForEObject(attribute2))
+            return EResourceMock.mockERessourceForEObject(umlClass)
+        }
+
+        private fun getUmlClass3(): org.eclipse.uml2.uml.Class {
+            val umlClass = UMLFactory.eINSTANCE.createClass()
+            umlClass.name = "Class3"
+
+            val privateAttribute = UMLFactory.eINSTANCE.createProperty()
+            privateAttribute.name = "myPrivateAttribute"
+            privateAttribute.visibility = org.eclipse.uml2.uml.VisibilityKind.PRIVATE_LITERAL
+
+            val protectedAttribute = UMLFactory.eINSTANCE.createProperty()
+            protectedAttribute.name = "myProtectedAttribute"
+            protectedAttribute.visibility = org.eclipse.uml2.uml.VisibilityKind.PROTECTED_LITERAL
+
+            val packageAttribute = UMLFactory.eINSTANCE.createProperty()
+            packageAttribute.name = "myPackageAttribute"
+            packageAttribute.visibility = org.eclipse.uml2.uml.VisibilityKind.PACKAGE_LITERAL
+
+            umlClass.ownedAttributes.addAll(listOf(privateAttribute, protectedAttribute, packageAttribute))
+
             return EResourceMock.mockERessourceForEObject(umlClass)
         }
     }
