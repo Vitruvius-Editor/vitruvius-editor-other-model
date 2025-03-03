@@ -1,0 +1,7 @@
+public class class1 {
+  int x = 5;
+
+  public void method1() {
+    x = 10;
+  }
+}

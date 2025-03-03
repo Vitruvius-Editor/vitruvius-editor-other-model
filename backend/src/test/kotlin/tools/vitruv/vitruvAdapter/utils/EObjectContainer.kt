@@ -268,6 +268,5 @@ class EObjectContainer private constructor() {
             umlClass.ownedAttributes.add(EResourceMock.mockERessourceForEObject(attribute2))
             return EResourceMock.mockERessourceForEObject(umlClass)
         }
-
     }
 }
