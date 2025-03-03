@@ -38,6 +38,15 @@ class ClassDiagramViewMapperTest {
 
 
   val umlClass = examplePackage.createOwnedClass("Class1", false)
+  val umlClass2 = examplePackage.createOwnedClass("Class2", false)
+
+
+  umlClass.superClasses.add(umlClass2)
+  val umlInterface = examplePackage.createOwnedInterface("Interface1")
+
+  umlClass.implementedInterfaces.add(umlInterface)
+
+
   val attribute = umlClass.createOwnedAttribute("myIntAttribute", null)
   attribute.visibility = org.eclipse.uml2.uml.VisibilityKind.PUBLIC_LITERAL
 
@@ -48,7 +57,7 @@ class ClassDiagramViewMapperTest {
   val class1 = rootw.classifiers[0] as tools.mdsd.jamopp.model.java.classifiers.Class
   val class1packageName = class1.`package`.name
 
-  eObjects = EObjectContainer.getContainer3AsRootObjects()
+  eObjects = EObjectContainer.getConatinerWithClassExtends()
   eObjectsNotAPackage = listOf(examplePackageImport, examplePackageImport, rootw)
   eObjectsNestedPackage = listOf(examplePackageNested, rootw)
 

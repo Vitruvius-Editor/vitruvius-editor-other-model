@@ -70,6 +70,20 @@ class EObjectContainer private constructor() {
             return listOf(javaPackage1, javaPackage2, umlPackage1, umlPackage2)
         }
 
+        fun getConatinerWithClassExtends(): List<EObject> {
+            val umlPackage = getUmlPackage1()
+            val umlClass1 = getUmlClass1()
+            val umlClass2 = getUmlClass2()
+            val umlInterface = umlPackage.createOwnedInterface("Interface1")
+            val umlInterfaceRealization = umlClass1.createInterfaceRealization("interfaceRealization1",umlInterface)
+            val umlInterface2 = umlPackage.createOwnedInterface("Interface2")
+            umlInterface.redefinedInterfaces.add(umlInterface2)
+            umlClass1.interfaceRealizations.add(umlInterfaceRealization)
+            umlClass1.superClasses.add(umlClass2)
+            addClassifiersToUmlPackage(listOf(umlClass1, umlClass2, umlInterface, umlInterface2), umlPackage)
+            return listOf(umlPackage)
+        }
+
         /**
          * Returns a container with a Java and Uml Class, only containing attributes.
          */
