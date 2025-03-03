@@ -18,8 +18,11 @@ import tools.mdsd.jamopp.model.java.JavaPackage
 import tools.mdsd.jamopp.model.java.classifiers.ClassifiersFactory
 import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.mdsd.jamopp.model.java.containers.ContainersFactory
+import tools.mdsd.jamopp.model.java.expressions.Expression
+import tools.mdsd.jamopp.model.java.expressions.ExpressionsFactory
 import tools.mdsd.jamopp.model.java.literals.LiteralsFactory
 import tools.mdsd.jamopp.model.java.members.MembersFactory
+import tools.mdsd.jamopp.model.java.statements.StatementsFactory
 import tools.mdsd.jamopp.model.java.types.TypesFactory
 import tools.vitruv.applications.util.temporary.java.*
 import tools.vitruv.change.atomic.AtomicPackage
@@ -112,6 +115,10 @@ class ServerInitializer {
         initialValue1.isValue = true
         member1.initialValue = initialValue1
 
+        val method = JavaMemberAndParameterUtil.createJavaClassMethod("myMethod", null, JavaVisibility.PUBLIC, false, false, null)
+        val methodBlock = StatementsFactory.eINSTANCE.createBlock()
+        method.statement = methodBlock
+        root.members.add(method)
 
         val newClass = ClassifiersFactory.eINSTANCE.createClass()
         newClass.name = "Class2"
