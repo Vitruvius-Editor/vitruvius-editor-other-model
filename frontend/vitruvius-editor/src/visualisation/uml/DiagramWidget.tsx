@@ -97,7 +97,7 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
       data[key] = event.currentTarget.textContent || "";
     };
 
-    diagram.nodes.forEach(data => {
+    diagram.nodes.forEach((data, nodeIndex) => {
       if (type === 'Class') {
         const text = (
             <div>
@@ -107,22 +107,26 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
                   <React.Fragment key={index}>
                     <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, attr, 'visibility')}>{visibilitySymbol(attr.visibility)}</span>
                     <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, attr, 'name')}>{attr.name}</span>:
-                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, attr.type, 'name')}>{attr.type.name}</span> <br />
+                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, attr.type, 'name')}>{attr.type.name}</span>
+                    <span onClick={() => this.handlerDeleteAttribute(nodeIndex, index)} style={{ cursor: 'pointer', color: 'red' }}> - </span><br />
                   </React.Fragment>
               ))}
               <hr />
-              {data.methods.map((method, index) => (
-                  <React.Fragment key={index}>
+              {data.methods.map((method, methodIndex) => (
+                  <React.Fragment key={methodIndex}>
                     <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, method, 'visibility')}>{visibilitySymbol(method.visibility)}</span>
                     <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, method, 'name')}>{method.name}</span>(
                     {method.parameters.map((param, index) => (
                         <React.Fragment key={param.uuid}>
                           <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, param, 'name')}>{param.name}</span>:
-                          <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, param.type, 'name')}>{param.type.name}</span>{index != method.parameters.length-1 ? "," : ""}
+                          <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, param.type, 'name')}>{param.type.name}</span>
+                          <span onClick={() => this.handleDeleteParameter(nodeIndex, methodIndex, index)} style={{ cursor: 'pointer', color: 'red' }}> - </span>
+                          <span>{index != method.parameters.length-1 ? "," : ""}</span>
                         </React.Fragment>
-                    )).reduce((prev, curr) => [prev, curr], []).slice(0, -1)}
+                    ))}
                     ):
-                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, method.returnType, 'name')}>{method.returnType.name}</span> <br />
+                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, method.returnType, 'name')}>{method.returnType.name}</span>
+                    <span onClick={() => this.handlerDeleteMethod(nodeIndex, methodIndex)} style={{ cursor: 'pointer', color: 'red' }}> - </span><br />
                   </React.Fragment>
               ))}
             </div>
@@ -162,6 +166,20 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
     this.updateContent(typedState.content);
     this.visualisationWidgetRegistry.registerWidget(this, typedState.displayView, typedState.connection);
     this.dagre()
+  }
+  handlerDeleteAttribute(node: number, index: number) {
+    this.content.nodes[node].attributes.splice(index, 1);
+    this.update();
+  }
+
+  handlerDeleteMethod(node: number, index: number) {
+    this.content.nodes[node].methods.splice(index, 1);
+    this.update();
+  }
+
+  handleDeleteParameter(node: number, method: number, parameter: number) {
+    this.content.nodes[node].methods[method].parameters.splice(parameter, 1);
+    this.update();
   }
 }
 
