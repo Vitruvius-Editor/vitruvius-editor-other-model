@@ -30,14 +30,15 @@ class ClassDiagramContentSelectorTest {
   val umlPackage3 = UMLFactory.eINSTANCE.createPackage()
   umlPackage3.name = "examplePackage3"
   umlPackage1.nestedPackages.add(umlPackage3)
-  val selectedObjects = selector.applySelection(container, setOf("examplePackage", "examplePackage2", "examplePackage3"))
+  val umlPackage4 = UMLFactory.eINSTANCE.createPackage()
+  umlPackage4.name = "examplePackage4"
+  umlPackage2.nestedPackages.add(umlPackage4)
+  val selectedObjects = selector.applySelection(container, setOf("examplePackage", "examplePackage3"))
   val classTableWindow = PreMappedWindow<UmlDiagram>("examplePackage", mutableListOf(umlPackage1,))
-  val classTableWindow2 = PreMappedWindow<UmlDiagram>("examplePackage2", mutableListOf(umlPackage2))
   val classTableWindow3 = PreMappedWindow<UmlDiagram>("examplePackage3", mutableListOf(umlPackage3))
   val expectedSelectedWindows = listOf(
    classTableWindow,
-   classTableWindow2,
-    classTableWindow3
+   classTableWindow3
   )
   assertEquals(expectedSelectedWindows, selectedObjects)
  }
