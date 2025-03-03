@@ -146,7 +146,7 @@ class ServerInitializer {
         val examplePackage = factory.createPackage()
         examplePackage.name = "examplePackage"
 
-        val umlInterface = examplePackage.createOwnedInterface("Interface1")
+//        val umlInterface = examplePackage.createOwnedInterface("Interface1")
 
 
         val umlClass = examplePackage.createOwnedClass("Class1", false)
@@ -175,8 +175,6 @@ class ServerInitializer {
         examplePackage.packagedElements.add(intType)
 
         umlClass.superClasses.add(class2)
-        umlClass.createInterfaceRealization("interfaceRealization", umlInterface)
-
 
         val attribute = umlClass.createOwnedAttribute("myIntAttribute", null)
         attribute.visibility = VisibilityKind.PUBLIC_LITERAL
