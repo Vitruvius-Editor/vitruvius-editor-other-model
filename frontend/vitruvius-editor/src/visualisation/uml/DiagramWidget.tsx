@@ -40,7 +40,7 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
 
   constructor(props: any) {
     super(props);
-    this.engine = createEngine();
+    this.engine = createEngine({ registerDefaultDeleteItemsAction: false});
   }
 
   disableDrag = () => {
