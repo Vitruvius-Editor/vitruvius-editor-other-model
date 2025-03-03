@@ -50,7 +50,7 @@ class ClassTableViewMapperTest {
         attribute.visibility = org.eclipse.uml2.uml.VisibilityKind.PUBLIC_LITERAL
 
         val inputStream: InputStream =
-            FileInputStream("src/test/kotlin/tools/vitruv/vitruvAdapter/core/impl/classTableView/class1")
+            FileInputStream("src/test/kotlin/tools/vitruv/vitruvAdapter/utils/class1")
         val rootw = JaMoPPJDTSingleFileParser().parse("class1", inputStream) as CompilationUnit
 
         val class1 = rootw.classifiers[0] as tools.mdsd.jamopp.model.java.classifiers.Class
@@ -108,7 +108,7 @@ class ClassTableViewMapperTest {
     @Test
     fun testJroot() {
         val inputStream2: InputStream =
-            FileInputStream("src/test/kotlin/tools/vitruv/vitruvAdapter/core/impl/classTableView/class1")
+            FileInputStream("src/test/kotlin/tools/vitruv/vitruvAdapter/utils/class1")
         val jroot = JaMoPPJDTSingleFileParser().parse("class1", inputStream2) as JavaRoot
         val factory = UMLFactory.eINSTANCE
         val jrExp = factory.createPackage()
