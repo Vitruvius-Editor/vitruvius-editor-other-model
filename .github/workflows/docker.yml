@@ -24,7 +24,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Cache Docker layers for Frontend
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: /tmp/.buildx-cache-frontend
         key: ${{ runner.os }}-buildx-frontend-${{ github.sha }}
@@ -42,7 +42,7 @@ jobs:
         cache-to: type=local,dest=/tmp/.buildx-cache-frontend
 
     - name: Cache Docker layers for Backend
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: /tmp/.buildx-cache-backend
         key: ${{ runner.os }}-buildx-backend-${{ github.sha }}
@@ -60,7 +60,7 @@ jobs:
         cache-to: type=local,dest=/tmp/.buildx-cache-backend
 
     - name: Cache Docker layers for Test Server
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: /tmp/.buildx-cache-server
         key: ${{ runner.os }}-buildx-server-${{ github.sha }}
