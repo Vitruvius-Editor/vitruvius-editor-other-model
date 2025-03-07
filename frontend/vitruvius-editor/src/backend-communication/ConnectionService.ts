@@ -47,6 +47,7 @@ export class ConnectionService {
       name: string;
       description: string;
       url: string;
+      port: number;
     }>,
   ): Promise<Connection> {
     return this.backendServer.sendWebRequest(
