@@ -60,10 +60,16 @@ export class VitruviusEditProjectContribution implements CommandContribution {
                                     value: connection.url,
                                 });
 
+                                const port = parseInt(await this.quickInputService.input({
+                                    title: "Edit the project's port",
+                                    value: connection.port.toString(),
+                                }) as string);
+
                                 const newConnection = await this.connectionService.updateConnection(connection.uuid, {
                                     name,
                                     description,
                                     url,
+                                    port,
                                 });
 
                                 await this.messageService.info("Project successfully updated.");
