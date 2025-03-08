@@ -1,166 +1,103 @@
-/*package tools.vitruv.vitruvAdapter.controller
+package tools.vitruv.vitruvAdapter.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.whenever
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.MediaType
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import tools.vitruv.framework.views.ViewSelector
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import tools.vitruv.vitruvAdapter.core.api.ContentSelector
+import tools.vitruv.vitruvAdapter.core.api.ViewMapper
+import tools.vitruv.vitruvAdapter.core.impl.GenericDisplayView
+import tools.vitruv.vitruvAdapter.core.impl.classTableView.ClassTableViewMapper
+import tools.vitruv.vitruvAdapter.core.impl.selector.AllSelector
+import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeContentSelector
+import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeViewMapper
 import tools.vitruv.vitruvAdapter.dto.DisplayViewContentResponse
-import tools.vitruv.vitruvAdapter.dto.DisplayViewResponse
 import tools.vitruv.vitruvAdapter.dto.WindowSelectionRequest
-import tools.vitruv.vitruvAdapter.exception.ConnectionNotFoundException
-import tools.vitruv.vitruvAdapter.exception.DisplayViewNotFoundException
 import tools.vitruv.vitruvAdapter.services.VitruviusService
-import tools.vitruv.vitruvAdapter.vitruv.api.ContentSelector
-import tools.vitruv.vitruvAdapter.vitruv.api.DisplayView
-import tools.vitruv.vitruvAdapter.vitruv.api.ViewMapper
-import tools.vitruv.vitruvAdapter.vitruv.impl.GenericDisplayView
-import tools.vitruv.vitruvAdapter.vitruv.impl.mapper.ClassDiagramViewMapper
-import tools.vitruv.vitruvAdapter.vitruv.impl.mapper.SourceCodeViewMapper
-import tools.vitruv.vitruvAdapter.vitruv.impl.selector.AllSelector
 import java.util.*
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class DisplayViewControllerTests {
+class DisplayViewControllerTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
-
     @MockitoBean
     private lateinit var vitruviusService: VitruviusService
 
-    private lateinit var displayViews: List<DisplayView>
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
 
-    private lateinit var connectionId: UUID
-
-    @BeforeEach
-    fun beforeEach() {
-        val contentSelector = object : ContentSelector {
-            override fun applySelection(viewSelector: ViewSelector, windows: Set<String>) {
-            }
-        }
-        displayViews = listOf(
-            GenericDisplayView("DisplayView 1", "ExampleViewType", SourceCodeViewMapper() as ViewMapper<Any?>, AllSelector(), contentSelector),
-            GenericDisplayView("DisplayView 2", "ExampleViewType", ClassDiagramViewMapper() as ViewMapper<Any?>, AllSelector(), contentSelector),
+    @Test
+    fun getDisplayViews() {
+        val connectionId = UUID.randomUUID()
+        val displayViews = setOf(
+            GenericDisplayView("DisplayView 1", "ExampleViewType", SourceCodeViewMapper() as ViewMapper<Any?>, AllSelector(), SourceCodeContentSelector() as ContentSelector<Any?>),
+            GenericDisplayView("DisplayView 2", "ExampleViewType", ClassTableViewMapper() as ViewMapper<Any?>, AllSelector(),  SourceCodeContentSelector() as ContentSelector<Any?>),
         )
-        connectionId = UUID.randomUUID()
+
+        Mockito.`when`(vitruviusService.getDisplayViews(connectionId)).thenReturn(displayViews)
+
+        mockMvc.perform(get("/api/v1/connection/$connectionId/displayViews"))
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.length()").value(displayViews.size))
+            .andExpect(jsonPath("$[0].name").value("DisplayView 1"))
+            .andExpect(jsonPath("$[1].name").value("DisplayView 2"))
     }
 
     @Test
-    fun testGetDisplayViews() {
-       whenever(vitruviusService.getDisplayViews(any<UUID>())).thenAnswer {
-           if (it.getArgument(0) as UUID == connectionId) {
-               displayViews.toSet()
-           } else {
-               throw ConnectionNotFoundException()
-           }
-        }
+    fun getDisplayViewDetails() {
+        val connectionId = UUID.randomUUID()
+        val displayViewName = "view1"
+        val displayViewContentResponse = DisplayViewContentResponse(setOf("window1", "window2"))
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/connection/$connectionId/displayViews"))
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(displayViews.map { DisplayViewResponse(it) }))
-        )
+        Mockito.`when`(vitruviusService.getDisplayViewWindows(connectionId, displayViewName)).thenReturn(displayViewContentResponse.windows)
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/connection/${UUID.randomUUID()}/displayViews"))
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
+        mockMvc.perform(get("/api/v1/connection/$connectionId/displayView/$displayViewName"))
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.windows.length()").value(displayViewContentResponse.windows.size))
+            .andExpect(jsonPath("$.windows[0]").value("window1"))
+            .andExpect(jsonPath("$.windows[1]").value("window2"))
     }
 
     @Test
-    fun testGetDisplayViewDetails() {
-        whenever(vitruviusService.getDisplayViewWindows(any<UUID>(), any<String>())).thenAnswer {
-            if (it.getArgument(0) as UUID != connectionId) {
-                throw ConnectionNotFoundException()
-            }
-            if (it.getArgument(1) as String != displayViews[0].name) {
-                throw DisplayViewNotFoundException()
-            }
-            setOf("Window1", "Window2")
-        }
+    fun getDisplayViewWindowContent() {
+        val connectionId = UUID.randomUUID()
+        val displayViewName = "view1"
+        val windowSelectionRequest = WindowSelectionRequest(setOf("window1", "window2"))
+        val content = "window content"
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/connection/$connectionId/displayView/${displayViews[0].name}"))
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(DisplayViewContentResponse(setOf("Window1", "Window2")))))
+        Mockito.`when`(vitruviusService.getDisplayViewContent(connectionId, displayViewName, windowSelectionRequest)).thenReturn(content)
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/connection/${UUID.randomUUID()}/displayView/${displayViews[0].name}"))
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/connection/$connectionId/displayView/Unknown"))
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
+        mockMvc.perform(post("/api/v1/connection/$connectionId/displayView/$displayViewName")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(windowSelectionRequest)))
+            .andExpect(status().isOk)
+            .andExpect(content().string(content))
     }
 
     @Test
-    fun testGetDisplayViewWindowContent() {
-        whenever(vitruviusService.getDisplayViewContent(any<UUID>(), any<String>(), any<WindowSelectionRequest>())).thenAnswer {
-            if (it.getArgument(0) as UUID != connectionId) {
-                throw ConnectionNotFoundException()
-            }
-            if (it.getArgument(1) as String != displayViews[0].name) {
-                throw DisplayViewNotFoundException()
-            }
-            "Content"
-        }
+    fun editDisplayViewContent() {
+        val connectionId = UUID.randomUUID()
+        val displayViewName = "view1"
+        val updatedContent = "new content"
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/connection/$connectionId/displayView/${displayViews[0].name}")
-            .contentType("application/json")
-            .content(objectMapper.writeValueAsString(WindowSelectionRequest(setOf("Window1", "Window2"))))
-        )
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.content().string("Content"))
+        Mockito.`when`(vitruviusService.editDisplayViewContent(connectionId, displayViewName, updatedContent)).thenReturn(updatedContent)
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/connection/${UUID.randomUUID()}/displayView/${displayViews[0].name}")
-            .contentType("application/json")
-            .content(objectMapper.writeValueAsString(WindowSelectionRequest(setOf("Window1", "Window2"))))
-        )
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/connection/$connectionId/displayView/Unknown")
-            .contentType("application/json")
-            .content(objectMapper.writeValueAsString(WindowSelectionRequest(setOf("Window1", "Window2"))))
-        )
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
+        mockMvc.perform(put("/api/v1/connection/$connectionId/displayView/$displayViewName")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(updatedContent))
+            .andExpect(status().isOk)
+            .andExpect(content().string(updatedContent))
     }
-
-    @Test
-    fun testEditDisplayViewContent() {
-        whenever(vitruviusService.editDisplayViewContent(any<UUID>(), any<String>(), any<String>())).thenAnswer {
-            if (it.getArgument(0) as UUID != connectionId) {
-                throw ConnectionNotFoundException()
-            }
-            if (it.getArgument(1) as String != displayViews[0].name) {
-                throw DisplayViewNotFoundException()
-            }
-            it.getArgument(2) as String
-        }
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/connection/$connectionId/displayView/${displayViews[0].name}")
-            .contentType("application/json")
-            .content("Updated Content")
-        )
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.content().string("Updated Content"))
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/connection/${UUID.randomUUID()}/displayView/${displayViews[0].name}")
-            .contentType("application/json")
-            .content("Updated Content")
-        )
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/connection/$connectionId/displayView/Unknown")
-            .contentType("application/json")
-            .content("Updated Content")
-        )
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
-    }
-}*/
+}
