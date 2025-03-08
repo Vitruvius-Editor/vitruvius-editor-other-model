@@ -5,6 +5,7 @@ import org.eclipse.jdt.core.formatter.CodeFormatter
 import org.eclipse.jface.text.Document
 import org.eclipse.text.edits.TextEdit
 import org.junit.jupiter.api.Test
+import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.utils.EObjectContainer
@@ -36,8 +37,11 @@ class SourceCodeViewMapperTest {
 
     @Test
     fun testEditWindowContent() {
-        val preMappedWindow3 = PreMappedWindow<String>("Class2", EObjectContainer().getContainerWithClassesAndInterface().toMutableList())
-        val window3 = Window("Class2", "public class Class2 {\n" +
+        val eObjectContainer = EObjectContainer()
+        val javaPackage = eObjectContainer.getContainer2AsRootObjects()[0] as CompilationUnit
+        val class2 = javaPackage.classifiers[1]
+        val preMappedWindow2 = PreMappedWindow<String>("Class2", mutableListOf(class2))
+        val newSourceCode = "public class Class2 {\n" +
                 "\tint myIntAttribute2;\n" +
                 "\n" +
                 "\tint myIntAttribute3;\n" +
@@ -47,9 +51,10 @@ class SourceCodeViewMapperTest {
                 "\t\treturn 5;\n" +
                 "\t}\n" +
                 "\n" +
-                "}")
-        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(listOf(preMappedWindow3), listOf(window3))
-        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow3)))
+                "}\n"
+        val window3 = Window("Class2", formatJavaCode(newSourceCode))
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(listOf(preMappedWindow2), listOf(window3))
+        assertEquals(window3, mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow2))[0])
     }
 
     fun formatJavaCode(code: String): String {
@@ -73,6 +78,4 @@ class SourceCodeViewMapperTest {
             code // formatting failed
         }).toString()
     }
-
-
 }
