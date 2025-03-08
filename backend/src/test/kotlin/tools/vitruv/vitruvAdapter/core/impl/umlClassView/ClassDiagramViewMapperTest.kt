@@ -1,8 +1,9 @@
 package tools.vitruv.vitruvAdapter.core.impl.umlClassView
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.uml2.uml.Class
 import org.eclipse.uml2.uml.Package
+import org.eclipse.uml2.uml.PackageableElement
 import org.eclipse.uml2.uml.UMLFactory
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import tools.mdsd.jamopp.model.java.containers.CompilationUnit
@@ -11,6 +12,7 @@ import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.core.impl.uml.*
 import tools.vitruv.vitruvAdapter.utils.EObjectContainer
+import tools.vitruv.vitruvAdapter.utils.EResourceMock
 import java.io.FileInputStream
 import java.io.InputStream
 
@@ -105,11 +107,11 @@ class ClassDiagramViewMapperTest {
   val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
   println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
   val nodes = listOf(
-   UmlNode("Class","Class2", "<<class>>", listOf(
+   UmlNode(EResourceMock.getFakeUUID(getUUIDForUmlClass("Class1",container[0] as Package)),"Class2", "<<class>>", listOf(
     UmlAttribute("Property",UmlVisibility.PUBLIC, "myIntAttribute2", UmlType("PrimitiveType", "int"))
    ), listOf(), listOf()
    ),
-   UmlNode("Interface", "Interface2", "<<interface>>", listOf(), listOf(), listOf()),
+   UmlNode("Interface", "Interface1", "<<interface>>", listOf(), listOf(), listOf()),
   )
 
   val connections = listOf(
@@ -122,6 +124,10 @@ class ClassDiagramViewMapperTest {
 
 
 
+ }
+
+ private fun getUUIDForUmlClass(packageableElementName: String, umlPackage: Package): PackageableElement {
+  return umlPackage.packagedElements.find {it is Class && it.name == packageableElementName}!!
  }
 
 
