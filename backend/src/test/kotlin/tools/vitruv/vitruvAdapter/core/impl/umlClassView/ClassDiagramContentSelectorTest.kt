@@ -34,7 +34,7 @@ class ClassDiagramContentSelectorTest {
   umlPackage4.name = "examplePackage4"
   umlPackage2.nestedPackages.add(umlPackage4)
   val selectedObjects = selector.applySelection(container, setOf("examplePackage", "examplePackage3"))
-  val classTableWindow = PreMappedWindow<UmlDiagram>("examplePackage", mutableListOf(umlPackage1,))
+  val classTableWindow = PreMappedWindow<UmlDiagram>("examplePackage", mutableListOf(umlPackage1))
   val classTableWindow3 = PreMappedWindow<UmlDiagram>("examplePackage3", mutableListOf(umlPackage3))
   val expectedSelectedWindows = listOf(
    classTableWindow,
