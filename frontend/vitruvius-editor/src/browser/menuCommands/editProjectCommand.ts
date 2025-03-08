@@ -71,13 +71,11 @@ export class VitruviusEditProjectContribution implements CommandContribution {
                                     url,
                                     port,
                                 });
-
-                                await this.messageService.info("Project successfully updated.");
-
                                 const widget = await this.displayViewWidgetContribution.widget;
                                 if (widget.getConnection()?.uuid === newConnection.uuid) {
                                     await widget.loadProject(newConnection);
                                 }
+                                await this.messageService.info("Project successfully updated.");
                             } catch (error) {
                                 await this.messageService.error("Couldn't connect to Backend server.");
                             }

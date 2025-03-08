@@ -71,12 +71,12 @@ export class DisplayViewWidget extends ReactWidget implements StatefulWidget {
           });
         })
         .catch((_err) => {
+          this.connection = null;
+          this.widgetItems = [];
           // Write error message to notify the user about the failure and then reset the widget items.
           this.messageService.error(
             "Couldn't connect to the given Vitruvius server.",
           );
-          this.connection = null;
-          this.widgetItems = [];
         })
         .finally(() => this.update());
     }
