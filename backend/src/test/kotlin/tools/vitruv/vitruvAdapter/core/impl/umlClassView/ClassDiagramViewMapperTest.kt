@@ -1,6 +1,7 @@
 package tools.vitruv.vitruvAdapter.core.impl.umlClassView
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.uml2.uml.Class
+import org.eclipse.uml2.uml.Interface
 import org.eclipse.uml2.uml.Package
 import org.eclipse.uml2.uml.PackageableElement
 import org.eclipse.uml2.uml.UMLFactory
@@ -111,6 +112,10 @@ class ClassDiagramViewMapperTest {
     UmlAttribute("Property",UmlVisibility.PUBLIC, "myIntAttribute2", UmlType("PrimitiveType", "int"))
    ), listOf(), listOf()
    ),
+   UmlNode("Class3", "Class3", "<<class>>", listOf(), listOf(), listOf()),
+
+   UmlNode(EResourceMock.getFakeUUID(getUUIDForUmlClass("Interface1",container[0] as Package)),"Interface2", "<<interface>>", listOf(), listOf(), listOf()
+   ),
    UmlNode("Interface", "Interface1", "<<interface>>", listOf(), listOf(), listOf()),
   )
 
@@ -127,7 +132,7 @@ class ClassDiagramViewMapperTest {
  }
 
  private fun getUUIDForUmlClass(packageableElementName: String, umlPackage: Package): PackageableElement {
-  return umlPackage.packagedElements.find {it is Class && it.name == packageableElementName}!!
+  return umlPackage.packagedElements.find {(it is Class || it is Interface) && it.name == packageableElementName}!!
  }
 
 
