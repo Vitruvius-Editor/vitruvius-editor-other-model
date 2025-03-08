@@ -1,120 +1,127 @@
 package tools.vitruv.vitruvAdapter.core.impl.displayContentMapper
 
+import org.junit.jupiter.api.Test
 import tools.vitruv.vitruvAdapter.core.impl.uml.*
 import kotlin.test.assertEquals
 
 class UmlDisplayContentMapperTest {
- @org.junit.jupiter.api.Test
- fun testMap() {
-  // Create an instance of the mapper for ClassTableEntry using the factory method
-  val umlContentMapper = UmlDisplayContentMapper()
+    @org.junit.jupiter.api.Test
+    fun testMap() {
+        // Create an instance of the mapper for ClassTableEntry using the factory method
+        val umlContentMapper = UmlDisplayContentMapper()
 
 
-  val attribute = UmlAttribute(
-   "",
-   UmlVisibility.PUBLIC,
-   "attribute1",
-   UmlType(
-    "",
-    "Int"
-   )
-  )
-
-  val methodParameters = listOf(
-    UmlParameter(
-     "",
-     "attribute1",
-     UmlType(
-      "",
-      "Int"
-     )
-    ),
-    UmlParameter(
-     "",
-     "attribute2",
-        UmlType(
-        "",
-        "String"
+        val attribute = UmlAttribute(
+            "",
+            UmlVisibility.PUBLIC,
+            "attribute1",
+            UmlType(
+                "",
+                "Int"
+            )
         )
-    )
-  )
 
-  val method = UmlMethod(
-   "",
-   UmlVisibility.PUBLIC,
-   "method1",
-   listOf(),
-   UmlType(
-    "",
-    "Object"
-   )
-  )
+        val methodParameters = listOf(
+            UmlParameter(
+                "",
+                "attribute1",
+                UmlType(
+                    "",
+                    "Int"
+                )
+            ),
+            UmlParameter(
+                "",
+                "attribute2",
+                UmlType(
+                    "",
+                    "String"
+                )
+            )
+        )
 
-  val attribute2 = UmlAttribute(
-   "",
-   UmlVisibility.PUBLIC,
-   "attribute2",
-   UmlType(
-    "",
-    "String"
-   )
-  )
-  val umlNodes = listOf(
-   UmlNode(
-    "1",
-    "Class1",
-    "Class",
-    listOf(attribute),
-    listOf(method),
-    listOf()
-   ),
-    UmlNode(
-     "2",
+        val method = UmlMethod(
+            "",
+            UmlVisibility.PUBLIC,
+            "method1",
+            listOf(),
+            UmlType(
+                "",
+                "Object"
+            )
+        )
 
-     "Class2",
-     "Class",
-     listOf(attribute2),
-     listOf(UmlMethod(
-      "",
-      UmlVisibility.PUBLIC,
-      "method2",
-      methodParameters,
-      UmlType(
-       "",
-       "String"
-      ),
-     )),
-     listOf()
-    )
-  )
+        val attribute2 = UmlAttribute(
+            "",
+            UmlVisibility.PUBLIC,
+            "attribute2",
+            UmlType(
+                "",
+                "String"
+            )
+        )
+        val umlNodes = listOf(
+            UmlNode(
+                "1",
+                "Class1",
+                "Class",
+                listOf(attribute),
+                listOf(method),
+                listOf()
+            ),
+            UmlNode(
+                "2",
 
-  val umlConnections = listOf(
-   UmlConnection(
-    "1",
-    "1",
-    "2",
-    UmlConnectionType.EXTENDS,
-    "",
-    "",
-    ""
-   )
-  )
+                "Class2",
+                "Class",
+                listOf(attribute2),
+                listOf(
+                    UmlMethod(
+                        "",
+                        UmlVisibility.PUBLIC,
+                        "method2",
+                        methodParameters,
+                        UmlType(
+                            "",
+                            "String"
+                        ),
+                    )
+                ),
+                listOf()
+            )
+        )
 
-  val umlDiagram = UmlDiagram(
-    umlNodes,
-   umlConnections
-  )
+        val umlConnections = listOf(
+            UmlConnection(
+                "1",
+                "1",
+                "2",
+                UmlConnectionType.EXTENDS,
+                "",
+                "",
+                ""
+            )
+        )
 
-    val displayContent = umlContentMapper.parseContent(umlDiagram)
-  println(displayContent)
+        val umlDiagram = UmlDiagram(
+            umlNodes,
+            umlConnections
+        )
+
+        val displayContent = umlContentMapper.parseContent(umlDiagram)
+        println(displayContent)
 
 
-  val umlDiagramRemapped = umlContentMapper.parseString(displayContent)
+        val umlDiagramRemapped = umlContentMapper.parseString(displayContent)
 
-  val displayContentMappedAgain = umlContentMapper.parseContent(umlDiagramRemapped)
+        val displayContentMappedAgain = umlContentMapper.parseContent(umlDiagramRemapped)
 
-  assertEquals(displayContent, displayContentMappedAgain)
+        assertEquals(displayContent, displayContentMappedAgain)
+    }
 
-
- }
+    @Test
+    fun testGetVisualizerName() {
+        val umlContentMapper = UmlDisplayContentMapper()
+        assertEquals("UmlVisualizer", umlContentMapper.getVisualizerName())
+    }
 }
