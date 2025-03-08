@@ -4,10 +4,7 @@ import org.eclipse.jdt.core.ToolFactory
 import org.eclipse.jdt.core.formatter.CodeFormatter
 import org.eclipse.jface.text.Document
 import org.eclipse.text.edits.TextEdit
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import tools.mdsd.jamopp.model.java.containers.CompilationUnit
-import tools.mdsd.jamopp.model.java.containers.Package
 import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.utils.EObjectContainer
@@ -20,13 +17,13 @@ class SourceCodeViewMapperTest {
 
     @Test
     fun testMapToWindows() {
-        val windows = mapper.mapViewToWindows(EObjectContainer.getContainer1AsRootObjects())
+        val windows = mapper.mapViewToWindows(EObjectContainer().getContainer1AsRootObjects())
         assertEquals(setOf<String>("Class1"), windows)
     }
 
     @Test
     fun testMapEObjectsToWindowsContent() {
-        val preMappedWindow1 = PreMappedWindow<String>("Class1", EObjectContainer.getContainer1().toMutableList())
+        val preMappedWindow1 = PreMappedWindow<String>("Class1", EObjectContainer().getContainerWithSimpleClass().toMutableList())
         val windowSourceCode = "public class Class1 {\r\n" +
                 "\tboolean myBooleanAttribute = true;\r\n" +
                 "\r\n" +
@@ -39,7 +36,7 @@ class SourceCodeViewMapperTest {
 
     @Test
     fun testEditWindowContent() {
-        val preMappedWindow3 = PreMappedWindow<String>("Class2", EObjectContainer.getContainer3().toMutableList())
+        val preMappedWindow3 = PreMappedWindow<String>("Class2", EObjectContainer().getContainerWithClassesAndInterface().toMutableList())
         val window3 = Window("Class2", "public class Class2 {\n" +
                 "\tint myIntAttribute2;\n" +
                 "\n" +

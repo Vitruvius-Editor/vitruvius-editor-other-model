@@ -20,7 +20,7 @@ class SourceCodeContentSelectorTest {
      */
     @Test
     fun testApplySelection() {
-        val javaPackage = EObjectContainer.getContainer1AsRootObjects()
+        val javaPackage = EObjectContainer().getContainer1AsRootObjects()
         val selectedObjects = selector.applySelection(javaPackage, setOf("Class1"))
         val javaCompilationUnit = javaPackage[0] as CompilationUnit
         val javaClass = javaCompilationUnit.classifiers[0]

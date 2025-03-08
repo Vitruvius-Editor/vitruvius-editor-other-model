@@ -58,10 +58,10 @@ class ClassDiagramViewMapperTest {
   val class1 = rootw.classifiers[0] as tools.mdsd.jamopp.model.java.classifiers.Class
   val class1packageName = class1.`package`.name
 
-  eObjects = EObjectContainer.getContainer3AsRootObjects()
+  eObjects = EObjectContainer().getContainer3AsRootObjects()
   eObjectsNotAPackage = listOf(examplePackageImport, examplePackageImport, rootw)
   eObjectsNestedPackage = listOf(examplePackageNested, rootw)
-  eObjectsClassExtends = EObjectContainer.getContainerWithClassExtends()
+  eObjectsClassExtends = EObjectContainer().getContainerWithClassExtends()
 
  }
 

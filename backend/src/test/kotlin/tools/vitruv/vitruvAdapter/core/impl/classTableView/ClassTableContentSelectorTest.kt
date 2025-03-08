@@ -15,7 +15,7 @@ class ClassTableContentSelectorTest {
      */
     @org.junit.jupiter.api.Test
     fun testApplySelection() {
-        val container = EObjectContainer.getContainerWith2Packages()
+        val container = EObjectContainer().getContainerWith2Packages()
         val selectedObjects = selector.applySelection(container, setOf("examplePackage", "examplePackage2"))
         val javaPackage1 = container[2]
         val javaPackage2 = container[3]

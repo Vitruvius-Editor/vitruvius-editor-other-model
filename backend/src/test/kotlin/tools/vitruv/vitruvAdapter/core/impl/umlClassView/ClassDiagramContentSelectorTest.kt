@@ -24,7 +24,7 @@ class ClassDiagramContentSelectorTest {
   * @author Patrick & Amir
   */
  @Test fun testApplySelection() {
-  val container = EObjectContainer.getContainerWith2Packages()
+  val container = EObjectContainer().getContainerWith2Packages()
   val umlPackage1 = container[2] as Package
   val umlPackage2 = container[3] as Package
   val umlPackage3 = UMLFactory.eINSTANCE.createPackage()
