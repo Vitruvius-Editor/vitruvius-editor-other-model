@@ -235,14 +235,16 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                             umlElement.superClasses.clear()
                         }
                     }
+                    val interfaceRealizationsToDelete = mutableListOf<InterfaceRealization>()
                     for (interfaceRealization in umlElement.interfaceRealizations) {
                         val implementsConnection = connections.find {
                             it.connectionType == UmlConnectionType.IMPLEMENTS
                                     && it.targetNodeUUID == EUtils.getUUIDForEObject(interfaceRealization.contract) }
                         if (implementsConnection == null) {
-                            interfaceRealization.destroy()
+                            interfaceRealizationsToDelete.add(interfaceRealization)
                         }
                     }
+                    interfaceRealizationsToDelete.forEach { it.destroy() }
                 } else if (umlElement is Interface) {
                     if (umlElement.name != node.name) {
                         umlElement.name = node.name

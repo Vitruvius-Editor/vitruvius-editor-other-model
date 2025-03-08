@@ -1,5 +1,6 @@
 package tools.vitruv.vitruvAdapter.core.impl.umlClassView
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.uml2.uml.Package
 import org.eclipse.uml2.uml.UMLFactory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -8,7 +9,7 @@ import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.mdsd.jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser
 import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 import tools.vitruv.vitruvAdapter.core.api.Window
-import tools.vitruv.vitruvAdapter.core.impl.uml.UmlDiagram
+import tools.vitruv.vitruvAdapter.core.impl.uml.*
 import tools.vitruv.vitruvAdapter.utils.EObjectContainer
 import java.io.FileInputStream
 import java.io.InputStream
@@ -100,6 +101,26 @@ class ClassDiagramViewMapperTest {
   */
  @Test
  fun testEditWindowContent() {
+  val container = EObjectContainer().getUmlContainerWithInterfaceRealization()
+  val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
+  println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+  val nodes = listOf(
+   UmlNode("Class","Class2", "<<class>>", listOf(
+    UmlAttribute("Property",UmlVisibility.PUBLIC, "myIntAttribute2", UmlType("PrimitiveType", "int"))
+   ), listOf(), listOf()
+   ),
+   UmlNode("Interface", "Interface2", "<<interface>>", listOf(), listOf(), listOf()),
+  )
+
+  val connections = listOf(
+   UmlConnection("Class%Interface", "Class", "Interface", UmlConnectionType.IMPLEMENTS, "","","")
+  )
+
+  val umlDiagram = UmlDiagram( nodes, connections)
+  mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(listOf(preMappedWindow), listOf(Window("examplePackage", umlDiagram)))
+ println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+
+
 
  }
 

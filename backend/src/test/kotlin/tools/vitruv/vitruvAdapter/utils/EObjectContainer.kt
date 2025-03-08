@@ -81,20 +81,20 @@ class EObjectContainer {
         return listOf(javaPackage1, javaPackage2, umlPackage1, umlPackage2)
     }
 
-        fun getContainerWithClassExtends(): List<EObject> {
-            val umlPackage = getUmlPackage1()
-            val umlClass1 = getVerySimpleUmlClass()
-            val umlClass2 = getSimpleUmlClass()
-            val umlClass3 = getUmlClass3()
-            val umlInterface = umlPackage.createOwnedInterface("Interface1")
-            val umlInterfaceRealization = umlClass1.createInterfaceRealization("interfaceRealization1", umlInterface)
-            val umlInterface2 = umlPackage.createOwnedInterface("Interface2")
-            umlInterface.redefinedInterfaces.add(umlInterface2)
-            umlClass1.interfaceRealizations.add(umlInterfaceRealization)
-            umlClass1.superClasses.add(umlClass2)
-            addClassifiersToUmlPackage(listOf(umlClass1, umlClass2, umlClass3, umlInterface, umlInterface2), umlPackage)
-            return listOf(umlPackage)
-        }
+    fun getContainerWithClassExtends(): List<EObject> {
+        val umlPackage = getUmlPackage1()
+        val umlClass1 = getVerySimpleUmlClass()
+        val umlClass2 = getSimpleUmlClass()
+        val umlClass3 = getUmlClass3()
+        val umlInterface = umlPackage.createOwnedInterface("Interface1")
+        val umlInterfaceRealization = umlClass1.createInterfaceRealization("interfaceRealization1", umlInterface)
+        val umlInterface2 = umlPackage.createOwnedInterface("Interface2")
+        umlInterface.redefinedInterfaces.add(umlInterface2)
+        umlClass1.interfaceRealizations.add(umlInterfaceRealization)
+        umlClass1.superClasses.add(umlClass2)
+        addClassifiersToUmlPackage(listOf(umlClass1, umlClass2, umlClass3, umlInterface, umlInterface2), umlPackage)
+        return listOf(umlPackage)
+    }
 
     /**
      * Returns a container with a Java and Uml Class, only containing attributes.
@@ -124,9 +124,10 @@ class EObjectContainer {
         )
     }
 
+    /**
+     * Returns a container with an Uml Class and Interface
+     */
     fun getUmlContainerWithInterfaceRealization(): List<EObject> {
-        val umlPackage = getUmlPackage1()
-
         val umlClass = getVerySimpleUmlClass()
         val umlInterface = getSimpleUmlInterface()
         umlClass.createInterfaceRealization("realization", umlInterface)
@@ -287,9 +288,9 @@ class EObjectContainer {
         umlClass.name = "Class1"
         val attribute = UMLFactory.eINSTANCE.createProperty()
         attribute.name = "myIntAttribute"
-        attribute.type = EResourceMock.mockERessourceAndUuidForEObject(UMLFactory.eINSTANCE.createPrimitiveType())
+        attribute.type = EResourceMock.mockERessourceAndUuidForEObject(UMLFactory.eINSTANCE.createPrimitiveType(), umlPackage)
         attribute.type.name = "int"
-        umlClass.ownedAttributes.add(EResourceMock.mockERessourceAndUuidForEObject(attribute))
+        umlClass.ownedAttributes.add(EResourceMock.mockERessourceAndUuidForEObject(attribute, umlPackage))
         return EResourceMock.mockERessourceAndUuidForEObject(umlClass, umlPackage)
     }
 
@@ -325,25 +326,25 @@ class EObjectContainer {
         return EResourceMock.mockERessourceAndUuidForEObject(umlClass, umlPackage)
     }
 
-        private fun getUmlClass3(): org.eclipse.uml2.uml.Class {
-            val umlClass = UMLFactory.eINSTANCE.createClass()
-            umlClass.name = "Class3"
+    private fun getUmlClass3(): org.eclipse.uml2.uml.Class {
+        val umlClass = UMLFactory.eINSTANCE.createClass()
+        umlClass.name = "Class3"
 
-            val privateAttribute = UMLFactory.eINSTANCE.createProperty()
-            privateAttribute.name = "myPrivateAttribute"
-            privateAttribute.visibility = org.eclipse.uml2.uml.VisibilityKind.PRIVATE_LITERAL
+        val privateAttribute = UMLFactory.eINSTANCE.createProperty()
+        privateAttribute.name = "myPrivateAttribute"
+        privateAttribute.visibility = org.eclipse.uml2.uml.VisibilityKind.PRIVATE_LITERAL
 
-            val protectedAttribute = UMLFactory.eINSTANCE.createProperty()
-            protectedAttribute.name = "myProtectedAttribute"
-            protectedAttribute.visibility = org.eclipse.uml2.uml.VisibilityKind.PROTECTED_LITERAL
+        val protectedAttribute = UMLFactory.eINSTANCE.createProperty()
+        protectedAttribute.name = "myProtectedAttribute"
+        protectedAttribute.visibility = org.eclipse.uml2.uml.VisibilityKind.PROTECTED_LITERAL
 
-            val packageAttribute = UMLFactory.eINSTANCE.createProperty()
-            packageAttribute.name = "myPackageAttribute"
-            packageAttribute.visibility = org.eclipse.uml2.uml.VisibilityKind.PACKAGE_LITERAL
+        val packageAttribute = UMLFactory.eINSTANCE.createProperty()
+        packageAttribute.name = "myPackageAttribute"
+        packageAttribute.visibility = org.eclipse.uml2.uml.VisibilityKind.PACKAGE_LITERAL
 
-            umlClass.ownedAttributes.addAll(listOf(privateAttribute, protectedAttribute, packageAttribute))
+        umlClass.ownedAttributes.addAll(listOf(privateAttribute, protectedAttribute, packageAttribute))
 
-            return EResourceMock.mockERessourceForEObject(umlClass)
-        }
+        return EResourceMock.mockERessourceForEObject(umlClass)
+    }
 
 }
