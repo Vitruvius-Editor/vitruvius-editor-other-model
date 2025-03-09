@@ -129,6 +129,8 @@ class EObjectContainer {
      */
     fun getUmlContainerWithInterfaceRealization(): List<EObject> {
         val umlClass = getVerySimpleUmlClass()
+        val superClass = getSimpleUmlClass()
+        umlClass.superClasses.add(superClass)
         val umlInterface = getSimpleUmlInterface()
         umlClass.createInterfaceRealization("realization", umlInterface)
         umlPackage.packagedElements.addAll(listOf(umlClass, umlInterface))
@@ -246,6 +248,17 @@ class EObjectContainer {
     private fun getSimpleUmlInterface(): org.eclipse.uml2.uml.Interface {
         val umlInterface = UMLFactory.eINSTANCE.createInterface()
         umlInterface.name = "Interface1"
+        val method = UMLFactory.eINSTANCE.createOperation()
+        method.name = "myMethod"
+        method.visibility = org.eclipse.uml2.uml.VisibilityKind.PUBLIC_LITERAL
+        method.type = UMLFactory.eINSTANCE.createPrimitiveType()
+        method.type.name = "int"
+        val parameter = UMLFactory.eINSTANCE.createParameter()
+        parameter.name = "myParameter"
+        parameter.type = UMLFactory.eINSTANCE.createPrimitiveType()
+        parameter.type.name = "int"
+        method.ownedParameters.add(EResourceMock.mockERessourceAndUuidForEObject(parameter))
+        umlInterface.ownedOperations.add(EResourceMock.mockERessourceAndUuidForEObject(method))
         return EResourceMock.mockERessourceAndUuidForEObject(umlInterface, umlPackage)
     }
 
@@ -291,6 +304,17 @@ class EObjectContainer {
         attribute.type = EResourceMock.mockERessourceAndUuidForEObject(UMLFactory.eINSTANCE.createPrimitiveType(), umlPackage)
         attribute.type.name = "int"
         umlClass.ownedAttributes.add(EResourceMock.mockERessourceAndUuidForEObject(attribute, umlPackage))
+        val method = UMLFactory.eINSTANCE.createOperation()
+        method.name = "myMethod"
+        method.visibility = org.eclipse.uml2.uml.VisibilityKind.PUBLIC_LITERAL
+        method.type = UMLFactory.eINSTANCE.createPrimitiveType()
+        method.type.name = "int"
+        val parameter = UMLFactory.eINSTANCE.createParameter()
+        parameter.name = "myParameter"
+        parameter.type = UMLFactory.eINSTANCE.createPrimitiveType()
+        parameter.type.name = "int"
+        method.ownedParameters.add(EResourceMock.mockERessourceAndUuidForEObject(parameter, umlPackage))
+        umlClass.ownedOperations.add(EResourceMock.mockERessourceAndUuidForEObject(method, umlPackage))
         return EResourceMock.mockERessourceAndUuidForEObject(umlClass, umlPackage)
     }
 

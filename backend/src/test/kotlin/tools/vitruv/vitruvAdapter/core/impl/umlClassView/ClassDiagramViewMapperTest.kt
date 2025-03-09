@@ -1,10 +1,7 @@
 package tools.vitruv.vitruvAdapter.core.impl.umlClassView
+
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.uml2.uml.Class
-import org.eclipse.uml2.uml.Interface
-import org.eclipse.uml2.uml.Package
-import org.eclipse.uml2.uml.PackageableElement
-import org.eclipse.uml2.uml.UMLFactory
+import org.eclipse.uml2.uml.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import tools.mdsd.jamopp.model.java.containers.CompilationUnit
@@ -19,121 +16,162 @@ import java.io.InputStream
 
 class ClassDiagramViewMapperTest {
 
- private val mapper = ClassDiagramViewMapper()
+    private val mapper = ClassDiagramViewMapper()
 
- private lateinit var eObjects: List<EObject>
- private lateinit var eObjectsNotAPackage: List<EObject>
- private lateinit var eObjectsNestedPackage: List<EObject>
- private lateinit var eObjectsClassExtends: List<EObject>
+    private lateinit var eObjects: List<EObject>
+    private lateinit var eObjectsNotAPackage: List<EObject>
+    private lateinit var eObjectsNestedPackage: List<EObject>
+    private lateinit var eObjectsClassExtends: List<EObject>
 
- @BeforeEach
- fun initEObjects() {
+    @BeforeEach
+    fun initEObjects() {
 
-  val factory = UMLFactory.eINSTANCE
-  val examplePackage = factory.createPackage()
-  examplePackage.name = "examplePackage"
+        val factory = UMLFactory.eINSTANCE
+        val examplePackage = factory.createPackage()
+        examplePackage.name = "examplePackage"
 
-  val examplePackageImport = factory.createPackageImport()
-  examplePackageImport.importedPackage = examplePackage
+        val examplePackageImport = factory.createPackageImport()
+        examplePackageImport.importedPackage = examplePackage
 
-  val examplePackageNested = factory.createPackage()
-  examplePackageNested.name = "examplePackageNested"
-  examplePackageNested.packagedElements.add(examplePackage)
-  examplePackageNested.createNestedPackage("nestedPackage")
-
-
-  val umlClass = examplePackage.createOwnedClass("Class1", false)
-  val umlClass2 = examplePackage.createOwnedClass("Class2", false)
+        val examplePackageNested = factory.createPackage()
+        examplePackageNested.name = "examplePackageNested"
+        examplePackageNested.packagedElements.add(examplePackage)
+        examplePackageNested.createNestedPackage("nestedPackage")
 
 
-  umlClass.superClasses.add(umlClass2)
-  val umlInterface = examplePackage.createOwnedInterface("Interface1")
-
-  umlClass.implementedInterfaces.add(umlInterface)
+        val umlClass = examplePackage.createOwnedClass("Class1", false)
+        val umlClass2 = examplePackage.createOwnedClass("Class2", false)
 
 
-  val attribute = umlClass.createOwnedAttribute("myIntAttribute", null)
-  attribute.visibility = org.eclipse.uml2.uml.VisibilityKind.PUBLIC_LITERAL
+        umlClass.superClasses.add(umlClass2)
+        val umlInterface = examplePackage.createOwnedInterface("Interface1")
 
-  val inputStream: InputStream =
-   FileInputStream("src/test/kotlin/tools/vitruv/vitruvAdapter/utils/class1")
-  val rootw = JaMoPPJDTSingleFileParser().parse("class1", inputStream) as CompilationUnit
-
-  val class1 = rootw.classifiers[0] as tools.mdsd.jamopp.model.java.classifiers.Class
-  val class1packageName = class1.`package`.name
-
-  eObjects = EObjectContainer().getContainer3AsRootObjects()
-  eObjectsNotAPackage = listOf(examplePackageImport, examplePackageImport, rootw)
-  eObjectsNestedPackage = listOf(examplePackageNested, rootw)
-  eObjectsClassExtends = EObjectContainer().getContainerWithClassExtends()
-
- }
-
- @Test
- fun testMapViewToWindows() {
-  val windows = mapper.mapViewToWindows(eObjects)
-  val expectedWindows = setOf<String>("examplePackage")
-  kotlin.test.assertEquals(expectedWindows, windows)
- }
-
- @Test
- fun testWindowsNotAPackage() {
-  val windows = mapper.mapViewToWindows(eObjectsNotAPackage)
-  kotlin.test.assertEquals(emptySet<String>(), windows)
- }
-
- @Test
- fun testWindowsNestedPackage() {
-  val windows = mapper.mapViewToWindows(eObjectsNestedPackage)
-  val expectedWindows = setOf<String>("examplePackageNested", "nestedPackage", "examplePackage")
-  kotlin.test.assertEquals(expectedWindows, windows)
- }
-
- /**
-  * @author Patrick
-  */
- @Test
- fun testMapEObjectsToWindowsContent() {
-    val preMappedWindow1 = PreMappedWindow<UmlDiagram>("examplePackage", eObjectsClassExtends.toMutableList())
-    val window1 = mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow1))
-    print(window1)
- }
-
- /**
-  * @author Nico,Amir
-  */
- @Test
- fun testEditWindowContent() {
-  val container = EObjectContainer().getUmlContainerWithInterfaceRealization()
-  val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
-  println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
-  val nodes = listOf(
-   UmlNode(EResourceMock.getFakeUUID(getUUIDForUmlClass("Class1",container[0] as Package)),"Class2", "<<class>>", listOf(
-    UmlAttribute("Property",UmlVisibility.PUBLIC, "myIntAttribute2", UmlType("PrimitiveType", "int"))
-   ), listOf(), listOf()
-   ),
-   UmlNode("Class3", "Class3", "<<class>>", listOf(), listOf(), listOf()),
-
-   UmlNode(EResourceMock.getFakeUUID(getUUIDForUmlClass("Interface1",container[0] as Package)),"Interface2", "<<interface>>", listOf(), listOf(), listOf()
-   ),
-   UmlNode("Interface", "Interface1", "<<interface>>", listOf(), listOf(), listOf()),
-  )
-
-  val connections = listOf(
-   UmlConnection("Class%Interface", "Class", "Interface", UmlConnectionType.IMPLEMENTS, "","","")
-  )
-
-  val umlDiagram = UmlDiagram( nodes, connections)
-  mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(listOf(preMappedWindow), listOf(Window("examplePackage", umlDiagram)))
- println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+        umlClass.implementedInterfaces.add(umlInterface)
 
 
+        val attribute = umlClass.createOwnedAttribute("myIntAttribute", null)
+        attribute.visibility = org.eclipse.uml2.uml.VisibilityKind.PUBLIC_LITERAL
 
- }
+        val inputStream: InputStream =
+            FileInputStream("src/test/kotlin/tools/vitruv/vitruvAdapter/utils/class1")
+        val rootw = JaMoPPJDTSingleFileParser().parse("class1", inputStream) as CompilationUnit
 
- private fun getUUIDForUmlClass(packageableElementName: String, umlPackage: Package): PackageableElement {
-  return umlPackage.packagedElements.find {(it is Class || it is Interface) && it.name == packageableElementName}!!
- }
+        val class1 = rootw.classifiers[0] as tools.mdsd.jamopp.model.java.classifiers.Class
+        val class1packageName = class1.`package`.name
+
+        eObjects = EObjectContainer().getContainer3AsRootObjects()
+        eObjectsNotAPackage = listOf(examplePackageImport, examplePackageImport, rootw)
+        eObjectsNestedPackage = listOf(examplePackageNested, rootw)
+        eObjectsClassExtends = EObjectContainer().getContainerWithClassExtends()
+
+    }
+
+    @Test
+    fun testMapViewToWindows() {
+        val windows = mapper.mapViewToWindows(eObjects)
+        val expectedWindows = setOf<String>("examplePackage")
+        kotlin.test.assertEquals(expectedWindows, windows)
+    }
+
+    @Test
+    fun testWindowsNotAPackage() {
+        val windows = mapper.mapViewToWindows(eObjectsNotAPackage)
+        kotlin.test.assertEquals(emptySet<String>(), windows)
+    }
+
+    @Test
+    fun testWindowsNestedPackage() {
+        val windows = mapper.mapViewToWindows(eObjectsNestedPackage)
+        val expectedWindows = setOf<String>("examplePackageNested", "nestedPackage", "examplePackage")
+        kotlin.test.assertEquals(expectedWindows, windows)
+    }
+
+    /**
+     * @author Patrick
+     */
+    @Test
+    fun testMapEObjectsToWindowsContent() {
+        val preMappedWindow1 = PreMappedWindow<UmlDiagram>("examplePackage", eObjectsClassExtends.toMutableList())
+        val window1 = mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow1))
+        print(window1)
+    }
+
+    /**
+     * @author Nico,Amir
+     */
+    @Test
+    fun testEditWindowContent() {
+        val container = EObjectContainer().getUmlContainerWithInterfaceRealization()
+        val useLessClass = UMLFactory.eINSTANCE.createClass()
+        useLessClass.name = "UselessClass"
+        val mutableList = container.toMutableList()
+        mutableList.add(useLessClass)
+
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", mutableList)
+
+        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+
+
+        val classUUID = EResourceMock.getFakeUUID(getUUIDForUmlClass("Class1", container[0] as Package))
+        val interfaceUUID = EResourceMock.getFakeUUID(getUUIDForUmlClass("Interface1", container[0] as Package))
+        val method = ((container[0] as Package).ownedElements[0] as Class).ownedOperations[0]
+        val methodUUID = EResourceMock.getFakeUUID(method)
+
+
+        val umlMethod =
+            UmlMethod(methodUUID, UmlVisibility.PUBLIC, "myIntMethod", listOf(), UmlType("PrimitiveType", "int"))
+        val umlConnection = UmlConnection(
+            classUUID + interfaceUUID,
+            classUUID,
+            interfaceUUID,
+            UmlConnectionType.IMPLEMENTS,
+            "",
+            "",
+            ""
+        )
+
+        val nodes = listOf(
+            UmlNode(
+                EResourceMock.getFakeUUID(getUUIDForUmlClass("Class1", container[0] as Package)),
+                "Class2",
+                "<<class>>",
+                listOf(
+                    UmlAttribute("Property", UmlVisibility.PUBLIC, "myIntAttribute2", UmlType("PrimitiveType", "int"))
+                ),
+                listOf(umlMethod),
+                listOf()
+            ),
+            UmlNode("Class3", "Class3", "<<class>>", listOf(), listOf(umlMethod), listOf()),
+
+            UmlNode(
+                EResourceMock.getFakeUUID(getUUIDForUmlClass("Interface1", container[0] as Package)),
+                "Interface2",
+                "<<interface>>",
+                listOf(),
+                listOf(),
+                listOf()
+            ),
+            UmlNode("Interface", "Interface1", "<<interface>>", listOf(), listOf(), listOf()),
+        )
+
+        val connections = listOf(
+            UmlConnection("Class%Interface", "Class", "Interface", UmlConnectionType.IMPLEMENTS, "", "", ""),
+            umlConnection
+        )
+
+        val umlDiagram = UmlDiagram(nodes, connections)
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )
+        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+
+
+    }
+
+    private fun getUUIDForUmlClass(packageableElementName: String, umlPackage: Package): PackageableElement {
+        return umlPackage.packagedElements.find { (it is Class || it is Interface) && it.name == packageableElementName }!!
+    }
 
 
 }
