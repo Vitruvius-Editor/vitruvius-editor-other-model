@@ -25,7 +25,6 @@ class ClassDiagramViewMapperTest {
 
     @BeforeEach
     fun initEObjects() {
-
         val factory = UMLFactory.eINSTANCE
         val examplePackage = factory.createPackage()
         examplePackage.name = "examplePackage"
@@ -38,16 +37,13 @@ class ClassDiagramViewMapperTest {
         examplePackageNested.packagedElements.add(examplePackage)
         examplePackageNested.createNestedPackage("nestedPackage")
 
-
         val umlClass = examplePackage.createOwnedClass("Class1", false)
         val umlClass2 = examplePackage.createOwnedClass("Class2", false)
-
 
         umlClass.superClasses.add(umlClass2)
         val umlInterface = examplePackage.createOwnedInterface("Interface1")
 
         umlClass.implementedInterfaces.add(umlInterface)
-
 
         val attribute = umlClass.createOwnedAttribute("myIntAttribute", null)
         attribute.visibility = org.eclipse.uml2.uml.VisibilityKind.PUBLIC_LITERAL
@@ -69,7 +65,7 @@ class ClassDiagramViewMapperTest {
     @Test
     fun testMapViewToWindows() {
         val windows = mapper.mapViewToWindows(eObjects)
-        val expectedWindows = setOf<String>("examplePackage")
+        val expectedWindows = setOf("examplePackage")
         kotlin.test.assertEquals(expectedWindows, windows)
     }
 
@@ -102,6 +98,7 @@ class ClassDiagramViewMapperTest {
     @Test
     fun testEditWindowContent() {
         val container = EObjectContainer().getUmlContainerWithInterfaceRealization()
+        val containerPackage = container[0] as Package
         val useLessClass = UMLFactory.eINSTANCE.createClass()
         useLessClass.name = "UselessClass"
         val mutableList = container.toMutableList()
@@ -111,10 +108,9 @@ class ClassDiagramViewMapperTest {
 
         println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
 
-
-        val classUUID = EResourceMock.getFakeUUID(getUUIDForUmlClass("Class1", container[0] as Package))
-        val interfaceUUID = EResourceMock.getFakeUUID(getUUIDForUmlClass("Interface1", container[0] as Package))
-        val method = ((container[0] as Package).ownedElements[0] as Class).ownedOperations[0]
+        val classUUID = EResourceMock.getFakeUUID(getPackageAbleElement("Class1", containerPackage))
+        val interfaceUUID = EResourceMock.getFakeUUID(getPackageAbleElement("Interface1", containerPackage))
+        val method = ((containerPackage).ownedElements[0] as Class).ownedOperations[0]
         val methodUUID = EResourceMock.getFakeUUID(method)
 
 
@@ -132,11 +128,11 @@ class ClassDiagramViewMapperTest {
 
         val nodes = listOf(
             UmlNode(
-                EResourceMock.getFakeUUID(getUUIDForUmlClass("Class1", container[0] as Package)),
+                EResourceMock.getFakeUUID(getPackageAbleElement("Class1", container[0] as Package)),
                 "Class2",
                 "<<class>>",
                 listOf(
-                    UmlAttribute("Property", UmlVisibility.PUBLIC, "myIntAttribute2", UmlType("PrimitiveType", "int"))
+                    UmlAttribute(getFakeUUID(getAttribute("myIntAttribute1", getClass("Class1", containerPackage))), UmlVisibility.PUBLIC, "myIntAttribute2", UmlType("PrimitiveType", "int"))
                 ),
                 listOf(umlMethod),
                 listOf()
@@ -144,7 +140,7 @@ class ClassDiagramViewMapperTest {
             UmlNode("Class3", "Class3", "<<class>>", listOf(), listOf(umlMethod), listOf()),
 
             UmlNode(
-                EResourceMock.getFakeUUID(getUUIDForUmlClass("Interface1", container[0] as Package)),
+                EResourceMock.getFakeUUID(getPackageAbleElement("Interface1", containerPackage)),
                 "Interface2",
                 "<<interface>>",
                 listOf(),
@@ -165,12 +161,118 @@ class ClassDiagramViewMapperTest {
             listOf(Window("examplePackage", umlDiagram))
         )
         println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+    }
+
+    /**
+     * Test if the deletion of a class, an attribute, an operation and an interface operation works.
+     */
+    @Test
+    fun testDeleteObjects() {
+        val container = EObjectContainer().getUmlContainerWithInterfaceRealization()
+        val containerPackage = container[0] as Package
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
+
+        val nodes = listOf(
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Class1", containerPackage)),
+                "Class1",
+                "<<class>>",
+                listOf(
+                ),
+                listOf(),
+                listOf()
+            ),
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Interface1", containerPackage)),
+                "Interface1",
+                "<<interface>>",
+                listOf(),
+                listOf(),
+                listOf()
+            )
+        )
+
+        val connections = listOf<UmlConnection>()
+        val umlDiagram = UmlDiagram(nodes, connections)
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )
+        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+
 
 
     }
 
-    private fun getUUIDForUmlClass(packageableElementName: String, umlPackage: Package): PackageableElement {
-        return umlPackage.packagedElements.find { (it is Class || it is Interface) && it.name == packageableElementName }!!
+    /**
+     * Test if the deletion of a parameter in methods works.
+     */
+    @Test
+    fun testDeleteMoreObjects() {
+        val eObjectContainer = EObjectContainer()
+        val container = eObjectContainer.getUmlContainerWith(listOf(eObjectContainer.getUmlClassWithMethod()))
+        val containerPackage = container[0] as Package
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
+
+        val nodes = listOf(
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Class2", containerPackage)),
+                "Class2",
+                "<<class>>",
+                listOf(
+                ),
+                listOf(
+                    UmlMethod(getFakeUUID(getOperation("myMethod", getClass("Class2", containerPackage))),
+                        UmlVisibility.PUBLIC,
+                        "myMethod",
+                        listOf(), UmlType("PrimitiveType", "int"))
+
+                ),
+                listOf()
+            )
+        )
+
+        val connections = listOf<UmlConnection>()
+        val umlDiagram = UmlDiagram(nodes, connections)
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )
+        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+
+
+    }
+
+    private fun getFakeUUID(eObject: EObject): String {
+        return EResourceMock.getFakeUUID(eObject)
+    }
+
+    private fun getPackageAbleElement(packageAbleElementName: String, umlPackage: Package): PackageableElement {
+        return umlPackage.packagedElements.find { (it is Class || it is Interface) && it.name == packageAbleElementName }!!
+    }
+
+    private fun getClass(className: String, umlPackage: Package): Class{
+        return umlPackage.packagedElements.find { it is Class && it.name == className } as Class
+    }
+
+    private fun getInterface(interfaceName: String, umlPackage: Package): Interface{
+        return umlPackage.packagedElements.find { it is Interface && it.name == interfaceName } as Interface
+    }
+
+    private fun getAttribute(propertyName: String, umlClass: Class): Property{
+        return umlClass.members.find { it is Property && it.name == propertyName } as Property
+    }
+
+    private fun getOperation(operationName: String, umlClass: Class): Operation{
+        return umlClass.members.find { it is Operation && it.name == operationName } as Operation
+    }
+
+    private fun getOperation(operationName: String, umlInterface: Interface): Operation {
+        return umlInterface.ownedOperations.find { it.name == operationName } as Operation
+    }
+
+    private fun getParameter(parameterName: String, umlOperation: Operation): Parameter{
+        return umlOperation.ownedParameters.find { it.name == parameterName } as Parameter
     }
 
 

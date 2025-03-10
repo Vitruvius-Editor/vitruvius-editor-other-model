@@ -94,7 +94,7 @@ class EResourceMock private constructor() {
          */
         fun getFakeUUID(eObject: EObject): String {
             //get name of EObject if it has the feature
-            return eObject.eClass().getName() + "@" + Integer.toHexString(System.identityHashCode(eObject));
+            return eObject.eClass().name + "@" + Integer.toHexString(System.identityHashCode(eObject));
         }
     }
 }

@@ -203,11 +203,14 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                     if (umlElement.name == null || umlElement.name != node.name) {
                         umlElement.name = node.name
                     }
+                    val checkedAttributes = mutableListOf<Property>()
+                    checkedAttributes.addAll(umlElement.ownedAttributes)
                     for (umlAttribute in node.attributes) {
                         val attribute = umlElement.eResource().getEObject(umlAttribute.uuid)
                         if (attribute == null) {
                             createAttributeForUmlAttributeInClass(umlElement, umlAttribute)
                         } else {
+                            checkedAttributes.remove(attribute)
                             if (attribute is Property) {
                                 editAttributeProperties(attribute, umlAttribute, umlElement)
                             } else {
@@ -216,18 +219,28 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                         }
                     }
 
+                    for (attribute in checkedAttributes) {
+                        attribute.destroy()
+                    }
+
+                    val checkedMethods = mutableListOf<Operation>()
+                    checkedMethods.addAll(umlElement.operations)
                     for (method in node.methods) {
                         val operation = umlElement.eResource().getEObject(method.uuid)
 
                         if (operation == null) {
                             createMethodFromUmlMethodInClass(umlElement, method)
                         } else {
+                            checkedMethods.remove(operation)
                             if (operation is Operation) {
                                 editOperationProperties(operation, method, umlElement)
                             } else {
                                 throw IllegalStateException("The operation with the UUID ${method.uuid} could not be linked to a operation.")
                             }
                         }
+                    }
+                    for (method in checkedMethods) {
+                        method.destroy()
                     }
                     if (umlElement.superClasses.isNotEmpty()) {
                         val extendsConnection = connections.find { it.connectionType == UmlConnectionType.EXTENDS }
@@ -249,13 +262,20 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                     if (umlElement.name != node.name) {
                         umlElement.name = node.name
                     }
+
+                    val checkedMethods = mutableListOf<Operation>()
+                    checkedMethods.addAll(umlElement.ownedOperations)
                     for (methods in node.methods) {
                         val umlOperation = umlElement.operations.find { it.name == methods.name }
                         if (umlOperation == null) {
                             createMethodFromUmlMethodInInterface(umlElement, methods)
                         } else {
+                            checkedMethods.remove(umlOperation)
                             editOperationProperties(umlOperation, methods, umlElement)
                         }
+                    }
+                    for (method in checkedMethods) {
+                        method.destroy()
                     }
                 }
 
@@ -343,15 +363,21 @@ class ClassDiagramViewMapper : UmlViewMapper() {
             val type = getTypeOrPrimitiveType(umlMethod.returnType.name, classifier.`package`)
             operation.type = type
         }
+        val checkedParameters = mutableListOf<Parameter>()
+        checkedParameters.addAll(operation.ownedParameters)
         for (parameter in umlMethod.parameters) {
             val ownedParameter = operation.ownedParameters.find { it.name == parameter.name }
             if (ownedParameter == null) {
                 operation.createOwnedParameter(parameter.name, getTypeOrPrimitiveType(parameter.type.name, classifier.`package`))
             } else {
+                checkedParameters.remove(ownedParameter)
                 if (ownedParameter.type == null || ownedParameter.type != getTypeOrPrimitiveType(parameter.type.name, classifier.`package`)) {
                     ownedParameter.type = getTypeOrPrimitiveType(parameter.type.name, classifier.`package`)
                 }
             }
+        }
+        for (parameter in checkedParameters) {
+            parameter.destroy()
         }
     }
 

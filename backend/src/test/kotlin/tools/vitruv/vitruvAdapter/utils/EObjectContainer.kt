@@ -138,39 +138,49 @@ class EObjectContainer {
 
     }
 
+    /**
+     * Returns a container with an given list of PackageableElements.
+     * @param packageableElements The list of PackageableElements to add to the UmlPackage.
+     * @return The UmlPackage with the given PackageableElements.
+     */
+    fun getUmlContainerWith(packageableElements: List<PackageableElement>): List<EObject> {
+        umlPackage.packagedElements.addAll(packageableElements)
+        return listOf(umlPackage)
+    }
 
-    private fun addClassifiersToUmlPackage(umlElements: List<PackageableElement>, umlPackage: Package) {
+
+    fun addClassifiersToUmlPackage(umlElements: List<PackageableElement>, umlPackage: Package) {
         umlPackage.packagedElements.addAll(umlElements)
     }
 
-    private fun addClassifiersToCompilationUnit(javaElements: List<ConcreteClassifier>, javaPackage: CompilationUnit) {
+    fun addClassifiersToCompilationUnit(javaElements: List<ConcreteClassifier>, javaPackage: CompilationUnit) {
         javaPackage.classifiers.addAll(javaElements)
     }
 
-    private fun getCompilationUnit1(): CompilationUnit {
+    fun getCompilationUnit1(): CompilationUnit {
         val javaPackage = ContainersFactory.eINSTANCE.createCompilationUnit()
         javaPackage.name = "examplePackage"
         return EResourceMock.mockERessourceAndUuidForEObject(javaPackage)
     }
 
-    private fun getCompilationUnit2(): CompilationUnit {
+    fun getCompilationUnit2(): CompilationUnit {
         val javaPackage = ContainersFactory.eINSTANCE.createCompilationUnit()
         javaPackage.name = "examplePackage2"
         return EResourceMock.mockERessourceAndUuidForEObject(javaPackage)
     }
 
-    private fun getUmlPackage1(): Package {
+    fun getUmlPackage1(): Package {
         umlPackage.name = "examplePackage"
         return umlPackage
     }
 
-    private fun getUmlPackage2(): Package {
+    fun getUmlPackage2(): Package {
         val umlPackage = UMLFactory.eINSTANCE.createPackage()
         umlPackage.name = "examplePackage2"
         return EResourceMock.mockERessourceAndUuidForEObject(umlPackage)
     }
 
-    private fun getSimplestJavaClass(): Class {
+    fun getSimplestJavaClass(): Class {
         val javaClass = ClassifiersFactory.eINSTANCE.createClass()
         javaClass.name = "Class1"
         javaClass.makePublic()
@@ -187,7 +197,7 @@ class EObjectContainer {
         return EResourceMock.mockERessourceAndUuidForEObject(javaClass)
     }
 
-    private fun getJavaClassWithMethod(): Class {
+    fun getJavaClassWithMethod(): Class {
         val javaClass = ClassifiersFactory.eINSTANCE.createClass()
         javaClass.name = "Class2"
         javaClass.makePublic()
@@ -225,7 +235,7 @@ class EObjectContainer {
     }
 
 
-    private fun getJavaInterfaceWithMethod(): Interface {
+    fun getJavaInterfaceWithMethod(): Interface {
         val javaInterface = ClassifiersFactory.eINSTANCE.createInterface()
         javaInterface.name = "Interface1"
         javaInterface.makePublic()
@@ -245,7 +255,7 @@ class EObjectContainer {
     }
 
 
-    private fun getSimpleUmlInterface(): org.eclipse.uml2.uml.Interface {
+    fun getSimpleUmlInterface(): org.eclipse.uml2.uml.Interface {
         val umlInterface = UMLFactory.eINSTANCE.createInterface()
         umlInterface.name = "Interface1"
         val method = UMLFactory.eINSTANCE.createOperation()
@@ -262,7 +272,7 @@ class EObjectContainer {
         return EResourceMock.mockERessourceAndUuidForEObject(umlInterface, umlPackage)
     }
 
-    private fun getUmlInterfaceWithMethod(): org.eclipse.uml2.uml.Interface {
+    fun getUmlInterfaceWithMethod(): org.eclipse.uml2.uml.Interface {
         val umlInterface = UMLFactory.eINSTANCE.createInterface()
         umlInterface.name = "Interface1"
         val method = UMLFactory.eINSTANCE.createOperation()
@@ -279,7 +289,7 @@ class EObjectContainer {
         return EResourceMock.mockERessourceAndUuidForEObject(umlInterface, umlPackage)
     }
 
-    private fun getSimpleUmlClass(): org.eclipse.uml2.uml.Class {
+    fun getSimpleUmlClass(): org.eclipse.uml2.uml.Class {
         val umlClass = UMLFactory.eINSTANCE.createClass()
         umlClass.name = "Class1"
         val attribute = UMLFactory.eINSTANCE.createProperty()
@@ -296,7 +306,7 @@ class EObjectContainer {
         return EResourceMock.mockERessourceAndUuidForEObject(umlClass, umlPackage)
     }
 
-    private fun getVerySimpleUmlClass(): org.eclipse.uml2.uml.Class {
+    fun getVerySimpleUmlClass(): org.eclipse.uml2.uml.Class {
         val umlClass = UMLFactory.eINSTANCE.createClass()
         umlClass.name = "Class1"
         val attribute = UMLFactory.eINSTANCE.createProperty()
@@ -319,7 +329,7 @@ class EObjectContainer {
     }
 
 
-    private fun getUmlClassWithMethod(): org.eclipse.uml2.uml.Class {
+    fun getUmlClassWithMethod(): org.eclipse.uml2.uml.Class {
         val umlClass = UMLFactory.eINSTANCE.createClass()
         umlClass.name = "Class2"
         val attribute = UMLFactory.eINSTANCE.createProperty()
@@ -350,7 +360,7 @@ class EObjectContainer {
         return EResourceMock.mockERessourceAndUuidForEObject(umlClass, umlPackage)
     }
 
-    private fun getUmlClass3(): org.eclipse.uml2.uml.Class {
+    fun getUmlClass3(): org.eclipse.uml2.uml.Class {
         val umlClass = UMLFactory.eINSTANCE.createClass()
         umlClass.name = "Class3"
 
