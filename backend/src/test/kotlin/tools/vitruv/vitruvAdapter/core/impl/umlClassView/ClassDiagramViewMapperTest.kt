@@ -15,6 +15,7 @@ import tools.vitruv.vitruvAdapter.utils.EResourceMock
 import java.io.FileInputStream
 import java.io.InputStream
 import java.lang.IllegalStateException
+import kotlin.test.assertEquals
 
 class ClassDiagramViewMapperTest {
 
@@ -426,6 +427,11 @@ class ClassDiagramViewMapperTest {
         println(getOperation("myMethod", getClass("Class2", containerPackage)).ownedParameters[0].name)
         println(getOperation("myMethod", getClass("Class2", containerPackage)).ownedParameters[1].name)
         println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+    }
+
+    @Test
+    fun testDisplayContent() {
+        assertEquals(mapper.getDisplayContent().getVisualizerName(), "UmlVisualizer")
     }
 
     private fun getFakeUUID(eObject: EObject): String {
