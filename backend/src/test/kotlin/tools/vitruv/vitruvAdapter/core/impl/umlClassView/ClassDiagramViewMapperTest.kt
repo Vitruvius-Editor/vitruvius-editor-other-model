@@ -132,7 +132,7 @@ class ClassDiagramViewMapperTest {
                 "Class2",
                 "<<class>>",
                 listOf(
-                    UmlAttribute(getFakeUUID(getAttribute("myIntAttribute1", getClass("Class1", containerPackage))), UmlVisibility.PUBLIC, "myIntAttribute2", UmlType("PrimitiveType", "int"))
+                    UmlAttribute(getFakeUUID(getAttribute("myIntAttribute", getClass("Class1", containerPackage))), UmlVisibility.PUBLIC, "myIntAttribute2", UmlType("PrimitiveType", "int"))
                 ),
                 listOf(umlMethod),
                 listOf()
