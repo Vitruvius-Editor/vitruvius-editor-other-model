@@ -390,6 +390,44 @@ class ClassDiagramViewMapperTest {
         println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
     }
 
+    @Test
+    fun testEditParameterInOperation() {
+        val eObjectContainer = EObjectContainer()
+        val container = eObjectContainer.getUmlContainerWith(listOf(eObjectContainer.getUmlClassWithMethod()))
+        val containerPackage = container[0] as Package
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
+
+        val nodes = listOf(
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Class2", containerPackage)),
+                "Class2",
+                "<<class>>",
+                listOf(
+                ),
+                listOf(
+                    UmlMethod(getFakeUUID(getOperation("myMethod", getClass("Class2", containerPackage))),
+                        UmlVisibility.PUBLIC,
+                        "myMethod",
+                        listOf(
+                            UmlParameter(getFakeUUID(getParameter("myParameter", getOperation("myMethod", getClass("Class2", containerPackage)))),
+                                "myChangedParameter", UmlType("", "newType"))
+                        ), UmlType("PrimitiveType", "char"))
+
+                ),
+                listOf()
+            )
+        )
+        val connections = listOf<UmlConnection>()
+        val umlDiagram = UmlDiagram(nodes, connections)
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )
+        println(getOperation("myMethod", getClass("Class2", containerPackage)).ownedParameters[0].name)
+        println(getOperation("myMethod", getClass("Class2", containerPackage)).ownedParameters[1].name)
+        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+    }
+
     private fun getFakeUUID(eObject: EObject): String {
         return EResourceMock.getFakeUUID(eObject)
     }

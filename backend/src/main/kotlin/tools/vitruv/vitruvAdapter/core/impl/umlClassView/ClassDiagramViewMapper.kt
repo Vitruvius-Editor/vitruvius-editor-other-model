@@ -116,7 +116,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
             val umlVisibility = UmlVisibility.fromSymbol(visibilitySymbol) ?: UmlVisibility.PUBLIC
             val umlParameters = mutableListOf<UmlParameter>()
             operation.ownedParameters.filter { it.direction == ParameterDirectionKind.IN_LITERAL }.forEach { parameter ->
-            umlParameters.add(UmlParameter(EUtils.getUUIDForEObject(parameter), parameter.type?.name?:"not_defined", UmlType(EUtils.getUUIDForEObject(parameter.type), parameter.type?.name?:"Object")))
+            umlParameters.add(UmlParameter(EUtils.getUUIDForEObject(parameter), parameter.name?:"not_defined", UmlType(EUtils.getUUIDForEObject(parameter.type), parameter.type?.name?:"Object")))
             }
             umlMethods.add(UmlMethod(EUtils.getUUIDForEObject(operation), umlVisibility, operation.name?:"not_defined", umlParameters, UmlType(EUtils.getUUIDForEObject(operation.type), operation.type?.name?:"Object")))
         }
@@ -366,18 +366,25 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         val checkedParameters = mutableListOf<Parameter>()
         checkedParameters.addAll(operation.ownedParameters)
         for (parameter in umlMethod.parameters) {
-            val ownedParameter = operation.ownedParameters.find { it.name == parameter.name }
-            if (ownedParameter == null) {
+            val ownedParameter = operation.eResource().getEObject(parameter.uuid)
+            if (ownedParameter == null || ownedParameter !is Parameter) {
+
                 operation.createOwnedParameter(parameter.name, getTypeOrPrimitiveType(parameter.type.name, classifier.`package`))
             } else {
                 checkedParameters.remove(ownedParameter)
                 if (ownedParameter.type == null || ownedParameter.type != getTypeOrPrimitiveType(parameter.type.name, classifier.`package`)) {
                     ownedParameter.type = getTypeOrPrimitiveType(parameter.type.name, classifier.`package`)
                 }
+
+                if (ownedParameter.name == null || ownedParameter.name != parameter.name) {
+                    ownedParameter.name = parameter.name
+                }
             }
         }
         for (parameter in checkedParameters) {
-            parameter.destroy()
+            if (parameter.direction == ParameterDirectionKind.IN_LITERAL) {
+                parameter.destroy()
+            }
         }
     }
 

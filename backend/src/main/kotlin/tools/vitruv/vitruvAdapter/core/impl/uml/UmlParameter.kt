@@ -6,7 +6,7 @@ package tools.vitruv.vitruvAdapter.core.impl.uml
  * @param name The name of the parameter.
  * @param type The type of the parameter.
  */
-class UmlParameter (
+data class UmlParameter (
     val uuid : String,
     val name: String,
     val type: UmlType

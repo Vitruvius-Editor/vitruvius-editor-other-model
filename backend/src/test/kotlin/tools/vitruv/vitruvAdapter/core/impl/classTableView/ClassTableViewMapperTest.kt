@@ -65,10 +65,9 @@ class ClassTableViewMapperTest {
                 setOf("examplePackageNested"))
 
         eObjects = EObjectContainer().getContainer3AsRootObjects()
-        eObjectPreMappedWindows = listOf(PreMappedWindow<TableDTO<ClassTableEntry>>("examplePackage", eObjects as MutableList<EObject>))
+        eObjectPreMappedWindows = listOf(PreMappedWindow("examplePackage", eObjects as MutableList<EObject>))
         eObjectsNotAPackage = listOf(examplePackageImport, examplePackageImport, rootw)
         eObjectsNestedPackage = listOf(examplePackageNested, rootw)
-
     }
 
     @Test
