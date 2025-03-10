@@ -330,8 +330,64 @@ class ClassDiagramViewMapperTest {
             listOf(Window("examplePackage", umlDiagram))
         )
         println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+    }
 
+    @Test
+    fun testAddOperationsAndAttributes() {
+        val eObjectContainer = EObjectContainer()
+        val container = eObjectContainer.getUmlContainerWith(listOf(eObjectContainer.getUmlClassWithMethod(), eObjectContainer.getSimpleUmlClass(), eObjectContainer.getSimpleUmlInterface()))
+        val containerPackage = container[0] as Package
 
+        val nodes = listOf(
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Class2", containerPackage)),
+                "Class2",
+                "<<class>>",
+                listOf(
+                ),
+                listOf(
+                    UmlMethod(getFakeUUID(getOperation("myMethod", getClass("Class2", containerPackage))),
+                        UmlVisibility.PUBLIC,
+                        "myMethod",
+                        listOf(
+                            UmlParameter("", "newParameter", UmlType("PrimitiveType", "long"))
+                        ), UmlType("PrimitiveType", "char"))
+
+                ),
+                listOf()
+            ),
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Class1", containerPackage)),
+                "Class1",
+                "<<class>>",
+                listOf(
+                    UmlAttribute("", UmlVisibility.PUBLIC, "mySuperCoolAttribute", UmlType("", "int"))
+                ),
+                listOf(
+                    UmlMethod("", UmlVisibility.PUBLIC, "mySuperCoolMethod", listOf(), UmlType("", "char"))
+                ),
+                listOf()
+            ),
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Interface1", containerPackage)),
+                "Interface1",
+                "<<interface>>",
+                listOf(),
+                listOf(
+                    UmlMethod("", UmlVisibility.PUBLIC, "mySuperCoolInterfaceMethod", listOf(), UmlType("", "byte"))
+                ),
+                listOf()
+            )
+        )
+
+        val connections = listOf<UmlConnection>()
+        val umlDiagram = UmlDiagram(nodes, connections)
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )
+        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
     }
 
     private fun getFakeUUID(eObject: EObject): String {
