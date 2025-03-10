@@ -34,9 +34,6 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
 
   protected engine: DiagramEngine;
 
-  private clickTimeout: number | undefined;
-  private clickCount: number = 0;
-
   @inject(MessageService)
   protected readonly messageService!: MessageService;
 
@@ -174,37 +171,25 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
   }
 
   handleEvent = async (eventDidFire :any) => {
-
     if (eventDidFire.function === 'selectionChanged') {
-      this.clickCount++;
-
-      if (this.clickCount === 1) {
-        this.clickTimeout = window.setTimeout(() => {
-            this.clickCount = 0;
-        }, 300);
-      } else if (this.clickCount === 2) {
-        clearTimeout(this.clickTimeout);
-        this.clickCount = 0;
-
-        const node = eventDidFire.entity as UMLNode;
-        const nodeClass = this.content.nodes.find(element => element.uuid === node.getClassID()) as DiagramNode;
-        const connection = await this.displayViewWidgetContribution.widget.then(widget => widget.getConnection()) as Connection;
-        this.displayViewService
-            .getDisplayViewContent(
-                connection.uuid,
-                nodeClass.viewRecommendations[0].displayViewName,
-                { windows: [nodeClass.viewRecommendations[0].windowName] },
-            )
-            .then((content) => {
+      const node = eventDidFire.entity as UMLNode;
+      const nodeClass = this.content.nodes.find(element => element.uuid === node.getClassID()) as DiagramNode;
+      const connection = await this.displayViewWidgetContribution.widget.then(widget => widget.getConnection()) as Connection;
+      this.displayViewService
+          .getDisplayViewContent(
+              connection.uuid,
+              nodeClass.viewRecommendations[0].displayViewName,
+              { windows: [nodeClass.viewRecommendations[0].windowName] },
+          )
+          .then((content) => {
               // Show the content in a new widget.
               this.displayViewResolver
                   .getWidget(content as Content)
                   ?.then(async (widget) => {
-                    this.visualisationWidgetRegistry.registerWidget(widget, await this.displayViewService.getDisplayViews(connection.uuid).then(displayViews => displayViews.find(displayView => displayView.name === nodeClass.viewRecommendations[0].displayViewName) as DisplayView), connection);
-                    widget.show();
+                      this.visualisationWidgetRegistry.registerWidget(widget, await this.displayViewService.getDisplayViews(connection.uuid).then(displayViews => displayViews.find(displayView => displayView.name === nodeClass.viewRecommendations[0].displayViewName) as DisplayView), connection);
+                      widget.show();
                   });
-            });
-      }
+          });
     }
   }
 }
