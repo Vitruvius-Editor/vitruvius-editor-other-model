@@ -129,11 +129,11 @@ class EObjectContainer {
      */
     fun getUmlContainerWithInterfaceRealization(): List<EObject> {
         val umlClass = getVerySimpleUmlClass()
-        val superClass = getSimpleUmlClass()
+        val superClass = getUmlClassWithMethod()
         umlClass.superClasses.add(superClass)
         val umlInterface = getSimpleUmlInterface()
         umlClass.createInterfaceRealization("realization", umlInterface)
-        umlPackage.packagedElements.addAll(listOf(umlClass, umlInterface))
+        umlPackage.packagedElements.addAll(listOf(umlClass, umlInterface, superClass))
         return listOf(umlPackage)
 
     }

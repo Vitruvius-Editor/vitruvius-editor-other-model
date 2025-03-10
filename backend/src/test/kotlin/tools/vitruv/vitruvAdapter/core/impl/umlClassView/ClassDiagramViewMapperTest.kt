@@ -4,6 +4,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.uml2.uml.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.mdsd.jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser
 import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
@@ -13,6 +14,7 @@ import tools.vitruv.vitruvAdapter.utils.EObjectContainer
 import tools.vitruv.vitruvAdapter.utils.EResourceMock
 import java.io.FileInputStream
 import java.io.InputStream
+import java.lang.IllegalStateException
 
 class ClassDiagramViewMapperTest {
 
@@ -110,13 +112,14 @@ class ClassDiagramViewMapperTest {
 
         val classUUID = EResourceMock.getFakeUUID(getPackageAbleElement("Class1", containerPackage))
         val interfaceUUID = EResourceMock.getFakeUUID(getPackageAbleElement("Interface1", containerPackage))
+        val superClassUUID = EResourceMock.getFakeUUID(getClass("Class2", containerPackage))
         val method = ((containerPackage).ownedElements[0] as Class).ownedOperations[0]
         val methodUUID = EResourceMock.getFakeUUID(method)
 
 
         val umlMethod =
             UmlMethod(methodUUID, UmlVisibility.PUBLIC, "myIntMethod", listOf(), UmlType("PrimitiveType", "int"))
-        val umlConnection = UmlConnection(
+        val umlInterfaceConnection = UmlConnection(
             classUUID + interfaceUUID,
             classUUID,
             interfaceUUID,
@@ -125,6 +128,18 @@ class ClassDiagramViewMapperTest {
             "",
             ""
         )
+
+        val umlExtendsConnection = UmlConnection(
+            classUUID + superClassUUID,
+            classUUID,
+            superClassUUID,
+            UmlConnectionType.EXTENDS,
+            "",
+            "",
+            ""
+        )
+
+
 
         val nodes = listOf(
             UmlNode(
@@ -152,7 +167,8 @@ class ClassDiagramViewMapperTest {
 
         val connections = listOf(
             UmlConnection("Class%Interface", "Class", "Interface", UmlConnectionType.IMPLEMENTS, "", "", ""),
-            umlConnection
+            umlInterfaceConnection,
+            umlExtendsConnection,
         )
 
         val umlDiagram = UmlDiagram(nodes, connections)
@@ -161,6 +177,81 @@ class ClassDiagramViewMapperTest {
             listOf(Window("examplePackage", umlDiagram))
         )
         println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+    }
+
+    @Test
+    fun testInvalidConnectionEdit(){
+
+        val container = EObjectContainer().getUmlContainerWithInterfaceRealization()
+        val containerPackage = container[0] as Package
+        val useLessClass = UMLFactory.eINSTANCE.createClass()
+        useLessClass.name = "UselessClass"
+        val mutableList = container.toMutableList()
+        mutableList.add(useLessClass)
+
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", mutableList)
+        val classUUID = EResourceMock.getFakeUUID(getPackageAbleElement("Class1", containerPackage))
+        val interfaceUUID = EResourceMock.getFakeUUID(getPackageAbleElement("Interface1", containerPackage))
+        val superClassUUID = EResourceMock.getFakeUUID(getClass("Class2", containerPackage))
+
+        val invalidUmlImplementsConnection = UmlConnection(
+            classUUID + superClassUUID,
+            classUUID,
+            superClassUUID,
+            UmlConnectionType.IMPLEMENTS,
+            "",
+            "",
+            ""
+        )
+
+        val invalidUmlExtendsConnection = UmlConnection(
+            classUUID + interfaceUUID,
+            classUUID,
+            interfaceUUID,
+            UmlConnectionType.EXTENDS,
+            "",
+            "",
+            ""
+        )
+
+        val nodes = listOf(
+            UmlNode(
+                EResourceMock.getFakeUUID(getPackageAbleElement("Class1", container[0] as Package)),
+                "Class2",
+                "<<class>>",
+                listOf(
+                    UmlAttribute(getFakeUUID(getAttribute("myIntAttribute", getClass("Class1", containerPackage))), UmlVisibility.PUBLIC, "myIntAttribute2", UmlType("PrimitiveType", "int"))
+                ),
+                listOf(),
+                listOf()
+            ),
+            UmlNode("Class3", "Class3", "<<class>>", listOf(), listOf(), listOf()),
+
+            UmlNode(
+                EResourceMock.getFakeUUID(getPackageAbleElement("Interface1", containerPackage)),
+                "Interface2",
+                "<<interface>>",
+                listOf(),
+                listOf(),
+                listOf()
+            ),
+            UmlNode("Interface", "Interface1", "<<interface>>", listOf(), listOf(), listOf()),
+        )
+
+        val connections = listOf(
+            invalidUmlImplementsConnection,
+            invalidUmlExtendsConnection,
+        )
+
+        val umlDiagram = UmlDiagram(nodes, connections)
+        assertThrows<IllegalStateException> {
+            mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+                listOf(preMappedWindow),
+                listOf(Window("examplePackage", umlDiagram))
+            )
+        }
+
+
     }
 
     /**
