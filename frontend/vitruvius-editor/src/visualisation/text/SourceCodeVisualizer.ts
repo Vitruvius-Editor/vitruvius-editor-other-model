@@ -17,7 +17,7 @@ export class SourceCodeVisualizer implements Visualizer {
     let contentWindow = content.windows[0];
     // Create a new TextWidget through the widgetManager and add it to the main area of the shell.
     return this.widgetManager
-      .getOrCreateWidget(TextWidget.ID, contentWindow.name)
+      .getOrCreateWidget(TextWidget.ID, "SourceCode "+ contentWindow.name)
       .then((widget) => {
         // At the content to the window.
         (widget as TextWidget).updateContent(contentWindow.content);
