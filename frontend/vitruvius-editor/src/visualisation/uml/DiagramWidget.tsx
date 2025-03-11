@@ -132,7 +132,7 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
             .then((content) => {
               // Show the content in a new widget.
               this.displayViewResolver
-                  .getWidget(content as Content)
+                  .getWidget(content as Content, true)
                   ?.then(async (widget) => {
                     this.visualisationWidgetRegistry.registerWidget(widget, await this.displayViewService.getDisplayViews(connection.uuid).then(displayViews => displayViews.find(displayView => displayView.name === nodeClass.viewRecommendations[0].displayViewName) as DisplayView), connection);
                     widget.show();
