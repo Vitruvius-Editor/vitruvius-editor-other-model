@@ -72,7 +72,9 @@ export class UMLRelation extends DefaultLinkModel {
     this.setLocked(true);
     this.setSourcePort(this.fromPort);
     this.setTargetPort(this.toPort);
-    this.addLabel(label);
+    //uncomment this to add a label to the relation
+    //currently their positions are bugged
+    //this.addLabel(label);
   }
 }
 
