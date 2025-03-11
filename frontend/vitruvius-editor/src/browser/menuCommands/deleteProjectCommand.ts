@@ -48,12 +48,12 @@ export class VitruviusDeleteProjectContribution implements CommandContribution {
                         execute: async () => {
                             try {
                                 await this.connectionService.deleteConnection(connection.uuid);
-                                await this.messageService.info("Project deleted.");
                                 const widget = await this.displayViewWidgetContribution.widget;
                                 if (widget.getConnection()?.uuid === connection.uuid) {
                                     this.visualisationWidgetRegistry.getWidgetsByConnection(connection).forEach(widgetData => widgetData.widget.close());
                                     await widget.loadProject(null);
                                 }
+                                await this.messageService.info("Project deleted.");
                             } catch (error) {
                                 await this.messageService.error("Couldn't connect to the Backend server.");
                             }

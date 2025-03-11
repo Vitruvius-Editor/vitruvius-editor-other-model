@@ -1,0 +1,13 @@
+{
+  "name": "system-tests",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.50.1",
+    "@types/dockerode": "^3.3.35",
+    "@types/node": "^22.13.8",
+    "dockerode": "^4.0.4"
+  },
+  "scripts": {}
+}
