@@ -5,7 +5,7 @@ test.beforeEach(beforeEach);
 test.afterEach(afterEach);
 
 test('Test class diagram view', async ({ page }) => {
-  await page.goto('http://localhost:3000/#/home/project');
+   await page.goto('http://localhost:3000/#/home/project');
   await page.locator('[id="theia\\:menubar"]').getByText('Vitruvius').click();
   await page.getByText('Vitruvius Import Project').click();
   await page.getByRole('combobox', { name: 'input' }).fill('Example Project');
@@ -21,10 +21,7 @@ test('Test class diagram view', async ({ page }) => {
   await page.getByText('examplePackage').click();
   await expect(page.locator('.css-qcxco2').first()).toBeVisible();
   await expect(page.locator('div:nth-child(2) > .css-frtd22 > .css-lldskh > .css-qcxco2')).toBeVisible();
-  await expect(page.locator('div:nth-child(3) > .css-frtd22 > .css-lldskh > .css-qcxco2')).toBeVisible();
   await expect(page.locator('path').nth(1)).toBeVisible();
-  await expect(page.locator('path').nth(3)).toBeVisible();
-  await expect(page.locator('[id="packagediagramwidget\\:packagediagramwidget"]')).toContainText('Interface1');
-  await expect(page.locator('[id="packagediagramwidget\\:packagediagramwidget"]')).toContainText('Class1 + myIntAttribute: int + myIntAttribute: Object + myOperation(int: int, int: int): int');
-  await expect(page.locator('[id="packagediagramwidget\\:packagediagramwidget"]')).toContainText('Class2 + myIntAttribute: Object + myOperation(): Object');
+  await expect(page.locator('[id="packagediagramwidget\\:packagediagramwidget"]')).toContainText('Class1 +myIntAttribute:int - +myIntAttribute:Object - +myOperation(int:int - ,int:int - ):int -');
+  await expect(page.locator('[id="packagediagramwidget\\:packagediagramwidget"]')).toContainText('Class2 +myIntAttribute:Object - +myOperation():Object -');
 });

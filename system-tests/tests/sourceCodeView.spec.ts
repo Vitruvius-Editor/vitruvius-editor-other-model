@@ -24,7 +24,7 @@ test('Test SourceCode DisplayView diplaying', async ({ page }) => {
   await expect(page.locator('[id="widget\\:display-views"]')).toContainText('Class2');
   await page.getByText('Class1').click();
   await expect(page.locator('[id="shell-tab-textwidget\\:textwidget"]')).toContainText('Class1');
-  await expect(page.getByRole('textbox')).toContainText('public class Class1 { int myIntAttribute; boolean myBooleanAttribute = true; public int myMethod(int myParameter) { return 5; } }');
+await expect(page.getByRole('textbox')).toContainText('public class Class1 { int myIntAttribute; boolean myBooleanAttribute = true; public void myMethod() { } public int myMethod(int myParameter) { return 5; } }');
   await page.getByText('Class2').click();
   await expect(page.locator('#theia-main-content-panel')).toContainText('Class2');
   await expect(page.getByRole('textbox')).toContainText('class Class2 { int myIntAttribute2 = 5; int myIntAttribute3; }');
