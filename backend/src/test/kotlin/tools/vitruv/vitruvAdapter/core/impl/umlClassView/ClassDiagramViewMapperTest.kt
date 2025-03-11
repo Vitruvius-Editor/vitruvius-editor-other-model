@@ -1,184 +1,470 @@
 package tools.vitruv.vitruvAdapter.core.impl.umlClassView
 
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.uml2.uml.ParameterDirectionKind
-import org.eclipse.uml2.uml.UMLFactory
-import org.eclipse.uml2.uml.VisibilityKind
+import org.eclipse.uml2.uml.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import tools.mdsd.jamopp.model.java.containers.CompilationUnit
+import tools.mdsd.jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser
+import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.core.impl.uml.*
+import tools.vitruv.vitruvAdapter.utils.EObjectContainer
+import tools.vitruv.vitruvAdapter.utils.EResourceMock
+import java.io.FileInputStream
+import java.io.InputStream
+import java.lang.IllegalStateException
+import kotlin.test.assertEquals
 
 class ClassDiagramViewMapperTest {
 
+    private val mapper = ClassDiagramViewMapper()
 
-    lateinit var eobjects : List<EObject>
-    lateinit var otherEObjets : List<EObject>
-    lateinit var otherEObjectsAfterChangingOneTime : List<EObject>
-    val mapper = ClassDiagramViewMapper()
+    private lateinit var eObjects: List<EObject>
+    private lateinit var eObjectsNotAPackage: List<EObject>
+    private lateinit var eObjectsNestedPackage: List<EObject>
+    private lateinit var eObjectsClassExtends: List<EObject>
 
     @BeforeEach
-    fun setUp() {
+    fun initEObjects() {
         val factory = UMLFactory.eINSTANCE
-
-        // Create a UML package to contain our model elements
         val examplePackage = factory.createPackage()
         examplePackage.name = "examplePackage"
 
+        val examplePackageImport = factory.createPackageImport()
+        examplePackageImport.importedPackage = examplePackage
 
-        val booleanType = factory.createPrimitiveType().apply { name = "Boolean" }
-        booleanType.name = "Boolean"
-        // ---------------------------------------------------
-        // 1. Create the PaymentProcessor interface
-        // ---------------------------------------------------
-        val paymentProcessor = examplePackage.createOwnedInterface("PaymentProcessor")
+        val examplePackageNested = factory.createPackage()
+        examplePackageNested.name = "examplePackageNested"
+        examplePackageNested.packagedElements.add(examplePackage)
+        examplePackageNested.createNestedPackage("nestedPackage")
 
-        // Add an operation "processPayment" to PaymentProcessor.
-        val processPaymentOp = paymentProcessor.createOwnedOperation("processPayment", null, null)
-        processPaymentOp.type = booleanType
+        val umlClass = examplePackage.createOwnedClass("Class1", false)
+        val umlClass2 = examplePackage.createOwnedClass("Class2", false)
 
-        // Create a primitive type for Double.
-        // (In a complete model, you might reuse an existing type from a standard library.)
-        val doubleType = factory.createPrimitiveType().apply { name = "Double" }
+        umlClass.superClasses.add(umlClass2)
+        val umlInterface = examplePackage.createOwnedInterface("Interface1")
 
-        // Add a parameter "amount" of type Double to processPayment.
-        val amountParam = processPaymentOp.createOwnedParameter("amount", doubleType)
-        amountParam.direction = ParameterDirectionKind.IN_LITERAL
+        umlClass.implementedInterfaces.add(umlInterface)
 
-        // ---------------------------------------------------
-        // 2. Create the CreditCardProcessor interface (a redefined interface)
-        // ---------------------------------------------------
-        val creditCardProcessor = examplePackage.createOwnedInterface("CreditCardProcessor")
+        val attribute = umlClass.createOwnedAttribute("myIntAttribute", null)
+        attribute.visibility = org.eclipse.uml2.uml.VisibilityKind.PUBLIC_LITERAL
 
-        // Create a generalization so that CreditCardProcessor extends PaymentProcessor.
-        // (This is UML’s way to show interface specialization.)
-        creditCardProcessor.createGeneralization(paymentProcessor)
+        val inputStream: InputStream =
+            FileInputStream("src/test/kotlin/tools/vitruv/vitruvAdapter/utils/class1")
+        val rootw = JaMoPPJDTSingleFileParser().parse("class1", inputStream) as CompilationUnit
 
-        // Add an operation "validateCard" to CreditCardProcessor.
-        //create a type for the return value
+        val class1 = rootw.classifiers[0] as tools.mdsd.jamopp.model.java.classifiers.Class
+        val class1packageName = class1.`package`.name
 
-
-        val validateCardOp = creditCardProcessor.createOwnedOperation("validateCard", null, null)
-        validateCardOp.type = booleanType
-
-        // Create a primitive type for String.
-        val stringType = factory.createPrimitiveType().apply { name = "String" }
-
-        // Add a parameter "cardNumber" of type String to validateCard.
-        val cardNumberParam = validateCardOp.createOwnedParameter("cardNumber", stringType)
-        cardNumberParam.direction = ParameterDirectionKind.IN_LITERAL
-
-        // ---------------------------------------------------
-        // 3. Create classes that implement these interfaces
-        // ---------------------------------------------------
-        // Create BasicPaymentProcessor that implements PaymentProcessor.
-        val basicPaymentProcessor = examplePackage.createOwnedClass("BasicPaymentProcessor", false)
-        basicPaymentProcessor.createInterfaceRealization("PaymentProcessorRealization", paymentProcessor)
-
-        // Create AdvancedCreditCardProcessor that implements CreditCardProcessor.
-        val advancedCreditCardProcessor = examplePackage.createOwnedClass("AdvancedCreditCardProcessor", false)
-        advancedCreditCardProcessor.createInterfaceRealization("CreditCardProcessorRealization", creditCardProcessor)
-
-        // ---------------------------------------------------
-        // 4. Create a class that uses the PaymentProcessor interface
-        // ---------------------------------------------------
-        // PaymentService will depend on (use) PaymentProcessor.
-        val paymentService = examplePackage.createOwnedClass("PaymentService", false)
-
-        // Add an attribute "processor" of type PaymentProcessor.
-        val processorAttr = paymentService.createOwnedAttribute("processor", paymentProcessor)
-        processorAttr.visibility = VisibilityKind.PRIVATE_LITERAL
-
-        // ---------------------------------------------------
-        // 5. Package the model in a list for further processing or saving.
-        // ---------------------------------------------------
-         eobjects = listOf(examplePackage)
-        val umlPackage = UMLFactory.eINSTANCE.createPackage()
-        umlPackage.name = "examplePackage2"
-        otherEObjets = listOf(umlPackage)
-
-    }
-
-
-    @Test
-    fun testCreateContent() {
-        val mapper = ClassDiagramViewMapper()
-        val windows = mapper.mapViewToWindows(eobjects)
-        windows.forEach(::println)
-
-        val contents = mapper.mapEObjectsToWindowsContent(ClassDiagramContentSelector().applySelection(eobjects, windows))
-        for (content in contents) {
-            println(content.content.toString())
-        }
-
+        eObjects = EObjectContainer().getContainer3AsRootObjects()
+        eObjectsNotAPackage = listOf(examplePackageImport, examplePackageImport, rootw)
+        eObjectsNestedPackage = listOf(examplePackageNested, rootw)
+        eObjectsClassExtends = EObjectContainer().getContainerWithClassExtends()
 
     }
 
     @Test
-    fun testEditContentButOnlyCreatingClasses() {
-        val viewMapper = ClassDiagramViewMapper()
-        val contentSelector = ClassDiagramContentSelector()
-        val umlNodes = listOf(
-            UmlNode("", "Class1", "",
-            listOf(UmlAttribute("", UmlVisibility.PUBLIC, "attribute1", UmlType("", "String"))), listOf(), listOf()),
-            UmlNode("", "Class2", "",
-                listOf(UmlAttribute("", UmlVisibility.PUBLIC, "attribute2", UmlType("", "Int"))), listOf(), listOf())
-        )
-        val umlConnections = listOf<UmlConnection>()
-        val testUmlDiagram = UmlDiagram(umlNodes, umlConnections)
-        val umlPackage = UMLFactory.eINSTANCE.createPackage()
-        umlPackage.name = "examplePackage"
-        val oldEObjects = listOf<EObject>(umlPackage)
-        val contentSelection = contentSelector.applySelection(oldEObjects, viewMapper.mapViewToWindows(oldEObjects))
-        viewMapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
-            contentSelection,
-            listOf(Window("examplePackage", testUmlDiagram))
-        )
-        println(oldEObjects)
+    fun testMapViewToWindows() {
+        val windows = mapper.mapViewToWindows(eObjects)
+        val expectedWindows = setOf("examplePackage")
+        kotlin.test.assertEquals(expectedWindows, windows)
     }
 
-        @Test
-    fun testMoreEditing() {
-            //umll
-            val umlNodes = listOf(
-                UmlNode(
-                    "", "Class1", "<<class>>",
-                    listOf(UmlAttribute("", UmlVisibility.PUBLIC, "attribute1", UmlType("", "Int"))), listOf(), listOf()
-                ),
-                UmlNode(
-                    "",
-                    "Class2",
-                    "<<class>>",
-                    listOf(UmlAttribute("", UmlVisibility.PUBLIC, "attribute2", UmlType("", "String"))),
-                    listOf(),
-                    listOf()
-                ),
-                UmlNode(
-                    "",
-                    "Interface3",
-                    "<<interface>>",
-                    listOf(),
-                    listOf(
-                        UmlMethod(
-                            "",
-                            UmlVisibility.PUBLIC,
-                            "foo",
-                            listOf(UmlParameter("", "foo1", UmlType("", "String"))),
-                            UmlType("", "String")
-                        )
-                    ),
-                    listOf()
-                ),
+    @Test
+    fun testWindowsNotAPackage() {
+        val windows = mapper.mapViewToWindows(eObjectsNotAPackage)
+        kotlin.test.assertEquals(emptySet<String>(), windows)
+    }
 
-                )
-            val umlConnections = listOf<UmlConnection>()
-            val testUmlDiagram = UmlDiagram(umlNodes, umlConnections)
-            val window = Window("examplePackage2", testUmlDiagram)
+    @Test
+    fun testWindowsNestedPackage() {
+        val windows = mapper.mapViewToWindows(eObjectsNestedPackage)
+        val expectedWindows = setOf<String>("examplePackageNested", "nestedPackage", "examplePackage")
+        kotlin.test.assertEquals(expectedWindows, windows)
+    }
+
+    /**
+     * @author Patrick
+     */
+    @Test
+    fun testMapEObjectsToWindowsContent() {
+        val preMappedWindow1 = PreMappedWindow<UmlDiagram>("examplePackage", eObjectsClassExtends.toMutableList())
+        val window1 = mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow1))
+        print(window1)
+    }
+
+    /**
+     * @author Nico,Amir
+     */
+    @Test
+    fun testEditWindowContent() {
+        val container = EObjectContainer().getUmlContainerWithInterfaceRealization()
+        val containerPackage = container[0] as Package
+        val useLessClass = UMLFactory.eINSTANCE.createClass()
+        useLessClass.name = "UselessClass"
+        val mutableList = container.toMutableList()
+        mutableList.add(useLessClass)
+
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", mutableList)
+
+        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+
+        val classUUID = EResourceMock.getFakeUUID(getPackageAbleElement("Class1", containerPackage))
+        val interfaceUUID = EResourceMock.getFakeUUID(getPackageAbleElement("Interface1", containerPackage))
+        val superClassUUID = EResourceMock.getFakeUUID(getClass("Class2", containerPackage))
+        val method = ((containerPackage).ownedElements[0] as Class).ownedOperations[0]
+        val methodUUID = EResourceMock.getFakeUUID(method)
+
+
+        val umlMethod =
+            UmlMethod(methodUUID, UmlVisibility.PUBLIC, "myIntMethod", listOf(), UmlType("PrimitiveType", "int"))
+        val umlInterfaceConnection = UmlConnection(
+            classUUID + interfaceUUID,
+            classUUID,
+            interfaceUUID,
+            UmlConnectionType.IMPLEMENTS,
+            "",
+            "",
+            ""
+        )
+
+        val umlExtendsConnection = UmlConnection(
+            classUUID + superClassUUID,
+            classUUID,
+            superClassUUID,
+            UmlConnectionType.EXTENDS,
+            "",
+            "",
+            ""
+        )
+
+
+
+        val nodes = listOf(
+            UmlNode(
+                EResourceMock.getFakeUUID(getPackageAbleElement("Class1", container[0] as Package)),
+                "Class2",
+                "<<class>>",
+                listOf(
+                    UmlAttribute(getFakeUUID(getAttribute("myIntAttribute", getClass("Class1", containerPackage))), UmlVisibility.PUBLIC, "myIntAttribute2", UmlType("PrimitiveType", "int"))
+                ),
+                listOf(umlMethod),
+                listOf()
+            ),
+            UmlNode("Class3", "Class3", "<<class>>", listOf(), listOf(umlMethod), listOf()),
+
+            UmlNode(
+                EResourceMock.getFakeUUID(getPackageAbleElement("Interface1", containerPackage)),
+                "Interface2",
+                "<<interface>>",
+                listOf(),
+                listOf(),
+                listOf()
+            ),
+            UmlNode("Interface", "Interface1", "<<interface>>", listOf(), listOf(), listOf()),
+        )
+
+        val connections = listOf(
+            UmlConnection("Class%Interface", "Class", "Interface", UmlConnectionType.IMPLEMENTS, "", "", ""),
+            umlInterfaceConnection,
+            umlExtendsConnection,
+        )
+
+        val umlDiagram = UmlDiagram(nodes, connections)
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )
+        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+    }
+
+    @Test
+    fun testInvalidConnectionEdit(){
+
+        val container = EObjectContainer().getUmlContainerWithInterfaceRealization()
+        val containerPackage = container[0] as Package
+        val useLessClass = UMLFactory.eINSTANCE.createClass()
+        useLessClass.name = "UselessClass"
+        val mutableList = container.toMutableList()
+        mutableList.add(useLessClass)
+
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", mutableList)
+        val classUUID = EResourceMock.getFakeUUID(getPackageAbleElement("Class1", containerPackage))
+        val interfaceUUID = EResourceMock.getFakeUUID(getPackageAbleElement("Interface1", containerPackage))
+        val superClassUUID = EResourceMock.getFakeUUID(getClass("Class2", containerPackage))
+
+        val invalidUmlImplementsConnection = UmlConnection(
+            classUUID + superClassUUID,
+            classUUID,
+            superClassUUID,
+            UmlConnectionType.IMPLEMENTS,
+            "",
+            "",
+            ""
+        )
+
+        val invalidUmlExtendsConnection = UmlConnection(
+            classUUID + interfaceUUID,
+            classUUID,
+            interfaceUUID,
+            UmlConnectionType.EXTENDS,
+            "",
+            "",
+            ""
+        )
+
+        val nodes = listOf(
+            UmlNode(
+                EResourceMock.getFakeUUID(getPackageAbleElement("Class1", container[0] as Package)),
+                "Class2",
+                "<<class>>",
+                listOf(
+                    UmlAttribute(getFakeUUID(getAttribute("myIntAttribute", getClass("Class1", containerPackage))), UmlVisibility.PUBLIC, "myIntAttribute2", UmlType("PrimitiveType", "int"))
+                ),
+                listOf(),
+                listOf()
+            ),
+            UmlNode("Class3", "Class3", "<<class>>", listOf(), listOf(), listOf()),
+
+            UmlNode(
+                EResourceMock.getFakeUUID(getPackageAbleElement("Interface1", containerPackage)),
+                "Interface2",
+                "<<interface>>",
+                listOf(),
+                listOf(),
+                listOf()
+            ),
+            UmlNode("Interface", "Interface1", "<<interface>>", listOf(), listOf(), listOf()),
+        )
+
+        val connections = listOf(
+            invalidUmlImplementsConnection,
+            invalidUmlExtendsConnection,
+        )
+
+        val umlDiagram = UmlDiagram(nodes, connections)
+        assertThrows<IllegalStateException> {
             mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
-                ClassDiagramContentSelector().applySelection(otherEObjets, mapper.mapViewToWindows(otherEObjets)),
-                listOf(window)
+                listOf(preMappedWindow),
+                listOf(Window("examplePackage", umlDiagram))
             )
         }
+
+
+    }
+
+    /**
+     * Test if the deletion of a class, an attribute, an operation and an interface operation works.
+     */
+    @Test
+    fun testDeleteObjects() {
+        val container = EObjectContainer().getUmlContainerWithInterfaceRealization()
+        val containerPackage = container[0] as Package
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
+
+        val nodes = listOf(
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Class1", containerPackage)),
+                "Class1",
+                "<<class>>",
+                listOf(
+                ),
+                listOf(),
+                listOf()
+            ),
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Interface1", containerPackage)),
+                "Interface1",
+                "<<interface>>",
+                listOf(),
+                listOf(),
+                listOf()
+            )
+        )
+
+        val connections = listOf<UmlConnection>()
+        val umlDiagram = UmlDiagram(nodes, connections)
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )
+        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+
+
+
+    }
+
+    /**
+     * Test if the deletion of a parameter in methods works.
+     */
+    @Test
+    fun testDeleteMoreObjects() {
+        val eObjectContainer = EObjectContainer()
+        val container = eObjectContainer.getUmlContainerWith(listOf(eObjectContainer.getUmlClassWithMethod()))
+        val containerPackage = container[0] as Package
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
+
+        val nodes = listOf(
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Class2", containerPackage)),
+                "Class2",
+                "<<class>>",
+                listOf(
+                ),
+                listOf(
+                    UmlMethod(getFakeUUID(getOperation("myMethod", getClass("Class2", containerPackage))),
+                        UmlVisibility.PUBLIC,
+                        "myMethod",
+                        listOf(), UmlType("PrimitiveType", "int"))
+
+                ),
+                listOf()
+            )
+        )
+
+        val connections = listOf<UmlConnection>()
+        val umlDiagram = UmlDiagram(nodes, connections)
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )
+        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+    }
+
+    @Test
+    fun testAddOperationsAndAttributes() {
+        val eObjectContainer = EObjectContainer()
+        val container = eObjectContainer.getUmlContainerWith(listOf(eObjectContainer.getUmlClassWithMethod(), eObjectContainer.getSimpleUmlClass(), eObjectContainer.getSimpleUmlInterface()))
+        val containerPackage = container[0] as Package
+
+        val nodes = listOf(
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Class2", containerPackage)),
+                "Class2",
+                "<<class>>",
+                listOf(
+                ),
+                listOf(
+                    UmlMethod(getFakeUUID(getOperation("myMethod", getClass("Class2", containerPackage))),
+                        UmlVisibility.PUBLIC,
+                        "myMethod",
+                        listOf(
+                            UmlParameter("", "newParameter", UmlType("PrimitiveType", "long"))
+                        ), UmlType("PrimitiveType", "char"))
+
+                ),
+                listOf()
+            ),
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Class1", containerPackage)),
+                "Class1",
+                "<<class>>",
+                listOf(
+                    UmlAttribute("", UmlVisibility.PUBLIC, "mySuperCoolAttribute", UmlType("", "int"))
+                ),
+                listOf(
+                    UmlMethod("", UmlVisibility.PUBLIC, "mySuperCoolMethod", listOf(), UmlType("", "char"))
+                ),
+                listOf()
+            ),
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Interface1", containerPackage)),
+                "Interface1",
+                "<<interface>>",
+                listOf(),
+                listOf(
+                    UmlMethod("", UmlVisibility.PUBLIC, "mySuperCoolInterfaceMethod", listOf(), UmlType("", "byte"))
+                ),
+                listOf()
+            )
+        )
+
+        val connections = listOf<UmlConnection>()
+        val umlDiagram = UmlDiagram(nodes, connections)
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )
+        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+    }
+
+    @Test
+    fun testEditParameterInOperation() {
+        val eObjectContainer = EObjectContainer()
+        val container = eObjectContainer.getUmlContainerWith(listOf(eObjectContainer.getUmlClassWithMethod()))
+        val containerPackage = container[0] as Package
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
+
+        val nodes = listOf(
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Class2", containerPackage)),
+                "Class2",
+                "<<class>>",
+                listOf(
+                ),
+                listOf(
+                    UmlMethod(getFakeUUID(getOperation("myMethod", getClass("Class2", containerPackage))),
+                        UmlVisibility.PUBLIC,
+                        "myMethod",
+                        listOf(
+                            UmlParameter(getFakeUUID(getParameter("myParameter", getOperation("myMethod", getClass("Class2", containerPackage)))),
+                                "myChangedParameter", UmlType("", "newType"))
+                        ), UmlType("PrimitiveType", "char"))
+
+                ),
+                listOf()
+            )
+        )
+        val connections = listOf<UmlConnection>()
+        val umlDiagram = UmlDiagram(nodes, connections)
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )
+        println(getOperation("myMethod", getClass("Class2", containerPackage)).ownedParameters[0].name)
+        println(getOperation("myMethod", getClass("Class2", containerPackage)).ownedParameters[1].name)
+        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+    }
+
+    @Test
+    fun testDisplayContent() {
+        assertEquals(mapper.getDisplayContent().getVisualizerName(), "UmlVisualizer")
+    }
+
+    private fun getFakeUUID(eObject: EObject): String {
+        return EResourceMock.getFakeUUID(eObject)
+    }
+
+    private fun getPackageAbleElement(packageAbleElementName: String, umlPackage: Package): PackageableElement {
+        return umlPackage.packagedElements.find { (it is Class || it is Interface) && it.name == packageAbleElementName }!!
+    }
+
+    private fun getClass(className: String, umlPackage: Package): Class{
+        return umlPackage.packagedElements.find { it is Class && it.name == className } as Class
+    }
+
+    private fun getInterface(interfaceName: String, umlPackage: Package): Interface{
+        return umlPackage.packagedElements.find { it is Interface && it.name == interfaceName } as Interface
+    }
+
+    private fun getAttribute(propertyName: String, umlClass: Class): Property{
+        return umlClass.members.find { it is Property && it.name == propertyName } as Property
+    }
+
+    private fun getOperation(operationName: String, umlClass: Class): Operation{
+        return umlClass.members.find { it is Operation && it.name == operationName } as Operation
+    }
+
+    private fun getOperation(operationName: String, umlInterface: Interface): Operation {
+        return umlInterface.ownedOperations.find { it.name == operationName } as Operation
+    }
+
+    private fun getParameter(parameterName: String, umlOperation: Operation): Parameter{
+        return umlOperation.ownedParameters.find { it.name == parameterName } as Parameter
+    }
 
 
 }

@@ -19,6 +19,7 @@ import tools.vitruv.vitruvAdapter.core.impl.umlClassView.ClassDiagramViewMapper
 @Component
 class DefaultDisplayViewRepositoryFactory : DisplayViewRepositoryFactory() {
     @Bean
+    @Suppress("UNCHECKED_CAST")
     override fun createDisplayViewRepository(): DisplayViewRepository {
         // Create and register all required DisplayViews here
         val displayViewRepository = DisplayViewRepository()
