@@ -20,7 +20,7 @@ export class DiagramExtractor implements Extractor {
             visualizerName: 'UmlVisualizer',
             windows: [
                 {
-                    name: widget.getLabel(),
+                    name: widget.getLabel().replace("ClassDiagram ", ""),
                     content: widget.getContent()
                 }
             ]

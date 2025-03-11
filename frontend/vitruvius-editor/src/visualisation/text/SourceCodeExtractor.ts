@@ -6,7 +6,7 @@ export class SourceCodeExtractor implements Extractor {
   extractContent(widget: TextWidget): Promise<Content> {
       return new Promise((resolve, _refuse) => resolve({visualizerName: 'TextVisualizer', windows: [
             {
-                name: widget.getLabel(),
+                name: widget.getLabel().replace("SourceCode ", ""),
                 content: widget.getContent()
             }
       ]}))
