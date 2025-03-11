@@ -29,5 +29,4 @@ test('Test SourceCode DisplayView diplaying', async ({ page }) => {
   await expect(page.locator('#theia-main-content-panel')).toContainText('Class2');
   await expect(page.getByRole('textbox')).toContainText('class Class2 { int myIntAttribute2 = 5; int myIntAttribute3; }');
   await page.locator('#theia-main-content-panel').getByTitle('Close').first().click();
-  await page.locator('[id="shell-tab-textwidget\\:textwidget"]').getByTitle('Close').click();
 });
