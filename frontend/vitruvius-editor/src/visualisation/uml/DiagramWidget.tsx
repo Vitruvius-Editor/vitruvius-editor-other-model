@@ -205,7 +205,7 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
   }
 
   handleEvent = async (eventDidFire :any) => {
-    if (eventDidFire.function === 'selectionChanged') {
+    if (eventDidFire.function === 'selectionChanged' && eventDidFire.isSelected) {
       const node = eventDidFire.entity as UMLNode;
       const nodeClass = this.content.nodes.find(element => element.uuid === node.getClassID()) as DiagramNode;
       const connection = await this.displayViewWidgetContribution.widget.then(widget => widget.getConnection()) as Connection;
