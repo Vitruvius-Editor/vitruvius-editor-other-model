@@ -19,8 +19,9 @@ test('Test class diagram to source code interaction', async ({ page }) => {
   await page.locator('[id="shell-tab-widget\\:display-views"] > .theia-tab-icon-label > .p-TabBar-tabIcon').click();
   await page.getByText('ClassDiagram').click();
   await page.getByText('examplePackage').click();
-  await expect(page.locator('[id="packagediagramwidget\\:packagediagramwidget"]')).toContainText('Class1 +myIntAttribute:int - +myIntAttribute:Object - +myOperation(int:int - ,int:int - ):int -');
+  await expect(page.locator('[id="packagediagramwidget\\:packagediagramwidget"]')).toContainText('Class1 +myIntAttribute:int - +myIntAttribute:Object - +myOperation(param1:int - ,param2:int - ):int - Class2 +myIntAttribute:Object - +myOperation():Object -');
   await expect(page.locator('[id="packagediagramwidget\\:packagediagramwidget"]')).toContainText('Class2 +myIntAttribute:Object - +myOperation():Object -');
-  await page.locator('.css-qcxco2').first().click();
+  await page.locator('.css-qcxco2').first().dblclick();
   await expect(page.getByRole('textbox')).toContainText('public class Class1 { int myIntAttribute; boolean myBooleanAttribute = true; public void myMethod() { } public int myMethod(int myParameter) { return 5; } }');
 });
+

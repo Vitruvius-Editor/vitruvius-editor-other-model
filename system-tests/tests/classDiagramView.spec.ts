@@ -22,7 +22,7 @@ test('Test class diagram view', async ({ page }) => {
   await expect(page.locator('.css-qcxco2').first()).toBeVisible();
   await expect(page.locator('div:nth-child(2) > .css-frtd22 > .css-lldskh > .css-qcxco2')).toBeVisible();
   await expect(page.locator('path').nth(1)).toBeVisible();
-  await expect(page.locator('[id="packagediagramwidget\\:packagediagramwidget"]')).toContainText('Class1 +myIntAttribute:int - +myIntAttribute:Object - +myOperation(int:int - ,int:int - ):int -');
+  await expect(page.locator('[id="packagediagramwidget\\:packagediagramwidget"]')).toContainText('Class1 +myIntAttribute:int - +myIntAttribute:Object - +myOperation(param1:int - ,param2:int - ):int - Class2 +myIntAttribute:Object - +myOperation():Object -');
   await expect(page.locator('[id="packagediagramwidget\\:packagediagramwidget"]')).toContainText('Class2 +myIntAttribute:Object - +myOperation():Object -');
 });
 
@@ -47,7 +47,7 @@ test('Test class diagram editing', async ({ page }) => {
   await page.getByText('myOperation').first().fill('myOperationTest');
   await page.locator('[id="theia\\:menubar"]').getByText('Vitruvius').click();
   await page.getByText('Vitruvius Refresh Project', { exact: true }).click();
-  await page.getByRole('option', { name: 'ClassDiagram - examplePackage' }).locator('a').click();
-  await expect(page.locator('[id="packagediagramwidget\\:packagediagramwidget"]')).toContainText('ClassFoo +myIntAttribute:int - +myIntAttribute:Object - +myOperationTest(int:int - ,int:int - ,int:int - ):int -');
+  await page.getByRole('option', { name: 'ClassDiagram examplePackage' }).locator('a').click();
+  await expect(page.locator('[id="packagediagramwidget\\:packagediagramwidget"]')).toContainText('ClassFoo +myIntAttribute:int - +myIntAttribute:Object - +myOperationTest(param1:int - ,param2:int - ):int - ClassBar +myIntAttributeTest:Object - +myOperation():Object -');
   await expect(page.locator('[id="packagediagramwidget\\:packagediagramwidget"]')).toContainText('ClassBar +myIntAttributeTest:Object - +myOperation():Object -');
 });

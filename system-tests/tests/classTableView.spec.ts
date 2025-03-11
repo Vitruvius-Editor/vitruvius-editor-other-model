@@ -65,12 +65,12 @@ test('Test class table editing', async ({ page }) => {
   await page.getByRole('textbox').nth(2).fill('ClassBar');
   await page.locator('[id="theia\\:menubar"]').getByText('Vitruvius').click();
   await page.getByText('Vitruvius Refresh Project', { exact: true }).click();
-  await page.getByRole('option', { name: 'ClassTable - examplePackage' }).locator('a').click();
+  await page.getByRole('option', { name: 'ClassTable examplePackage' }).locator('a').click();
   await expect(page.locator('tbody')).toContainText('ClassBar');
   await page.getByRole('textbox').nth(1).click();
   await page.getByRole('textbox').nth(1).fill('protected');
   await page.locator('[id="theia\\:menubar"]').getByText('Vitruvius').click();
   await page.getByText('Vitruvius Refresh Project', { exact: true }).click();
-  await page.getByRole('option', { name: 'ClassTable - examplePackage' }).locator('a').click();
+  await page.getByRole('option', { name: 'ClassTable examplePackage' }).locator('a').click();
   await expect(page.getByRole('cell', { name: 'protected' }).getByRole('textbox')).toBeVisible();
 });
