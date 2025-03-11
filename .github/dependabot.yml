@@ -4,10 +4,10 @@ updates:
   - package-ecosystem: "maven"
     directory: "/backend"
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   # Yarn dependencies for the frontend project  
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
-      interval: "daily"
+      interval: "weekly"
