@@ -140,23 +140,23 @@ class ServerInitializer(val host: String, val serverPort: Int) {
 
 
 
-        val method = MembersFactory.eINSTANCE.createClassMethod()
-        method.name = "myMethod"
-        method.makePublic()
-        method.typeReference = TypesFactory.eINSTANCE.createInt()
+        val method2 = MembersFactory.eINSTANCE.createClassMethod()
+        method2.name = "myMethod"
+        method2.makePublic()
+        method2.typeReference = TypesFactory.eINSTANCE.createInt()
         val parameter = ParametersFactory.eINSTANCE.createCatchParameter()
         parameter.name = "myParameter"
         parameter.typeReference = TypesFactory.eINSTANCE.createInt()
-        method.parameters.add(parameter)
+        method2.parameters.add(parameter)
 
         val block = StatementsFactory.eINSTANCE.createBlock()
         val statement = StatementsFactory.eINSTANCE.createReturn()
         val value = LiteralsFactory.eINSTANCE.createDecimalIntegerLiteral()
         value.decimalValue = BigInteger.valueOf(5)
         statement.returnValue = value
-        method.statement = block
-        method.block.statements.add(statement)
-        root.members.add(method)
+        method2.statement = block
+        method2.block.statements.add(statement)
+        root.members.add(method2)
 
         val javaPackage = ContainersFactory.eINSTANCE.createCompilationUnit()
         javaPackage.name = "exampleCompilationUnit"
