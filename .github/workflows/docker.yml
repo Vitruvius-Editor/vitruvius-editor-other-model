@@ -7,7 +7,6 @@ on:
     branches: [ main ]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     
@@ -17,27 +16,63 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
       
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Cache Docker layers for Frontend
+      uses: actions/cache@v4
+      with:
+        path: /tmp/.buildx-cache-frontend
+        key: ${{ runner.os }}-buildx-frontend-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-frontend-
+
     - name: Build Frontend Docker image
       uses: docker/build-push-action@v2
       with:
         context: ./frontend
         file: ./frontend/Dockerfile
-        push: false
-        tags: vitruvius-editor-frontend:latest
-        
+        push: ${{ github.event_name == 'push' }}
+        tags: ghcr.io/vitruvius-editor/vitruvius-editor-frontend:latest
+        cache-from: type=local,src=/tmp/.buildx-cache-frontend
+        cache-to: type=local,dest=/tmp/.buildx-cache-frontend
+
+    - name: Cache Docker layers for Backend
+      uses: actions/cache@v4
+      with:
+        path: /tmp/.buildx-cache-backend
+        key: ${{ runner.os }}-buildx-backend-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-backend-
+
     - name: Build Backend Docker image  
       uses: docker/build-push-action@v2
       with:
         context: ./backend
         file: ./backend/Dockerfile
-        push: false
-        tags: vitruvius-editor-backend:latest
+        push: ${{ github.event_name == 'push' }}
+        tags: ghcr.io/vitruvius-editor/vitruvius-editor-backend:latest
+        cache-from: type=local,src=/tmp/.buildx-cache-backend
+        cache-to: type=local,dest=/tmp/.buildx-cache-backend
+
+    - name: Cache Docker layers for Test Server
+      uses: actions/cache@v4
+      with:
+        path: /tmp/.buildx-cache-server
+        key: ${{ runner.os }}-buildx-server-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-server-
 
     - name: Build Test Server Docker image
       uses: docker/build-push-action@v2
       with:
         context: ./vitruv_server
         file: ./vitruv_server/Dockerfile
-        push: false
-        tags: vitruvius-server:latest
-        
+        push: ${{ github.event_name == 'push' }}
+        tags: ghcr.io/vitruvius-editor/vitruvius-server:latest
+        cache-from: type=local,src=/tmp/.buildx-cache-server
+        cache-to: type=local,dest=/tmp/.buildx-cache-server

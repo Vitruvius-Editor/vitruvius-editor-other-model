@@ -22,6 +22,7 @@ import tools.mdsd.jamopp.model.java.expressions.Expression
 import tools.mdsd.jamopp.model.java.expressions.ExpressionsFactory
 import tools.mdsd.jamopp.model.java.literals.LiteralsFactory
 import tools.mdsd.jamopp.model.java.members.MembersFactory
+import tools.mdsd.jamopp.model.java.parameters.ParametersFactory
 import tools.mdsd.jamopp.model.java.statements.StatementsFactory
 import tools.mdsd.jamopp.model.java.types.TypesFactory
 import tools.vitruv.applications.util.temporary.java.*
@@ -46,10 +47,7 @@ import java.nio.file.Path
  * Initializes the server
  */
 
-class ServerInitializer {
-
-    val serverPort: Int = 8000
-    val host: String = "localhost"
+class ServerInitializer(val host: String, val serverPort: Int) {
     lateinit var viewTypes: Map<String, ViewType<*>>
     lateinit var vsum: VirtualModel
     lateinit var javaPath: Path
@@ -140,6 +138,25 @@ class ServerInitializer {
         initialValue.decimalValue = BigInteger.valueOf(5)
         member2.initialValue = initialValue
 
+
+
+        val method = MembersFactory.eINSTANCE.createClassMethod()
+        method.name = "myMethod"
+        method.makePublic()
+        method.typeReference = TypesFactory.eINSTANCE.createInt()
+        val parameter = ParametersFactory.eINSTANCE.createCatchParameter()
+        parameter.name = "myParameter"
+        parameter.typeReference = TypesFactory.eINSTANCE.createInt()
+        method.parameters.add(parameter)
+
+        val block = StatementsFactory.eINSTANCE.createBlock()
+        val statement = StatementsFactory.eINSTANCE.createReturn()
+        val value = LiteralsFactory.eINSTANCE.createDecimalIntegerLiteral()
+        value.decimalValue = BigInteger.valueOf(5)
+        statement.returnValue = value
+        method.statement = block
+        method.block.statements.add(statement)
+        root.members.add(method)
 
         val javaPackage = ContainersFactory.eINSTANCE.createCompilationUnit()
         javaPackage.name = "exampleCompilationUnit"

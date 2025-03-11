@@ -15,7 +15,14 @@ import createEngine, {
 } from '@projectstorm/react-diagrams';
 import { DefaultDiagramState } from '@projectstorm/react-diagrams';
 import { ArrowLinkFactory, DiagramContent, UMLNode, UMLRelation } from "./DiagramComponents";
-import { Diagram, visibilitySymbol } from "./Diagram";
+import { Diagram, DiagramNode, visibilitySymbol } from "./Diagram";
+import {DisplayViewService} from "../../backend-communication/DisplayViewService";
+import {DisplayViewWidgetContribution} from "../../browser/displayViewWidgetContribution";
+import {Connection} from "../../model/Connection";
+import {DisplayViewResolver} from "../DisplayViewResolver";
+import {VisualisationWidgetRegistry} from "../VisualisationWidgetRegistry";
+import {DisplayView} from "../../model/DisplayView";
+import {Content} from "../../model/Content";
 
 /**
  * A Widget to visualize a UML Package Vitruvius view.
@@ -29,6 +36,18 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
 
   @inject(MessageService)
   protected readonly messageService!: MessageService;
+
+  @inject(DisplayViewService)
+  protected readonly displayViewService!: DisplayViewService;
+
+  @inject(DisplayViewWidgetContribution)
+  protected readonly displayViewWidgetContribution!: DisplayViewWidgetContribution;
+
+  @inject(DisplayViewResolver)
+  protected readonly displayViewResolver!: DisplayViewResolver;
+
+  @inject(VisualisationWidgetRegistry)
+  protected readonly visualisationWidgetRegistry!: VisualisationWidgetRegistry;
 
   /**
    * Initializes the widget with the default id, label and initial content.
@@ -132,7 +151,9 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
             </div>
         );
         // @ts-ignore
-        nodes.push(new UMLNode(data.uuid, text));
+        const item = new UMLNode(data.uuid, text);
+        item.registerListener({eventDidFire: this.handleEvent});
+        nodes.push(item);
       } else if (type === 'Package') {
         nodes.push(new UMLNode(data.uuid, data.name));
       }
@@ -167,6 +188,7 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
     this.visualisationWidgetRegistry.registerWidget(this, typedState.displayView, typedState.connection);
     this.dagre()
   }
+
   handlerDeleteAttribute(node: number, index: number) {
     this.content.nodes[node].attributes.splice(index, 1);
     this.update();
@@ -180,6 +202,29 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
   handleDeleteParameter(node: number, method: number, parameter: number) {
     this.content.nodes[node].methods[method].parameters.splice(parameter, 1);
     this.update();
+  }
+
+  handleEvent = async (eventDidFire :any) => {
+    if (eventDidFire.function === 'selectionChanged') {
+      const node = eventDidFire.entity as UMLNode;
+      const nodeClass = this.content.nodes.find(element => element.uuid === node.getClassID()) as DiagramNode;
+      const connection = await this.displayViewWidgetContribution.widget.then(widget => widget.getConnection()) as Connection;
+      this.displayViewService
+          .getDisplayViewContent(
+              connection.uuid,
+              nodeClass.viewRecommendations[0].displayViewName,
+              { windows: [nodeClass.viewRecommendations[0].windowName] },
+          )
+          .then((content) => {
+              // Show the content in a new widget.
+              this.displayViewResolver
+                  .getWidget(content as Content)
+                  ?.then(async (widget) => {
+                      this.visualisationWidgetRegistry.registerWidget(widget, await this.displayViewService.getDisplayViews(connection.uuid).then(displayViews => displayViews.find(displayView => displayView.name === nodeClass.viewRecommendations[0].displayViewName) as DisplayView), connection);
+                      widget.show();
+                  });
+          });
+    }
   }
 }
 
