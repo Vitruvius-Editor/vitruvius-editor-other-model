@@ -199,6 +199,51 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                 }
                 checkedClasses.remove(umlElement)
                 val connections = findAllConnectionsForSourceCodeUUID(node.uuid, window.content.connections)
+
+                for (connection in connections) {
+                    if (connection.targetNodeUUID == "" || connection.sourceNodeUUID == "") {
+                        throw IllegalStateException("The target node UUID of a connection of type EXTENDS is empty." +
+                                "You cannot add connections between nodes wich have not been created in the model yet.")
+                    }
+                    val sourceClass = eObject.eResource()?.getEObject(connection.sourceNodeUUID)
+                    val targetClass = eObject.eResource()?.getEObject(connection.targetNodeUUID)
+
+                    if (sourceClass == null || targetClass == null) {
+                        throw IllegalStateException("The source or target class of a connection could not be found in the model.")
+                    }
+
+                    if (connection.connectionType == UmlConnectionType.EXTENDS) {
+                        if (targetClass is Class && sourceClass is Class) {
+                            val alreadyGeneralized = sourceClass.generalizations.any { it.general == targetClass }
+                            if (!alreadyGeneralized) {
+                                sourceClass.createGeneralization(targetClass)
+                            }
+                        } else if (targetClass is Interface && sourceClass is Interface) {
+                            // Check if generalization already exists
+                            val alreadyGeneralized = sourceClass.generalizations.any { it.general == targetClass }
+                            if (!alreadyGeneralized) {
+                                sourceClass.createGeneralization(targetClass)
+                            }
+                        } else {
+                            throw IllegalStateException("Extends can only be used between two classes or interfaces.")
+                        }
+                    } else if (connection.connectionType == UmlConnectionType.IMPLEMENTS) {
+                        if (sourceClass is Class && targetClass is Interface) {
+                            val alreadyImplemented = sourceClass.interfaceRealizations.any { it.contract == targetClass }
+
+                            if (!alreadyImplemented) {
+                                // Create the interface realization only if it does not exist.
+                                sourceClass.createInterfaceRealization(connection.connectionName, targetClass)
+                            }
+
+                        } else {
+                            throw IllegalStateException("Implements can only be used between a class and an interface.")
+                        }
+                    } else {
+                        throw IllegalStateException("The connection type ${connection.connectionType} is not supported.")
+                    }
+                }
+
                 if (umlElement is Class) {
                     if (umlElement.name == null || umlElement.name != node.name) {
                         umlElement.name = node.name
@@ -278,45 +323,6 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                         method.destroy()
                     }
                 }
-
-                for (connection in connections) {
-                    if (connection.targetNodeUUID == "" || connection.sourceNodeUUID == "") {
-                        throw IllegalStateException("The target node UUID of a connection of type EXTENDS is empty." +
-                                "You cannot add connections between nodes wich have not been created in the model yet.")
-                    }
-                    val sourceClass = eObject.eResource()?.getEObject(connection.sourceNodeUUID)
-                    val targetClass = eObject.eResource()?.getEObject(connection.targetNodeUUID)
-
-                    if (sourceClass == null || targetClass == null) {
-                        throw IllegalStateException("The source or target class of a connection could not be found in the model.")
-                    }
-
-                    if (connection.connectionType == UmlConnectionType.EXTENDS) {
-                        if (targetClass is Class && sourceClass is Class) {
-                            sourceClass.createGeneralization(targetClass)
-                        } else if (targetClass is Interface && sourceClass is Interface) {
-                            sourceClass.createGeneralization(targetClass)
-                        } else {
-                            throw IllegalStateException("Extends can only be used between two classes or interfaces.")
-                        }
-                    } else if (connection.connectionType == UmlConnectionType.IMPLEMENTS) {
-                        if (sourceClass is Class && targetClass is Interface) {
-                            val alreadyImplemented = sourceClass.interfaceRealizations.any { it.contract == targetClass }
-
-                            if (!alreadyImplemented) {
-                                // Create the interface realization only if it does not exist.
-                                sourceClass.createInterfaceRealization(connection.connectionName, targetClass)
-                            }
-
-                        } else {
-                            throw IllegalStateException("Implements can only be used between a class and an interface.")
-                        }
-                    } else {
-                        throw IllegalStateException("The connection type ${connection.connectionType} is not supported.")
-                    }
-                }
-
-
             }
         }
         for (checkedClass in checkedClasses) {
