@@ -47,7 +47,7 @@ export class VitruviusRefreshProjectContribution implements CommandContribution 
       execute: async () => {
         const items = this.visualisationWidgetRegistry.getWidgets().map(widgetData => {
           return {
-            label: `${widgetData.displayView.name} - ${widgetData.widget.getLabel()}`,
+            label: `${widgetData.widget.getLabel()}`,
             execute: async () => {
               try {
                 const content = await this.displayViewResolver.getContent(widgetData.widget);

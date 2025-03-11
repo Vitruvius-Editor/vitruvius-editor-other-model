@@ -59,7 +59,7 @@ describe("VitruviusRefreshProjectContribution", () => {
         await commandHandler.execute();
 
         expect(quickPickService.show).toHaveBeenCalledWith(expect.arrayContaining([
-            expect.objectContaining({ label: "TestView - TestWidget" })
+            expect.objectContaining({ label: "TestWidget" })
         ]));
     });
 
