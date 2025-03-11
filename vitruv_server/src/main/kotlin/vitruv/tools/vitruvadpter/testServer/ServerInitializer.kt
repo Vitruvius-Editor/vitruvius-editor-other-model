@@ -18,6 +18,8 @@ import tools.mdsd.jamopp.model.java.JavaPackage
 import tools.mdsd.jamopp.model.java.classifiers.ClassifiersFactory
 import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.mdsd.jamopp.model.java.containers.ContainersFactory
+import tools.mdsd.jamopp.model.java.expressions.Expression
+import tools.mdsd.jamopp.model.java.expressions.ExpressionsFactory
 import tools.mdsd.jamopp.model.java.literals.LiteralsFactory
 import tools.mdsd.jamopp.model.java.members.MembersFactory
 import tools.mdsd.jamopp.model.java.parameters.ParametersFactory
@@ -111,6 +113,10 @@ class ServerInitializer(val host: String, val serverPort: Int) {
         initialValue1.isValue = true
         member1.initialValue = initialValue1
 
+        val method = JavaMemberAndParameterUtil.createJavaClassMethod("myMethod", null, JavaVisibility.PUBLIC, false, false, null)
+        val methodBlock = StatementsFactory.eINSTANCE.createBlock()
+        method.statement = methodBlock
+        root.members.add(method)
 
         val newClass = ClassifiersFactory.eINSTANCE.createClass()
         newClass.name = "Class2"
@@ -134,23 +140,23 @@ class ServerInitializer(val host: String, val serverPort: Int) {
 
 
 
-        val method = MembersFactory.eINSTANCE.createClassMethod()
-        method.name = "myMethod"
-        method.makePublic()
-        method.typeReference = TypesFactory.eINSTANCE.createInt()
+        val method2 = MembersFactory.eINSTANCE.createClassMethod()
+        method2.name = "myMethod"
+        method2.makePublic()
+        method2.typeReference = TypesFactory.eINSTANCE.createInt()
         val parameter = ParametersFactory.eINSTANCE.createCatchParameter()
         parameter.name = "myParameter"
         parameter.typeReference = TypesFactory.eINSTANCE.createInt()
-        method.parameters.add(parameter)
+        method2.parameters.add(parameter)
 
         val block = StatementsFactory.eINSTANCE.createBlock()
         val statement = StatementsFactory.eINSTANCE.createReturn()
         val value = LiteralsFactory.eINSTANCE.createDecimalIntegerLiteral()
         value.decimalValue = BigInteger.valueOf(5)
         statement.returnValue = value
-        method.statement = block
-        method.block.statements.add(statement)
-        root.members.add(method)
+        method2.statement = block
+        method2.block.statements.add(statement)
+        root.members.add(method2)
 
         val javaPackage = ContainersFactory.eINSTANCE.createCompilationUnit()
         javaPackage.name = "exampleCompilationUnit"
@@ -164,7 +170,7 @@ class ServerInitializer(val host: String, val serverPort: Int) {
         val examplePackage = factory.createPackage()
         examplePackage.name = "examplePackage"
 
-        val umlInterface = examplePackage.createOwnedInterface("Interface1")
+//        val umlInterface = examplePackage.createOwnedInterface("Interface1")
 
 
         val umlClass = examplePackage.createOwnedClass("Class1", false)
@@ -193,8 +199,6 @@ class ServerInitializer(val host: String, val serverPort: Int) {
         examplePackage.packagedElements.add(intType)
 
         umlClass.superClasses.add(class2)
-        umlClass.createInterfaceRealization("interfaceRealization", umlInterface)
-
 
         val attribute = umlClass.createOwnedAttribute("myIntAttribute", null)
         attribute.visibility = VisibilityKind.PUBLIC_LITERAL

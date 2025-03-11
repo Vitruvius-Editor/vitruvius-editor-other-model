@@ -3,22 +3,34 @@ import { MessageService } from "@theia/core";
 import { render } from "@testing-library/react";
 import { DiagramWidget } from "./DiagramWidget";
 import { DiagramEngine, DefaultDiagramState } from "@projectstorm/react-diagrams";
-import {Diagram} from "./Diagram";
+import { Diagram } from "./Diagram";
 import '@testing-library/jest-dom';
-import {VisualisationWidgetRegistry} from "../VisualisationWidgetRegistry";
+import { VisualisationWidgetRegistry } from "../VisualisationWidgetRegistry";
+import {DisplayViewService} from "../../backend-communication/DisplayViewService";
+import {DisplayViewWidgetContribution} from "../../browser/displayViewWidgetContribution";
+import {DisplayViewResolver} from "../DisplayViewResolver";
 
 describe("DiagramWidget", () => {
     let container: Container;
     let widget: DiagramWidget;
     let messageService: jest.Mocked<MessageService>;
+    let displayViewService: jest.Mocked<DisplayViewService>;
+    let displayViewWidgetContribution: jest.Mocked<DisplayViewWidgetContribution>;
+    let displayViewResolver: jest.Mocked<DisplayViewResolver>;
 
     beforeEach(() => {
         container = new Container();
         messageService = { info: jest.fn() } as unknown as jest.Mocked<MessageService>;
+        displayViewService = {} as unknown as jest.Mocked<DisplayViewService>;
+        displayViewWidgetContribution = {} as unknown as jest.Mocked<DisplayViewWidgetContribution>;
+        displayViewResolver = {} as unknown as jest.Mocked<DisplayViewResolver>;
 
+        container.bind(DisplayViewResolver).toConstantValue(displayViewResolver);
+        container.bind(DisplayViewWidgetContribution).toConstantValue(displayViewWidgetContribution);
+        container.bind(DisplayViewService).toConstantValue(displayViewService);
         container.bind(MessageService).toConstantValue(messageService);
         container.bind(DiagramWidget).toSelf();
-        container.bind(VisualisationWidgetRegistry).toSelf()
+        container.bind(VisualisationWidgetRegistry).toSelf();
         widget = container.get(DiagramWidget);
     });
 
@@ -57,10 +69,8 @@ describe("DiagramWidget", () => {
         expect(content.links).toHaveLength(2);
     });
 
-
-
     it("should return the correct visualizer name", () => {
-        expect(widget.getVisualizerName()).toBe("DiagramVisualizer");
+        expect(widget.getVisualizerName()).toBe("UmlVisualizer");
     });
 
 });
