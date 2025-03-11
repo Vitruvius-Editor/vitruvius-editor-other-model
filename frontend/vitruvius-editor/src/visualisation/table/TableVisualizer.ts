@@ -16,7 +16,7 @@ export class TableVisualizer implements Visualizer {
 		let contentWindow = content.windows[0];
 		let parsed: Table = JSON.parse(contentWindow.content);
 		return this.widgetManager
-				.getOrCreateWidget(TableWidget.ID, contentWindow.name)
+				.getOrCreateWidget(TableWidget.ID, "ClassTable " + contentWindow.name)
 				.then(widget => {
 						(widget as TableWidget).updateContent(parsed);
 						return widget as VisualisationWidget<string>;

@@ -116,35 +116,60 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
       data[key] = event.currentTarget.textContent || "";
     };
 
+    const handleInputClick = (event: React.MouseEvent<HTMLSpanElement>) => {
+      event.stopPropagation();
+    };
+
+    const handleNodeClick = async (event: React.MouseEvent<HTMLDivElement, MouseEvent>, nodeClass: DiagramNode) => {
+      if (event.detail >= 2){
+        const connection = await this.displayViewWidgetContribution.widget.then(widget => widget.getConnection()) as Connection;
+        this.displayViewService
+            .getDisplayViewContent(
+                connection.uuid,
+                nodeClass.viewRecommendations[0].displayViewName,
+                { windows: [nodeClass.viewRecommendations[0].windowName] },
+            )
+            .then((content) => {
+              // Show the content in a new widget.
+              this.displayViewResolver
+                  .getWidget(content as Content, true)
+                  ?.then(async (widget) => {
+                    this.visualisationWidgetRegistry.registerWidget(widget, await this.displayViewService.getDisplayViews(connection.uuid).then(displayViews => displayViews.find(displayView => displayView.name === nodeClass.viewRecommendations[0].displayViewName) as DisplayView), connection);
+                    widget.show();
+                  });
+            });
+      }
+    }
+
     diagram.nodes.forEach((data, nodeIndex) => {
       if (type === 'Class') {
         const text = (
-            <div>
-              <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, data, 'name')}>{data.name}</span> <br />
+            <div onClick={(e) => handleNodeClick(e, data)}>
+              <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, data, 'name')} onClick={handleInputClick}>{data.name}</span> <br />
               <hr />
               {data.attributes.map((attr, index) => (
                   <React.Fragment key={index}>
-                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, attr, 'visibility')}>{visibilitySymbol(attr.visibility)}</span>
-                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, attr, 'name')}>{attr.name}</span>:
-                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, attr.type, 'name')}>{attr.type.name}</span>
+                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, attr, 'visibility')} onClick={handleInputClick}>{visibilitySymbol(attr.visibility)}</span>
+                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, attr, 'name')} onClick={handleInputClick}>{attr.name}</span>:
+                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, attr.type, 'name')} onClick={handleInputClick}>{attr.type.name}</span>
                     <span onClick={() => this.handlerDeleteAttribute(nodeIndex, index)} style={{ cursor: 'pointer', color: 'red' }}> - </span><br />
                   </React.Fragment>
               ))}
               <hr />
               {data.methods.map((method, methodIndex) => (
                   <React.Fragment key={methodIndex}>
-                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, method, 'visibility')}>{visibilitySymbol(method.visibility)}</span>
-                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, method, 'name')}>{method.name}</span>(
+                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, method, 'visibility')} onClick={handleInputClick}>{visibilitySymbol(method.visibility)}</span>
+                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, method, 'name')} onClick={handleInputClick}>{method.name}</span>(
                     {method.parameters.map((param, index) => (
                         <React.Fragment key={param.uuid}>
-                          <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, param, 'name')}>{param.name}</span>:
-                          <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, param.type, 'name')}>{param.type.name}</span>
+                          <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, param, 'name')} onClick={handleInputClick}>{param.name}</span>:
+                          <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, param.type, 'name')} onClick={handleInputClick}>{param.type.name}</span>
                           <span onClick={() => this.handleDeleteParameter(nodeIndex, methodIndex, index)} style={{ cursor: 'pointer', color: 'red' }}> - </span>
                           <span>{index != method.parameters.length-1 ? "," : ""}</span>
                         </React.Fragment>
                     ))}
                     ):
-                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, method.returnType, 'name')}>{method.returnType.name}</span>
+                    <span contentEditable spellCheck={false} onInput={(e) => handleInputChange(e, method.returnType, 'name')} onClick={handleInputClick}>{method.returnType.name}</span>
                     <span onClick={() => this.handlerDeleteMethod(nodeIndex, methodIndex)} style={{ cursor: 'pointer', color: 'red' }}> - </span><br />
                   </React.Fragment>
               ))}
@@ -152,7 +177,6 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
         );
         // @ts-ignore
         const item = new UMLNode(data.uuid, text);
-        item.registerListener({eventDidFire: this.handleEvent});
         nodes.push(item);
       } else if (type === 'Package') {
         nodes.push(new UMLNode(data.uuid, data.name));
@@ -202,29 +226,6 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
   handleDeleteParameter(node: number, method: number, parameter: number) {
     this.content.nodes[node].methods[method].parameters.splice(parameter, 1);
     this.update();
-  }
-
-  handleEvent = async (eventDidFire :any) => {
-    if (eventDidFire.function === 'selectionChanged') {
-      const node = eventDidFire.entity as UMLNode;
-      const nodeClass = this.content.nodes.find(element => element.uuid === node.getClassID()) as DiagramNode;
-      const connection = await this.displayViewWidgetContribution.widget.then(widget => widget.getConnection()) as Connection;
-      this.displayViewService
-          .getDisplayViewContent(
-              connection.uuid,
-              nodeClass.viewRecommendations[0].displayViewName,
-              { windows: [nodeClass.viewRecommendations[0].windowName] },
-          )
-          .then((content) => {
-              // Show the content in a new widget.
-              this.displayViewResolver
-                  .getWidget(content as Content)
-                  ?.then(async (widget) => {
-                      this.visualisationWidgetRegistry.registerWidget(widget, await this.displayViewService.getDisplayViews(connection.uuid).then(displayViews => displayViews.find(displayView => displayView.name === nodeClass.viewRecommendations[0].displayViewName) as DisplayView), connection);
-                      widget.show();
-                  });
-          });
-    }
   }
 }
 

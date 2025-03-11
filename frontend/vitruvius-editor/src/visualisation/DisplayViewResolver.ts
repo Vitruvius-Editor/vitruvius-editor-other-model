@@ -40,12 +40,12 @@ export class DisplayViewResolver {
    * Retrieves the widget associated with a given content.
    * @param content - The content for which the widget is being retrieved.
    */
-  getWidget(content: Content): Promise<VisualisationWidget<any>> | null {
+  getWidget(content: Content, redirect: boolean = false): Promise<VisualisationWidget<any>> | null {
     let widget
         = this.mappings.get(content.visualizerName)?.[0].visualizeContent(content);
     if (widget !== undefined) {
       return widget.then(w => {
-        this.shell.addWidget(w, { area: "main", mode: "tab-before" })
+        this.shell.addWidget(w, { area: "main", mode: redirect? "tab-after" : "tab-before" })
             .then(() => {
               this.shell.activateWidget(w.id);
             });

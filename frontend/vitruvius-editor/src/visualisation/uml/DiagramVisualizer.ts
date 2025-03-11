@@ -26,7 +26,7 @@ export class DiagramVisualizer implements Visualizer {
     async visualizeContent(content: Content): Promise<VisualisationWidget<any>> {
         let contentWindow = content.windows[0];
         return this.widgetManager
-            .getOrCreateWidget(DiagramWidget.ID, contentWindow.name)
+            .getOrCreateWidget(DiagramWidget.ID, "ClassDiagram " + contentWindow.name)
             .then(widget => {
                 let diagram = JSON.parse(contentWindow.content);
                 (widget as DiagramWidget).updateContent(diagram);

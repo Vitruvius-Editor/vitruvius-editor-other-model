@@ -37,7 +37,7 @@ describe("SourceCodeVisualizer", () => {
 
         const result = await visualizer.visualizeContent(content);
 
-        expect(widgetManager.getOrCreateWidget).toHaveBeenCalledWith(TextWidget.ID, "TestWindow");
+        expect(widgetManager.getOrCreateWidget).toHaveBeenCalledWith(TextWidget.ID, "SourceCode TestWindow");
         expect(mockWidget.updateContent).toHaveBeenCalledWith("Test Content");
         expect(result).toBe(mockWidget);
     });
@@ -59,7 +59,7 @@ describe("SourceCodeVisualizer", () => {
 
         const result = await visualizer.visualizeContent(content);
 
-        expect(widgetManager.getOrCreateWidget).toHaveBeenCalledWith(TextWidget.ID, "EmptyWindow");
+        expect(widgetManager.getOrCreateWidget).toHaveBeenCalledWith(TextWidget.ID, "SourceCode EmptyWindow");
         expect(mockWidget.updateContent).toHaveBeenCalledWith("");
         expect(result).toBe(mockWidget);
     });

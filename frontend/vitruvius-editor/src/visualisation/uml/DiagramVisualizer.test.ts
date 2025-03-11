@@ -44,7 +44,7 @@ describe("DiagramVisualizer", () => {
 
         const result = await visualizer.visualizeContent(content);
 
-        expect(widgetManager.getOrCreateWidget).toHaveBeenCalledWith(DiagramWidget.ID, "TestWindow");
+        expect(widgetManager.getOrCreateWidget).toHaveBeenCalledWith(DiagramWidget.ID, "ClassDiagram TestWindow");
         expect(mockWidget.updateContent).toHaveBeenCalledWith({ nodes: [], connections: [] });
         expect(result).toBe(mockWidget);
     });
@@ -66,7 +66,7 @@ describe("DiagramVisualizer", () => {
 
         const result = await visualizer.visualizeContent(content);
 
-        expect(widgetManager.getOrCreateWidget).toHaveBeenCalledWith(DiagramWidget.ID, "EmptyWindow");
+        expect(widgetManager.getOrCreateWidget).toHaveBeenCalledWith(DiagramWidget.ID, "ClassDiagram EmptyWindow");
         expect(mockWidget.updateContent).toHaveBeenCalledWith({ nodes: [], connections: [] });
         expect(result).toBe(mockWidget);
     });
