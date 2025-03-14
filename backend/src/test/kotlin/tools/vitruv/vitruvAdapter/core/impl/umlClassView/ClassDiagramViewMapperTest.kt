@@ -183,7 +183,7 @@ class ClassDiagramViewMapperTest {
     @Test
     fun testAddAbstraction() {
         val eObjectContainer = EObjectContainer()
-        val container = eObjectContainer.getUmlContainerWith(listOf(eObjectContainer.getEmptyUmlClass(), eObjectContainer.getEmptyAbstractClass()))
+        val container = eObjectContainer.getUmlContainerWith(listOf(eObjectContainer.getEmptyUmlClass(), eObjectContainer.getEmptyAbstractUmlClass()))
         val containerPackage = container[0] as Package
         val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
 

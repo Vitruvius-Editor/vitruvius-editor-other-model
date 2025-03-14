@@ -85,7 +85,7 @@ class EObjectContainer {
         val umlClass1 = getVerySimpleUmlClass()
         val umlClass2 = getSimpleUmlClass()
         val umlClass3 = getUmlClassWithVisibilities()
-        val umlClass4 = getEmptyAbstractClass()
+        val umlClass4 = getEmptyAbstractUmlClass()
         val umlInterface = umlPackage.createOwnedInterface("Interface1")
         val umlInterfaceRealization = umlClass1.createInterfaceRealization("interfaceRealization1", umlInterface)
         val umlInterface2 = umlPackage.createOwnedInterface("Interface2")
@@ -388,7 +388,7 @@ class EObjectContainer {
         return EResourceMock.mockERessourceAndUuidForEObject(umlClass, umlPackage)
     }
 
-    fun getEmptyAbstractClass(): org.eclipse.uml2.uml.Class {
+    fun getEmptyAbstractUmlClass(): org.eclipse.uml2.uml.Class {
         val umlClass = UMLFactory.eINSTANCE.createClass()
         umlClass.name = "EmptyAbstractClass"
         umlClass.setIsAbstract(true)
