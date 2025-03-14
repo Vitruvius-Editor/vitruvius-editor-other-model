@@ -17,6 +17,7 @@ import tools.mdsd.jamopp.model.java.parameters.ParametersFactory
 import tools.mdsd.jamopp.model.java.statements.StatementsFactory
 import tools.mdsd.jamopp.model.java.types.TypesFactory
 import java.math.BigInteger
+import kotlin.math.truncate
 
 /**
  * This utility class should contain some containers of EObjects, which can be used for testing.
@@ -128,11 +129,11 @@ class EObjectContainer {
      * Returns a container with an Uml Class and Interface
      */
     fun getUmlContainerWithInterfaceRealization(): List<EObject> {
-        val umlClass = getVerySimpleUmlClass()
-        val superClass = getUmlClassWithMethod()
-        umlClass.superClasses.add(superClass)
-        val umlInterface = getSimpleUmlInterface()
-        umlClass.createInterfaceRealization("realization", umlInterface)
+        val umlClass = getVerySimpleUmlClass()//Class1
+        val superClass = getUmlClassWithMethod()//Class2
+        umlClass.superClasses.add(superClass)//Class1 extends Class2
+        val umlInterface = getSimpleUmlInterface()//Interface1
+        umlClass.createInterfaceRealization("realization", umlInterface)//Class1 implements Interface1
         umlPackage.packagedElements.addAll(listOf(umlClass, umlInterface, superClass))
         return listOf(umlPackage)
 
@@ -233,6 +234,7 @@ class EObjectContainer {
 
         return EResourceMock.mockERessourceAndUuidForEObject(javaClass)
     }
+
 
 
     fun getJavaInterfaceWithMethod(): Interface {
@@ -380,5 +382,19 @@ class EObjectContainer {
 
         return EResourceMock.mockERessourceForEObject(umlClass)
     }
+
+    fun getEmptyUmlClass(): org.eclipse.uml2.uml.Class {
+        val umlClass = UMLFactory.eINSTANCE.createClass()
+        umlClass.name = "EmptyClass"
+        return EResourceMock.mockERessourceAndUuidForEObject(umlClass, umlPackage)
+    }
+
+    fun getEmptyAbstractClass(): org.eclipse.uml2.uml.Class {
+        val umlClass = UMLFactory.eINSTANCE.createClass()
+        umlClass.name = "EmptyAbstractClass"
+        umlClass.setIsAbstract(true)
+        return EResourceMock.mockERessourceAndUuidForEObject(umlClass, umlPackage)
+    }
+
 
 }

@@ -180,6 +180,57 @@ class ClassDiagramViewMapperTest {
         println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
     }
 
+
+    @Test
+    fun testAddAbstraction() {
+        val eObjectContainer = EObjectContainer()
+        val container = eObjectContainer.getUmlContainerWith(listOf(eObjectContainer.getEmptyUmlClass(), eObjectContainer.getEmptyAbstractClass()))
+        val containerPackage = container[0] as Package
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
+
+        val nodes = listOf(
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("EmptyClass", containerPackage)),
+                "EmptyClass",
+                "<<class>>",
+                listOf(),
+                listOf(),
+                listOf()
+            ),
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("EmptyAbstractClass", containerPackage)),
+                "EmptyAbstractClass",
+                "<<class>>",
+                listOf(),
+                listOf(),
+                listOf()
+            )
+        )
+
+        val connections = listOf<UmlConnection>(
+            UmlConnection(
+                getFakeUUID(getPackageAbleElement("EmptyClass", containerPackage)) + "$" +
+                        getFakeUUID(getPackageAbleElement("EmptyAbstractClass", containerPackage)),
+                getFakeUUID(getPackageAbleElement("EmptyClass", containerPackage)),
+                getFakeUUID(getPackageAbleElement("EmptyAbstractClass", containerPackage)),
+                UmlConnectionType.EXTENDS,
+                "",
+                "",
+                ""
+            )
+        )
+
+        val umlDiagram = UmlDiagram(nodes, connections)
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )
+        assertEquals(1, (containerPackage.packagedElements[0] as Class).superClasses.size)
+
+
+    }
+
+
     @Test
     fun testInvalidConnectionEdit(){
 
@@ -290,10 +341,12 @@ class ClassDiagramViewMapperTest {
             listOf(preMappedWindow),
             listOf(Window("examplePackage", umlDiagram))
         )
-        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
-
-
-
+        assertEquals(2, containerPackage.packagedElements.size)
+        assertEquals(0, getClass("Class1", containerPackage).members.size)
+        assertEquals(0, getClass("Class1", containerPackage).superClasses.size)
+        assertEquals(0, getClass("Class1", containerPackage).interfaceRealizations.size)
+        assertEquals(0, getInterface("Interface1", containerPackage).ownedOperations.size)
+        assertEquals<Class?>(null, getClassSafe("Class2", containerPackage))
     }
 
     /**
@@ -330,7 +383,7 @@ class ClassDiagramViewMapperTest {
             listOf(preMappedWindow),
             listOf(Window("examplePackage", umlDiagram))
         )
-        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+        assertEquals(0, getOperation("myMethod", getClass("Class2", containerPackage)).ownedParameters.filter { it.direction == ParameterDirectionKind.IN_LITERAL }.size)
     }
 
     @Test
@@ -444,6 +497,10 @@ class ClassDiagramViewMapperTest {
 
     private fun getClass(className: String, umlPackage: Package): Class{
         return umlPackage.packagedElements.find { it is Class && it.name == className } as Class
+    }
+
+    private fun getClassSafe(className: String, umlPackage: Package): Class?{
+        return umlPackage.packagedElements.find { it is Class && it.name == className } as Class?
     }
 
     private fun getInterface(interfaceName: String, umlPackage: Package): Interface{
