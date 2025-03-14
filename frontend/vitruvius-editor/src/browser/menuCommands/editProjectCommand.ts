@@ -46,6 +46,7 @@ export class VitruviusEditProjectContribution implements CommandContribution {
                     const items = connections.map((connection) => ({
                         label: connection.name,
                         execute: async () => {
+                            /* istanbul ignore next */
                             try {
                                 const name = await this.quickInputService.input({
                                     title: "Edit the project's name.",

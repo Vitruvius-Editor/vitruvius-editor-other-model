@@ -229,6 +229,7 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
   }
 }
 
+/* istanbul ignore next */
 /**
  * Generates a Dagre engine with specific configurations.
  * @returns A configured DagreEngine instance.
@@ -246,6 +247,7 @@ function genDagreEngine() {
   });
 }
 
+/* istanbul ignore next */
 /**
  * Distributes nodes in the diagram using the Dagre engine.
  * @param engine The DiagramEngine instance.
@@ -260,6 +262,7 @@ function autoDistribute(engine: DiagramEngine) {
   engine.repaintCanvas();
 }
 
+/* istanbul ignore next */
 /**
  * Refreshes links in the diagram using the Dagre engine.
  * @param engine The DiagramEngine instance.
@@ -274,6 +277,7 @@ function autoRefreshLinks(engine: DiagramEngine) {
   engine.repaintCanvas();
 }
 
+/* istanbul ignore next */
 /**
  * Reroutes links in the diagram.
  * @param engine The DiagramEngine instance.

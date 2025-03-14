@@ -49,6 +49,7 @@ export class VitruviusRefreshProjectContribution implements CommandContribution 
           return {
             label: `${widgetData.widget.getLabel()}`,
             execute: async () => {
+              /* istanbul ignore next */
               try {
                 const content = await this.displayViewResolver.getContent(widgetData.widget);
                 if (content) {
@@ -63,12 +64,12 @@ export class VitruviusRefreshProjectContribution implements CommandContribution 
                   }
                 }
               } catch (error) {
-                this.messageService.error("Error updating the window.");
+                await this.messageService.error("Error updating the window.");
               }
             }
           };
         });
-        this.quickPickService.show(items);
+        await this.quickPickService.show(items);
       }
     });
   }

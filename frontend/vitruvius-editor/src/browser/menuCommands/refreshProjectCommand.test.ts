@@ -1,11 +1,11 @@
 import { CommandRegistry, MessageService, QuickPickService } from "@theia/core";
 import { Container } from "@theia/core/shared/inversify";
 import { ConnectionService } from "../../backend-communication/ConnectionService";
-import {VisualisationWidgetRegistry, WidgetData} from "../../visualisation/VisualisationWidgetRegistry";
+import { VisualisationWidgetRegistry, WidgetData } from "../../visualisation/VisualisationWidgetRegistry";
 import { DisplayViewService } from "../../backend-communication/DisplayViewService";
 import { DisplayViewResolver } from "../../visualisation/DisplayViewResolver";
 import { VitruviusRefreshProjectContribution, RefreshProjectCommand } from "./refreshProjectCommand";
-import {TextWidget} from "../../visualisation/text/TextWidget";
+import { VisualisationWidget } from "../../visualisation/VisualisationWidget";
 
 describe("VitruviusRefreshProjectContribution", () => {
     let container: Container;
@@ -43,16 +43,16 @@ describe("VitruviusRefreshProjectContribution", () => {
         expect(commandRegistry.registerCommand).toHaveBeenCalledWith(RefreshProjectCommand, expect.any(Object));
     });
 
-    it("should show quick pick items when executing the command", async () => {
+    it("should show quick pick items and update the project when executing the command", async () => {
         const widgetData: WidgetData = {
             displayView: { name: "TestView" },
             widget: { getLabel: jest.fn().mockReturnValue("TestWidget"), close: jest.fn() },
             connection: { uuid: "test-uuid" }
         } as unknown as WidgetData;
         visualisationWidgetRegistry.getWidgets.mockReturnValue([widgetData]);
-        displayViewResolver.getContent.mockResolvedValue({visualizerName: "TestVisualizer", windows: []});
-        displayViewService.updateDisplayViewContent.mockResolvedValue({visualizerName: "TestVisualizer", windows: []});
-        displayViewResolver.getWidget.mockResolvedValue(new TextWidget());
+        displayViewResolver.getContent.mockResolvedValue({ visualizerName: "TestVisualizer", windows: [] });
+        displayViewService.updateDisplayViewContent.mockResolvedValue({ visualizerName: "TestVisualizer", windows: [] });
+        displayViewResolver.getWidget.mockResolvedValue({ show: jest.fn() } as unknown as VisualisationWidget<any>);
 
         contribution.registerCommands(commandRegistry);
         const commandHandler = commandRegistry.registerCommand.mock.calls[0][1] as { execute: () => Promise<void> };
@@ -61,6 +61,7 @@ describe("VitruviusRefreshProjectContribution", () => {
         expect(quickPickService.show).toHaveBeenCalledWith(expect.arrayContaining([
             expect.objectContaining({ label: "TestWidget" })
         ]));
+        expect(messageService.error).not.toHaveBeenCalled();
     });
 
 });
