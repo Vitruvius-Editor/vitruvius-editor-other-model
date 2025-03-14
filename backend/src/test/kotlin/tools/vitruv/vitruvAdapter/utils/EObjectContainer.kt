@@ -273,6 +273,12 @@ class EObjectContainer {
         return EResourceMock.mockERessourceAndUuidForEObject(umlInterface, umlPackage)
     }
 
+    fun getEmptyUmlInterface(): org.eclipse.uml2.uml.Interface {
+        val umlInterface = UMLFactory.eINSTANCE.createInterface()
+        umlInterface.name = "EmptyInterface"
+        return EResourceMock.mockERessourceAndUuidForEObject(umlInterface, umlPackage)
+    }
+
     fun getUmlInterfaceWithMethod(): org.eclipse.uml2.uml.Interface {
         val umlInterface = UMLFactory.eINSTANCE.createInterface()
         umlInterface.name = "Interface1"
