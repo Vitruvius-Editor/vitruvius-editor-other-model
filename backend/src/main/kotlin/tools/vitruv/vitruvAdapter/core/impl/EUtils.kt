@@ -6,9 +6,7 @@ import org.eclipse.emf.ecore.EObject
  * Utility class for EObjects.
  */
 class EUtils private constructor() {
-
     companion object {
-
         /**
          * Returns the UUID of an EObject in its resource.
          * @param eObject The EObject.
@@ -24,8 +22,5 @@ class EUtils private constructor() {
             }
             return eObject.eResource().getURIFragment(eObject)
         }
-
-
-
     }
 }

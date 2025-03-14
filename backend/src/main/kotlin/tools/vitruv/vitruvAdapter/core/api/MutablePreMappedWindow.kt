@@ -5,7 +5,10 @@ import org.eclipse.emf.ecore.EObject
 /**
  * A utility class to create a PreMappedWindow.
  */
-data class MutablePreMappedWindow(val name: String, val neededEObjects: MutableList<EObject>) {
+data class MutablePreMappedWindow(
+    val name: String,
+    val neededEObjects: MutableList<EObject>,
+) {
     /**
      * Adds an EObject to the neededEObjects list.
      * @param eObject the EObject to add
@@ -17,7 +20,5 @@ data class MutablePreMappedWindow(val name: String, val neededEObjects: MutableL
     /**
      * Converts this MutablePreMappedWindow to a PreMappedWindow.
      */
-    fun <E> toPreMappedWindow(): PreMappedWindow<E> {
-        return PreMappedWindow(name, neededEObjects)
-    }
+    fun <E> toPreMappedWindow(): PreMappedWindow<E> = PreMappedWindow(name, neededEObjects)
 }

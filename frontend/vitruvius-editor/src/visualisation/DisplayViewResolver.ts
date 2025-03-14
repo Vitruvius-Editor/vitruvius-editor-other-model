@@ -1,9 +1,9 @@
 import { Visualizer } from "./Visualizer";
 import { Extractor } from "./Extractor";
-import {inject, injectable} from "@theia/core/shared/inversify";
+import { inject, injectable } from "@theia/core/shared/inversify";
 import { Content } from "../model/Content";
 import { VisualisationWidget } from "./VisualisationWidget";
-import {ApplicationShell} from "@theia/core/lib/browser/shell/application-shell";
+import { ApplicationShell } from "@theia/core/lib/browser/shell/application-shell";
 
 /**
  * The DisplayViewResolver class is responsible for managing the registration and resolution
@@ -40,17 +40,25 @@ export class DisplayViewResolver {
    * Retrieves the widget associated with a given content.
    * @param content - The content for which the widget is being retrieved.
    */
-  getWidget(content: Content, redirect: boolean = false): Promise<VisualisationWidget<any>> | null {
-    let widget
-        = this.mappings.get(content.visualizerName)?.[0].visualizeContent(content);
+  getWidget(
+    content: Content,
+    redirect: boolean = false,
+  ): Promise<VisualisationWidget<any>> | null {
+    let widget = this.mappings
+      .get(content.visualizerName)?.[0]
+      .visualizeContent(content);
     if (widget !== undefined) {
-      return widget.then(w => {
-        this.shell.addWidget(w, { area: "main", mode: redirect? "tab-after" : "tab-before" })
-            .then(() => {
-              this.shell.activateWidget(w.id);
-            });
+      return widget.then((w) => {
+        this.shell
+          .addWidget(w, {
+            area: "main",
+            mode: redirect ? "tab-after" : "tab-before",
+          })
+          .then(() => {
+            this.shell.activateWidget(w.id);
+          });
         return w;
-      })
+      });
     } else {
       return widget ?? null;
     }
@@ -61,9 +69,7 @@ export class DisplayViewResolver {
    * @param displayView - The display view for which the content is being retrieved.
    * @param widget - The widget for which the content is being retrieved.
    */
-  getContent(
-    widget: VisualisationWidget<any>,
-  ): Promise<Content> | null {
+  getContent(widget: VisualisationWidget<any>): Promise<Content> | null {
     return (
       this.mappings
         .get(widget.getVisualizerName())?.[1]

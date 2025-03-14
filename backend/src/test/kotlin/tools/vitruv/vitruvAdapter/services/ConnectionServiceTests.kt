@@ -1,4 +1,4 @@
-package tools.vitruv.vitruvAdapter.services;
+package tools.vitruv.vitruvAdapter.services
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -8,7 +8,7 @@ import org.mockito.AdditionalAnswers
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.*;
+import org.mockito.kotlin.*
 import tools.vitruv.vitruvAdapter.dto.ConnectionCreationRequest
 import tools.vitruv.vitruvAdapter.dto.ConnectionEditRequest
 import tools.vitruv.vitruvAdapter.exception.ConnectionNotFoundException
@@ -18,7 +18,6 @@ import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 class ConnectionServiceTest {
-
     @Mock
     private lateinit var connectionRepository: ConnectionRepository
 
@@ -87,6 +86,7 @@ class ConnectionServiceTest {
         verify(connectionRepository, times(1)).findByUuid(connectionId)
         verify(connectionRepository, times(1)).save(any<ConnectionDetails>())
     }
+
     @Test
     fun testGetConnectionById() {
         val connectionId = connection1.uuid as UUID

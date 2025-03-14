@@ -11,7 +11,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 class JsonViewInformation<E>(
     private val displayContentMapper: DisplayContentMapper<E>,
 ) {
-
     /**
      * Serializes the visualizer information and the list of windows to a json string.
      * @param windows The list of windows.
@@ -19,22 +18,25 @@ class JsonViewInformation<E>(
      */
     fun parseWindowsToJson(windows: List<Window<E>>): String {
         // Map each Window to a SerializableWindow by parsing its content.
-        val serializableWindows = windows.map { window ->
-            SerializableWindow(
-                name = window.name,
-                content = displayContentMapper.parseContent(window.content)
-            )
-        }
+        val serializableWindows =
+            windows.map { window ->
+                SerializableWindow(
+                    name = window.name,
+                    content = displayContentMapper.parseContent(window.content),
+                )
+            }
 
         // Create a data structure to hold the full JSON content.
-        val output = mapOf(
-            "visualizerName" to displayContentMapper.getVisualizerName(),
-            "windows" to serializableWindows
-        )
+        val output =
+            mapOf(
+                "visualizerName" to displayContentMapper.getVisualizerName(),
+                "windows" to serializableWindows,
+            )
 
-        val objectMapper = ObjectMapper().apply {
-            enable(SerializationFeature.INDENT_OUTPUT)
-        }
+        val objectMapper =
+            ObjectMapper().apply {
+                enable(SerializationFeature.INDENT_OUTPUT)
+            }
         return objectMapper.writeValueAsString(output)
     }
 
@@ -46,22 +48,23 @@ class JsonViewInformation<E>(
     fun parseWindowsFromJson(json: String): List<Window<E>> {
         val objectMapper = jacksonObjectMapper()
         val jsonNode = objectMapper.readTree(json)
-        val windows = jsonNode.get("windows").map { windowNode ->
+        val windows =
+            jsonNode.get("windows").map { windowNode ->
 
-            val name =  windowNode.get("name").asText()
-            val contentNode = windowNode.get("content")
+                val name = windowNode.get("name").asText()
+                val contentNode = windowNode.get("content")
 
-            val contentJsonString = if (contentNode.isTextual) {
-                contentNode.asText()
-            } else {
-                contentNode.toString()
+                val contentJsonString =
+                    if (contentNode.isTextual) {
+                        contentNode.asText()
+                    } else {
+                        contentNode.toString()
+                    }
+                val content = displayContentMapper.parseString(contentJsonString)
+                Window(name, content)
             }
-            val content = displayContentMapper.parseString(contentJsonString)
-            Window(name, content)
-        }
         return windows
     }
-
 
     /**
      * Deserializes the given json string to a list of window names.
@@ -71,9 +74,10 @@ class JsonViewInformation<E>(
     fun collectWindowsFromJson(json: String): Set<String> {
         val objectMapper = ObjectMapper()
         val jsonNode = objectMapper.readTree(json)
-        return jsonNode.get("windows").map { windowNode ->
-            windowNode.get("name").asText()
-        }.toSet()
+        return jsonNode
+            .get("windows")
+            .map { windowNode ->
+                windowNode.get("name").asText()
+            }.toSet()
     }
-
 }

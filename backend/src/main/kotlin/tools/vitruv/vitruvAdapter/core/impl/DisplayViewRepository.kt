@@ -8,7 +8,6 @@ import tools.vitruv.vitruvAdapter.core.api.DisplayViewContainer
  */
 
 class DisplayViewRepository : DisplayViewContainer {
-
     private val displayViews = mutableSetOf<DisplayView>()
 
     override fun registerDisplayView(displayView: DisplayView) {
@@ -19,11 +18,7 @@ class DisplayViewRepository : DisplayViewContainer {
         this.displayViews.addAll(displayViews)
     }
 
-    override fun getDisplayViews(): Set<DisplayView> {
-        return displayViews.toSet()
-    }
+    override fun getDisplayViews(): Set<DisplayView> = displayViews.toSet()
 
-    override fun getDisplayView(name: String): DisplayView? {
-        return displayViews.find { it.name == name }
-    }
+    override fun getDisplayView(name: String): DisplayView? = displayViews.find { it.name == name }
 }

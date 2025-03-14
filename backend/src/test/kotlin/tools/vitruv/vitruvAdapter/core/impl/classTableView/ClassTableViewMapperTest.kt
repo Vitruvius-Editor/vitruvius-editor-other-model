@@ -8,7 +8,6 @@ import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.mdsd.jamopp.model.java.containers.JavaRoot
 import tools.mdsd.jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser
 import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
-import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.core.impl.table.TableDTO
 import tools.vitruv.vitruvAdapter.utils.EObjectContainer
 import java.io.FileInputStream
@@ -16,22 +15,18 @@ import java.io.InputStream
 import kotlin.test.assertEquals
 
 class ClassTableViewMapperTest {
-
     private lateinit var preMappedWindows: List<PreMappedWindow<TableDTO<ClassTableEntry>>>
     private lateinit var preMappedWindowsNested: List<PreMappedWindow<TableDTO<ClassTableEntry>>>
     private lateinit var eObjectPreMappedWindows: List<PreMappedWindow<TableDTO<ClassTableEntry>>>
-
 
     private lateinit var eObjects: List<EObject>
     private lateinit var eObjectsNotAPackage: List<EObject>
     private lateinit var eObjectsNestedPackage: List<EObject>
 
-
     private val mapper = ClassTableViewMapper()
 
     @BeforeEach
     fun initEOBjects() {
-
         val factory = UMLFactory.eINSTANCE
         val examplePackage = factory.createPackage()
         examplePackage.name = "examplePackage"
@@ -44,7 +39,6 @@ class ClassTableViewMapperTest {
         examplePackageNested.packagedElements.add(examplePackage)
         examplePackageNested.createNestedPackage("nestedPackage")
 
-
         val umlClass = examplePackage.createOwnedClass("Class1", false)
         val attribute = umlClass.createOwnedAttribute("myIntAttribute", null)
         attribute.visibility = org.eclipse.uml2.uml.VisibilityKind.PUBLIC_LITERAL
@@ -56,13 +50,20 @@ class ClassTableViewMapperTest {
         val class1 = rootw.classifiers[0] as tools.mdsd.jamopp.model.java.classifiers.Class
         val class1packageName = class1.`package`.name
 
-
         preMappedWindows =
-            ClassTableContentSelector().applySelection(listOf(examplePackage, rootw), setOf("examplePackage", "Class1",
-                class1packageName))
+            ClassTableContentSelector().applySelection(
+                listOf(examplePackage, rootw),
+                setOf(
+                    "examplePackage",
+                    "Class1",
+                    class1packageName,
+                ),
+            )
         preMappedWindowsNested =
-            ClassTableContentSelector().applySelection(listOf(examplePackageNested, rootw),
-                setOf("examplePackageNested"))
+            ClassTableContentSelector().applySelection(
+                listOf(examplePackageNested, rootw),
+                setOf("examplePackageNested"),
+            )
 
         eObjects = EObjectContainer().getContainer3AsRootObjects()
         eObjectPreMappedWindows = listOf(PreMappedWindow("examplePackage", eObjects as MutableList<EObject>))

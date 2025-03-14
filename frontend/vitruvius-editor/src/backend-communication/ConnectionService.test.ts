@@ -33,14 +33,17 @@ describe("ConnectionService", () => {
           name: "Connection 2",
           description: "Description",
           url: "http://example.com",
-            port: 8080,
+          port: 8080,
         },
       ];
       sendWebRequestStub.mockResolvedValue(mockConnections);
 
       const connections = await connectionService.getConnections();
       expect(connections).toEqual(mockConnections);
-      expect(sendWebRequestStub).toHaveBeenCalledWith("/api/v1/connections", "GET");
+      expect(sendWebRequestStub).toHaveBeenCalledWith(
+        "/api/v1/connections",
+        "GET",
+      );
     });
   });
 
@@ -55,9 +58,14 @@ describe("ConnectionService", () => {
       };
       sendWebRequestStub.mockResolvedValue(mockConnection);
 
-      const connection = await connectionService.getConnection(mockConnection.uuid);
+      const connection = await connectionService.getConnection(
+        mockConnection.uuid,
+      );
       expect(connection).toEqual(mockConnection);
-      expect(sendWebRequestStub).toHaveBeenCalledWith(`/api/v1/connection/${mockConnection.uuid}`, "GET");
+      expect(sendWebRequestStub).toHaveBeenCalledWith(
+        `/api/v1/connection/${mockConnection.uuid}`,
+        "GET",
+      );
     });
 
     it("should return null if the connection is not found", async () => {
@@ -65,7 +73,10 @@ describe("ConnectionService", () => {
 
       const connection = await connectionService.getConnection("1");
       expect(connection).toBeNull();
-      expect(sendWebRequestStub).toHaveBeenCalledWith("/api/v1/connection/1", "GET");
+      expect(sendWebRequestStub).toHaveBeenCalledWith(
+        "/api/v1/connection/1",
+        "GET",
+      );
     });
   });
 
@@ -74,7 +85,10 @@ describe("ConnectionService", () => {
       sendWebRequestStub.mockResolvedValue(null);
 
       await connectionService.deleteConnection("1");
-      expect(sendWebRequestStub).toHaveBeenCalledWith("/api/v1/connection/1", "DELETE");
+      expect(sendWebRequestStub).toHaveBeenCalledWith(
+        "/api/v1/connection/1",
+        "DELETE",
+      );
     });
   });
 
@@ -95,9 +109,15 @@ describe("ConnectionService", () => {
       };
       sendWebRequestStub.mockResolvedValue(mockConnection);
 
-      const connection = await connectionService.createConnection(connectionCreationRequest);
+      const connection = await connectionService.createConnection(
+        connectionCreationRequest,
+      );
       expect(connection).toEqual(mockConnection);
-      expect(sendWebRequestStub).toHaveBeenCalledWith("/api/v1/connection", "POST", connectionCreationRequest);
+      expect(sendWebRequestStub).toHaveBeenCalledWith(
+        "/api/v1/connection",
+        "POST",
+        connectionCreationRequest,
+      );
     });
   });
 
@@ -113,9 +133,16 @@ describe("ConnectionService", () => {
       const connectionUpdateRequest = { name: "Updated Connection" };
       sendWebRequestStub.mockResolvedValue(mockConnection);
 
-      const connection = await connectionService.updateConnection("1", connectionUpdateRequest);
+      const connection = await connectionService.updateConnection(
+        "1",
+        connectionUpdateRequest,
+      );
       expect(connection).toEqual(mockConnection);
-      expect(sendWebRequestStub).toHaveBeenCalledWith("/api/v1/connection/1", "PUT", connectionUpdateRequest);
+      expect(sendWebRequestStub).toHaveBeenCalledWith(
+        "/api/v1/connection/1",
+        "PUT",
+        connectionUpdateRequest,
+      );
     });
   });
 });

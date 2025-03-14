@@ -1,17 +1,17 @@
-//package tools.vitruv.vitruvAdapter.core.api.testutils
+// package tools.vitruv.vitruvAdapter.core.api.testutils
 //
-//import org.eclipse.emf.ecore.EObject
-//import org.eclipse.emf.ecore.EcoreFactory
-//import org.eclipse.emf.ecore.impl.EClassImpl
-//import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
-//import tools.vitruv.vitruvAdapter.core.api.ViewMapper
-//import tools.vitruv.vitruvAdapter.core.api.Window
+// import org.eclipse.emf.ecore.EObject
+// import org.eclipse.emf.ecore.EcoreFactory
+// import org.eclipse.emf.ecore.impl.EClassImpl
+// import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
+// import tools.vitruv.vitruvAdapter.core.api.ViewMapper
+// import tools.vitruv.vitruvAdapter.core.api.Window
 //
-///**
+// /**
 // * A mock-up mapper that takes a list of MockJavaClass EObjects
 // * and turns them into Windows with simple String content.
 // */
-//class JavaClassViewMapper : ViewMapper<String> {
+// class JavaClassViewMapper : ViewMapper<String> {
 //
 //    private val displayContentMapper = TestTextDisplayContentMapper()
 //
@@ -53,4 +53,4 @@
 //    override fun getDisplayContent(): DisplayContentMapper<String> {
 //       return displayContentMapper
 //    }
-//}
+// }

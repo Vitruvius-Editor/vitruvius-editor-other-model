@@ -5,4 +5,6 @@ package tools.vitruv.vitruvAdapter.dto
  * @property windows The windows to select.
  */
 
-data class WindowSelectionRequest(val windows: Set<String>)
+data class WindowSelectionRequest(
+    val windows: Set<String>,
+)

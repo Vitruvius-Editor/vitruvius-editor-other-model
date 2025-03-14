@@ -11,8 +11,7 @@ import tools.vitruv.vitruvAdapter.core.impl.uml.UmlDiagram
  * Represents a package diagram view mapper.
  * This class is responsible for mapping the view content of a package diagram to windows and vice versa.
  */
-class PackageDiagramViewMapper: UmlViewMapper() {
-
+class PackageDiagramViewMapper : UmlViewMapper() {
     /**
      * Maps the given view content to a list of windows.
      * @param preMappedWindows the pre-mapped windows to map to windows.
@@ -32,7 +31,7 @@ class PackageDiagramViewMapper: UmlViewMapper() {
      */
     override fun mapWindowsToEObjectsAndApplyChangesToEObjects(
         preMappedWindows: List<PreMappedWindow<UmlDiagram>>,
-        windows: List<Window<UmlDiagram>>
+        windows: List<Window<UmlDiagram>>,
     ): List<EObject> {
         TODO("Not yet implemented")
     }
@@ -53,5 +52,4 @@ class PackageDiagramViewMapper: UmlViewMapper() {
     override fun getDisplayContent(): DisplayContentMapper<UmlDiagram> {
         TODO("Not yet implemented")
     }
-
 }

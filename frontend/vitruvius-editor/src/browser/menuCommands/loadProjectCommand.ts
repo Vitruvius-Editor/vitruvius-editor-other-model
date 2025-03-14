@@ -8,8 +8,8 @@ import {
 import { inject, injectable } from "@theia/core/shared/inversify";
 import { ConnectionService } from "../../backend-communication/ConnectionService";
 import { DisplayViewWidgetContribution } from "../displayViewWidgetContribution";
-import {VisualisationWidgetRegistry} from "../../visualisation/VisualisationWidgetRegistry";
-import {Connection} from "../../model/Connection";
+import { VisualisationWidgetRegistry } from "../../visualisation/VisualisationWidgetRegistry";
+import { Connection } from "../../model/Connection";
 
 /**
  * Command to load a saved project from the server.
@@ -53,10 +53,14 @@ export class VitruviusLoadProjectContribution implements CommandContribution {
                 // Load the project with the selected connection, if picked.
                 execute: () =>
                   this.displayViewWidgetContribution.widget.then((widget) => {
-                    if(widget.getConnection() != null) {
-                      this.visualisationWidgetRegistry.getWidgetsByConnection(widget.getConnection() as Connection).forEach(widgetData => widgetData.widget.close());
+                    if (widget.getConnection() != null) {
+                      this.visualisationWidgetRegistry
+                        .getWidgetsByConnection(
+                          widget.getConnection() as Connection,
+                        )
+                        .forEach((widgetData) => widgetData.widget.close());
                     }
-                    widget.loadProject(connection)
+                    widget.loadProject(connection);
                   }),
               };
             });

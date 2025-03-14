@@ -6,25 +6,23 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 import org.eclipse.uml2.uml.UMLPackage
 import org.eclipse.uml2.uml.internal.impl.UMLPackageImpl
-import org.eclipse.uml2.uml.internal.resource.UML22UMLResourceFactoryImpl
 import org.eclipse.uml2.uml.internal.resource.UMLResourceFactoryImpl
 import org.springframework.stereotype.Service
 import tools.mdsd.jamopp.model.java.JavaPackage
 import tools.mdsd.jamopp.model.java.impl.JavaPackageImpl
-import tools.vitruv.applications.util.temporary.java.JamoppLibraryHelper
 import tools.vitruv.applications.util.temporary.java.JavaSetup
 import tools.vitruv.change.atomic.AtomicPackage
 import tools.vitruv.change.atomic.impl.AtomicPackageImpl
 import tools.vitruv.change.correspondence.CorrespondencePackage
 import tools.vitruv.change.correspondence.impl.CorrespondencePackageImpl
-import tools.vitruv.framework.views.View
 import tools.vitruv.framework.remote.client.VitruvClient
 import tools.vitruv.framework.remote.client.exception.BadClientResponseException
 import tools.vitruv.framework.remote.client.exception.BadServerResponseException
+import tools.vitruv.framework.views.View
 import tools.vitruv.framework.views.ViewSelector
 import tools.vitruv.framework.views.ViewType
-import tools.vitruv.vitruvAdapter.exception.VitruviusConnectFailedException
 import tools.vitruv.vitruvAdapter.exception.DisplayViewException
+import tools.vitruv.vitruvAdapter.exception.VitruviusConnectFailedException
 
 /**
  * This class is the adapter for the Vitruvius model server. It provides methods to interact with the model server.
@@ -34,8 +32,10 @@ import tools.vitruv.vitruvAdapter.exception.DisplayViewException
 class VitruvAdapter {
     init {
 
-        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", XMIResourceFactoryImpl())
-        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("uml", UMLResourceFactoryImpl())
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap
+            .put("*", XMIResourceFactoryImpl())
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap
+            .put("uml", UMLResourceFactoryImpl())
         EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackageImpl.eINSTANCE)
         EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackageImpl.eINSTANCE)
         EPackage.Registry.INSTANCE.put(CorrespondencePackage.eNS_URI, CorrespondencePackageImpl.eINSTANCE)
@@ -46,11 +46,10 @@ class VitruvAdapter {
         JavaSetup.resetClasspathAndRegisterStandardLibrary()
 
         EcorePlugin.ExtensionProcessor.process(null)
-
     }
+
     private var vitruvClient: VitruvClient? = null
     private var displayViewContainer: DisplayViewContainer? = null
-
 
     /**
      * Connects the adapter to the model server.
@@ -76,7 +75,6 @@ class VitruvAdapter {
         this.displayViewContainer = displayViewContainer
     }
 
-
     /**
      * Returns all available DisplayViews.
      * @return The available DisplayViews.
@@ -95,7 +93,7 @@ class VitruvAdapter {
      * @param displayView The DisplayView to get the windows for.
      * @return The windows that are available for the given DisplayView.
      */
-    fun getWindows(displayView : DisplayView): Set<String> {
+    fun getWindows(displayView: DisplayView): Set<String> {
         val view = getView(displayView)
         return displayView.viewMapper.mapViewToWindows(view.rootObjects.toList())
     }
@@ -116,7 +114,10 @@ class VitruvAdapter {
      * @param windows The windows to create the content for.
      * @return The created content for the windows.
      */
-    fun createWindowContent(displayView: DisplayView, windows: Set<String>): String {
+    fun createWindowContent(
+        displayView: DisplayView,
+        windows: Set<String>,
+    ): String {
         val view = getView(displayView)
         val selectedEObjects = displayView.contentSelector.applySelection(view.rootObjects.toList(), windows)
         val mapper = displayView.viewMapper
@@ -126,18 +127,24 @@ class VitruvAdapter {
         return json
     }
 
-
     /**
      * This method reverts the json that Theia can interpret to display views to EObjects and tries to
      * apply the changes to the model by state changed derivation strategy.
      * @param displayView The DisplayView to edit.
      * @param json The json to edit the DisplayView with.
      */
-    fun editDisplayView(displayView: DisplayView, json: String) {
+    fun editDisplayView(
+        displayView: DisplayView,
+        json: String,
+    ) {
         val mapper = displayView.viewMapper
         val viewInformation = JsonViewInformation(mapper.getDisplayContent())
         val oldView = getView(displayView).withChangeDerivingTrait()
-        val oldSelectedEObjects = displayView.contentSelector.applySelection(oldView.rootObjects.toList(), viewInformation.collectWindowsFromJson(json))
+        val oldSelectedEObjects =
+            displayView.contentSelector.applySelection(
+                oldView.rootObjects.toList(),
+                viewInformation.collectWindowsFromJson(json),
+            )
         val newWindows = viewInformation.parseWindowsFromJson(json)
         mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(oldSelectedEObjects, newWindows)
         oldView.commitChanges()
@@ -149,7 +156,10 @@ class VitruvAdapter {
      * @param json The updated content that shall be synchronised with the Vitruvius server.
      * @return The updated content if the update was successful.
      */
-    fun editDisplayViewAndReturnNewContent(displayView: DisplayView, json: String): String {
+    fun editDisplayViewAndReturnNewContent(
+        displayView: DisplayView,
+        json: String,
+    ): String {
         editDisplayView(displayView, json)
         return createWindowContent(displayView, collectWindowsFromJson(displayView, json))
     }
@@ -160,16 +170,22 @@ class VitruvAdapter {
      * @param json The json string to collect the windows from.
      * @return The collected windows.
      */
-    fun collectWindowsFromJson(displayView: DisplayView, json: String): Set<String> {
+    fun collectWindowsFromJson(
+        displayView: DisplayView,
+        json: String,
+    ): Set<String> {
         val mapper = displayView.viewMapper
         val viewInformation = JsonViewInformation(mapper.getDisplayContent())
         return viewInformation.collectWindowsFromJson(json)
     }
 
-
     private fun getViewType(displayView: DisplayView): ViewType<out ViewSelector> {
         val client = vitruvClient ?: throw IllegalStateException("No client connected.")
-        val viewType = client.viewTypes.stream().filter{it.name == displayView.viewTypeName}.findAny()
+        val viewType =
+            client.viewTypes
+                .stream()
+                .filter { it.name == displayView.viewTypeName }
+                .findAny()
         if (viewType.isEmpty) {
             throw DisplayViewException("ViewType ${displayView.viewTypeName} not found.")
         }

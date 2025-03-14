@@ -13,49 +13,41 @@ import tools.vitruv.vitruvAdapter.core.impl.table.TableDTO
  * @param P the type of the content
  */
 
-class TableDisplayContentMapper<P> @PublishedApi internal constructor(
-    private val typeReference:
-    TypeReference<TableDTO<P>>
-) : DisplayContentMapper<TableDTO<P>> {
+class TableDisplayContentMapper<P>
+    @PublishedApi
+    internal constructor(
+        private val typeReference: TypeReference<TableDTO<P>>,
+    ) : DisplayContentMapper<TableDTO<P>> {
+        private val objectMapper: ObjectMapper = jacksonObjectMapper()
 
-    private val objectMapper: ObjectMapper = jacksonObjectMapper()
-
-    companion object {
-        /**
-         * Factory method to create an instance of TableDisplayContentMapper with type information.
-         */
-        inline fun <reified P> create(): TableDisplayContentMapper<P> {
-            val typeRef = object : TypeReference<TableDTO<P>>() {}
-            return TableDisplayContentMapper(typeRef)
+        companion object {
+            /**
+             * Factory method to create an instance of TableDisplayContentMapper with type information.
+             */
+            inline fun <reified P> create(): TableDisplayContentMapper<P> {
+                val typeRef = object : TypeReference<TableDTO<P>>() {}
+                return TableDisplayContentMapper(typeRef)
+            }
         }
+
+        /**
+         * This function is used to parse the content of a window to a string.
+         * @param content the content of the window
+         * @return the string representation of the content
+         */
+        override fun parseContent(content: TableDTO<P>): String = objectMapper.writeValueAsString(content)
+
+        /**
+         * This function is used to parse the string representation of the content to the content itself.
+         * @param content the string representation of the content
+         * @return the content itself
+         */
+        override fun parseString(content: String): TableDTO<P> = objectMapper.readValue(content, typeReference)
+
+        /**
+         * This function is used to get the name of the visualizer that is used to display the content.
+         * Note that Visualizer and ContentMapper should have a 1:1 relationship.
+         * @return the name of the visualizer
+         */
+        override fun getVisualizerName(): String = VisualizerType.TABLE_VISUALIZER.visualizerName
     }
-
-    /**
-     * This function is used to parse the content of a window to a string.
-     * @param content the content of the window
-     * @return the string representation of the content
-     */
-    override fun parseContent(content: TableDTO<P>): String {
-        return objectMapper.writeValueAsString(content)
-    }
-
-    /**
-     * This function is used to parse the string representation of the content to the content itself.
-     * @param content the string representation of the content
-     * @return the content itself
-     */
-    override fun parseString(content: String): TableDTO<P> {
-        return objectMapper.readValue(content, typeReference)
-    }
-
-    /**
-     * This function is used to get the name of the visualizer that is used to display the content.
-     * Note that Visualizer and ContentMapper should have a 1:1 relationship.
-     * @return the name of the visualizer
-     */
-    override fun getVisualizerName(): String {
-        return VisualizerType.TABLE_VISUALIZER.visualizerName
-    }
-
-
-}

@@ -18,5 +18,5 @@ data class UmlNode(
     val nodeType: String,
     val attributes: List<UmlAttribute>,
     val methods: List<UmlMethod>,
-    val viewRecommendations: List<ViewRecommendation>
+    val viewRecommendations: List<ViewRecommendation>,
 )

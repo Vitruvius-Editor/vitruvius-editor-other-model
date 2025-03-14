@@ -7,5 +7,5 @@ package tools.vitruv.vitruvAdapter.core.impl.uml
  */
 data class UmlDiagram(
     val nodes: List<UmlNode>,
-    val connections: List<UmlConnection>
+    val connections: List<UmlConnection>,
 )

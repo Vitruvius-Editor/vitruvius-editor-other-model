@@ -3,7 +3,6 @@ package vitruv.tools.vitruvadpter.testServer
 import java.nio.file.Path
 import java.nio.file.Paths
 
-
 /**
  * Starts the server
  */

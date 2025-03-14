@@ -1,14 +1,17 @@
 import { ReactWidget } from "@theia/core/lib/browser/widgets/react-widget";
-import {inject} from "@theia/core/shared/inversify";
-import {VisualisationWidgetRegistry} from "./VisualisationWidgetRegistry";
-import {StatefulWidget} from "@theia/core/lib/browser";
-import {DisplayView} from "../model/DisplayView";
-import {Connection} from "../model/Connection";
+import { inject } from "@theia/core/shared/inversify";
+import { VisualisationWidgetRegistry } from "./VisualisationWidgetRegistry";
+import { StatefulWidget } from "@theia/core/lib/browser";
+import { DisplayView } from "../model/DisplayView";
+import { Connection } from "../model/Connection";
 
 /**
  * Abstract widget that represents a ReactWidget used to visualize a Vitruvius view.
  */
-export abstract class VisualisationWidget<T> extends ReactWidget implements StatefulWidget { 
+export abstract class VisualisationWidget<T>
+  extends ReactWidget
+  implements StatefulWidget
+{
   @inject(VisualisationWidgetRegistry)
   protected readonly visualisationWidgetRegistry!: VisualisationWidgetRegistry;
   private label: string;
@@ -66,16 +69,31 @@ export abstract class VisualisationWidget<T> extends ReactWidget implements Stat
   }
 
   storeState(): object {
-      let widgetData = this.visualisationWidgetRegistry.getWidgets().find(w => w.widget.getLabel() === this.getLabel());
-      return { content: this.getContent(), label: this.getLabel(), displayView: widgetData?.displayView, connection: widgetData?.connection};
+    let widgetData = this.visualisationWidgetRegistry
+      .getWidgets()
+      .find((w) => w.widget.getLabel() === this.getLabel());
+    return {
+      content: this.getContent(),
+      label: this.getLabel(),
+      displayView: widgetData?.displayView,
+      connection: widgetData?.connection,
+    };
   }
   restoreState(oldState: object): void {
-      let typedState = oldState as VisualisationWidgetState<T>;
-      this.setLabel(typedState.label);
-      this.updateContent(typedState.content);
-      this.visualisationWidgetRegistry.registerWidget(this, typedState.displayView, typedState.connection);
+    let typedState = oldState as VisualisationWidgetState<T>;
+    this.setLabel(typedState.label);
+    this.updateContent(typedState.content);
+    this.visualisationWidgetRegistry.registerWidget(
+      this,
+      typedState.displayView,
+      typedState.connection,
+    );
   }
-
 }
 
-export type VisualisationWidgetState<T> = { content: T, label: string, displayView: DisplayView, connection: Connection };
+export type VisualisationWidgetState<T> = {
+  content: T;
+  label: string;
+  displayView: DisplayView;
+  connection: Connection;
+};

@@ -17,12 +17,13 @@ data class ConnectionResponse(
     val uuid: UUID?,
     val url: String,
     val port: Int,
-)
-{
+) {
     /**
      * Constructor for the ConnectionResponse class.
      * @param connectionDetails The connection details that should be used to create the response.
      * @constructor Creates a ConnectionResponse object.
      */
-    constructor(connectionDetails: ConnectionDetails): this(connectionDetails.name, connectionDetails.description, connectionDetails.uuid, connectionDetails.url, connectionDetails.port)
+    constructor(
+        connectionDetails: ConnectionDetails,
+    ) : this(connectionDetails.name, connectionDetails.description, connectionDetails.uuid, connectionDetails.url, connectionDetails.port)
 }

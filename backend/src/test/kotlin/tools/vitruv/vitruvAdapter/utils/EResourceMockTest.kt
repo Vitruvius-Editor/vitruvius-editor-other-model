@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class EResourceMockTest {
-
     @Test
     fun testMockERessourceForEObjects() {
         val class1 = UMLFactory.eINSTANCE.createClass()
@@ -34,6 +33,4 @@ class EResourceMockTest {
         val class1Mocked = EResourceMock.mockERessourceAndUuidForEObject(class1, umlPackage)
         assertEquals(EResourceMock.getFakeUUID(class1Mocked), umlPackage.eResource().getURIFragment(class1Mocked))
     }
-
-
 }

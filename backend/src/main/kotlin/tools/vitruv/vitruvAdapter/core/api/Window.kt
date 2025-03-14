@@ -6,6 +6,7 @@ package tools.vitruv.vitruvAdapter.core.api
  *
  * @author uhsab
  */
-data class Window<E> (val name: String, val content: E)
-
-
+data class Window<E>(
+    val name: String,
+    val content: E,
+)

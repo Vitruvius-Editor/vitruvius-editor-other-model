@@ -1,6 +1,5 @@
 package tools.vitruv.vitruvAdapter.services
 
-import org.eclipse.emf.ecore.EObject
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -10,22 +9,18 @@ import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import tools.vitruv.framework.remote.client.impl.VitruvRemoteConnection
-import tools.vitruv.framework.views.ViewSelector
 import tools.vitruv.vitruvAdapter.core.api.*
+import tools.vitruv.vitruvAdapter.core.impl.DisplayViewRepository
+import tools.vitruv.vitruvAdapter.core.impl.GenericDisplayView
+import tools.vitruv.vitruvAdapter.core.impl.classTableView.ClassTableViewMapper
+import tools.vitruv.vitruvAdapter.core.impl.selector.AllSelector
+import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeContentSelector
+import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeViewMapper
 import tools.vitruv.vitruvAdapter.dto.WindowSelectionRequest
 import tools.vitruv.vitruvAdapter.exception.ConnectionNotFoundException
 import tools.vitruv.vitruvAdapter.exception.DisplayViewNotFoundException
 import tools.vitruv.vitruvAdapter.exception.VitruviusConnectFailedException
 import tools.vitruv.vitruvAdapter.model.ConnectionDetails
-import tools.vitruv.vitruvAdapter.core.impl.DisplayViewRepository
-import tools.vitruv.vitruvAdapter.core.impl.GenericDisplayView
-import tools.vitruv.vitruvAdapter.core.impl.classTableView.ClassTableViewMapper
-import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.TextDisplayContentMapper;
-import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.TableDisplayContentMapper;
-import tools.vitruv.vitruvAdapter.core.impl.selector.AllSelector
-import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeContentSelector
-import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeViewMapper
-import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeViewMapperTest
 import java.util.*
 import kotlin.test.assertEquals
 
@@ -50,10 +45,23 @@ class VitruviusServiceTests {
     fun beforeEach() {
         uuid = UUID.randomUUID()
         connection = ConnectionDetails(uuid, "Example", "Example connection", "https://example.com", 8080)
-        displayViews = listOf(
-            GenericDisplayView("DisplayView 1", "ExampleViewType", SourceCodeViewMapper() as ViewMapper<Any?>, AllSelector(), SourceCodeContentSelector() as ContentSelector<Any?>),
-            GenericDisplayView("DisplayView 2", "ExampleViewType", ClassTableViewMapper() as ViewMapper<Any?>, AllSelector(),  SourceCodeContentSelector() as ContentSelector<Any?>),
-        )
+        displayViews =
+            listOf(
+                GenericDisplayView(
+                    "DisplayView 1",
+                    "ExampleViewType",
+                    SourceCodeViewMapper() as ViewMapper<Any?>,
+                    AllSelector(),
+                    SourceCodeContentSelector() as ContentSelector<Any?>,
+                ),
+                GenericDisplayView(
+                    "DisplayView 2",
+                    "ExampleViewType",
+                    ClassTableViewMapper() as ViewMapper<Any?>,
+                    AllSelector(),
+                    SourceCodeContentSelector() as ContentSelector<Any?>,
+                ),
+            )
         MockitoAnnotations.openMocks(this)
         whenever(connectionService.getConnectionById(any<UUID>())).thenAnswer {
             if (it.arguments[0] == connection.uuid) {
@@ -63,8 +71,16 @@ class VitruviusServiceTests {
             }
         }
 
-        whenever(vitruvAdapter.connectClient(any<VitruvRemoteConnection>())).thenAnswer {  }
-        whenever(vitruvAdapter.getDisplayView(any<String>())).thenAnswer { if (it.arguments[0] == displayViews[0].name) displayViews[0] else null }
+        whenever(vitruvAdapter.connectClient(any<VitruvRemoteConnection>())).thenAnswer { }
+        whenever(vitruvAdapter.getDisplayView(any<String>())).thenAnswer {
+            if (it.arguments[0] ==
+                displayViews[0].name
+            ) {
+                displayViews[0]
+            } else {
+                null
+            }
+        }
     }
 
     @Test
@@ -83,31 +99,54 @@ class VitruviusServiceTests {
     @Test
     fun testGetDisplayViewContent() {
         whenever(vitruvAdapter.createWindowContent(any<DisplayView>(), any<Set<String>>())).thenAnswer { "Example Content" }
-        assertEquals("Example Content", vitruviusService.getDisplayViewContent(uuid, displayViews[0].name, WindowSelectionRequest(setOf("Window 1", "Window 2"))))
-        assertThrows<DisplayViewNotFoundException> { vitruviusService.getDisplayViewContent(uuid, displayViews[1].name, WindowSelectionRequest(setOf("Window 1", "Window 2"))) }
+        assertEquals(
+            "Example Content",
+            vitruviusService.getDisplayViewContent(uuid, displayViews[0].name, WindowSelectionRequest(setOf("Window 1", "Window 2"))),
+        )
+        assertThrows<DisplayViewNotFoundException> {
+            vitruviusService.getDisplayViewContent(uuid, displayViews[1].name, WindowSelectionRequest(setOf("Window 1", "Window 2")))
+        }
     }
 
-    //@Test
-   // fun testEditDisplayViewContent() {
+    // @Test
+    // fun testEditDisplayViewContent() {
     //    whenever(vitruvAdapter.editDisplayView(any(), any())).then { }
-   //     val editedContent = "Some edited content"
-   //     assertEquals(editedContent, vitruviusService.editDisplayViewContent(uuid, displayViews[0].name, editedContent))
-   //     assertThrows<DisplayViewNotFoundException> { vitruviusService.editDisplayViewContent(uuid, displayViews[1].name, editedContent) }
-   // }
+    //     val editedContent = "Some edited content"
+    //     assertEquals(editedContent, vitruviusService.editDisplayViewContent(uuid, displayViews[0].name, editedContent))
+    //     assertThrows<DisplayViewNotFoundException> { vitruviusService.editDisplayViewContent(uuid, displayViews[1].name, editedContent) }
+    // }
 
     @Test
     fun testInvalidConnectionHandling() {
         // Test if the connection uuid is invalid
         assertThrows<ConnectionNotFoundException> { vitruviusService.getDisplayViews(UUID.randomUUID()) }
         assertThrows<ConnectionNotFoundException> { vitruviusService.getDisplayViewWindows(UUID.randomUUID(), displayViews[0].name) }
-        assertThrows<ConnectionNotFoundException> { vitruviusService.getDisplayViewContent(UUID.randomUUID(), displayViews[1].name, WindowSelectionRequest(setOf("Window 1", "Window 2"))) }
-        assertThrows<ConnectionNotFoundException> { vitruviusService.editDisplayViewContent(UUID.randomUUID(), displayViews[0].name, "Updated Content") }
+        assertThrows<ConnectionNotFoundException> {
+            vitruviusService.getDisplayViewContent(
+                UUID.randomUUID(),
+                displayViews[1].name,
+                WindowSelectionRequest(setOf("Window 1", "Window 2")),
+            )
+        }
+        assertThrows<ConnectionNotFoundException> {
+            vitruviusService.editDisplayViewContent(UUID.randomUUID(), displayViews[0].name, "Updated Content")
+        }
 
         // Test if the connection uuid is valid, but the server unreachable
-        whenever(vitruvAdapter.connectClient(any())).thenAnswer { throw VitruviusConnectFailedException("Could not connect to model server.") }
+        whenever(
+            vitruvAdapter.connectClient(any()),
+        ).thenAnswer { throw VitruviusConnectFailedException("Could not connect to model server.") }
         assertThrows<VitruviusConnectFailedException> { vitruviusService.getDisplayViews(uuid) }
         assertThrows<VitruviusConnectFailedException> { vitruviusService.getDisplayViewWindows(uuid, displayViews[0].name) }
-        assertThrows<VitruviusConnectFailedException> { vitruviusService.getDisplayViewContent(uuid, displayViews[1].name, WindowSelectionRequest(setOf("Window 1", "Window 2"))) }
-        assertThrows<VitruviusConnectFailedException> { vitruviusService.editDisplayViewContent(uuid, displayViews[0].name, "Updated Content") }
+        assertThrows<VitruviusConnectFailedException> {
+            vitruviusService.getDisplayViewContent(uuid, displayViews[1].name, WindowSelectionRequest(setOf("Window 1", "Window 2")))
+        }
+        assertThrows<VitruviusConnectFailedException> {
+            vitruviusService.editDisplayViewContent(
+                uuid,
+                displayViews[0].name,
+                "Updated Content",
+            )
+        }
     }
 }

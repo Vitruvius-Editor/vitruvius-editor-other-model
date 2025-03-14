@@ -1,10 +1,6 @@
-import {
-  Command,
-  CommandContribution,
-  CommandRegistry,
-} from "@theia/core";
+import { Command, CommandContribution, CommandRegistry } from "@theia/core";
 import { inject, injectable } from "@theia/core/shared/inversify";
-import {HelpWidgetContribution} from "../helpWidgetContribution";
+import { HelpWidgetContribution } from "../helpWidgetContribution";
 
 /**
  * Command to show the help dialog.
@@ -33,6 +29,6 @@ export class VitruviusHelpCommandContribution implements CommandContribution {
   }
 
   protected async openHelpWidget(): Promise<void> {
-      await this.helpWidgetContribution.openView();
+    await this.helpWidgetContribution.openView();
   }
 }
