@@ -93,7 +93,6 @@ class ClassDiagramViewMapperTest {
     fun testMapEObjectsToWindowsContent() {
         val preMappedWindow1 = PreMappedWindow<UmlDiagram>("examplePackage", eObjectsClassExtends.toMutableList())
         val window1 = mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow1))
-        print(window1)
     }
 
     /**

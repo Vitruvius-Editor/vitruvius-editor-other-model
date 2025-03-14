@@ -4,7 +4,6 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.uml2.uml.Package
 import org.eclipse.uml2.uml.PackageableElement
 import org.eclipse.uml2.uml.UMLFactory
-import org.mockito.Mockito
 import tools.mdsd.jamopp.model.java.classifiers.Class
 import tools.mdsd.jamopp.model.java.classifiers.ClassifiersFactory
 import tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier
@@ -17,7 +16,6 @@ import tools.mdsd.jamopp.model.java.parameters.ParametersFactory
 import tools.mdsd.jamopp.model.java.statements.StatementsFactory
 import tools.mdsd.jamopp.model.java.types.TypesFactory
 import java.math.BigInteger
-import kotlin.math.truncate
 
 /**
  * This utility class should contain some containers of EObjects, which can be used for testing.
@@ -86,14 +84,15 @@ class EObjectContainer {
         val umlPackage = getUmlPackage1()
         val umlClass1 = getVerySimpleUmlClass()
         val umlClass2 = getSimpleUmlClass()
-        val umlClass3 = getUmlClass3()
+        val umlClass3 = getUmlClassWithVisibilities()
+        val umlClass4 = getEmptyAbstractClass()
         val umlInterface = umlPackage.createOwnedInterface("Interface1")
         val umlInterfaceRealization = umlClass1.createInterfaceRealization("interfaceRealization1", umlInterface)
         val umlInterface2 = umlPackage.createOwnedInterface("Interface2")
         umlInterface.redefinedInterfaces.add(umlInterface2)
         umlClass1.interfaceRealizations.add(umlInterfaceRealization)
         umlClass1.superClasses.add(umlClass2)
-        addClassifiersToUmlPackage(listOf(umlClass1, umlClass2, umlClass3, umlInterface, umlInterface2), umlPackage)
+        addClassifiersToUmlPackage(listOf(umlClass1, umlClass2, umlClass3, umlClass4, umlInterface, umlInterface2), umlPackage)
         return listOf(umlPackage)
     }
 
@@ -362,7 +361,7 @@ class EObjectContainer {
         return EResourceMock.mockERessourceAndUuidForEObject(umlClass, umlPackage)
     }
 
-    fun getUmlClass3(): org.eclipse.uml2.uml.Class {
+    fun getUmlClassWithVisibilities(): org.eclipse.uml2.uml.Class {
         val umlClass = UMLFactory.eINSTANCE.createClass()
         umlClass.name = "Class3"
 
