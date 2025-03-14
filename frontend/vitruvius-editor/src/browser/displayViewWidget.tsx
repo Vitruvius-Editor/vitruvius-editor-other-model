@@ -11,8 +11,8 @@ import { DisplayView } from "../model/DisplayView";
 import { DisplayViewService } from "../backend-communication/DisplayViewService";
 import { DisplayViewResolver } from "../visualisation/DisplayViewResolver";
 import { Content } from "../model/Content";
-import {VisualisationWidgetRegistry} from "../visualisation/VisualisationWidgetRegistry";
-import {StatefulWidget} from "@theia/core/lib/browser";
+import { VisualisationWidgetRegistry } from "../visualisation/VisualisationWidgetRegistry";
+import { StatefulWidget } from "@theia/core/lib/browser";
 
 @injectable()
 export class DisplayViewWidget extends ReactWidget implements StatefulWidget {
@@ -111,7 +111,10 @@ export class DisplayViewWidget extends ReactWidget implements StatefulWidget {
                 // Map each widget item to a html list item and show the windows if the widget item is clicked.
                 return (
                   <div className="display-view-container">
-                    <li onClick={() => this.widgetItemClickHandler(widgetItem)} className="display-view-item">
+                    <li
+                      onClick={() => this.widgetItemClickHandler(widgetItem)}
+                      className="display-view-item"
+                    >
                       {widgetItem.displayView.name}
                     </li>
                     {this.Windows(widgetItem)}
@@ -138,7 +141,10 @@ export class DisplayViewWidget extends ReactWidget implements StatefulWidget {
           <ul>
             {windowsNonNull.map((window) => (
               <div>
-                <li onClick={() => this.windowClickHandler(widgetItem, window)} className="window-item">
+                <li
+                  onClick={() => this.windowClickHandler(widgetItem, window)}
+                  className="window-item"
+                >
                   {window}
                 </li>
               </div>
@@ -193,24 +199,30 @@ export class DisplayViewWidget extends ReactWidget implements StatefulWidget {
         this.displayViewResolver
           .getWidget(content as Content)
           ?.then((widget) => {
-              this.visualisationWidgetRegsitry.registerWidget(widget, widgetItem.displayView, this.connection as Connection);
-              widget.show();
+            this.visualisationWidgetRegsitry.registerWidget(
+              widget,
+              widgetItem.displayView,
+              this.connection as Connection,
+            );
+            widget.show();
           });
       });
   }
   storeState(): object {
-      return {connection: this.connection, widgetItems: this.widgetItems};
+    return { connection: this.connection, widgetItems: this.widgetItems };
   }
   restoreState(oldState: object): void {
-      let typedState = oldState as DisplayViewWidgetState;
-      this.connection = typedState.connection;
-      this.widgetItems = typedState.widgetItems;
+    let typedState = oldState as DisplayViewWidgetState;
+    this.connection = typedState.connection;
+    this.widgetItems = typedState.widgetItems;
   }
-
 }
 
 /**
  * Type used to represent a visual representation of a DisplayView in the widget.
  */
 type WidgetItem = { displayView: DisplayView; windows: string[] | null };
-type DisplayViewWidgetState = {connection: Connection, widgetItems: WidgetItem[]};
+type DisplayViewWidgetState = {
+  connection: Connection;
+  widgetItems: WidgetItem[];
+};

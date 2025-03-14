@@ -6,10 +6,10 @@ import com.fasterxml.jackson.annotation.JsonValue
  * Represents the type of a connection between two UML nodes.
  * @param uuid The unique identifier of the connection type.
  */
-enum class UmlConnectionType (
+enum class UmlConnectionType(
     @JsonValue
-    val uuid: String
-){
+    val uuid: String,
+) {
     /**
      * Represents a generalization connection.
      */
@@ -28,6 +28,5 @@ enum class UmlConnectionType (
     /**
      * Represents an import connection.
      */
-    IMPORT("import");
-
+    IMPORT("import"),
 }

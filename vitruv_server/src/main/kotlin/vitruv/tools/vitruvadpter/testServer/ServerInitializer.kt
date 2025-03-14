@@ -1,6 +1,5 @@
 package vitruv.tools.vitruvadpter.testServer
 
-
 import org.eclipse.emf.common.util.BasicEList
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.common.util.URI
@@ -18,8 +17,6 @@ import tools.mdsd.jamopp.model.java.JavaPackage
 import tools.mdsd.jamopp.model.java.classifiers.ClassifiersFactory
 import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.mdsd.jamopp.model.java.containers.ContainersFactory
-import tools.mdsd.jamopp.model.java.expressions.Expression
-import tools.mdsd.jamopp.model.java.expressions.ExpressionsFactory
 import tools.mdsd.jamopp.model.java.literals.LiteralsFactory
 import tools.mdsd.jamopp.model.java.members.MembersFactory
 import tools.mdsd.jamopp.model.java.parameters.ParametersFactory
@@ -47,7 +44,10 @@ import java.nio.file.Path
  * Initializes the server
  */
 
-class ServerInitializer(val host: String, val serverPort: Int) {
+class ServerInitializer(
+    val host: String,
+    val serverPort: Int,
+) {
     lateinit var viewTypes: Map<String, ViewType<*>>
     lateinit var vsum: VirtualModel
     lateinit var javaPath: Path
@@ -82,7 +82,6 @@ class ServerInitializer(val host: String, val serverPort: Int) {
         generateJavaExampleModel()
         return server
     }
-
 
     private fun generateJavaExampleModel() {
         val view = getJavaView().withChangeDerivingTrait()
@@ -138,8 +137,6 @@ class ServerInitializer(val host: String, val serverPort: Int) {
         initialValue.decimalValue = BigInteger.valueOf(5)
         member2.initialValue = initialValue
 
-
-
         val method2 = MembersFactory.eINSTANCE.createClassMethod()
         method2.name = "myMethod"
         method2.makePublic()
@@ -172,11 +169,9 @@ class ServerInitializer(val host: String, val serverPort: Int) {
 
 //        val umlInterface = examplePackage.createOwnedInterface("Interface1")
 
-
         val umlClass = examplePackage.createOwnedClass("Class1", false)
 
         umlClass.setIsFinalSpecialization(true)
-
 
         val class2 = examplePackage.createOwnedClass("Class2", true)
         val intatt = class2.createOwnedAttribute("myIntAttribute", null)
@@ -188,7 +183,6 @@ class ServerInitializer(val host: String, val serverPort: Int) {
         val initialValue2 = factory.createLiteralInteger()
         (initialValue2 as LiteralIntegerImpl).value = 5
         intatt.defaultValue = initialValue2
-
 
         val class1att = umlClass.createOwnedAttribute("myIntAttribute", intType)
 
@@ -207,7 +201,6 @@ class ServerInitializer(val host: String, val serverPort: Int) {
         operationParameterNames.add("param1")
         operationParameterNames.add("param2")
 
-
         val operationParameterTypes: EList<Type> = BasicEList<Type>()
         operationParameterTypes.add(intType)
         operationParameterTypes.add(intType)
@@ -215,27 +208,27 @@ class ServerInitializer(val host: String, val serverPort: Int) {
         val operation = umlClass.createOwnedOperation("myOperation", operationParameterNames, operationParameterTypes)
         operation.type = intType
 
-        //add body to operation
+        // add body to operation
         val body = factory.createOpaqueBehavior()
         body.name = "getWindowsBody"
         body.languages.add("Kotlin")
         body.bodies.add(
             """
             System.out.println("Hello World");
-        """.trimIndent()
+            """.trimIndent(),
         )
 
         var view = getUMLView().withChangeDerivingTrait()
         view.registerRoot(examplePackage, umlUri)
         view.commitChanges()
         view.close()
-
     }
 
-
     private fun registerFactories() {
-        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("*", XMIResourceFactoryImpl())
-        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap.put("uml", UMLResourceFactoryImpl())
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap
+            .put("*", XMIResourceFactoryImpl())
+        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap
+            .put("uml", UMLResourceFactoryImpl())
         EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, UMLPackage.eINSTANCE)
         EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE)
         EPackage.Registry.INSTANCE.put(CorrespondencePackage.eNS_URI, CorrespondencePackageImpl.eINSTANCE)
@@ -247,21 +240,21 @@ class ServerInitializer(val host: String, val serverPort: Int) {
         EcorePlugin.ExtensionProcessor.process(null)
     }
 
-    private fun getJavaView(): View {
-        return getView("JAVA", javaUri)
-    }
+    private fun getJavaView(): View = getView("JAVA", javaUri)
 
-    private fun getUMLView(): View {
-        return getView("UML", umlUri)
-    }
+    private fun getUMLView(): View = getView("UML", umlUri)
 
-    private fun getView(viewTypeName: String, srcUri: URI): View {
+    private fun getView(
+        viewTypeName: String,
+        srcUri: URI,
+    ): View {
         var selector = vsum.createSelector(viewTypes[viewTypeName])
-        selector.selectableElements.stream().filter { it.eResource().uri == srcUri }
+        selector.selectableElements
+            .stream()
+            .filter { it.eResource().uri == srcUri }
             .forEach { element -> selector.setSelected(element, true) }
         return selector.createView()
     }
-
 
     private fun createViewTypes(): Map<String, ViewType<*>> {
         val viewTypes = HashMap<String, ViewType<*>>()
@@ -270,16 +263,15 @@ class ServerInitializer(val host: String, val serverPort: Int) {
         return viewTypes
     }
 
-    private fun init(rootPath: Path): VirtualModel {
-        return VirtualModelBuilder()
-            //change propagation specification commented out because it's not working on client side
+    private fun init(rootPath: Path): VirtualModel =
+        VirtualModelBuilder()
+            // change propagation specification commented out because it's not working on client side
 //            .withChangePropagationSpecification(UmlToJavaChangePropagationSpecification())
 //            .withChangePropagationSpecification(JavaToUmlChangePropagationSpecification())
             .withStorageFolder(rootPath)
             .withViewTypes(viewTypes.values)
             .withUserInteractorForResultProvider(TestInteractionResultProvider())
             .buildAndInitialize()
-    }
 
     private fun deletePath(pathToDelete: Path) {
         if (Files.isRegularFile(pathToDelete)) {
@@ -296,5 +288,4 @@ class ServerInitializer(val host: String, val serverPort: Int) {
             }
         }
     }
-
 }

@@ -1,8 +1,6 @@
 package tools.vitruv.vitruvAdapter.core.impl.classTableView
 
-import org.eclipse.emf.ecore.EObject
 import org.junit.jupiter.api.Assertions.assertEquals
-import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 import tools.vitruv.vitruvAdapter.core.impl.table.TableDTO
 import tools.vitruv.vitruvAdapter.utils.EObjectContainer
@@ -23,10 +21,11 @@ class ClassTableContentSelectorTest {
         val umlPackage2 = container[1]
         val classTableWindow = PreMappedWindow<TableDTO<ClassTableEntry>>("examplePackage", mutableListOf(umlPackage1, javaPackage1))
         val classTableWindow2 = PreMappedWindow<TableDTO<ClassTableEntry>>("examplePackage2", mutableListOf(umlPackage2, javaPackage2))
-        val expectedSelectedWindows = listOf(
-            classTableWindow,
-            classTableWindow2
-        )
+        val expectedSelectedWindows =
+            listOf(
+                classTableWindow,
+                classTableWindow2,
+            )
         assertEquals(expectedSelectedWindows, selectedObjects)
     }
 }

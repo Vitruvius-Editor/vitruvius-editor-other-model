@@ -35,10 +35,18 @@ export class VitruviusImportProjectContribution implements CommandContribution {
     registry.registerCommand(ImportProjectCommand, {
       execute: async () => {
         try {
-          const name = await this.quickInputService.input({ title: "Enter the project's name." });
-          const description = await this.quickInputService.input({ title: "Enter a description for the project." });
-          const hostname = await this.quickInputService.input({ title: "Enter the hostname of the Vitruvius server." });
-          const port = await this.quickInputService.input({ title: "Enter the port of the Vitruvius server" });
+          const name = await this.quickInputService.input({
+            title: "Enter the project's name.",
+          });
+          const description = await this.quickInputService.input({
+            title: "Enter a description for the project.",
+          });
+          const hostname = await this.quickInputService.input({
+            title: "Enter the hostname of the Vitruvius server.",
+          });
+          const port = await this.quickInputService.input({
+            title: "Enter the port of the Vitruvius server",
+          });
 
           if (name && description && hostname && port) {
             const connection = await this.connectionService.createConnection({

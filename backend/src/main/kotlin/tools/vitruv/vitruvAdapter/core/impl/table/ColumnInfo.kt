@@ -5,6 +5,5 @@ package tools.vitruv.vitruvAdapter.core.impl.table
 annotation class ColumnInfo(
     val shouldBeDisplayed: Boolean = true,
     val displayName: String = "",
-    val editable : Boolean = false,
-) {
-}
+    val editable: Boolean = false,
+)

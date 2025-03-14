@@ -1,6 +1,5 @@
 package tools.vitruv.vitruvAdapter.exception
 
-
 /**
  * Exception that is thrown when the connection to the Vitruvius server failed.
  *

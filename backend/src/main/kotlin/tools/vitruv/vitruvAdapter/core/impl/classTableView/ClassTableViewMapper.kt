@@ -6,14 +6,12 @@ import org.eclipse.uml2.uml.Package
 import org.eclipse.uml2.uml.VisibilityKind
 import tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier
 import tools.mdsd.jamopp.printer.JaMoPPPrinter
-
 import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 import tools.vitruv.vitruvAdapter.core.api.ViewMapper
 import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.core.impl.DisplayViewName
 import tools.vitruv.vitruvAdapter.core.impl.ViewRecommendation
-
 import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.TableDisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.impl.table.TableDTO
 import java.io.ByteArrayOutputStream
@@ -23,14 +21,14 @@ import java.io.ByteArrayOutputStream
  * This class is responsible for mapping the view content of a class table to windows and vice versa.
  */
 class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
-
-
     /**
      * Maps the given view content to a json string, which can be displayed in the graphical editor.
      * @param preMappedWindows the pre-mapped windows to map to windows.
      * @return The json string representing the view content.
      */
-    override fun mapEObjectsToWindowsContent(preMappedWindows: List<PreMappedWindow<TableDTO<ClassTableEntry>>>): List<Window<TableDTO<ClassTableEntry>>> {
+    override fun mapEObjectsToWindowsContent(
+        preMappedWindows: List<PreMappedWindow<TableDTO<ClassTableEntry>>>,
+    ): List<Window<TableDTO<ClassTableEntry>>> {
         val windows = mutableListOf<Window<TableDTO<ClassTableEntry>>>()
         for (preMappedWindow in preMappedWindows) {
             for (rootObject in preMappedWindow.neededEObjects) {
@@ -51,21 +49,21 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
         return windows.toList()
     }
 
-
     override fun mapWindowsToEObjectsAndApplyChangesToEObjects(
         preMappedWindows: List<PreMappedWindow<TableDTO<ClassTableEntry>>>,
-        windows: List<Window<TableDTO<ClassTableEntry>>>
+        windows: List<Window<TableDTO<ClassTableEntry>>>,
     ): List<EObject> {
         val windowPairs = pairWindowsTogether(preMappedWindows, windows)
         for (item in windowPairs) {
             applyChangesToWindow(item.second, item.first)
         }
-        return listOf() //unnecesary return value, has to be changed
+        return listOf() // unnecesary return value, has to be changed
     }
 
-
-
-    private fun applyChangesToWindow(window: Window<TableDTO<ClassTableEntry>>, preMappedWindow: PreMappedWindow<TableDTO<ClassTableEntry>>) {
+    private fun applyChangesToWindow(
+        window: Window<TableDTO<ClassTableEntry>>,
+        preMappedWindow: PreMappedWindow<TableDTO<ClassTableEntry>>,
+    ) {
         for (eObject in preMappedWindow.neededEObjects) {
             val rows = window.content.rows
             for (row in rows) {
@@ -79,7 +77,10 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
         }
     }
 
-    private fun createClassEntryFromClass(umlClass: Class, javaClass: ConcreteClassifier?): ClassTableEntry {
+    private fun createClassEntryFromClass(
+        umlClass: Class,
+        javaClass: ConcreteClassifier?,
+    ): ClassTableEntry {
         val uuid = umlClass.eResource()?.getURIFragment(umlClass) ?: ""
         val name = umlClass.name ?: ""
         val visibility = umlClass.visibility.literal ?: ""
@@ -102,18 +103,21 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
             interfaces,
             attributeCount,
             methodCount,
-            linesOfCode
+            linesOfCode,
         )
     }
 
-    private fun getJavaClassFromUmlClass(umlClass: Class, rootObjects: List<EObject>): ConcreteClassifier? {
-        for(rootObject in rootObjects){
-            if(rootObject is tools.mdsd.jamopp.model.java.containers.JavaRoot){
+    private fun getJavaClassFromUmlClass(
+        umlClass: Class,
+        rootObjects: List<EObject>,
+    ): ConcreteClassifier? {
+        for (rootObject in rootObjects) {
+            if (rootObject is tools.mdsd.jamopp.model.java.containers.JavaRoot) {
                 val iterator = rootObject.eAllContents()
                 while (iterator.hasNext()) {
                     val next = iterator.next()
                     if (next is ConcreteClassifier) {
-                        if(next.name == umlClass.name ){
+                        if (next.name == umlClass.name) {
                             return next
                         }
                     }
@@ -159,9 +163,5 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
      * Gets the display content of this view mapper, which is able to map the view content to a json string and vice versa.
      * @return The display content of this view mapper.
      */
-    override fun getDisplayContent(): DisplayContentMapper<TableDTO<ClassTableEntry>> {
-        return TableDisplayContentMapper.create<ClassTableEntry>()
-    }
-
-
+    override fun getDisplayContent(): DisplayContentMapper<TableDTO<ClassTableEntry>> = TableDisplayContentMapper.create<ClassTableEntry>()
 }

@@ -19,7 +19,6 @@ import tools.vitruv.vitruvAdapter.core.impl.uml.*
  * @author
  */
 class ClassDiagramViewMapper : UmlViewMapper() {
-
     private fun mapPackageToUmlDiagram(eObject: Package): UmlDiagram {
         val nodes = mutableListOf<UmlNode>()
         val connections = mutableListOf<UmlConnection>()
@@ -40,15 +39,16 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                     next.interfaceRealizations.forEach { interfaceRealization ->
                         val sourceURI = EUtils.getUUIDForEObject(next)
                         val targetURI = EUtils.getUUIDForEObject(interfaceRealization.contract)
-                        val umlConnection = UmlConnection(
-                            "$sourceURI$$targetURI",
-                            sourceURI,
-                            targetURI,
-                            UmlConnectionType.IMPLEMENTS,
-                            "",
-                            "",
-                            ""
-                        )
+                        val umlConnection =
+                            UmlConnection(
+                                "$sourceURI$$targetURI",
+                                sourceURI,
+                                targetURI,
+                                UmlConnectionType.IMPLEMENTS,
+                                "",
+                                "",
+                                "",
+                            )
                         connections.add(umlConnection)
                     }
                 }
@@ -56,15 +56,16 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                     val superClass = next.superClasses.first()
                     val sourceURI = EUtils.getUUIDForEObject(superClass)
                     val targetURI = EUtils.getUUIDForEObject(next)
-                    val umlConnection = UmlConnection(
-                        "$sourceURI$$targetURI",
-                        sourceURI,
-                        targetURI,
-                        UmlConnectionType.EXTENDS,
-                        "",
-                        "",
-                        ""
-                    )
+                    val umlConnection =
+                        UmlConnection(
+                            "$sourceURI$$targetURI",
+                            sourceURI,
+                            targetURI,
+                            UmlConnectionType.EXTENDS,
+                            "",
+                            "",
+                            "",
+                        )
                     connections.add(umlConnection)
                 }
             }
@@ -79,15 +80,16 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                     next.redefinedInterfaces.forEach { redefinedInterface ->
                         val sourceURI = EUtils.getUUIDForEObject(redefinedInterface)
                         val targetURI = EUtils.getUUIDForEObject(next)
-                        val umlConnection = UmlConnection(
-                            "$sourceURI$$targetURI",
-                            sourceURI,
-                            targetURI,
-                            UmlConnectionType.EXTENDS,
-                            "",
-                            "",
-                            ""
-                        )
+                        val umlConnection =
+                            UmlConnection(
+                                "$sourceURI$$targetURI",
+                                sourceURI,
+                                targetURI,
+                                UmlConnectionType.EXTENDS,
+                                "",
+                                "",
+                                "",
+                            )
                         connections.add(umlConnection)
                     }
                 }
@@ -96,15 +98,19 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         return UmlDiagram(nodes, connections)
     }
 
-
     private fun getUmlAttributes(next: Class): List<UmlAttribute> {
         val umlAttributes = mutableListOf<UmlAttribute>()
         next.ownedAttributes.forEach {
             val visibilitySymbol = getVisibilitySymbol(it.visibility?.literal?.lowercase() ?: UmlVisibility.PUBLIC.symbol)
             val umlVisibility = UmlVisibility.fromSymbol(visibilitySymbol) ?: UmlVisibility.PUBLIC
             umlAttributes.add(
-                UmlAttribute(EUtils.getUUIDForEObject(it), umlVisibility, it.name?:"not_defined",
-                    UmlType(EUtils.getUUIDForEObject(it.type), it.type?.name?: "Object")))
+                UmlAttribute(
+                    EUtils.getUUIDForEObject(it),
+                    umlVisibility,
+                    it.name ?: "not_defined",
+                    UmlType(EUtils.getUUIDForEObject(it.type), it.type?.name ?: "Object"),
+                ),
+            )
         }
         return umlAttributes
     }
@@ -116,23 +122,41 @@ class ClassDiagramViewMapper : UmlViewMapper() {
             val umlVisibility = UmlVisibility.fromSymbol(visibilitySymbol) ?: UmlVisibility.PUBLIC
             val umlParameters = mutableListOf<UmlParameter>()
             operation.ownedParameters.filter { it.direction == ParameterDirectionKind.IN_LITERAL }.forEach { parameter ->
-            umlParameters.add(UmlParameter(EUtils.getUUIDForEObject(parameter), parameter.name?:"not_defined", UmlType(EUtils.getUUIDForEObject(parameter.type), parameter.type?.name?:"Object")))
+                umlParameters.add(
+                    UmlParameter(
+                        EUtils.getUUIDForEObject(parameter),
+                        parameter.name ?: "not_defined",
+                        UmlType(
+                            EUtils.getUUIDForEObject(parameter.type),
+                            parameter.type?.name ?: "Object",
+                        ),
+                    ),
+                )
             }
-            umlMethods.add(UmlMethod(EUtils.getUUIDForEObject(operation), umlVisibility, operation.name?:"not_defined", umlParameters, UmlType(EUtils.getUUIDForEObject(operation.type), operation.type?.name?:"Object")))
+            umlMethods.add(
+                UmlMethod(
+                    EUtils.getUUIDForEObject(operation),
+                    umlVisibility,
+                    operation.name ?: "not_defined",
+                    umlParameters,
+                    UmlType(
+                        EUtils.getUUIDForEObject(operation.type),
+                        operation.type?.name ?: "Object",
+                    ),
+                ),
+            )
         }
         return umlMethods
     }
 
-    private fun getVisibilitySymbol(visibility: String): String {
-        return when (visibility) {
+    private fun getVisibilitySymbol(visibility: String): String =
+        when (visibility) {
             "public" -> "+"
             "private" -> "-"
             "protected" -> "#"
             "package" -> "~"
             else -> ""
         }
-    }
-
 
     /**
      * Maps the given view content to a list of windows.
@@ -164,16 +188,19 @@ class ClassDiagramViewMapper : UmlViewMapper() {
      */
     override fun mapWindowsToEObjectsAndApplyChangesToEObjects(
         preMappedWindows: List<PreMappedWindow<UmlDiagram>>,
-        windows: List<Window<UmlDiagram>>
+        windows: List<Window<UmlDiagram>>,
     ): List<EObject> {
         val windowPairs = pairWindowsTogether(preMappedWindows, windows)
         for (item in windowPairs) {
             applyChangesToWindow(item.first, item.second)
         }
-        return listOf() //unnecessary return value, has to be changed
+        return listOf() // unnecessary return value, has to be changed
     }
 
-    private fun applyChangesToWindow(preMappedWindow: PreMappedWindow<UmlDiagram>, window: Window<UmlDiagram>) {
+    private fun applyChangesToWindow(
+        preMappedWindow: PreMappedWindow<UmlDiagram>,
+        window: Window<UmlDiagram>,
+    ) {
         val checkedClasses = mutableListOf<PackageableElement>()
         for (eObject in preMappedWindow.neededEObjects) {
             if (eObject !is Package) {
@@ -189,7 +216,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                         node.attributes.forEach { createAttributeForUmlAttributeInClass(newClass, it) }
                         node.methods.forEach { createMethodFromUmlMethodInClass(newClass, it) }
                         eObject.packagedElements.add(newClass)
-                    }else if(node.nodeType == "<<interface>>"){
+                    } else if (node.nodeType == "<<interface>>") {
                         val newInterface = eObject.createOwnedInterface(node.name)
                         newInterface.name = node.name
                         node.methods.forEach { createMethodFromUmlMethodInInterface(newInterface, it) }
@@ -202,8 +229,10 @@ class ClassDiagramViewMapper : UmlViewMapper() {
 
                 for (connection in connections) {
                     if (connection.targetNodeUUID == "" || connection.sourceNodeUUID == "") {
-                        throw IllegalStateException("The target node UUID of a connection of type EXTENDS is empty." +
-                                "You cannot add connections between nodes wich have not been created in the model yet.")
+                        throw IllegalStateException(
+                            "The target node UUID of a connection of type EXTENDS is empty." +
+                                "You cannot add connections between nodes wich have not been created in the model yet.",
+                        )
                     }
                     val sourceClass = eObject.eResource()?.getEObject(connection.sourceNodeUUID)
                     val targetClass = eObject.eResource()?.getEObject(connection.targetNodeUUID)
@@ -235,7 +264,6 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                                 // Create the interface realization only if it does not exist.
                                 sourceClass.createInterfaceRealization(connection.connectionName, targetClass)
                             }
-
                         } else {
                             throw IllegalStateException("Implements can only be used between a class and an interface.")
                         }
@@ -258,7 +286,9 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                             if (attribute is Property) {
                                 editAttributeProperties(attribute, umlAttribute, umlElement)
                             } else {
-                                throw IllegalStateException("The attribute with the UUID ${umlAttribute.uuid} could not be linked to a attribute.")
+                                throw IllegalStateException(
+                                    "The attribute with the UUID ${umlAttribute.uuid} could not be linked to a attribute.",
+                                )
                             }
                             checkedAttributes.remove(attribute)
                         }
@@ -279,7 +309,9 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                             if (operation is Operation) {
                                 editOperationProperties(operation, method, umlElement)
                             } else {
-                                throw IllegalStateException("The operation with the UUID ${method.uuid} could not be linked to a operation.")
+                                throw IllegalStateException(
+                                    "The operation with the UUID ${method.uuid} could not be linked to a operation.",
+                                )
                             }
                             checkedMethods.remove(operation)
                         }
@@ -295,9 +327,11 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                     }
                     val interfaceRealizationsToDelete = mutableListOf<InterfaceRealization>()
                     for (interfaceRealization in umlElement.interfaceRealizations) {
-                        val implementsConnection = connections.find {
-                            it.connectionType == UmlConnectionType.IMPLEMENTS
-                                    && it.targetNodeUUID == EUtils.getUUIDForEObject(interfaceRealization.contract) }
+                        val implementsConnection =
+                            connections.find {
+                                it.connectionType == UmlConnectionType.IMPLEMENTS &&
+                                    it.targetNodeUUID == EUtils.getUUIDForEObject(interfaceRealization.contract)
+                            }
                         if (implementsConnection == null) {
                             interfaceRealizationsToDelete.add(interfaceRealization)
                         }
@@ -318,7 +352,9 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                             if (umlOperation is Operation) {
                                 editOperationProperties(umlOperation, method, umlElement)
                             } else {
-                                throw IllegalStateException("The operation with the UUID ${method.uuid} could not be linked to a operation.")
+                                throw IllegalStateException(
+                                    "The operation with the UUID ${method.uuid} could not be linked to a operation.",
+                                )
                             }
                             checkedMethods.remove(umlOperation)
                         }
@@ -339,7 +375,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
     private fun editAttributeProperties(
         attribute: Property,
         umlAttribute: UmlAttribute,
-        umlElement: Class
+        umlElement: Class,
     ) {
         editVisibility(attribute, umlAttribute.visibility)
         if (attribute.name == null || attribute.name != umlAttribute.name) {
@@ -353,7 +389,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
 
     private fun editVisibility(
         namedElement: NamedElement,
-        visibility: UmlVisibility
+        visibility: UmlVisibility,
     ) {
         if (namedElement.visibility == null || namedElement.visibility.literal.lowercase() != visibility.symbol) {
             namedElement.visibility = VisibilityKind.get(visibility.symbol)
@@ -363,7 +399,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
     private fun editOperationProperties(
         operation: Operation,
         umlMethod: UmlMethod,
-        classifier: Classifier
+        classifier: Classifier,
     ) {
         editVisibility(operation, umlMethod.visibility)
         if (operation.name == null || operation.name != umlMethod.name) {
@@ -378,11 +414,12 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         for (parameter in umlMethod.parameters) {
             val ownedParameter = operation.eResource().getEObject(parameter.uuid)
             if (ownedParameter == null || ownedParameter !is Parameter) {
-
                 operation.createOwnedParameter(parameter.name, getTypeOrPrimitiveType(parameter.type.name, classifier.`package`))
             } else {
                 checkedParameters.remove(ownedParameter)
-                if (ownedParameter.type == null || ownedParameter.type != getTypeOrPrimitiveType(parameter.type.name, classifier.`package`)) {
+                if (ownedParameter.type == null ||
+                    ownedParameter.type != getTypeOrPrimitiveType(parameter.type.name, classifier.`package`)
+                ) {
                     ownedParameter.type = getTypeOrPrimitiveType(parameter.type.name, classifier.`package`)
                 }
 
@@ -400,7 +437,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
 
     private fun createMethodFromUmlMethodInClass(
         umlClass: Class,
-        umlMethod: UmlMethod
+        umlMethod: UmlMethod,
     ) {
         val newOperation = umlClass.createOwnedOperation(umlMethod.name, null, null, null)
         newOperation.name = umlMethod.name
@@ -409,16 +446,14 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         for (parameter in umlMethod.parameters) {
             newOperation.createOwnedParameter(
                 parameter.name,
-                getTypeOrPrimitiveType(parameter.type.name, umlClass.`package`)
+                getTypeOrPrimitiveType(parameter.type.name, umlClass.`package`),
             )
         }
-
     }
-
 
     private fun createMethodFromUmlMethodInInterface(
         umlInterface: Interface,
-        methods: UmlMethod
+        methods: UmlMethod,
     ) {
         val newOperation = umlInterface.createOwnedOperation(methods.name, null, null, null)
         newOperation.name = methods.name
@@ -427,38 +462,51 @@ class ClassDiagramViewMapper : UmlViewMapper() {
         newOperation.type = type
     }
 
-    private fun createAttributeForUmlAttributeInClass(umlClass: Class, umlAttribute: UmlAttribute) {
+    private fun createAttributeForUmlAttributeInClass(
+        umlClass: Class,
+        umlAttribute: UmlAttribute,
+    ) {
         val newAttribute = umlClass.createOwnedAttribute(umlAttribute.name, null)
         newAttribute.name = umlAttribute.name
         newAttribute.type = getTypeOrPrimitiveType(umlAttribute.type.name, umlClass.`package`)
     }
 
-    private fun findAllConnectionsForSourceCodeUUID(sourceCodeUUID: String, connections: List<UmlConnection>): List<UmlConnection> {
-        return connections.filter { it.sourceNodeUUID == sourceCodeUUID }
-    }
+    private fun findAllConnectionsForSourceCodeUUID(
+        sourceCodeUUID: String,
+        connections: List<UmlConnection>,
+    ): List<UmlConnection> =
+        connections.filter {
+            it.sourceNodeUUID == sourceCodeUUID
+        }
 
-    private fun getTypeOrPrimitiveType(typeName: String, umlPackage: Package): Type{
+    private fun getTypeOrPrimitiveType(
+        typeName: String,
+        umlPackage: Package,
+    ): Type {
         val type = getType(typeName, umlPackage)
-        if(type != null){
+        if (type != null) {
             return type
         }
         return createPrimitiveTypeInPackage(umlPackage, typeName)
     }
 
-    private fun createPrimitiveTypeInPackage(umlPackage: Package, typeName: String): Type{
+    private fun createPrimitiveTypeInPackage(
+        umlPackage: Package,
+        typeName: String,
+    ): Type {
         val type = UMLFactory.eINSTANCE.createPrimitiveType()
         type.name = typeName
         umlPackage.packagedElements.add(type)
         return type
     }
 
-    private fun getType(typeName: String, umlPackage: Package): Type? {
+    private fun getType(
+        typeName: String,
+        umlPackage: Package,
+    ): Type? {
         val type = umlPackage.getOwnedType(typeName)
         return type
     }
-
-
-
 
     /**
      * Maps the given view to all windows it can find within the view.
@@ -475,7 +523,7 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                     windows.add(next.name)
                 }
             }
-            if(rootObject is Package){
+            if (rootObject is Package) {
                 windows.add(rootObject.name)
             }
         }
@@ -486,8 +534,5 @@ class ClassDiagramViewMapper : UmlViewMapper() {
      * Gets the display content of this view mapper, which is able to map the view content to a json string and vice versa.
      * @return The display content of this view mapper.
      */
-    override fun getDisplayContent(): DisplayContentMapper<UmlDiagram> {
-        return UmlDisplayContentMapper()
-    }
-
+    override fun getDisplayContent(): DisplayContentMapper<UmlDiagram> = UmlDisplayContentMapper()
 }

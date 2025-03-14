@@ -3,7 +3,6 @@ package tools.vitruv.vitruvAdapter.core.impl.classTableView
 import tools.vitruv.vitruvAdapter.core.impl.ViewRecommendation
 import tools.vitruv.vitruvAdapter.core.impl.table.ColumnInfo
 
-
 /**
  * Represents a single entry in the class table.
  * @param uuid The unique identifier of the class.
@@ -41,5 +40,5 @@ data class ClassTableEntry(
     @ColumnInfo(true, "Methods", false)
     val methodCount: Int,
     @ColumnInfo(true, "Lines of Code", false)
-    val linesOfCode : Int,
+    val linesOfCode: Int,
 )

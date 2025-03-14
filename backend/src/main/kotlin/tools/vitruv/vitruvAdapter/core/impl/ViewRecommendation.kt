@@ -7,4 +7,7 @@ package tools.vitruv.vitruvAdapter.core.impl
  * @param windowName The name of the window.
  * @author uhsab
  */
-data class ViewRecommendation(val displayViewName: String, val windowName: String)
+data class ViewRecommendation(
+    val displayViewName: String,
+    val windowName: String,
+)

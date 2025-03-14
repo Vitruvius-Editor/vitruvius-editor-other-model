@@ -6,4 +6,4 @@ import tools.vitruv.vitruvAdapter.core.impl.uml.UmlDiagram
 /**
  * Represents a view mapper for UML diagrams.
  */
-abstract class UmlViewMapper: ViewMapper<UmlDiagram>
+abstract class UmlViewMapper : ViewMapper<UmlDiagram>

@@ -1,7 +1,6 @@
-version: '3'
+version: "3"
 
 services:
-
   frontend:
     build:
       context: ./frontend
@@ -36,4 +35,3 @@ services:
 
 volumes:
   db-data:
-

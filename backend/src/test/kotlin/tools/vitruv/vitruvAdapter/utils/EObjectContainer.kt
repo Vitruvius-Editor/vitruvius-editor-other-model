@@ -21,10 +21,8 @@ import java.math.BigInteger
  * This utility class should contain some containers of EObjects, which can be used for testing.
  */
 class EObjectContainer {
-
     val umlPackage = EResourceMock.mockERessourceForEObject(UMLFactory.eINSTANCE.createPackage())
     val javaPackage = EResourceMock.mockERessourceForEObject(ContainersFactory.eINSTANCE.createCompilationUnit())
-
 
     /**
      * Returns a container with a Java and Uml Class, only containing attributes.
@@ -58,12 +56,13 @@ class EObjectContainer {
             listOf(
                 getSimplestJavaClass(),
                 getJavaClassWithMethod(),
-                getJavaInterfaceWithMethod()
-            ), javaPackage
+                getJavaInterfaceWithMethod(),
+            ),
+            javaPackage,
         )
         addClassifiersToUmlPackage(
             listOf(getSimpleUmlClass(), getUmlClassWithMethod(), getUmlInterfaceWithMethod()),
-            umlPackage
+            umlPackage,
         )
         return listOf(javaPackage, umlPackage)
     }
@@ -99,43 +98,38 @@ class EObjectContainer {
     /**
      * Returns a container with a Java and Uml Class, only containing attributes.
      */
-    fun getContainerWithSimpleClass(): List<EObject> {
-        return listOf(getSimplestJavaClass(), getSimpleUmlClass())
-    }
+    fun getContainerWithSimpleClass(): List<EObject> = listOf(getSimplestJavaClass(), getSimpleUmlClass())
 
     /**
      * Returns a container with a Java and Uml Class, containing attributes and methods.
      */
-    fun getContainerWithClassesWithMethod(): List<EObject> {
-        return listOf(getSimplestJavaClass(), getJavaClassWithMethod(), getSimpleUmlClass(), getUmlClassWithMethod())
-    }
+    fun getContainerWithClassesWithMethod(): List<EObject> =
+        listOf(getSimplestJavaClass(), getJavaClassWithMethod(), getSimpleUmlClass(), getUmlClassWithMethod())
 
     /**
      * Returns a container with a Java and Uml Class, containing attributes, methods and interfaces.
      */
-    fun getContainerWithClassesAndInterface(): List<EObject> {
-        return listOf(
+    fun getContainerWithClassesAndInterface(): List<EObject> =
+        listOf(
             getSimplestJavaClass(),
             getJavaClassWithMethod(),
             getJavaInterfaceWithMethod(),
             getSimpleUmlClass(),
             getUmlClassWithMethod(),
-            getUmlInterfaceWithMethod()
+            getUmlInterfaceWithMethod(),
         )
-    }
 
     /**
      * Returns a container with an Uml Class and Interface
      */
     fun getUmlContainerWithInterfaceRealization(): List<EObject> {
-        val umlClass = getVerySimpleUmlClass()//Class1
-        val superClass = getUmlClassWithMethod()//Class2
-        umlClass.superClasses.add(superClass)//Class1 extends Class2
-        val umlInterface = getSimpleUmlInterface()//Interface1
-        umlClass.createInterfaceRealization("realization", umlInterface)//Class1 implements Interface1
+        val umlClass = getVerySimpleUmlClass() // Class1
+        val superClass = getUmlClassWithMethod() // Class2
+        umlClass.superClasses.add(superClass) // Class1 extends Class2
+        val umlInterface = getSimpleUmlInterface() // Interface1
+        umlClass.createInterfaceRealization("realization", umlInterface) // Class1 implements Interface1
         umlPackage.packagedElements.addAll(listOf(umlClass, umlInterface, superClass))
         return listOf(umlPackage)
-
     }
 
     /**
@@ -148,12 +142,17 @@ class EObjectContainer {
         return listOf(umlPackage)
     }
 
-
-    fun addClassifiersToUmlPackage(umlElements: List<PackageableElement>, umlPackage: Package) {
+    fun addClassifiersToUmlPackage(
+        umlElements: List<PackageableElement>,
+        umlPackage: Package,
+    ) {
         umlPackage.packagedElements.addAll(umlElements)
     }
 
-    fun addClassifiersToCompilationUnit(javaElements: List<ConcreteClassifier>, javaPackage: CompilationUnit) {
+    fun addClassifiersToCompilationUnit(
+        javaElements: List<ConcreteClassifier>,
+        javaPackage: CompilationUnit,
+    ) {
         javaPackage.classifiers.addAll(javaElements)
     }
 
@@ -234,8 +233,6 @@ class EObjectContainer {
         return EResourceMock.mockERessourceAndUuidForEObject(javaClass)
     }
 
-
-
     fun getJavaInterfaceWithMethod(): Interface {
         val javaInterface = ClassifiersFactory.eINSTANCE.createInterface()
         javaInterface.name = "Interface1"
@@ -254,7 +251,6 @@ class EObjectContainer {
 
         return EResourceMock.mockERessourceAndUuidForEObject(javaInterface)
     }
-
 
     fun getSimpleUmlInterface(): org.eclipse.uml2.uml.Interface {
         val umlInterface = UMLFactory.eINSTANCE.createInterface()
@@ -335,7 +331,6 @@ class EObjectContainer {
         return EResourceMock.mockERessourceAndUuidForEObject(umlClass, umlPackage)
     }
 
-
     fun getUmlClassWithMethod(): org.eclipse.uml2.uml.Class {
         val umlClass = UMLFactory.eINSTANCE.createClass()
         umlClass.name = "Class2"
@@ -400,6 +395,4 @@ class EObjectContainer {
         umlClass.setIsAbstract(true)
         return EResourceMock.mockERessourceAndUuidForEObject(umlClass, umlPackage)
     }
-
-
 }

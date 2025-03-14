@@ -32,9 +32,16 @@ class ConnectionService {
      * @return The Project object.
      */
     fun importConnection(connectionCreationRequest: ConnectionCreationRequest): ConnectionDetails {
-        val connection = ConnectionDetails(null, connectionCreationRequest.name, connectionCreationRequest.description, connectionCreationRequest.url, connectionCreationRequest.port);
-        connectionRepository.save(connection);
-        return connection;
+        val connection =
+            ConnectionDetails(
+                null,
+                connectionCreationRequest.name,
+                connectionCreationRequest.description,
+                connectionCreationRequest.url,
+                connectionCreationRequest.port,
+            )
+        connectionRepository.save(connection)
+        return connection
     }
 
     /**
@@ -43,8 +50,8 @@ class ConnectionService {
      * @param connectionId The id of the project.
      */
     fun deleteConnection(connectionId: UUID) {
-        val connection: ConnectionDetails = getConnectionById(connectionId);
-        connectionRepository.delete(connection);
+        val connection: ConnectionDetails = getConnectionById(connectionId)
+        connectionRepository.delete(connection)
     }
 
     /**
@@ -58,14 +65,13 @@ class ConnectionService {
         connectionId: UUID,
         editRequest: ConnectionEditRequest,
     ): ConnectionDetails {
-        val connection = getConnectionById(connectionId);
-        connection.name = editRequest.name;
-        connection.description = editRequest.description;
-        connection.url = editRequest.url;
-        connection.port = editRequest.port;
-        connectionRepository.save(connection);
-        return connection;
-
+        val connection = getConnectionById(connectionId)
+        connection.name = editRequest.name
+        connection.description = editRequest.description
+        connection.url = editRequest.url
+        connection.port = editRequest.port
+        connectionRepository.save(connection)
+        return connection
     }
 
     /**
@@ -74,5 +80,6 @@ class ConnectionService {
      * @param connectionId The id of the project.
      * @return The project.
      */
-    fun getConnectionById(connectionId: UUID): ConnectionDetails = connectionRepository.findByUuid(connectionId)?: throw ConnectionNotFoundException()
+    fun getConnectionById(connectionId: UUID): ConnectionDetails =
+        connectionRepository.findByUuid(connectionId) ?: throw ConnectionNotFoundException()
 }

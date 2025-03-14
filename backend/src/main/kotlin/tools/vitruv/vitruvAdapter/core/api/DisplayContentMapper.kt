@@ -6,8 +6,6 @@ package tools.vitruv.vitruvAdapter.core.api
  * @author uhsab
  */
 interface DisplayContentMapper<E> {
-
-
     /**
      * This function is used to parse the content of a window to a string.
      * @param content the content of the window

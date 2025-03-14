@@ -8,7 +8,6 @@ import org.eclipse.emf.ecore.EObject
  * @author uhsab
  */
 interface ViewMapper<E> {
-
     /**
      * Maps the given view content to a list of windows.
      * @param preMappedWindows the pre-mapped windows to map to windows.
@@ -24,7 +23,10 @@ interface ViewMapper<E> {
      * @param windows the windows to map to EObjects.
      * @return The view content.
      */
-    fun mapWindowsToEObjectsAndApplyChangesToEObjects(preMappedWindows: List<PreMappedWindow<E>>, windows: List<Window<E>>): List<EObject>
+    fun mapWindowsToEObjectsAndApplyChangesToEObjects(
+        preMappedWindows: List<PreMappedWindow<E>>,
+        windows: List<Window<E>>,
+    ): List<EObject>
 
     /**
      * Pairs the pre-mapped windows with the windows.
@@ -32,7 +34,10 @@ interface ViewMapper<E> {
      * @param windows The windows.
      * @return The pairs of pre-mapped windows and windows.
      */
-    fun pairWindowsTogether(preMappedWindows: List<PreMappedWindow<E>>, windows: List<Window<E>>): List<Pair<PreMappedWindow<E>, Window<E>>> {
+    fun pairWindowsTogether(
+        preMappedWindows: List<PreMappedWindow<E>>,
+        windows: List<Window<E>>,
+    ): List<Pair<PreMappedWindow<E>, Window<E>>> {
         val pairs = mutableListOf<Pair<PreMappedWindow<E>, Window<E>>>()
         for (window in windows) {
             val preMappedWindow = preMappedWindows.find { it.name == window.name }
@@ -49,7 +54,6 @@ interface ViewMapper<E> {
      * @return The names of the windows that are available in the view.
      */
     fun mapViewToWindows(rootObjects: List<EObject>): Set<String>
-
 
     /**
      * Gets the display content of this view mapper, which is able to map the view content to a json string and vice versa.

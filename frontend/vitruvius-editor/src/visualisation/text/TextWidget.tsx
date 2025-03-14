@@ -13,7 +13,7 @@ import { VisualisationWidget } from "../VisualisationWidget";
 @injectable()
 export class TextWidget extends VisualisationWidget<string> {
   getVisualizerName(): string {
-      return "TextVisualizer";
+    return "TextVisualizer";
   }
   static readonly ID = "textwidget:textwidget";
   static readonly LABEL = "TextWidget";
@@ -35,7 +35,12 @@ export class TextWidget extends VisualisationWidget<string> {
   render(): React.ReactElement {
     return (
       <div className="editor-container">
-        <textarea defaultValue={this.content} className="editor-window" onChange={(event) => this.handleChange(event)} spellCheck="false"></textarea>
+        <textarea
+          defaultValue={this.content}
+          className="editor-window"
+          onChange={(event) => this.handleChange(event)}
+          spellCheck="false"
+        ></textarea>
       </div>
     );
   }

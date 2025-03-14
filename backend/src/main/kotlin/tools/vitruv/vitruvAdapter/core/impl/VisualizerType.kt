@@ -1,12 +1,13 @@
 package tools.vitruv.vitruvAdapter.core.impl
 
-
 /**
  * Enum class for the different visualizer types.
  * These are the visualizers that the Vitruvius graphical editor supports.
  * @param visualizerName The name of the visualizer.
  */
-enum class VisualizerType(val visualizerName: String) {
+enum class VisualizerType(
+    val visualizerName: String,
+) {
     /**
      * The name of the class diagram visualizer.
      */
@@ -20,5 +21,5 @@ enum class VisualizerType(val visualizerName: String) {
     /**
      * The name of the UML visualizer.
      */
-    UML_VISUALIZER("UmlVisualizer")
+    UML_VISUALIZER("UmlVisualizer"),
 }

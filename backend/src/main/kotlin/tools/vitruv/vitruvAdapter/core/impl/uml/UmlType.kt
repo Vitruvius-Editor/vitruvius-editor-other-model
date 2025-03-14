@@ -5,4 +5,7 @@ package tools.vitruv.vitruvAdapter.core.impl.uml
  * @param uuid The unique identifier of the type.
  * @param name The name of the type.
  */
-data class UmlType(val uuid: String, val name: String)
+data class UmlType(
+    val uuid: String,
+    val name: String,
+)

@@ -1,7 +1,6 @@
-version: '3'
+version: "3"
 
 services:
-
   frontend:
     image: ghcr.io/vitruvius-editor/vitruvius-editor-frontend:latest
     ports:
@@ -18,5 +17,5 @@ services:
 
   vitruvius:
     image: ghcr.io/vitruvius-editor/vitruvius-server:latest
-    network_mode: host  # Use host network
+    network_mode: host # Use host network
 

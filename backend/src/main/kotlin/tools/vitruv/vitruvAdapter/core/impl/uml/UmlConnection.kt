@@ -18,5 +18,5 @@ data class UmlConnection(
     val connectionType: UmlConnectionType,
     val sourceMultiplicity: String,
     val targetMultiplicity: String,
-    val connectionName: String
+    val connectionName: String,
 )

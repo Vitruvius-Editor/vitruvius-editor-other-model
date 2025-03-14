@@ -29,7 +29,7 @@ export class DisplayViewService {
         "GET",
       )
       .then((windowResponse) => windowResponse.windows)
-        .catch(() => null);
+      .catch(() => null);
   }
 
   async getDisplayViewContent(

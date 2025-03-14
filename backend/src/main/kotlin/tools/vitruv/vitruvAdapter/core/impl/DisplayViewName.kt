@@ -4,7 +4,9 @@ package tools.vitruv.vitruvAdapter.core.impl
  * Represents the name of a display view.
  * @param viewName The name of the display view.
  */
-enum class DisplayViewName(val viewName: String) {
+enum class DisplayViewName(
+    val viewName: String,
+) {
     /**
      * The name of the class table view.
      */

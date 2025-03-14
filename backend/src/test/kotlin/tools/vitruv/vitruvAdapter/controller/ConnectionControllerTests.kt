@@ -1,7 +1,6 @@
 package tools.vitruv.vitruvAdapter.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
@@ -24,29 +23,31 @@ import java.util.*
 @SpringBootTest
 @AutoConfigureMockMvc
 class ConnectionControllerTest {
-
     @Autowired
     private lateinit var mockMvc: MockMvc
 
     @Autowired
-    lateinit var objectMapper: ObjectMapper;
+    lateinit var objectMapper: ObjectMapper
 
     @MockitoBean
     private lateinit var connectionService: ConnectionService
 
     @Test
     fun testGetConnections() {
-        val connections = setOf(
-            ConnectionDetails(UUID.randomUUID(), "Connection 1", "Description 1", "https://example.com/1", 8080),
-            ConnectionDetails(UUID.randomUUID(), "Connection 2", "Description 2", "https://example.com/2", 8080)
-        )
+        val connections =
+            setOf(
+                ConnectionDetails(UUID.randomUUID(), "Connection 1", "Description 1", "https://example.com/1", 8080),
+                ConnectionDetails(UUID.randomUUID(), "Connection 2", "Description 2", "https://example.com/2", 8080),
+            )
 
         whenever(connectionService.getConnections()).thenReturn(connections)
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/connections"))
+        mockMvc
+            .perform(MockMvcRequestBuilders.get("/api/v1/connections"))
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(connections.map { ConnectionResponse(it) }))
-        )
+            .andExpect(
+                MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(connections.map { ConnectionResponse(it) })),
+            )
     }
 
     @Test
@@ -57,11 +58,13 @@ class ConnectionControllerTest {
             if (it.arguments[0] == connection.uuid) connection else throw ConnectionNotFoundException()
         }
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/connection/${connection.uuid}"))
+        mockMvc
+            .perform(MockMvcRequestBuilders.get("/api/v1/connection/${connection.uuid}"))
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(ConnectionResponse(connection))))
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/connection/${UUID.randomUUID()}"))
+        mockMvc
+            .perform(MockMvcRequestBuilders.get("/api/v1/connection/${UUID.randomUUID()}"))
             .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 
@@ -75,17 +78,26 @@ class ConnectionControllerTest {
             ConnectionDetails(uuid, arg.name, arg.description, arg.url, arg.port)
         }
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/connection")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(connectionCreationRequest)))
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(ConnectionDetails(
-                uuid,
-                connectionCreationRequest.name,
-                connectionCreationRequest.description,
-                connectionCreationRequest.url,
-                connectionCreationRequest.port
-            ))))
+        mockMvc
+            .perform(
+                MockMvcRequestBuilders
+                    .post("/api/v1/connection")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(connectionCreationRequest)),
+            ).andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(
+                MockMvcResultMatchers.content().json(
+                    objectMapper.writeValueAsString(
+                        ConnectionDetails(
+                            uuid,
+                            connectionCreationRequest.name,
+                            connectionCreationRequest.description,
+                            connectionCreationRequest.url,
+                            connectionCreationRequest.port,
+                        ),
+                    ),
+                ),
+            )
     }
 
     @Test
@@ -96,11 +108,13 @@ class ConnectionControllerTest {
             if (it.arguments[0] == connection.uuid) connection else throw ConnectionNotFoundException()
         }
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/connection/${connection.uuid}"))
+        mockMvc
+            .perform(MockMvcRequestBuilders.delete("/api/v1/connection/${connection.uuid}"))
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.content().string("{}"))
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/connection/${UUID.randomUUID()}"))
+        mockMvc
+            .perform(MockMvcRequestBuilders.delete("/api/v1/connection/${UUID.randomUUID()}"))
             .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 
@@ -118,21 +132,33 @@ class ConnectionControllerTest {
             }
         }
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/connection/${connection.uuid}")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(connectionEditRequest)))
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(ConnectionDetails(
-                connection.uuid,
-                connectionEditRequest.name,
-                connectionEditRequest.description,
-                connectionEditRequest.url,
-                connectionEditRequest.port
-            ))))
+        mockMvc
+            .perform(
+                MockMvcRequestBuilders
+                    .put("/api/v1/connection/${connection.uuid}")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(connectionEditRequest)),
+            ).andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(
+                MockMvcResultMatchers.content().json(
+                    objectMapper.writeValueAsString(
+                        ConnectionDetails(
+                            connection.uuid,
+                            connectionEditRequest.name,
+                            connectionEditRequest.description,
+                            connectionEditRequest.url,
+                            connectionEditRequest.port,
+                        ),
+                    ),
+                ),
+            )
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/connection/${UUID.randomUUID()}")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(connectionEditRequest)))
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
+        mockMvc
+            .perform(
+                MockMvcRequestBuilders
+                    .put("/api/v1/connection/${UUID.randomUUID()}")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(connectionEditRequest)),
+            ).andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 }

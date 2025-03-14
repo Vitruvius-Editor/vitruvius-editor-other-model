@@ -1,14 +1,14 @@
-//package tools.vitruv.vitruvAdapter.core.api
-//import org.eclipse.emf.ecore.EClass
-//import org.eclipse.emf.ecore.EObject
-//import org.eclipse.emf.ecore.EcoreFactory
-//import org.junit.jupiter.api.Assertions.*
-//import org.junit.jupiter.api.BeforeEach
-//import org.junit.jupiter.api.Test
-//import tools.vitruv.vitruvAdapter.core.api.testutils.JavaClassViewMapper
-//import tools.vitruv.vitruvAdapter.core.api.testutils.JsonNormalizer
+// package tools.vitruv.vitruvAdapter.core.api
+// import org.eclipse.emf.ecore.EClass
+// import org.eclipse.emf.ecore.EObject
+// import org.eclipse.emf.ecore.EcoreFactory
+// import org.junit.jupiter.api.Assertions.*
+// import org.junit.jupiter.api.BeforeEach
+// import org.junit.jupiter.api.Test
+// import tools.vitruv.vitruvAdapter.core.api.testutils.JavaClassViewMapper
+// import tools.vitruv.vitruvAdapter.core.api.testutils.JsonNormalizer
 //
-//class CreateWindowContentMockupTest {
+// class CreateWindowContentMockupTest {
 //
 //    private lateinit var eObjects: List<EObject>
 //
@@ -95,4 +95,4 @@
 //        assertEquals("char", (retrievedEObjects[1] as EClass).eStructuralFeatures[0].eType.instanceClassName)
 //
 //    }
-//}
+// }

@@ -9,7 +9,6 @@ import tools.vitruv.vitruvAdapter.dto.WindowSelectionRequest
 import tools.vitruv.vitruvAdapter.services.VitruviusService
 import java.util.*
 
-
 @CrossOrigin
 @RestController
 @RequestMapping(value = ["/api/v1"])
@@ -25,7 +24,14 @@ class DisplayViewController {
     @GetMapping("/connection/{connectionId}/displayViews")
     fun getDisplayViews(
         @PathVariable connectionId: UUID,
-    ): ResponseEntity<Set<DisplayViewResponse>> = ResponseEntity.ok(vitruviusService.getDisplayViews(connectionId).map { DisplayViewResponse(it) }.toSet())
+    ): ResponseEntity<Set<DisplayViewResponse>> =
+        ResponseEntity.ok(
+            vitruviusService
+                .getDisplayViews(connectionId)
+                .map {
+                    DisplayViewResponse(it)
+                }.toSet(),
+        )
 
     /**
      * Returns all available Windows of a DisplayView.
@@ -37,7 +43,8 @@ class DisplayViewController {
     fun getDisplayViewDetails(
         @PathVariable connectionId: UUID,
         @PathVariable displayViewName: String,
-    ): ResponseEntity<DisplayViewContentResponse> = ResponseEntity.ok(DisplayViewContentResponse(vitruviusService.getDisplayViewWindows(connectionId, displayViewName)))
+    ): ResponseEntity<DisplayViewContentResponse> =
+        ResponseEntity.ok(DisplayViewContentResponse(vitruviusService.getDisplayViewWindows(connectionId, displayViewName)))
 
     /**
      * Returns the content of one or multiple Windows of a DisplayView.
@@ -51,7 +58,8 @@ class DisplayViewController {
         @PathVariable connectionId: UUID,
         @PathVariable displayViewName: String,
         @RequestBody windowSelectionRequest: WindowSelectionRequest,
-    ): ResponseEntity<String> = ResponseEntity.ok(vitruviusService.getDisplayViewContent(connectionId, displayViewName, windowSelectionRequest))
+    ): ResponseEntity<String> =
+        ResponseEntity.ok(vitruviusService.getDisplayViewContent(connectionId, displayViewName, windowSelectionRequest))
 
     /**
      * Edits the content of a DisplayView.

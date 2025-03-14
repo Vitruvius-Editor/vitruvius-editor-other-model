@@ -1,4 +1,4 @@
-import {injectable} from "@theia/core/shared/inversify";
+import { injectable } from "@theia/core/shared/inversify";
 import { Content } from "../../model/Content";
 import { Extractor } from "../Extractor";
 import { VisualisationWidget } from "../VisualisationWidget";
@@ -9,21 +9,23 @@ import { VisualisationWidget } from "../VisualisationWidget";
  */
 @injectable()
 export class DiagramExtractor implements Extractor {
-    /**
-     * Extracts content from the given VisualisationWidget.
-     *
-     * @param widget - The VisualisationWidget to extract content from.
-     * @returns A promise that resolves to a Content object containing the visualizer name and windows.
-     */
-    extractContent(widget: VisualisationWidget<any>): Promise<Content> {
-        return new Promise((resolve, _refuse) => resolve({
-            visualizerName: 'UmlVisualizer',
-            windows: [
-                {
-                    name: widget.getLabel().replace("ClassDiagram ", ""),
-                    content: widget.getContent()
-                }
-            ]
-        }));
-    }
+  /**
+   * Extracts content from the given VisualisationWidget.
+   *
+   * @param widget - The VisualisationWidget to extract content from.
+   * @returns A promise that resolves to a Content object containing the visualizer name and windows.
+   */
+  extractContent(widget: VisualisationWidget<any>): Promise<Content> {
+    return new Promise((resolve, _refuse) =>
+      resolve({
+        visualizerName: "UmlVisualizer",
+        windows: [
+          {
+            name: widget.getLabel().replace("ClassDiagram ", ""),
+            content: widget.getContent(),
+          },
+        ],
+      }),
+    );
+  }
 }

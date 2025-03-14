@@ -23,5 +23,4 @@ class TextDisplayContentMapperTest {
         val textDisplayContentMapper = TextDisplayContentMapper()
         assertEquals("TextVisualizer", textDisplayContentMapper.getVisualizerName())
     }
-
 }

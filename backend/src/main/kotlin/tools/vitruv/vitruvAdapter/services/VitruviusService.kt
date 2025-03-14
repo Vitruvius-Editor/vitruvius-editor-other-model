@@ -3,12 +3,12 @@ package tools.vitruv.vitruvAdapter.services
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import tools.vitruv.framework.remote.client.VitruvClientFactory
-import tools.vitruv.vitruvAdapter.dto.WindowSelectionRequest
-import tools.vitruv.vitruvAdapter.exception.DisplayViewNotFoundException
 import tools.vitruv.vitruvAdapter.core.api.DisplayView
 import tools.vitruv.vitruvAdapter.core.api.VitruvAdapter
 import tools.vitruv.vitruvAdapter.core.api.Window
 import tools.vitruv.vitruvAdapter.core.impl.DisplayViewRepository
+import tools.vitruv.vitruvAdapter.dto.WindowSelectionRequest
+import tools.vitruv.vitruvAdapter.exception.DisplayViewNotFoundException
 import java.util.*
 import kotlin.io.path.createTempDirectory
 
@@ -51,7 +51,7 @@ class VitruviusService {
         displayViewName: String,
     ): Set<String> {
         setupConnection(connectionId)
-        val displayView = vitruvAdapter.getDisplayView(displayViewName)?: throw DisplayViewNotFoundException()
+        val displayView = vitruvAdapter.getDisplayView(displayViewName) ?: throw DisplayViewNotFoundException()
         return vitruvAdapter.getWindows(displayView)
     }
 
@@ -69,7 +69,7 @@ class VitruviusService {
         windowSelectionRequest: WindowSelectionRequest,
     ): String {
         setupConnection(connectionId)
-        val displayView = vitruvAdapter.getDisplayView(displayViewName)?: throw DisplayViewNotFoundException()
+        val displayView = vitruvAdapter.getDisplayView(displayViewName) ?: throw DisplayViewNotFoundException()
         return vitruvAdapter.createWindowContent(displayView, windowSelectionRequest.windows)
     }
 
@@ -87,7 +87,7 @@ class VitruviusService {
         updatedContent: String,
     ): String {
         setupConnection(connectionId)
-        val displayView = vitruvAdapter.getDisplayView(displayViewName)?: throw DisplayViewNotFoundException()
+        val displayView = vitruvAdapter.getDisplayView(displayViewName) ?: throw DisplayViewNotFoundException()
         return vitruvAdapter.editDisplayViewAndReturnNewContent(displayView, updatedContent)
     }
 

@@ -1,6 +1,5 @@
 package tools.vitruv.vitruvAdapter.core.impl.uml
 
-
 /**
  * Represents a method of a UML class.
  * @param uuid The unique identifier of the method.
@@ -10,10 +9,10 @@ package tools.vitruv.vitruvAdapter.core.impl.uml
  * @param returnType The return type of the method.
  * @see UmlVisibility
  */
-data class UmlMethod (
+data class UmlMethod(
     val uuid: String,
     val visibility: UmlVisibility,
     val name: String,
     val parameters: List<UmlParameter>,
-    val returnType: UmlType
+    val returnType: UmlType,
 )
