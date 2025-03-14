@@ -9,13 +9,14 @@ import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.mdsd.jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser
 import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 import tools.vitruv.vitruvAdapter.core.api.Window
+import tools.vitruv.vitruvAdapter.core.impl.VisualizerType
 import tools.vitruv.vitruvAdapter.core.impl.uml.*
 import tools.vitruv.vitruvAdapter.utils.EObjectContainer
 import tools.vitruv.vitruvAdapter.utils.EResourceMock
 import java.io.FileInputStream
 import java.io.InputStream
-import java.lang.IllegalStateException
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class ClassDiagramViewMapperTest {
 
@@ -92,7 +93,6 @@ class ClassDiagramViewMapperTest {
     fun testMapEObjectsToWindowsContent() {
         val preMappedWindow1 = PreMappedWindow<UmlDiagram>("examplePackage", eObjectsClassExtends.toMutableList())
         val window1 = mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow1))
-        print(window1)
     }
 
     /**
@@ -109,7 +109,6 @@ class ClassDiagramViewMapperTest {
 
         val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", mutableList)
 
-        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
 
         val classUUID = EResourceMock.getFakeUUID(getPackageAbleElement("Class1", containerPackage))
         val interfaceUUID = EResourceMock.getFakeUUID(getPackageAbleElement("Interface1", containerPackage))
@@ -139,8 +138,6 @@ class ClassDiagramViewMapperTest {
             "",
             ""
         )
-
-
 
         val nodes = listOf(
             UmlNode(
@@ -177,8 +174,66 @@ class ClassDiagramViewMapperTest {
             listOf(preMappedWindow),
             listOf(Window("examplePackage", umlDiagram))
         )
-        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+
+        assertTrue(containerPackage.packagedElements.any { it.name == "Class3" }) // new class3
+        assertTrue(containerPackage.packagedElements.any { it.name == "Interface2" }) // new interface2
+        assertTrue(containerPackage.packagedElements.none { it.name == "Class1" }) // no old class1 name changed
+        assertTrue(containerPackage.packagedElements.any { it.name == "Class2" }) // old class1 name changed to class2
+        assertTrue((containerPackage.packagedElements[0] as Class).implementedInterfaces.any { it.name == "Interface2" }) // class2 implements interface2
+        assertTrue((containerPackage.packagedElements[0] as Class).ownedOperations.any { it.name == "myIntMethod" }) // class2 has method myIntMethod
+
     }
+
+
+    @Test
+    fun testAddAbstraction() {
+        val eObjectContainer = EObjectContainer()
+        val container = eObjectContainer.getUmlContainerWith(listOf(eObjectContainer.getEmptyUmlClass(), eObjectContainer.getEmptyAbstractUmlClass()))
+        val containerPackage = container[0] as Package
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
+
+        val nodes = listOf(
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("EmptyClass", containerPackage)),
+                "EmptyClass",
+                "<<class>>",
+                listOf(),
+                listOf(),
+                listOf()
+            ),
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("EmptyAbstractClass", containerPackage)),
+                "EmptyAbstractClass",
+                "<<class>>",
+                listOf(),
+                listOf(),
+                listOf()
+            )
+        )
+
+        val connections = listOf<UmlConnection>(
+            UmlConnection(
+                getFakeUUID(getPackageAbleElement("EmptyClass", containerPackage)) + "$" +
+                        getFakeUUID(getPackageAbleElement("EmptyAbstractClass", containerPackage)),
+                getFakeUUID(getPackageAbleElement("EmptyClass", containerPackage)),
+                getFakeUUID(getPackageAbleElement("EmptyAbstractClass", containerPackage)),
+                UmlConnectionType.EXTENDS,
+                "",
+                "",
+                ""
+            )
+        )
+
+        val umlDiagram = UmlDiagram(nodes, connections)
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )
+        assertEquals(1, (containerPackage.packagedElements[0] as Class).superClasses.size)
+
+
+    }
+
 
     @Test
     fun testInvalidConnectionEdit(){
@@ -290,10 +345,12 @@ class ClassDiagramViewMapperTest {
             listOf(preMappedWindow),
             listOf(Window("examplePackage", umlDiagram))
         )
-        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
-
-
-
+        assertEquals(2, containerPackage.packagedElements.size)
+        assertEquals(0, getClass("Class1", containerPackage).members.size)
+        assertEquals(0, getClass("Class1", containerPackage).superClasses.size)
+        assertEquals(0, getClass("Class1", containerPackage).interfaceRealizations.size)
+        assertEquals(0, getInterface("Interface1", containerPackage).ownedOperations.size)
+        assertEquals<Class?>(null, getClassSafe("Class2", containerPackage))
     }
 
     /**
@@ -330,7 +387,76 @@ class ClassDiagramViewMapperTest {
             listOf(preMappedWindow),
             listOf(Window("examplePackage", umlDiagram))
         )
-        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+        assertEquals(0, getOperation("myMethod", getClass("Class2", containerPackage)).ownedParameters.filter { it.direction == ParameterDirectionKind.IN_LITERAL }.size)
+    }
+
+    @Test
+    fun testAddMethodWithParameters() {
+        val eObjectContainer = EObjectContainer()
+        val container = eObjectContainer.getUmlContainerWith(listOf(eObjectContainer.getEmptyUmlClass()))
+        val containerPackage = container[0] as Package
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
+
+        val nodes = listOf(
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("EmptyClass", containerPackage)),
+                "EmptyClass",
+                "<<class>>",
+                listOf(),
+                listOf(
+                    UmlMethod("", UmlVisibility.PUBLIC, "myMethod", listOf(
+                        UmlParameter("", "myParameter", UmlType("", "int"))
+                    ), UmlType("", "int"))
+                ),
+                listOf()
+            )
+        )
+
+        val connections = listOf<UmlConnection>()
+        val umlDiagram = UmlDiagram(nodes, connections)
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )
+        val method = (containerPackage.packagedElements[0] as Class).ownedOperations[0]
+        val parameters = method.ownedParameters.filter { it.direction == ParameterDirectionKind.IN_LITERAL }
+        assertEquals(1, parameters.size)
+        assertEquals("myParameter", parameters[0].name)
+    }
+
+    @Test
+    fun editInterfaceMethod() {
+        val eObjectContainer = EObjectContainer()
+        val container = eObjectContainer.getUmlContainerWith(listOf(eObjectContainer.getSimpleUmlInterface()))
+        val containerPackage = container[0] as Package
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
+
+        val nodes = listOf(
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Interface1", containerPackage)),
+                "Interface1",
+                "<<interface>>",
+                listOf(),
+                listOf(
+                    UmlMethod(getFakeUUID(getOperation("myMethod", getInterface("Interface1", containerPackage))),
+                        UmlVisibility.PUBLIC, "mySuperCoolInterfaceMethod", listOf(), UmlType("", "byte"))
+                ),
+                listOf()
+            )
+        )
+
+        val connections = listOf<UmlConnection>()
+        val umlDiagram = UmlDiagram(nodes, connections)
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )
+
+        val umlInterface = getInterface("Interface1", containerPackage)
+        val method =  getOperation("mySuperCoolInterfaceMethod", umlInterface)
+        assertEquals(1, umlInterface.ownedOperations.size)
+        assertEquals("mySuperCoolInterfaceMethod",method.name)
+        assertEquals("byte", method.type.name)
     }
 
     @Test
@@ -388,7 +514,10 @@ class ClassDiagramViewMapperTest {
             listOf(preMappedWindow),
             listOf(Window("examplePackage", umlDiagram))
         )
-        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+        assertEquals(1, getClass("Class1", containerPackage).ownedOperations.size)
+        assertEquals(1, getClass("Class1", containerPackage).ownedAttributes.size)
+        assertEquals(1, getInterface("Interface1", containerPackage).ownedOperations.size)
+        assertEquals(1, getOperation("myMethod", getClass("Class2", containerPackage)).ownedParameters.filter { it.direction == ParameterDirectionKind.IN_LITERAL }.size)
     }
 
     @Test
@@ -424,14 +553,206 @@ class ClassDiagramViewMapperTest {
             listOf(preMappedWindow),
             listOf(Window("examplePackage", umlDiagram))
         )
-        println(getOperation("myMethod", getClass("Class2", containerPackage)).ownedParameters[0].name)
-        println(getOperation("myMethod", getClass("Class2", containerPackage)).ownedParameters[1].name)
-        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+
+        val parameters = getOperation("myMethod", getClass("Class2", containerPackage)).ownedParameters.filter { it.direction == ParameterDirectionKind.IN_LITERAL }
+        assertEquals("myChangedParameter",parameters[0].name)
+        assertEquals("newType", parameters[0].type.name)
+    }
+
+    @Test
+    fun testCreateConnectionWithNoUUIDs() {
+        val eObjectContainer = EObjectContainer()
+        val container = eObjectContainer.getUmlContainerWith(listOf(eObjectContainer.getEmptyUmlClass(), eObjectContainer.getSimpleUmlInterface()))
+        val containerPackage = container[0] as Package
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
+
+        val nodes = listOf(
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("EmptyClass", containerPackage)),
+                "EmptyClass",
+                "<<class>>",
+                listOf(),
+                listOf(),
+                listOf()
+            ),
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Interface1", containerPackage)),
+                "Interface1",
+                "<<interface>>",
+                listOf(),
+                listOf(),
+                listOf()
+            )
+        )
+
+        val connections = listOf(
+            UmlConnection(
+                "",
+                getFakeUUID(getPackageAbleElement("EmptyClass", containerPackage)),
+                "",
+                UmlConnectionType.IMPLEMENTS,
+                "",
+                "",
+                ""
+            )
+        )
+        val umlDiagram = UmlDiagram(nodes, connections)
+
+        assertThrows<IllegalStateException> { mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )}
+    }
+
+    @Test
+    fun testCreateConnectionWithNotExistingTargetClass() {
+        val eObjectContainer = EObjectContainer()
+        val container = eObjectContainer.getUmlContainerWith(listOf(eObjectContainer.getEmptyUmlClass(), eObjectContainer.getSimpleUmlInterface()))
+        val containerPackage = container[0] as Package
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
+
+        val nodes = listOf(
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("EmptyClass", containerPackage)),
+                "EmptyClass",
+                "<<class>>",
+                listOf(),
+                listOf(),
+                listOf()
+            ),
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Interface1", containerPackage)),
+                "Interface1",
+                "<<interface>>",
+                listOf(),
+                listOf(),
+                listOf()
+            )
+        )
+
+        val connections = listOf(
+            UmlConnection(
+                "",
+                getFakeUUID(getPackageAbleElement("EmptyClass", containerPackage)),
+                "idontexist",
+                UmlConnectionType.IMPLEMENTS,
+                "",
+                "",
+                ""
+            )
+        )
+        val umlDiagram = UmlDiagram(nodes, connections)
+
+        assertThrows<IllegalStateException> { mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )}
+    }
+
+    @Test
+    fun testInterfaceGeneralizingOtherInterface() {
+        val eObjectContainer = EObjectContainer()
+        val container = eObjectContainer.getUmlContainerWith(
+            listOf(
+                eObjectContainer.getSimpleUmlInterface(),
+                eObjectContainer.getEmptyUmlInterface()
+            )
+        )
+        val containerPackage = container[0] as Package
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
+
+        val nodes = listOf(
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Interface1", containerPackage)),
+                "Interface1",
+                "<<interface>>",
+                listOf(),
+                listOf(),
+                listOf()
+            ),
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("EmptyInterface", containerPackage)),
+                "EmptyInterface",
+                "<<interface>>",
+                listOf(),
+                listOf(),
+                listOf()
+            )
+        )
+
+        val connection = UmlConnection(
+            getFakeUUID(getPackageAbleElement("Interface1", containerPackage)) + "$" +
+                    getFakeUUID(getPackageAbleElement("EmptyInterface", containerPackage)),
+            getFakeUUID(getPackageAbleElement("Interface1", containerPackage)),
+            getFakeUUID(getPackageAbleElement("EmptyInterface", containerPackage)),
+            UmlConnectionType.EXTENDS,
+            "",
+            "",
+            ""
+        )
+
+        val connections = listOf(connection)
+        val umlDiagram = UmlDiagram(nodes, connections)
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )
+        val umlInterface = getInterface("Interface1", containerPackage)
+        val generalization = umlInterface.generalizations[0]
+        assertEquals(1, umlInterface.generalizations.size)
+        assertEquals("EmptyInterface", generalization.general.name)
+
+    }
+
+    @Test
+    fun testExtendsConnectionWithClassAndInterface() {
+        val eObjectContainer = EObjectContainer()
+        val container = eObjectContainer.getUmlContainerWith(listOf(eObjectContainer.getEmptyUmlClass(), eObjectContainer.getSimpleUmlInterface()))
+        val containerPackage = container[0] as Package
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
+
+        val nodes = listOf(
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("EmptyClass", containerPackage)),
+                "EmptyClass",
+                "<<class>>",
+                listOf(),
+                listOf(),
+                listOf()
+            ),
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Interface1", containerPackage)),
+                "Interface1",
+                "<<interface>>",
+                listOf(),
+                listOf(),
+                listOf()
+            )
+        )
+
+        val connections = listOf(
+            UmlConnection(
+                getFakeUUID(getPackageAbleElement("EmptyClass", containerPackage)) + "$" +
+                        getFakeUUID(getPackageAbleElement("Interface1", containerPackage)),
+                getFakeUUID(getPackageAbleElement("EmptyClass", containerPackage)),
+                getFakeUUID(getPackageAbleElement("Interface1", containerPackage)),
+                UmlConnectionType.EXTENDS,
+                "",
+                "",
+                ""
+            )
+        )
+        val umlDiagram = UmlDiagram(nodes, connections)
+        assertThrows<IllegalStateException> {mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )
+        }
     }
 
     @Test
     fun testDisplayContent() {
-        assertEquals(mapper.getDisplayContent().getVisualizerName(), "UmlVisualizer")
+        assertEquals(VisualizerType.UML_VISUALIZER.visualizerName, mapper.getDisplayContent().getVisualizerName())
     }
 
     private fun getFakeUUID(eObject: EObject): String {
@@ -444,6 +765,10 @@ class ClassDiagramViewMapperTest {
 
     private fun getClass(className: String, umlPackage: Package): Class{
         return umlPackage.packagedElements.find { it is Class && it.name == className } as Class
+    }
+
+    private fun getClassSafe(className: String, umlPackage: Package): Class?{
+        return umlPackage.packagedElements.find { it is Class && it.name == className } as Class?
     }
 
     private fun getInterface(interfaceName: String, umlPackage: Package): Interface{

@@ -4,7 +4,6 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.uml2.uml.Package
 import org.eclipse.uml2.uml.PackageableElement
 import org.eclipse.uml2.uml.UMLFactory
-import org.mockito.Mockito
 import tools.mdsd.jamopp.model.java.classifiers.Class
 import tools.mdsd.jamopp.model.java.classifiers.ClassifiersFactory
 import tools.mdsd.jamopp.model.java.classifiers.ConcreteClassifier
@@ -85,14 +84,15 @@ class EObjectContainer {
         val umlPackage = getUmlPackage1()
         val umlClass1 = getVerySimpleUmlClass()
         val umlClass2 = getSimpleUmlClass()
-        val umlClass3 = getUmlClass3()
+        val umlClass3 = getUmlClassWithVisibilities()
+        val umlClass4 = getEmptyAbstractUmlClass()
         val umlInterface = umlPackage.createOwnedInterface("Interface1")
         val umlInterfaceRealization = umlClass1.createInterfaceRealization("interfaceRealization1", umlInterface)
         val umlInterface2 = umlPackage.createOwnedInterface("Interface2")
         umlInterface.redefinedInterfaces.add(umlInterface2)
         umlClass1.interfaceRealizations.add(umlInterfaceRealization)
         umlClass1.superClasses.add(umlClass2)
-        addClassifiersToUmlPackage(listOf(umlClass1, umlClass2, umlClass3, umlInterface, umlInterface2), umlPackage)
+        addClassifiersToUmlPackage(listOf(umlClass1, umlClass2, umlClass3, umlClass4, umlInterface, umlInterface2), umlPackage)
         return listOf(umlPackage)
     }
 
@@ -128,11 +128,11 @@ class EObjectContainer {
      * Returns a container with an Uml Class and Interface
      */
     fun getUmlContainerWithInterfaceRealization(): List<EObject> {
-        val umlClass = getVerySimpleUmlClass()
-        val superClass = getUmlClassWithMethod()
-        umlClass.superClasses.add(superClass)
-        val umlInterface = getSimpleUmlInterface()
-        umlClass.createInterfaceRealization("realization", umlInterface)
+        val umlClass = getVerySimpleUmlClass()//Class1
+        val superClass = getUmlClassWithMethod()//Class2
+        umlClass.superClasses.add(superClass)//Class1 extends Class2
+        val umlInterface = getSimpleUmlInterface()//Interface1
+        umlClass.createInterfaceRealization("realization", umlInterface)//Class1 implements Interface1
         umlPackage.packagedElements.addAll(listOf(umlClass, umlInterface, superClass))
         return listOf(umlPackage)
 
@@ -235,6 +235,7 @@ class EObjectContainer {
     }
 
 
+
     fun getJavaInterfaceWithMethod(): Interface {
         val javaInterface = ClassifiersFactory.eINSTANCE.createInterface()
         javaInterface.name = "Interface1"
@@ -269,6 +270,12 @@ class EObjectContainer {
         parameter.type.name = "int"
         method.ownedParameters.add(EResourceMock.mockERessourceAndUuidForEObject(parameter))
         umlInterface.ownedOperations.add(EResourceMock.mockERessourceAndUuidForEObject(method))
+        return EResourceMock.mockERessourceAndUuidForEObject(umlInterface, umlPackage)
+    }
+
+    fun getEmptyUmlInterface(): org.eclipse.uml2.uml.Interface {
+        val umlInterface = UMLFactory.eINSTANCE.createInterface()
+        umlInterface.name = "EmptyInterface"
         return EResourceMock.mockERessourceAndUuidForEObject(umlInterface, umlPackage)
     }
 
@@ -360,7 +367,7 @@ class EObjectContainer {
         return EResourceMock.mockERessourceAndUuidForEObject(umlClass, umlPackage)
     }
 
-    fun getUmlClass3(): org.eclipse.uml2.uml.Class {
+    fun getUmlClassWithVisibilities(): org.eclipse.uml2.uml.Class {
         val umlClass = UMLFactory.eINSTANCE.createClass()
         umlClass.name = "Class3"
 
@@ -380,5 +387,19 @@ class EObjectContainer {
 
         return EResourceMock.mockERessourceForEObject(umlClass)
     }
+
+    fun getEmptyUmlClass(): org.eclipse.uml2.uml.Class {
+        val umlClass = UMLFactory.eINSTANCE.createClass()
+        umlClass.name = "EmptyClass"
+        return EResourceMock.mockERessourceAndUuidForEObject(umlClass, umlPackage)
+    }
+
+    fun getEmptyAbstractUmlClass(): org.eclipse.uml2.uml.Class {
+        val umlClass = UMLFactory.eINSTANCE.createClass()
+        umlClass.name = "EmptyAbstractClass"
+        umlClass.setIsAbstract(true)
+        return EResourceMock.mockERessourceAndUuidForEObject(umlClass, umlPackage)
+    }
+
 
 }
