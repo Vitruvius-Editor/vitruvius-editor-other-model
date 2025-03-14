@@ -9,6 +9,7 @@ import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.mdsd.jamopp.parser.jdt.singlefile.JaMoPPJDTSingleFileParser
 import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 import tools.vitruv.vitruvAdapter.core.api.Window
+import tools.vitruv.vitruvAdapter.core.impl.VisualizerType
 import tools.vitruv.vitruvAdapter.core.impl.uml.*
 import tools.vitruv.vitruvAdapter.utils.EObjectContainer
 import tools.vitruv.vitruvAdapter.utils.EResourceMock
@@ -109,7 +110,6 @@ class ClassDiagramViewMapperTest {
 
         val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", mutableList)
 
-        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
 
         val classUUID = EResourceMock.getFakeUUID(getPackageAbleElement("Class1", containerPackage))
         val interfaceUUID = EResourceMock.getFakeUUID(getPackageAbleElement("Interface1", containerPackage))
@@ -387,6 +387,75 @@ class ClassDiagramViewMapperTest {
     }
 
     @Test
+    fun testAddMethodWithParameters() {
+        val eObjectContainer = EObjectContainer()
+        val container = eObjectContainer.getUmlContainerWith(listOf(eObjectContainer.getEmptyUmlClass()))
+        val containerPackage = container[0] as Package
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
+
+        val nodes = listOf(
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("EmptyClass", containerPackage)),
+                "EmptyClass",
+                "<<class>>",
+                listOf(),
+                listOf(
+                    UmlMethod("", UmlVisibility.PUBLIC, "myMethod", listOf(
+                        UmlParameter("", "myParameter", UmlType("", "int"))
+                    ), UmlType("", "int"))
+                ),
+                listOf()
+            )
+        )
+
+        val connections = listOf<UmlConnection>()
+        val umlDiagram = UmlDiagram(nodes, connections)
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )
+        val method = (containerPackage.packagedElements[0] as Class).ownedOperations[0]
+        val parameters = method.ownedParameters.filter { it.direction == ParameterDirectionKind.IN_LITERAL }
+        assertEquals(1, parameters.size)
+        assertEquals("myParameter", parameters[0].name)
+    }
+
+    @Test
+    fun editInterfaceMethod() {
+        val eObjectContainer = EObjectContainer()
+        val container = eObjectContainer.getUmlContainerWith(listOf(eObjectContainer.getSimpleUmlInterface()))
+        val containerPackage = container[0] as Package
+        val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
+
+        val nodes = listOf(
+            UmlNode(
+                getFakeUUID(getPackageAbleElement("Interface1", containerPackage)),
+                "Interface1",
+                "<<interface>>",
+                listOf(),
+                listOf(
+                    UmlMethod(getFakeUUID(getOperation("myMethod", getInterface("Interface1", containerPackage))),
+                        UmlVisibility.PUBLIC, "mySuperCoolInterfaceMethod", listOf(), UmlType("", "byte"))
+                ),
+                listOf()
+            )
+        )
+
+        val connections = listOf<UmlConnection>()
+        val umlDiagram = UmlDiagram(nodes, connections)
+        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            listOf(preMappedWindow),
+            listOf(Window("examplePackage", umlDiagram))
+        )
+
+        val umlInterface = getInterface("Interface1", containerPackage)
+        val method =  getOperation("mySuperCoolInterfaceMethod", umlInterface)
+        assertEquals(1, umlInterface.ownedOperations.size)
+        assertEquals("mySuperCoolInterfaceMethod",method.name)
+        assertEquals("byte", method.type.name)
+    }
+
+    @Test
     fun testAddOperationsAndAttributes() {
         val eObjectContainer = EObjectContainer()
         val container = eObjectContainer.getUmlContainerWith(listOf(eObjectContainer.getUmlClassWithMethod(), eObjectContainer.getSimpleUmlClass(), eObjectContainer.getSimpleUmlInterface()))
@@ -441,7 +510,10 @@ class ClassDiagramViewMapperTest {
             listOf(preMappedWindow),
             listOf(Window("examplePackage", umlDiagram))
         )
-        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+        assertEquals(1, getClass("Class1", containerPackage).ownedOperations.size)
+        assertEquals(1, getClass("Class1", containerPackage).ownedAttributes.size)
+        assertEquals(1, getInterface("Interface1", containerPackage).ownedOperations.size)
+        assertEquals(1, getOperation("myMethod", getClass("Class2", containerPackage)).ownedParameters.filter { it.direction == ParameterDirectionKind.IN_LITERAL }.size)
     }
 
     @Test
@@ -477,14 +549,15 @@ class ClassDiagramViewMapperTest {
             listOf(preMappedWindow),
             listOf(Window("examplePackage", umlDiagram))
         )
-        println(getOperation("myMethod", getClass("Class2", containerPackage)).ownedParameters[0].name)
-        println(getOperation("myMethod", getClass("Class2", containerPackage)).ownedParameters[1].name)
-        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+
+        val parameters = getOperation("myMethod", getClass("Class2", containerPackage)).ownedParameters.filter { it.direction == ParameterDirectionKind.IN_LITERAL }
+        assertEquals("myChangedParameter",parameters[0].name)
+        assertEquals("newType", parameters[0].type.name)
     }
 
     @Test
     fun testDisplayContent() {
-        assertEquals(mapper.getDisplayContent().getVisualizerName(), "UmlVisualizer")
+        assertEquals(VisualizerType.UML_VISUALIZER.visualizerName, mapper.getDisplayContent().getVisualizerName())
     }
 
     private fun getFakeUUID(eObject: EObject): String {

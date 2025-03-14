@@ -255,12 +255,12 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                         if (attribute == null) {
                             createAttributeForUmlAttributeInClass(umlElement, umlAttribute)
                         } else {
-                            checkedAttributes.remove(attribute)
                             if (attribute is Property) {
                                 editAttributeProperties(attribute, umlAttribute, umlElement)
                             } else {
                                 throw IllegalStateException("The attribute with the UUID ${umlAttribute.uuid} could not be linked to a attribute.")
                             }
+                            checkedAttributes.remove(attribute)
                         }
                     }
 
@@ -276,12 +276,12 @@ class ClassDiagramViewMapper : UmlViewMapper() {
                         if (operation == null) {
                             createMethodFromUmlMethodInClass(umlElement, method)
                         } else {
-                            checkedMethods.remove(operation)
                             if (operation is Operation) {
                                 editOperationProperties(operation, method, umlElement)
                             } else {
                                 throw IllegalStateException("The operation with the UUID ${method.uuid} could not be linked to a operation.")
                             }
+                            checkedMethods.remove(operation)
                         }
                     }
                     for (method in checkedMethods) {
@@ -310,13 +310,17 @@ class ClassDiagramViewMapper : UmlViewMapper() {
 
                     val checkedMethods = mutableListOf<Operation>()
                     checkedMethods.addAll(umlElement.ownedOperations)
-                    for (methods in node.methods) {
-                        val umlOperation = umlElement.operations.find { it.name == methods.name }
+                    for (method in node.methods) {
+                        val umlOperation = umlElement.eResource().getEObject(method.uuid)
                         if (umlOperation == null) {
-                            createMethodFromUmlMethodInInterface(umlElement, methods)
+                            createMethodFromUmlMethodInInterface(umlElement, method)
                         } else {
+                            if (umlOperation is Operation) {
+                                editOperationProperties(umlOperation, method, umlElement)
+                            } else {
+                                throw IllegalStateException("The operation with the UUID ${method.uuid} could not be linked to a operation.")
+                            }
                             checkedMethods.remove(umlOperation)
-                            editOperationProperties(umlOperation, methods, umlElement)
                         }
                     }
                     for (method in checkedMethods) {
