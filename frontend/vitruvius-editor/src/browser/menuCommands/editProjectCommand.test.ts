@@ -43,7 +43,8 @@ describe("VitruviusEditProjectContribution", () => {
         quickInputService.input
             .mockResolvedValueOnce("NewTestProject")
             .mockResolvedValueOnce("NewTestDescription")
-            .mockResolvedValueOnce("http://newtest.url");
+            .mockResolvedValueOnce("http://newtest.url")
+            .mockResolvedValueOnce("1245");
         connectionService.updateConnection.mockResolvedValue({ uuid: "test-uuid", name: "NewTestProject", description: "NewTestDescription", url: "http://newtest.url", port: 1245 });
 
         contribution.registerCommands(commandRegistry);
@@ -55,7 +56,7 @@ describe("VitruviusEditProjectContribution", () => {
         ]));
     });
 
-    it("should show an error message if there is an exception", async () => {
+    it("should show an error message if there is an exception when retrieving connections", async () => {
         connectionService.getConnections.mockRejectedValue(new Error("Connection error"));
 
         contribution.registerCommands(commandRegistry);

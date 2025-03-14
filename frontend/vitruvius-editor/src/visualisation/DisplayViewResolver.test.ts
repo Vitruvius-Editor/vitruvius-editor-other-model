@@ -3,6 +3,7 @@ import { Visualizer } from "./Visualizer";
 import { Extractor } from "./Extractor";
 import { Content } from "../model/Content";
 import { VisualisationWidget } from "./VisualisationWidget";
+import { ApplicationShell } from "@theia/core/lib/browser/shell/application-shell";
 
 class MockVisualizer implements Visualizer {
     visualizeContent(content: Content): Promise<VisualisationWidget<any>> {
@@ -32,9 +33,16 @@ describe("DisplayViewResolver", () => {
     let mockExtractor: MockExtractor;
     let content: Content;
     let widget: MockVisualisationWidget;
+    let shell: jest.Mocked<ApplicationShell>;
 
     beforeEach(() => {
+        shell = {
+            addWidget: jest.fn().mockResolvedValue(undefined),
+            activateWidget: jest.fn()
+        } as unknown as jest.Mocked<ApplicationShell>;
+
         resolver = new DisplayViewResolver();
+        (resolver as any).shell = shell;
         mockVisualizer = new MockVisualizer();
         mockExtractor = new MockExtractor();
         content = { visualizerName: "MockVisualizer" } as Content;
@@ -61,5 +69,19 @@ describe("DisplayViewResolver", () => {
     it("should return null if no extractor is found for the given widget", async () => {
         const result = await resolver.getContent(widget);
         expect(result).toBeNull();
+    });
+
+    it("should add and activate widget when visualizer is found", async () => {
+        resolver.registerDisplayView("MockVisualizer", mockVisualizer, mockExtractor);
+        const result = await resolver.getWidget(content);
+        expect(shell.addWidget).toHaveBeenCalledWith(result, { area: "main", mode: "tab-before" });
+        expect(shell.activateWidget).toHaveBeenCalledWith(result!.id);
+    });
+
+    it("should add and activate widget with redirect when visualizer is found", async () => {
+        resolver.registerDisplayView("MockVisualizer", mockVisualizer, mockExtractor);
+        const result = await resolver.getWidget(content, true);
+        expect(shell.addWidget).toHaveBeenCalledWith(result, { area: "main", mode: "tab-after" });
+        expect(shell.activateWidget).toHaveBeenCalledWith(result!.id);
     });
 });

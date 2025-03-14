@@ -3,12 +3,12 @@ import { MessageService } from "@theia/core";
 import { render } from "@testing-library/react";
 import { DiagramWidget } from "./DiagramWidget";
 import { DiagramEngine, DefaultDiagramState } from "@projectstorm/react-diagrams";
-import { Diagram } from "./Diagram";
+import {Diagram, DiagramNode} from "./Diagram";
 import '@testing-library/jest-dom';
 import { VisualisationWidgetRegistry } from "../VisualisationWidgetRegistry";
-import {DisplayViewService} from "../../backend-communication/DisplayViewService";
-import {DisplayViewWidgetContribution} from "../../browser/displayViewWidgetContribution";
-import {DisplayViewResolver} from "../DisplayViewResolver";
+import { DisplayViewService } from "../../backend-communication/DisplayViewService";
+import { DisplayViewWidgetContribution } from "../../browser/displayViewWidgetContribution";
+import { DisplayViewResolver } from "../DisplayViewResolver";
 
 describe("DiagramWidget", () => {
     let container: Container;
@@ -73,4 +73,43 @@ describe("DiagramWidget", () => {
         expect(widget.getVisualizerName()).toBe("UmlVisualizer");
     });
 
+    it("should restore state correctly", () => {
+        const oldState = {
+            label: "Test Label",
+            content: { nodes: [], connections: [] },
+            displayView: { name: "TestView" },
+            connection: { uuid: "test-uuid" }
+        };
+        widget.dagre = jest.fn();
+        widget.restoreState(oldState);
+        expect(widget.getLabel()).toBe("Test Label");
+        expect(widget.getContent()).toEqual({ nodes: [], connections: [] });
+    });
+
+    it("should handle attribute deletion", () => {
+        widget.updateContent({
+            nodes: [{ uuid: "1", name: "Node1", attributes: [{ name: "attr1" }], methods: [] }] as unknown as DiagramNode[],
+            connections: []
+        });
+        widget.handlerDeleteAttribute(0, 0);
+        expect(widget.getContent().nodes[0].attributes).toHaveLength(0);
+    });
+
+    it("should handle method deletion", () => {
+        widget.updateContent({
+            nodes: [{ uuid: "1", name: "Node1", attributes: [], methods: [{ name: "method1" }] }] as unknown as DiagramNode[],
+            connections: []
+        });
+        widget.handlerDeleteMethod(0, 0);
+        expect(widget.getContent().nodes[0].methods).toHaveLength(0);
+    });
+
+    it("should handle parameter deletion", () => {
+        widget.updateContent({
+            nodes: [{ uuid: "1", name: "Node1", attributes: [], methods: [{ name: "method1", parameters: [{ name: "param1" }] }] }] as unknown as DiagramNode[],
+            connections: []
+        });
+        widget.handleDeleteParameter(0, 0, 0);
+        expect(widget.getContent().nodes[0].methods[0].parameters).toHaveLength(0);
+    });
 });
