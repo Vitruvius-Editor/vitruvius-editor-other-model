@@ -16,6 +16,7 @@ import tools.vitruv.vitruvAdapter.utils.EResourceMock
 import java.io.FileInputStream
 import java.io.InputStream
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class ClassDiagramViewMapperTest {
 
@@ -138,8 +139,6 @@ class ClassDiagramViewMapperTest {
             ""
         )
 
-
-
         val nodes = listOf(
             UmlNode(
                 EResourceMock.getFakeUUID(getPackageAbleElement("Class1", container[0] as Package)),
@@ -175,7 +174,14 @@ class ClassDiagramViewMapperTest {
             listOf(preMappedWindow),
             listOf(Window("examplePackage", umlDiagram))
         )
-        println(mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow)))
+
+        assertTrue(containerPackage.packagedElements.any { it.name == "Class3" }) // new class3
+        assertTrue(containerPackage.packagedElements.any { it.name == "Interface2" }) // new interface2
+        assertTrue(containerPackage.packagedElements.none { it.name == "Class1" }) // no old class1 name changed
+        assertTrue(containerPackage.packagedElements.any { it.name == "Class2" }) // old class1 name changed to class2
+        assertTrue((containerPackage.packagedElements[0] as Class).implementedInterfaces.any { it.name == "Interface2" }) // class2 implements interface2
+        assertTrue((containerPackage.packagedElements[0] as Class).ownedOperations.any { it.name == "myIntMethod" }) // class2 has method myIntMethod
+
     }
 
 
