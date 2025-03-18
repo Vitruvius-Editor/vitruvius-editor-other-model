@@ -13,7 +13,7 @@ interface ViewMapper<E> {
      * @param preMappedWindows the pre-mapped windows to map to windows.
      * @return The windows representing the view content.
      */
-    fun mapEObjectsToWindowsContent(preMappedWindows: List<PreMappedWindow<E>>): List<Window<E>>
+    fun mapEObjectsToWindows(preMappedWindows: List<PreMappedWindow<E>>): List<Window<E>>
 
     /**
      * Maps the given json string to view content, compares it to [preMappedWindows] and applies the changes to the eObjects of [preMappedWindows].
@@ -23,7 +23,7 @@ interface ViewMapper<E> {
      * @param windows the windows to map to EObjects.
      * @return The view content.
      */
-    fun mapWindowsToEObjectsAndApplyChangesToEObjects(
+    fun applyWindowChangesToView(
         preMappedWindows: List<PreMappedWindow<E>>,
         windows: List<Window<E>>,
     ): List<EObject>
@@ -53,11 +53,11 @@ interface ViewMapper<E> {
      * @param rootObjects The view to map.
      * @return The names of the windows that are available in the view.
      */
-    fun mapViewToWindows(rootObjects: List<EObject>): Set<String>
+    fun collectWindowsFromView(rootObjects: List<EObject>): Set<String>
 
     /**
      * Gets the display content of this view mapper, which is able to map the view content to a json string and vice versa.
      * @return The display content of this view mapper.
      */
-    fun getDisplayContent(): DisplayContentMapper<E>
+    fun getDisplayContentMapper(): DisplayContentMapper<E>
 }
