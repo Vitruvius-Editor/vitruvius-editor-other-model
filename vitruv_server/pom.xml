@@ -158,36 +158,30 @@
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>tools.vitruv</groupId>
-            <artifactId>parent</artifactId>
-            <version>3.0.7</version>
-            <type>pom</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>
-                2.24.3
-            </version>
-        </dependency>
-
 
         <dependency>
             <groupId>tools.vitruv.dsls.demo</groupId>
             <artifactId>familiespersons</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/Dependencies/tools.vitruv.dsls.demo.familiespersons-3.2.0-SNAPSHOT.jar</systemPath>
+            <systemPath>${project.basedir}/Dependencies/tools.vitruv.dsls.demo.familiespersons-3.2.0-SNAPSHOT.jar
+            </systemPath>
         </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+
 
         <dependency>
             <groupId>tools.vitruv.dsls.demo</groupId>
             <artifactId>persons</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/Dependencies/edu.kit.ipd.sdq.metamodels.persons-1.9.0.202311201524.jar</systemPath>
+            <systemPath>${project.basedir}/Dependencies/edu.kit.ipd.sdq.metamodels.persons-1.9.0.202311201524.jar
+            </systemPath>
         </dependency>
 
         <dependency>
@@ -195,7 +189,8 @@
             <artifactId>familie</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/Dependencies/edu.kit.ipd.sdq.metamodels.families-1.9.0.202311201524.jar</systemPath>
+            <systemPath>${project.basedir}/Dependencies/edu.kit.ipd.sdq.metamodels.families-1.9.0.202311201524.jar
+            </systemPath>
         </dependency>
 
         <dependency>
@@ -235,121 +230,10 @@
             <artifactId>antlr-runtime</artifactId>
             <version>3.2</version>
         </dependency>
-
-
-        <dependency>
-            <groupId>local.uml2</groupId>
-            <artifactId>uml</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>local.uml2</groupId>
-            <artifactId>types</artifactId>
-            <version>1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>local.uml2</groupId>
-            <artifactId>common</artifactId>
-            <version>1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>tools.mdsd</groupId>
-            <artifactId>jamopp.model</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>tools.mdsd</groupId>
-            <artifactId>jamopp.parser</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>tools.mdsd</groupId>
-            <artifactId>jamopp.resource</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>tools.mdsd</groupId>
-            <artifactId>jamopp.printer</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>tools.mdsd</groupId>
-            <artifactId>jamopp.parser.bcel</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>tools.mdsd</groupId>
-            <artifactId>jamopp.parser.jdt</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>tools.mdsd</groupId>
-            <artifactId>jamopp.parser.jdt.singlefile</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>tools.mdsd</groupId>
-            <artifactId>jamopp.resolution</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
-        </dependency>
         <dependency>
             <groupId>tools.vitruv</groupId>
             <artifactId>dsls.reactions.runtime</artifactId>
             <version>3.1.0</version>
-        </dependency>
-
-
-
-        <dependency>
-            <groupId>org.eclipse.jdt</groupId>
-            <artifactId>org.eclipse.jdt.core</artifactId>
-            <version>3.38.0</version>
-        </dependency>
-
-
-
-        <dependency>
-            <groupId>org.eclipse</groupId>
-            <artifactId>common</artifactId>
-            <version>1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse</groupId>
-            <artifactId>emf.mapping</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse</groupId>
-            <artifactId>uml2.uml.resource</artifactId>
-            <version>1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse</groupId>
-            <artifactId>uml2.uml.standard</artifactId>
-            <version>1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>tools.vitruv</groupId>
-            <artifactId>tools.vitruv.applications.util.temporary</artifactId>
-            <version>3.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>tools.vitruv</groupId>
-            <artifactId>tools.vitruv.applications.umljava</artifactId>
-            <version>3.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>

@@ -66,7 +66,7 @@ class UmlFamilyDiagramViewMapper: ViewMapper<UmlDiagram> {
         val connections = mutableListOf<UmlConnection>()
         connections.addAll(createConnectionsForMembers(family.father, family.mother, family.sons))
         connections.addAll(createConnectionsForMembers(family.father, family.mother, family.daughters))
-
+        print(connections)
         return UmlDiagram(nodes, connections)
     }
 

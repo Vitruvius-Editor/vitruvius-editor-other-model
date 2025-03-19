@@ -1,13 +1,16 @@
 package vitruv.tools.vitruvadpter.testServer
 
 import edu.kit.ipd.sdq.metamodels.families.FamiliesPackage
-import edu.kit.ipd.sdq.metamodels.families.Family
 import edu.kit.ipd.sdq.metamodels.families.FamilyRegister
 import edu.kit.ipd.sdq.metamodels.families.impl.FamiliesFactoryImpl
 import edu.kit.ipd.sdq.metamodels.families.impl.FamiliesPackageImpl
+import edu.kit.ipd.sdq.metamodels.persons.PersonRegister
 import edu.kit.ipd.sdq.metamodels.persons.PersonsPackage
 import edu.kit.ipd.sdq.metamodels.persons.impl.PersonsFactoryImpl
 import edu.kit.ipd.sdq.metamodels.persons.impl.PersonsPackageImpl
+import mir.reactions.familiesToPersons.InsertedFamilyRegisterReaction
+import org.apache.log4j.LogManager
+import org.apache.log4j.Logger
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.plugin.EcorePlugin
@@ -31,8 +34,8 @@ import tools.vitruv.framework.vsum.VirtualModelBuilder
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
-
-import org.apache.logging.log4j.LogManager
+import java.util.Date
+import kotlin.jvm.java
 
 
 /**
@@ -75,6 +78,7 @@ class ServerInitializer(
         server = VitruvServer(VirtualModelInitializer { vsum }, serverPort, host)
 
         registerFamily()
+        registerPersons()
         return server
     }
 
@@ -85,10 +89,47 @@ class ServerInitializer(
         familyView.commitChanges()
     }
 
+    fun registerPersons() {
+        val persons = createPersons()
+        val personView = getPersonView().withChangeDerivingTrait()
+        personView.registerRoot(persons, personsUri)
+        personView.commitChanges()
+    }
+
     fun createFamily() : FamilyRegister
     {
         val familyRegister = FamiliesFactoryImpl.eINSTANCE.createFamilyRegister()
+        val family = FamiliesFactoryImpl.eINSTANCE.createFamily()
+        family.lastName = "Doe"
+        familyRegister.families.add(family)
+        val memberSon = FamiliesFactoryImpl.eINSTANCE.createMember()
+        memberSon.firstName = "NICO"
+        family.sons.add(memberSon)
+
+        val father = FamiliesFactoryImpl.eINSTANCE.createMember()
+        father.firstName = "John"
+        family.father = father
+
+        val mother = FamiliesFactoryImpl.eINSTANCE.createMember()
+        mother.firstName = "Jane"
+        family.mother = mother
+        familyRegister.id = "familyGroup"
+
+
+        val daughter = FamiliesFactoryImpl.eINSTANCE.createMember()
+        daughter.firstName = "VANESSA"
+        family.daughters.add(daughter)
         return familyRegister
+    }
+
+    fun createPersons(): PersonRegister {
+        val personRegister = PersonsFactoryImpl.eINSTANCE.createPersonRegister()
+        personRegister.id = "personsGroup"
+        val malePerson = PersonsFactoryImpl.eINSTANCE.createMale()
+        malePerson.fullName = "John Doe"
+        malePerson.birthday = Date(12,2,2005)
+        personRegister.persons.add(malePerson)
+        return personRegister
     }
 
 
