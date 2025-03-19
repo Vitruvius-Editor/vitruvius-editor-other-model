@@ -21,4 +21,9 @@ enum class DisplayViewName(
      * The name of the class diagram view.
      */
     CLASS_DIAGRAM("ClassDiagram"),
+
+    /**
+     * The name of the person table view.
+     */
+    PERSON_TABLE("PersonTable")
 }
