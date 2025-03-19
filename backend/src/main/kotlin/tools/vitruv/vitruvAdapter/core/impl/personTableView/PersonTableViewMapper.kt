@@ -37,7 +37,7 @@ class PersonTableViewMapper: ViewMapper<TableDTO<PersonTableEntry>> {
     private fun createPersonEntryFromPerson(person: Person): PersonTableEntry {
         return PersonTableEntry(
             person.fullName,
-            person.birthday
+            person.birthday.toString()
         )
     }
 
