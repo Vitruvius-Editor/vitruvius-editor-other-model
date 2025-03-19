@@ -1,6 +1,8 @@
 package vitruv.tools.vitruvadpter.testServer
 
 import edu.kit.ipd.sdq.metamodels.families.FamiliesPackage
+import edu.kit.ipd.sdq.metamodels.families.Family
+import edu.kit.ipd.sdq.metamodels.families.FamilyRegister
 import edu.kit.ipd.sdq.metamodels.families.impl.FamiliesFactoryImpl
 import edu.kit.ipd.sdq.metamodels.families.impl.FamiliesPackageImpl
 import edu.kit.ipd.sdq.metamodels.persons.PersonsPackage
@@ -29,6 +31,8 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 
+import org.apache.logging.log4j.LogManager
+
 
 /**
  * Initializes the server
@@ -50,8 +54,8 @@ class ServerInitializer(
      * Initializes the server
      */
     fun initialize(rootPath: Path): VitruvServer {
-        personsPath = rootPath.resolve("model/persons")
-        familiesPath = rootPath.resolve("model/families")
+        personsPath = rootPath.resolve("model/persons.persons")
+        familiesPath = rootPath.resolve("model/families.families")
         personsUri = URI.createFileURI(personsPath.toString())
         familiesUri = URI.createFileURI(familiesPath.toString())
         registerFactories()
@@ -68,17 +72,28 @@ class ServerInitializer(
         vsum = init(rootPath)
 
         server = VitruvServer(VirtualModelInitializer { vsum }, serverPort, host)
+
+        registerFamily()
         return server
+    }
+
+    fun registerFamily() {
+        val family = createFamily()
+        val familyView = getFamilyView().withChangeDerivingTrait()
+        familyView.registerRoot(family, familiesUri)
+        familyView.commitChanges()
+    }
+
+    fun createFamily() : FamilyRegister
+    {
+        val familyRegister = FamiliesFactoryImpl.eINSTANCE.createFamilyRegister()
+        return familyRegister
     }
 
 
     private fun registerFactories() {
         Resource.Factory.Registry.INSTANCE.extensionToFactoryMap
             .put("*", XMIResourceFactoryImpl())
-        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap
-            .put("persons", PersonsFactoryImpl())
-        Resource.Factory.Registry.INSTANCE.extensionToFactoryMap
-            .put("families", FamiliesFactoryImpl())
         EPackage.Registry.INSTANCE.put(CorrespondencePackage.eNS_URI, CorrespondencePackageImpl.eINSTANCE)
         EPackage.Registry.INSTANCE.put(AtomicPackage.eNS_URI, AtomicPackageImpl.eINSTANCE)
         EPackage.Registry.INSTANCE.put(FamiliesPackage.eNS_URI, FamiliesPackageImpl.eINSTANCE)
@@ -117,9 +132,8 @@ class ServerInitializer(
 
     private fun init(rootPath: Path): VirtualModel =
         VirtualModelBuilder()
-            // change propagation specification commented out because it's not working on client side
-            .withChangePropagationSpecification(FamiliesToPersonsChangePropagationSpecification())
-            .withChangePropagationSpecification(PersonsToFamiliesChangePropagationSpecification())
+//            .withChangePropagationSpecification(FamiliesToPersonsChangePropagationSpecification())
+//            .withChangePropagationSpecification(PersonsToFamiliesChangePropagationSpecification())
             .withStorageFolder(rootPath)
             .withViewTypes(viewTypes.values)
             .withUserInteractorForResultProvider(TestInteractionResultProvider())
