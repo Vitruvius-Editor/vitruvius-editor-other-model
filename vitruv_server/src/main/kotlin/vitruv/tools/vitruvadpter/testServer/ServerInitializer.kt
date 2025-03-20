@@ -8,9 +8,6 @@ import edu.kit.ipd.sdq.metamodels.persons.PersonRegister
 import edu.kit.ipd.sdq.metamodels.persons.PersonsPackage
 import edu.kit.ipd.sdq.metamodels.persons.impl.PersonsFactoryImpl
 import edu.kit.ipd.sdq.metamodels.persons.impl.PersonsPackageImpl
-import mir.reactions.familiesToPersons.InsertedFamilyRegisterReaction
-import org.apache.log4j.LogManager
-import org.apache.log4j.Logger
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.plugin.EcorePlugin
@@ -78,7 +75,7 @@ class ServerInitializer(
         server = VitruvServer(VirtualModelInitializer { vsum }, serverPort, host)
 
         registerFamily()
-        registerPersons()
+        //registerPersons()
         return server
     }
 
@@ -174,8 +171,8 @@ class ServerInitializer(
 
     private fun init(rootPath: Path): VirtualModel =
         VirtualModelBuilder()
-//            .withChangePropagationSpecification(FamiliesToPersonsChangePropagationSpecification())
-//            .withChangePropagationSpecification(PersonsToFamiliesChangePropagationSpecification())
+            .withChangePropagationSpecification(FamiliesToPersonsChangePropagationSpecification())
+            .withChangePropagationSpecification(PersonsToFamiliesChangePropagationSpecification())
             .withStorageFolder(rootPath)
             .withViewTypes(viewTypes.values)
             .withUserInteractorForResultProvider(TestInteractionResultProvider())
