@@ -3,10 +3,14 @@ package tools.vitruv.vitruvAdapter.core.impl.personTableView
 import edu.kit.ipd.sdq.metamodels.persons.Person
 import edu.kit.ipd.sdq.metamodels.persons.PersonRegister
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.uml2.uml.Class
+import org.eclipse.uml2.uml.VisibilityKind
 import tools.vitruv.vitruvAdapter.core.api.DisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 import tools.vitruv.vitruvAdapter.core.api.ViewMapper
 import tools.vitruv.vitruvAdapter.core.api.Window
+import tools.vitruv.vitruvAdapter.core.impl.EUtils
+import tools.vitruv.vitruvAdapter.core.impl.classTableView.ClassTableEntry
 import tools.vitruv.vitruvAdapter.core.impl.displayContentMapper.TableDisplayContentMapper
 import tools.vitruv.vitruvAdapter.core.impl.table.TableDTO
 
@@ -36,8 +40,9 @@ class PersonTableViewMapper: ViewMapper<TableDTO<PersonTableEntry>> {
 
     private fun createPersonEntryFromPerson(person: Person): PersonTableEntry {
         return PersonTableEntry(
+            EUtils.getUUIDForEObject(person),
             person.fullName,
-            person.birthday.toString()
+            person.birthday?.toString() ?: ""
         )
     }
 
@@ -53,7 +58,27 @@ class PersonTableViewMapper: ViewMapper<TableDTO<PersonTableEntry>> {
         preMappedWindows: List<PreMappedWindow<TableDTO<PersonTableEntry>>>,
         windows: List<Window<TableDTO<PersonTableEntry>>>
     ): List<EObject> {
-        TODO("Not yet implemented")
+        val windowPairs = pairWindowsTogether(preMappedWindows, windows)
+        for (item in windowPairs) {
+            applyChangesToWindow(item.second, item.first)
+        }
+        return listOf() // unnecesary return value, has to be changed
+    }
+
+    private fun applyChangesToWindow(
+        window: Window<TableDTO<PersonTableEntry>>,
+        preMappedWindow: PreMappedWindow<TableDTO<PersonTableEntry>>,
+    ) {
+        for (eObject in preMappedWindow.neededEObjects) {
+            val rows = window.content.rows
+            for (row in rows) {
+                val person = eObject.eResource()?.getEObject(row.uuid)
+                if (person == null || person !is Person) {
+                    continue
+                }
+                person.fullName = row.fullName
+            }
+        }
     }
 
     /**
@@ -67,7 +92,7 @@ class PersonTableViewMapper: ViewMapper<TableDTO<PersonTableEntry>> {
             if (rootObject !is PersonRegister) {
                 continue
             }
-            windows.add(rootObject.id)
+            windows.add(rootObject.persons[0].fullName)
         }
         return windows
     }

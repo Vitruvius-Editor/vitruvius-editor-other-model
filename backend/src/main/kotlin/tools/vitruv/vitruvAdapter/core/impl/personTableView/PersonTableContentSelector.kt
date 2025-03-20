@@ -23,8 +23,8 @@ class PersonTableContentSelector: ContentSelector<TableDTO<PersonTableEntry>> {
                 if (rootObject !is PersonRegister) {
                     continue
                 }
-                if (rootObject.id == window) {
-                    ContentSelector.findPreMappedWindow(preMappedWindows, rootObject.id)?.addEObject(rootObject)
+                if (rootObject.persons[0].fullName == window) {
+                    ContentSelector.findPreMappedWindow(preMappedWindows, rootObject.persons[0].fullName)?.addEObject(rootObject)
                 }
             }
         }

@@ -1,6 +1,4 @@
 package vitruv.tools.vitruvadpter.testServer
-
-import mir.reactions.familiesToPersons.InsertedFamilyRegisterReaction
 import tools.vitruv.framework.remote.client.VitruvClientFactory
 import java.nio.file.Path
 import java.nio.file.Paths
