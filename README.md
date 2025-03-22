@@ -1,6 +1,9 @@
 # Vitruvius Editor
 
-Vitruvius Editor is a web-based editor designed for developers to create and manage views of a remote project in the Vitruvius framework. It provides a modern and intuitive interface for writing, editing, and managing text-based and UML-based views. This repo contains both the frontend and the backend of the project. See our Github Wiki for more information on how to use this editor.
+Vitruvius Editor is a web-based editor designed for developers to create and manage views of a remote project in the Vitruvius framework. It provides a modern and intuitive interface for writing, editing, and managing text-based and UML-based views. This repo contains both the frontend and the backend of the project. See our Github Wiki for more information on how to use this editor. 
+
+# Project PSE
+This project was developed by six KIT students as part of our third semester academic duty. We adopted the waterfall model as our software development methodology, executing the project in four clearly defined phases: planning, design, implementation, and testing. Each phase was conducted with strict adherence to academic and industry standards, ensuring rigorous documentation and traceability throughout the process. This structured approach reinforced our theoretical understanding and practical application of software engineering principles while providing invaluable hands-on experience in managing a complete software development lifecycle.
 
 ## Build Instructions
 
