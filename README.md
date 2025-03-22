@@ -1,6 +1,6 @@
 # Vitruvius Editor
 
-Vitruvius Editor is a web-based editor designed for developers to create and manage views of a remote project in the Vitruvius framework. It provides a modern and intuitive interface for writing, editing, and managing text-based and UML-based views. This repo contains both the frontend and the backend of the project.
+Vitruvius Editor is a web-based editor designed for developers to create and manage views of a remote project in the Vitruvius framework. It provides a modern and intuitive interface for writing, editing, and managing text-based and UML-based views. This repo contains both the frontend and the backend of the project. See our Github Wiki for more information on how to use this editor.
 
 ## Build Instructions
 
