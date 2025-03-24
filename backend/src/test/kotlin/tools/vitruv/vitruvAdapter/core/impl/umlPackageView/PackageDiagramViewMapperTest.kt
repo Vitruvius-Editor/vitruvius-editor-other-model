@@ -39,7 +39,7 @@ class PackageDiagramViewMapperTest {
         supPackage.packagedElements.add(umlPackage)
         supPackage.packagedElements.add(importingPackage)
         val premappedWindow = PreMappedWindow<UmlDiagram>("supPackage", listOf(supPackage).toMutableList())
-        val windows = packageDiagramViewMapper.mapEObjectsToWindowsContent(listOf(premappedWindow))
+        val windows = packageDiagramViewMapper.mapEObjectsToWindows(listOf(premappedWindow))
         println(windows)
     }
 }
