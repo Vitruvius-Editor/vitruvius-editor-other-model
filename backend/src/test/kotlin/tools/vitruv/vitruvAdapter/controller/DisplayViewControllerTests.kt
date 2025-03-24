@@ -15,7 +15,7 @@ import tools.vitruv.vitruvAdapter.core.api.ContentSelector
 import tools.vitruv.vitruvAdapter.core.api.ViewMapper
 import tools.vitruv.vitruvAdapter.core.impl.GenericDisplayView
 import tools.vitruv.vitruvAdapter.core.impl.classTableView.ClassTableViewMapper
-import tools.vitruv.vitruvAdapter.core.impl.selector.AllSelector
+import tools.vitruv.vitruvAdapter.core.impl.selector.AllInternalSelector
 import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeContentSelector
 import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeViewMapper
 import tools.vitruv.vitruvAdapter.dto.DisplayViewContentResponse
@@ -44,14 +44,14 @@ class DisplayViewControllerTest {
                     "DisplayView 1",
                     "ExampleViewType",
                     SourceCodeViewMapper() as ViewMapper<Any?>,
-                    AllSelector(),
+                    AllInternalSelector(),
                     SourceCodeContentSelector() as ContentSelector<Any?>,
                 ),
                 GenericDisplayView(
                     "DisplayView 2",
                     "ExampleViewType",
                     ClassTableViewMapper() as ViewMapper<Any?>,
-                    AllSelector(),
+                    AllInternalSelector(),
                     SourceCodeContentSelector() as ContentSelector<Any?>,
                 ),
             )

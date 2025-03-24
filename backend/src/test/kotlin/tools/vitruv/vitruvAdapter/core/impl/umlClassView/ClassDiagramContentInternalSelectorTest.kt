@@ -8,7 +8,7 @@ import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 import tools.vitruv.vitruvAdapter.core.impl.uml.UmlDiagram
 import tools.vitruv.vitruvAdapter.utils.EObjectContainer
 
-class ClassDiagramContentSelectorTest {
+class ClassDiagramContentInternalSelectorTest {
     private val selector = ClassDiagramContentSelector()
 
     /**
