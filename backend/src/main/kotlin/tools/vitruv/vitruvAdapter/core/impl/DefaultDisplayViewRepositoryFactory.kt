@@ -57,7 +57,7 @@ class DefaultDisplayViewRepositoryFactory : DisplayViewRepositoryFactory() {
                 DisplayViewName.PACKAGE_DIAGRAM.viewName,
                 "UML",
                 PackageDiagramViewMapper() as ViewMapper<Any?>,
-                AllSelector(),
+                AllInternalSelector(),
                 PackageDiagramContentSelector() as ContentSelector<Any?>,
             ),
         )
