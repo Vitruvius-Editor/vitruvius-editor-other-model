@@ -17,7 +17,7 @@ class PackageDiagramViewMapper : UmlViewMapper() {
      * @param preMappedWindows the pre-mapped windows to map to windows.
      * @return The windows representing the view content.
      */
-    override fun mapEObjectsToWindowsContent(preMappedWindows: List<PreMappedWindow<UmlDiagram>>): List<Window<UmlDiagram>> {
+    override fun mapEObjectsToWindows(preMappedWindows: List<PreMappedWindow<UmlDiagram>>): List<Window<UmlDiagram>> {
         TODO("Not yet implemented")
     }
 
@@ -29,7 +29,7 @@ class PackageDiagramViewMapper : UmlViewMapper() {
      * @param windows the windows to map to EObjects.
      * @return The view content.
      */
-    override fun mapWindowsToEObjectsAndApplyChangesToEObjects(
+    override fun applyWindowChangesToView(
         preMappedWindows: List<PreMappedWindow<UmlDiagram>>,
         windows: List<Window<UmlDiagram>>,
     ): List<EObject> {
@@ -41,7 +41,7 @@ class PackageDiagramViewMapper : UmlViewMapper() {
      * @param rootObjects The view to map.
      * @return The names of the windows that are available in the view.
      */
-    override fun mapViewToWindows(rootObjects: List<EObject>): Set<String> {
+    override fun collectWindowsFromView(rootObjects: List<EObject>): Set<String> {
         TODO("Not yet implemented")
     }
 
@@ -49,7 +49,7 @@ class PackageDiagramViewMapper : UmlViewMapper() {
      * Gets the display content of this view mapper, which is able to map the view content to a json string and vice versa.
      * @return The display content of this view mapper.
      */
-    override fun getDisplayContent(): DisplayContentMapper<UmlDiagram> {
+    override fun getDisplayContentMapper(): DisplayContentMapper<UmlDiagram> {
         TODO("Not yet implemented")
     }
 }

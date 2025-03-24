@@ -26,7 +26,7 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
      * @param preMappedWindows the pre-mapped windows to map to windows.
      * @return The json string representing the view content.
      */
-    override fun mapEObjectsToWindowsContent(
+    override fun mapEObjectsToWindows(
         preMappedWindows: List<PreMappedWindow<TableDTO<ClassTableEntry>>>,
     ): List<Window<TableDTO<ClassTableEntry>>> {
         val windows = mutableListOf<Window<TableDTO<ClassTableEntry>>>()
@@ -49,7 +49,7 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
         return windows.toList()
     }
 
-    override fun mapWindowsToEObjectsAndApplyChangesToEObjects(
+    override fun applyWindowChangesToView(
         preMappedWindows: List<PreMappedWindow<TableDTO<ClassTableEntry>>>,
         windows: List<Window<TableDTO<ClassTableEntry>>>,
     ): List<EObject> {
@@ -142,7 +142,7 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
      * @param rootObjects The view to map.
      * @return The names of the windows that are available in the view.
      */
-    override fun mapViewToWindows(rootObjects: List<EObject>): Set<String> {
+    override fun collectWindowsFromView(rootObjects: List<EObject>): Set<String> {
         val windows = mutableSetOf<String>()
         for (rootObject in rootObjects) {
             val iterator = rootObject.eAllContents()
@@ -163,5 +163,5 @@ class ClassTableViewMapper : ViewMapper<TableDTO<ClassTableEntry>> {
      * Gets the display content of this view mapper, which is able to map the view content to a json string and vice versa.
      * @return The display content of this view mapper.
      */
-    override fun getDisplayContent(): DisplayContentMapper<TableDTO<ClassTableEntry>> = TableDisplayContentMapper.create<ClassTableEntry>()
+    override fun getDisplayContentMapper(): DisplayContentMapper<TableDTO<ClassTableEntry>> = TableDisplayContentMapper.create<ClassTableEntry>()
 }

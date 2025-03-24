@@ -24,7 +24,7 @@ interface DisplayView {
      * The internal selector for the display view.
      * This selector is used to filter elements needed for the display view.
      */
-    val internalSelector: Selector
+    val internalSelector: InternalSelector
 
     /**
      * The content selector for the display view.

@@ -72,36 +72,36 @@ class ClassTableViewMapperTest {
     }
 
     @Test
-    fun testMapViewToWindows() {
-        val windows = mapper.mapViewToWindows(eObjects)
+    fun testCollectWindowsFromView() {
+        val windows = mapper.collectWindowsFromView(eObjects)
         val expectedWindows = setOf<String>("examplePackage")
         assertEquals(expectedWindows, windows)
     }
 
     @Test
     fun testWindowsNotAPackage() {
-        val windows = mapper.mapViewToWindows(eObjectsNotAPackage)
+        val windows = mapper.collectWindowsFromView(eObjectsNotAPackage)
         assertEquals(emptySet<String>(), windows)
     }
 
     @Test
     fun testWindowsNestedPackage() {
-        val windows = mapper.mapViewToWindows(eObjectsNestedPackage)
+        val windows = mapper.collectWindowsFromView(eObjectsNestedPackage)
         val expectedWindows = setOf<String>("examplePackageNested", "nestedPackage", "examplePackage")
         assertEquals(expectedWindows, windows)
     }
 
     @Test
     fun testCreateContent() {
-        val contents = mapper.mapEObjectsToWindowsContent(eObjectPreMappedWindows)
+        val contents = mapper.mapEObjectsToWindows(eObjectPreMappedWindows)
         assertEquals("Class1", contents[0].content.rows[0].name)
         assertEquals(5, contents[0].content.rows[0].linesOfCode)
     }
 
     @Test
     fun testEditContent() {
-        val contents = mapper.mapEObjectsToWindowsContent(preMappedWindows)
-        val newContents = mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(preMappedWindows, contents)
+        val contents = mapper.mapEObjectsToWindows(preMappedWindows)
+        val newContents = mapper.applyWindowChangesToView(preMappedWindows, contents)
         println(newContents)
     }
 
@@ -116,13 +116,13 @@ class ClassTableViewMapperTest {
 
         val preMappedJroot =
             ClassTableContentSelector().applySelection(listOf(jrExp, jroot), setOf(jroot.name, jrExp.name, "Class1"))
-        val contents = mapper.mapEObjectsToWindowsContent(preMappedJroot)
-        val newContents = mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(preMappedJroot, contents)
+        val contents = mapper.mapEObjectsToWindows(preMappedJroot)
+        val newContents = mapper.applyWindowChangesToView(preMappedJroot, contents)
         println(newContents)
     }
 
     @Test
-    fun testGetDisplayContent() {
-        assertEquals("TableVisualizer", mapper.getDisplayContent().getVisualizerName())
+    fun testGetDisplayContentMapper() {
+        assertEquals("TableVisualizer", mapper.getDisplayContentMapper().getVisualizerName())
     }
 }

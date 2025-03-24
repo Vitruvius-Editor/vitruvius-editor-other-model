@@ -65,21 +65,21 @@ class ClassDiagramViewMapperTest {
     }
 
     @Test
-    fun testMapViewToWindows() {
-        val windows = mapper.mapViewToWindows(eObjects)
+    fun testCollectWindowsFromView() {
+        val windows = mapper.collectWindowsFromView(eObjects)
         val expectedWindows = setOf("examplePackage")
         kotlin.test.assertEquals(expectedWindows, windows)
     }
 
     @Test
     fun testWindowsNotAPackage() {
-        val windows = mapper.mapViewToWindows(eObjectsNotAPackage)
+        val windows = mapper.collectWindowsFromView(eObjectsNotAPackage)
         kotlin.test.assertEquals(emptySet<String>(), windows)
     }
 
     @Test
     fun testWindowsNestedPackage() {
-        val windows = mapper.mapViewToWindows(eObjectsNestedPackage)
+        val windows = mapper.collectWindowsFromView(eObjectsNestedPackage)
         val expectedWindows = setOf<String>("examplePackageNested", "nestedPackage", "examplePackage")
         kotlin.test.assertEquals(expectedWindows, windows)
     }
@@ -88,9 +88,9 @@ class ClassDiagramViewMapperTest {
      * @author Patrick
      */
     @Test
-    fun testMapEObjectsToWindowsContent() {
+    fun testMapEObjectsToWindows() {
         val preMappedWindow1 = PreMappedWindow<UmlDiagram>("examplePackage", eObjectsClassExtends.toMutableList())
-        val window1 = mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow1))
+        val window1 = mapper.mapEObjectsToWindows(listOf(preMappedWindow1))
     }
 
     /**
@@ -174,7 +174,7 @@ class ClassDiagramViewMapperTest {
             )
 
         val umlDiagram = UmlDiagram(nodes, connections)
-        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+        mapper.applyWindowChangesToView(
             listOf(preMappedWindow),
             listOf(Window("examplePackage", umlDiagram)),
         )
@@ -240,7 +240,7 @@ class ClassDiagramViewMapperTest {
             )
 
         val umlDiagram = UmlDiagram(nodes, connections)
-        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+        mapper.applyWindowChangesToView(
             listOf(preMappedWindow),
             listOf(Window("examplePackage", umlDiagram)),
         )
@@ -320,7 +320,7 @@ class ClassDiagramViewMapperTest {
 
         val umlDiagram = UmlDiagram(nodes, connections)
         assertThrows<IllegalStateException> {
-            mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            mapper.applyWindowChangesToView(
                 listOf(preMappedWindow),
                 listOf(Window("examplePackage", umlDiagram)),
             )
@@ -358,7 +358,7 @@ class ClassDiagramViewMapperTest {
 
         val connections = listOf<UmlConnection>()
         val umlDiagram = UmlDiagram(nodes, connections)
-        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+        mapper.applyWindowChangesToView(
             listOf(preMappedWindow),
             listOf(Window("examplePackage", umlDiagram)),
         )
@@ -402,7 +402,7 @@ class ClassDiagramViewMapperTest {
 
         val connections = listOf<UmlConnection>()
         val umlDiagram = UmlDiagram(nodes, connections)
-        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+        mapper.applyWindowChangesToView(
             listOf(preMappedWindow),
             listOf(Window("examplePackage", umlDiagram)),
         )
@@ -448,7 +448,7 @@ class ClassDiagramViewMapperTest {
 
         val connections = listOf<UmlConnection>()
         val umlDiagram = UmlDiagram(nodes, connections)
-        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+        mapper.applyWindowChangesToView(
             listOf(preMappedWindow),
             listOf(Window("examplePackage", umlDiagram)),
         )
@@ -487,7 +487,7 @@ class ClassDiagramViewMapperTest {
 
         val connections = listOf<UmlConnection>()
         val umlDiagram = UmlDiagram(nodes, connections)
-        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+        mapper.applyWindowChangesToView(
             listOf(preMappedWindow),
             listOf(Window("examplePackage", umlDiagram)),
         )
@@ -559,7 +559,7 @@ class ClassDiagramViewMapperTest {
         val connections = listOf<UmlConnection>()
         val umlDiagram = UmlDiagram(nodes, connections)
         val preMappedWindow = PreMappedWindow<UmlDiagram>("examplePackage", container.toMutableList())
-        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+        mapper.applyWindowChangesToView(
             listOf(preMappedWindow),
             listOf(Window("examplePackage", umlDiagram)),
         )
@@ -613,7 +613,7 @@ class ClassDiagramViewMapperTest {
             )
         val connections = listOf<UmlConnection>()
         val umlDiagram = UmlDiagram(nodes, connections)
-        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+        mapper.applyWindowChangesToView(
             listOf(preMappedWindow),
             listOf(Window("examplePackage", umlDiagram)),
         )
@@ -672,7 +672,7 @@ class ClassDiagramViewMapperTest {
         val umlDiagram = UmlDiagram(nodes, connections)
 
         assertThrows<IllegalStateException> {
-            mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            mapper.applyWindowChangesToView(
                 listOf(preMappedWindow),
                 listOf(Window("examplePackage", umlDiagram)),
             )
@@ -724,7 +724,7 @@ class ClassDiagramViewMapperTest {
         val umlDiagram = UmlDiagram(nodes, connections)
 
         assertThrows<IllegalStateException> {
-            mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            mapper.applyWindowChangesToView(
                 listOf(preMappedWindow),
                 listOf(Window("examplePackage", umlDiagram)),
             )
@@ -778,7 +778,7 @@ class ClassDiagramViewMapperTest {
 
         val connections = listOf(connection)
         val umlDiagram = UmlDiagram(nodes, connections)
-        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+        mapper.applyWindowChangesToView(
             listOf(preMappedWindow),
             listOf(Window("examplePackage", umlDiagram)),
         )
@@ -833,7 +833,7 @@ class ClassDiagramViewMapperTest {
             )
         val umlDiagram = UmlDiagram(nodes, connections)
         assertThrows<IllegalStateException> {
-            mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(
+            mapper.applyWindowChangesToView(
                 listOf(preMappedWindow),
                 listOf(Window("examplePackage", umlDiagram)),
             )
@@ -842,7 +842,7 @@ class ClassDiagramViewMapperTest {
 
     @Test
     fun testDisplayContent() {
-        assertEquals(VisualizerType.UML_VISUALIZER.visualizerName, mapper.getDisplayContent().getVisualizerName())
+        assertEquals(VisualizerType.UML_VISUALIZER.visualizerName, mapper.getDisplayContentMapper().getVisualizerName())
     }
 
     private fun getFakeUUID(eObject: EObject): String = EResourceMock.getFakeUUID(eObject)
