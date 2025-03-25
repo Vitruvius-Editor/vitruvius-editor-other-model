@@ -182,6 +182,7 @@ export class DiagramWidget extends VisualisationWidget<Diagram> {
       if (type === "Class") {
         const text = (
           <div onClick={(e) => handleNodeClick(e, data)}>
+            {data.nodeType !== '<<class>>' ? <div><span>{data.nodeType}<br/></span></div> : <div></div>}
             <span
               contentEditable
               spellCheck={false}

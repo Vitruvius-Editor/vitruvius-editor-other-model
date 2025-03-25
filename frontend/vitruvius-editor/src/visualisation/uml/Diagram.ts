@@ -8,6 +8,7 @@ export type Diagram = {
 export type DiagramNode = {
   uuid: string; // Unique identifier for the node
   name: string; // Name of the node
+  nodeType: string; // Type of the node
   attributes: {
     // Array of attributes for the node
     uuid: string; // Unique identifier for the attribute
