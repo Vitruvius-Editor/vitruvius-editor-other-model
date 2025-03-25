@@ -97,11 +97,8 @@ class DemoModel {
             val examplePackage = factory.createPackage()
             examplePackage.name = "examplePackage"
 
-            val umlClass = factory.createClass()
-            umlClass.name = "Class1"
+            val umlClass = examplePackage.createOwnedClass("Class1", false)
 
-
-            umlClass.setIsFinalSpecialization(true)
 
             val class2 = examplePackage.createOwnedClass("Class2", true)
             val intatt = class2.createOwnedAttribute("myIntAttribute", null)
@@ -156,8 +153,8 @@ class DemoModel {
             interface2.createOwnedAttribute("myIntAttribute", intType)
             interface1.createOwnedOperation("myOperation", operationParameterNames, operationParameterTypes)
             interface2.createOwnedOperation("myOperation", operationParameterNames, operationParameterTypes)
-            umlClass.createInterfaceRealization("interfaceRealzation",interface1)
-            umlClass.implementedInterfaces.add(interface1)
+            interface1.redefinedInterfaces.add(interface2)
+            class2.createInterfaceRealization("InterfaceRealization1", interface1)
             return examplePackage
 
         }
