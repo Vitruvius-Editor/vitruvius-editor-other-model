@@ -6,7 +6,7 @@ import tools.mdsd.jamopp.model.java.containers.CompilationUnit
 import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 import tools.vitruv.vitruvAdapter.utils.EObjectContainer
 
-class SourceCodeContentSelectorTest {
+class SourceCodeContentInternalSelectorTest {
     private val selector = SourceCodeContentSelector()
 
     /**

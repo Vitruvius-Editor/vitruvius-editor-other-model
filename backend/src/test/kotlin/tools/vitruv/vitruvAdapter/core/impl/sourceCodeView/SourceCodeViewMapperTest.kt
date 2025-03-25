@@ -16,12 +16,12 @@ class SourceCodeViewMapperTest {
 
     @Test
     fun testMapToWindows() {
-        val windows = mapper.mapViewToWindows(EObjectContainer().getContainer1AsRootObjects())
+        val windows = mapper.collectWindowsFromView(EObjectContainer().getContainer1AsRootObjects())
         assertEquals(setOf<String>("Class1"), windows)
     }
 
     @Test
-    fun testMapEObjectsToWindowsContent() {
+    fun testMapEObjectsToWindows() {
         val preMappedWindow1 = PreMappedWindow<String>("Class1", EObjectContainer().getContainerWithSimpleClass().toMutableList())
         val windowSourceCode =
             "public class Class1 {\r\n" +
@@ -30,7 +30,7 @@ class SourceCodeViewMapperTest {
                 "}\r\n"
         val expectedWindow = Window("Class1", formatJavaCode(windowSourceCode))
 
-        val window1 = mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow1))
+        val window1 = mapper.mapEObjectsToWindows(listOf(preMappedWindow1))
         assertEquals(listOf(expectedWindow), window1)
     }
 
@@ -53,8 +53,8 @@ class SourceCodeViewMapperTest {
                 "\n" +
                 "}\n"
         val window3 = Window("Class2", formatJavaCode(newSourceCode))
-        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(listOf(preMappedWindow2), listOf(window3))
-        assertEquals(window3, mapper.mapEObjectsToWindowsContent(listOf(preMappedWindow2))[0])
+        mapper.applyWindowChangesToView(listOf(preMappedWindow2), listOf(window3))
+        assertEquals(window3, mapper.mapEObjectsToWindows(listOf(preMappedWindow2))[0])
     }
 
     fun formatJavaCode(code: String): String {

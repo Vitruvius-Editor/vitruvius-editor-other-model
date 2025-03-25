@@ -1,6 +1,6 @@
 package tools.vitruv.vitruvAdapter.core.impl.selector
 
-class AllSelectorTest {
+class AllInternalSelectorTest {
     @org.junit.jupiter.api.Test
     fun testApplySelection() {
 //        val viewSelector = Mockito.spy(ViewSelector::class.java)

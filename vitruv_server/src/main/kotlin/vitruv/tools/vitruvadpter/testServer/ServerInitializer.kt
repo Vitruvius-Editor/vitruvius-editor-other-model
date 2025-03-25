@@ -75,6 +75,7 @@ class ServerInitializer(
         view.close()
     }
 
+
     private fun registerUMLExampleModel() {
         val view = getUMLView().withChangeDerivingTrait()
         view.registerRoot(DemoModel.createUmlModel(), umlUri)

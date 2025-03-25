@@ -26,7 +26,7 @@ class SourceCodeViewMapper : TextViewMapper() {
      * @param preMappedWindows the pre-mapped windows to map to windows.
      * @return The windows representing the view content.
      */
-    override fun mapEObjectsToWindowsContent(preMappedWindows: List<PreMappedWindow<String>>): List<Window<String>> {
+    override fun mapEObjectsToWindows(preMappedWindows: List<PreMappedWindow<String>>): List<Window<String>> {
         val windows = mutableListOf<Window<String>>()
 
         for (preMappedWindow in preMappedWindows) {
@@ -81,7 +81,7 @@ class SourceCodeViewMapper : TextViewMapper() {
      * @param windows the windows to map to EObjects.
      * @return The view content.
      */
-    override fun mapWindowsToEObjectsAndApplyChangesToEObjects(
+    override fun applyWindowChangesToView(
         preMappedWindows: List<PreMappedWindow<String>>,
         windows: List<Window<String>>,
     ): List<EObject> {
@@ -120,7 +120,7 @@ class SourceCodeViewMapper : TextViewMapper() {
         }
     }
 
-    override fun mapViewToWindows(rootObjects: List<EObject>): Set<String> {
+    override fun collectWindowsFromView(rootObjects: List<EObject>): Set<String> {
         val windows = mutableSetOf<String>()
         for (rootObject in rootObjects) {
             if (rootObject is JavaRoot) {
@@ -139,5 +139,5 @@ class SourceCodeViewMapper : TextViewMapper() {
         return windows
     }
 
-    override fun getDisplayContent(): DisplayContentMapper<String> = TextDisplayContentMapper()
+    override fun getDisplayContentMapper(): DisplayContentMapper<String> = TextDisplayContentMapper()
 }

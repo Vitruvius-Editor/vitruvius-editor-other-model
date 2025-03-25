@@ -2,7 +2,7 @@ package tools.vitruv.vitruvAdapter.core.impl
 
 import tools.vitruv.vitruvAdapter.core.api.ContentSelector
 import tools.vitruv.vitruvAdapter.core.api.DisplayView
-import tools.vitruv.vitruvAdapter.core.api.Selector
+import tools.vitruv.vitruvAdapter.core.api.InternalSelector
 import tools.vitruv.vitruvAdapter.core.api.ViewMapper
 
 /**
@@ -13,6 +13,6 @@ class GenericDisplayView(
     override val name: String,
     override val viewTypeName: String,
     override val viewMapper: ViewMapper<Any?>,
-    override val internalSelector: Selector,
+    override val internalSelector: InternalSelector,
     override val contentSelector: ContentSelector<Any?>,
 ) : DisplayView

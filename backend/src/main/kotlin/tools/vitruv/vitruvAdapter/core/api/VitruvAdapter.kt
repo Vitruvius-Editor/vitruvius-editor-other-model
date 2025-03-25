@@ -95,7 +95,7 @@ class VitruvAdapter {
      */
     fun getWindows(displayView: DisplayView): Set<String> {
         val view = getView(displayView)
-        return displayView.viewMapper.mapViewToWindows(view.rootObjects.toList())
+        return displayView.viewMapper.collectWindowsFromView(view.rootObjects.toList())
     }
 
     /**
@@ -121,8 +121,8 @@ class VitruvAdapter {
         val view = getView(displayView)
         val selectedEObjects = displayView.contentSelector.applySelection(view.rootObjects.toList(), windows)
         val mapper = displayView.viewMapper
-        val viewInformation = JsonViewInformation(mapper.getDisplayContent())
-        val mappedData = mapper.mapEObjectsToWindowsContent(selectedEObjects)
+        val viewInformation = JsonViewInformation(mapper.getDisplayContentMapper())
+        val mappedData = mapper.mapEObjectsToWindows(selectedEObjects)
         val json = viewInformation.parseWindowsToJson(mappedData)
         return json
     }
@@ -138,7 +138,7 @@ class VitruvAdapter {
         json: String,
     ) {
         val mapper = displayView.viewMapper
-        val viewInformation = JsonViewInformation(mapper.getDisplayContent())
+        val viewInformation = JsonViewInformation(mapper.getDisplayContentMapper())
         val oldView = getView(displayView).withChangeDerivingTrait()
         val oldSelectedEObjects =
             displayView.contentSelector.applySelection(
@@ -146,7 +146,7 @@ class VitruvAdapter {
                 viewInformation.collectWindowsFromJson(json),
             )
         val newWindows = viewInformation.parseWindowsFromJson(json)
-        mapper.mapWindowsToEObjectsAndApplyChangesToEObjects(oldSelectedEObjects, newWindows)
+        mapper.applyWindowChangesToView(oldSelectedEObjects, newWindows)
         oldView.commitChanges()
     }
 
@@ -175,7 +175,7 @@ class VitruvAdapter {
         json: String,
     ): Set<String> {
         val mapper = displayView.viewMapper
-        val viewInformation = JsonViewInformation(mapper.getDisplayContent())
+        val viewInformation = JsonViewInformation(mapper.getDisplayContentMapper())
         return viewInformation.collectWindowsFromJson(json)
     }
 

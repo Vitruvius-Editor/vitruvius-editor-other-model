@@ -5,7 +5,7 @@ import tools.vitruv.vitruvAdapter.core.api.PreMappedWindow
 import tools.vitruv.vitruvAdapter.core.impl.table.TableDTO
 import tools.vitruv.vitruvAdapter.utils.EObjectContainer
 
-class ClassTableContentSelectorTest {
+class ClassTableContentInternalSelectorTest {
     private val selector = ClassTableContentSelector()
 
     /**
