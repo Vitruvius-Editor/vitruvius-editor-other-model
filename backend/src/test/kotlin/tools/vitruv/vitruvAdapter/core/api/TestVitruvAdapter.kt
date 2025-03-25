@@ -60,7 +60,7 @@ class TestVitruvAdapter {
     fun testGetDisplayViews() {
         adapter.setDisplayViewContainer(displayViewRepository)
         val displayViews = adapter.getDisplayViews()
-        assertEquals(3, displayViews.size)
+        assertEquals(4, displayViews.size)
     }
 
     @Test

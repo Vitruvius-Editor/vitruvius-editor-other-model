@@ -218,6 +218,15 @@ class ServerInitializer(
             """.trimIndent(),
         )
 
+        val innerPackage = examplePackage.createNestedPackage("nestedPackage")
+        val otherInnerPackage = examplePackage.createNestedPackage("otherNestedPackage")
+
+        val innerPackageClass = innerPackage.createOwnedClass("InnerPackageClass", false)
+        val packageImport = UMLFactory.eINSTANCE.createPackageImport()
+        packageImport.importedPackage = otherInnerPackage
+        packageImport.visibility = VisibilityKind.PUBLIC_LITERAL
+        innerPackageClass.packageImports.add(packageImport)
+
         var view = getUMLView().withChangeDerivingTrait()
         view.registerRoot(examplePackage, umlUri)
         view.commitChanges()
