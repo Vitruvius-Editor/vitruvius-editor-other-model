@@ -63,14 +63,26 @@ export class UMLRelation extends DefaultLinkModel {
 
     switch (type) {
       case "default": {
-        this.fromPort = from.addPort(new DefaultPortModel(false, "out"));
-        this.toPort = to.addPort(new DefaultPortModel(true, "in"));
+        this.fromPort = from.getOutPorts()[0]
+        this.toPort = to.getInPorts()[0]
+        if (from.getOutPorts().length === 0) {
+          this.fromPort = from.addPort(new DefaultPortModel(false, "out"));
+        }
+        if (to.getInPorts().length === 0) {
+          this.toPort = to.addPort(new DefaultPortModel(true, "in"));
+        }
         this.fromPort.link(this.toPort, new DefaultLinkFactory());
         break;
       }
       case "advanced": {
-        this.fromPort = from.addPort(new ArrowPortModel(false, "out"));
-        this.toPort = to.addPort(new ArrowPortModel(true, "in"));
+        this.fromPort = from.getOutPorts()[0]
+        this.toPort = to.getInPorts()[0]
+        if (from.getOutPorts().length === 0) {
+          this.fromPort = from.addPort(new DefaultPortModel(false, "out"));
+        }
+        if (to.getInPorts().length === 0) {
+          this.toPort = to.addPort(new DefaultPortModel(true, "in"));
+        }
         this.fromPort.link(this.toPort, new ArrowLinkFactory());
         break;
       }
