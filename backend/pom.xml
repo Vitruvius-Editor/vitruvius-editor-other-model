@@ -299,40 +299,6 @@
       <scope>compile</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-      <version>2.17.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-      <version>2.17.1</version>
-    </dependency>
-    <dependency>
-      <groupId>tools.vitruv.dsls.demo</groupId>
-      <artifactId>familiespersons</artifactId>
-      <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/Dependencies/tools.vitruv.dsls.demo.familiespersons-3.2.0-SNAPSHOT.jar</systemPath>
-    </dependency>
-
-    <dependency>
-      <groupId>tools.vitruv.dsls.demo</groupId>
-      <artifactId>persons</artifactId>
-      <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/Dependencies/edu.kit.ipd.sdq.metamodels.persons-1.9.0.202311201524.jar</systemPath>
-    </dependency>
-
-    <dependency>
-      <groupId>tools.vitruv.dsls.demo</groupId>
-      <artifactId>familie</artifactId>
-      <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/Dependencies/edu.kit.ipd.sdq.metamodels.families-1.9.0.202311201524.jar</systemPath>
-    </dependency>
-
   </dependencies>
   <build>
     <sourceDirectory>src/main/kotlin</sourceDirectory>

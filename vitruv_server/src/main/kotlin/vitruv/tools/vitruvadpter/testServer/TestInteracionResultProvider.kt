@@ -47,13 +47,7 @@ class TestInteractionResultProvider : InteractionResultProvider {
         p4: String?,
         p5: Iterable<String?>?,
     ): Int {
-        //print p1, p2, p3, p4, p5 each on a new line
-        print("$p1 /n $p2 /n $p3 /n $p4 /n $p5")
-        print("\n")
-        //read am integer from the console
-        val myInput = readln().toInt()
-        //return the input
-        return myInput
+        TODO("Not yet implemented")
     }
 
     override fun getMultipleChoiceMultipleSelectionInteractionResult(
