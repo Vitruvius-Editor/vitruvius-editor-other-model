@@ -7,12 +7,14 @@ import tools.vitruv.vitruvAdapter.core.api.DisplayViewRepositoryFactory
 import tools.vitruv.vitruvAdapter.core.api.ViewMapper
 import tools.vitruv.vitruvAdapter.core.impl.classTableView.ClassTableContentSelector
 import tools.vitruv.vitruvAdapter.core.impl.classTableView.ClassTableViewMapper
-import tools.vitruv.vitruvAdapter.core.impl.selector.AllInternalSelector
+import tools.vitruv.vitruvAdapter.core.impl.personTableView.PersonTableContentSelector
+import tools.vitruv.vitruvAdapter.core.impl.personTableView.PersonTableViewMapper
+import tools.vitruv.vitruvAdapter.core.impl.selector.AllSelector
 import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeContentSelector
 import tools.vitruv.vitruvAdapter.core.impl.sourceCodeView.SourceCodeViewMapper
 import tools.vitruv.vitruvAdapter.core.impl.umlClassView.ClassDiagramViewMapper
-import tools.vitruv.vitruvAdapter.core.impl.umlPackageView.PackageDiagramContentSelector
-import tools.vitruv.vitruvAdapter.core.impl.umlPackageView.PackageDiagramViewMapper
+import tools.vitruv.vitruvAdapter.core.impl.umlFamilyView.UmlFamilyDiagramContentSelector
+import tools.vitruv.vitruvAdapter.core.impl.umlFamilyView.UmlFamilyDiagramViewMapper
 
 /**
  * Default implementation of a [DisplayViewRepositoryFactory]. This implementation creates a new
@@ -27,39 +29,21 @@ class DefaultDisplayViewRepositoryFactory : DisplayViewRepositoryFactory() {
         val displayViewRepository = DisplayViewRepository()
         displayViewRepository.registerDisplayView(
             GenericDisplayView(
-                DisplayViewName.SOURCE_CODE.viewName,
-                "UML",
-                SourceCodeViewMapper() as ViewMapper<Any?>,
-                AllInternalSelector(),
-                SourceCodeContentSelector() as ContentSelector<Any?>,
+                DisplayViewName.PERSON_TABLE.viewName,
+                "Person",
+                PersonTableViewMapper() as ViewMapper<Any?>,
+                AllSelector(),
+                PersonTableContentSelector() as ContentSelector<Any?>,
             ),
         )
         displayViewRepository.registerDisplayView(
             GenericDisplayView(
-                DisplayViewName.CLASS_TABLE.viewName,
-                "UML",
-                ClassTableViewMapper() as ViewMapper<Any?>,
-                AllInternalSelector(),
-                ClassTableContentSelector() as ContentSelector<Any?>,
-            ),
-        )
-        displayViewRepository.registerDisplayView(
-            GenericDisplayView(
-                DisplayViewName.CLASS_DIAGRAM.viewName,
-                "UML",
-                ClassDiagramViewMapper() as ViewMapper<Any?>,
-                AllInternalSelector(),
-                ClassTableContentSelector() as ContentSelector<Any?>,
-            ),
-        )
-        displayViewRepository.registerDisplayView(
-            GenericDisplayView(
-                DisplayViewName.PACKAGE_DIAGRAM.viewName,
-                "UML",
-                PackageDiagramViewMapper() as ViewMapper<Any?>,
-                AllInternalSelector(),
-                PackageDiagramContentSelector() as ContentSelector<Any?>,
-            ),
+                DisplayViewName.FAMILY_DIAGRAM.viewName,
+                "Family",
+                UmlFamilyDiagramViewMapper() as ViewMapper<Any?>,
+                AllSelector(),
+                UmlFamilyDiagramContentSelector() as ContentSelector<Any?>
+            )
         )
         return displayViewRepository
     }

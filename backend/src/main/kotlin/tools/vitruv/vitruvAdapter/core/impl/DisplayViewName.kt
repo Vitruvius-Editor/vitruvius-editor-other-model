@@ -26,4 +26,13 @@ enum class DisplayViewName(
      * The name of the package diagram view.
      */
     PACKAGE_DIAGRAM("PackageDiagram"),
+    /**
+     * The name of the person table view.
+     */
+    PERSON_TABLE("PersonTable"),
+
+    /**
+     * The name of the family diagram view.
+     */
+    FAMILY_DIAGRAM("FamilyDiagram")
 }
