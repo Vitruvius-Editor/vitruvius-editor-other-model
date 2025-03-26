@@ -97,6 +97,12 @@ class DemoModel {
             val examplePackage = factory.createPackage()
             examplePackage.name = "examplePackage"
 
+            val subPackage = examplePackage.createNestedPackage("innerPackage")
+            val otherSubPackage = examplePackage.createNestedPackage("otherInnerPackage")
+
+            val subPackageClass = subPackage.createOwnedClass("InnerClass", true)
+            subPackageClass.createPackageImport(otherSubPackage)
+
             val umlClass = examplePackage.createOwnedClass("Class1", false)
 
 
