@@ -60,7 +60,7 @@ export class UMLRelation extends DefaultLinkModel {
                   width: 1,
                   type: "advanced",
                   curvyness: 0,
-                  color: "blue",
+                  color: "black",
                   selectedColor: "black",
               });
               this.fromPort = from.getOutPorts()[0]
@@ -75,7 +75,6 @@ export class UMLRelation extends DefaultLinkModel {
               this.setLocked(true);
               this.setSourcePort(this.fromPort);
               this.setTargetPort(this.toPort);
-              this.addLabel(label);
               break;
           }
           case "advanced": {
@@ -98,7 +97,6 @@ export class UMLRelation extends DefaultLinkModel {
               this.setLocked(true);
               this.setSourcePort(this.fromPort);
               this.setTargetPort(this.toPort);
-              this.addLabel(label);
               break;
           }
       }

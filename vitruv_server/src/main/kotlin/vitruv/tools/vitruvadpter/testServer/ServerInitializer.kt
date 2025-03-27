@@ -97,24 +97,24 @@ class ServerInitializer(
     {
         val familyRegister = FamiliesFactoryImpl.eINSTANCE.createFamilyRegister()
         val family = FamiliesFactoryImpl.eINSTANCE.createFamily()
-        family.lastName = "Doe"
+        family.lastName = "Schneider"
         familyRegister.families.add(family)
         val memberSon = FamiliesFactoryImpl.eINSTANCE.createMember()
-        memberSon.firstName = "NICO"
+        memberSon.firstName = "Luis"
         family.sons.add(memberSon)
 
         val father = FamiliesFactoryImpl.eINSTANCE.createMember()
-        father.firstName = "John"
+        father.firstName = "Hugo"
         family.father = father
 
         val mother = FamiliesFactoryImpl.eINSTANCE.createMember()
-        mother.firstName = "Jane"
+        mother.firstName = "Vanessa"
         family.mother = mother
         familyRegister.id = "familyGroup"
 
 
         val daughter = FamiliesFactoryImpl.eINSTANCE.createMember()
-        daughter.firstName = "VANESSA"
+        daughter.firstName = "Alissa"
         family.daughters.add(daughter)
         return familyRegister
     }

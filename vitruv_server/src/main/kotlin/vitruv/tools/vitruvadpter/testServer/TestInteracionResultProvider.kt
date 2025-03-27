@@ -51,7 +51,7 @@ class TestInteractionResultProvider : InteractionResultProvider {
         print("$p1 /n $p2 /n $p3 /n $p4 /n $p5")
         print("\n")
         //read am integer from the console
-        val myInput = readln().toInt()
+        val myInput = 1;
         //return the input
         return myInput
     }

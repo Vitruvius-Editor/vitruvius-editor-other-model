@@ -38,12 +38,12 @@ class UmlFamilyDiagramViewMapper: ViewMapper<UmlDiagram> {
 
     private fun createUmlDiagramFromFamily(family: Family): UmlDiagram {
         val nodes = mutableListOf<UmlNode>()
-        nodes.add(UmlNode(EUtils.getUUIDForEObject(family.father), family.father.firstName,
+        nodes.add(UmlNode(EUtils.getUUIDForEObject(family.father), family.father?.firstName ?: "",
             "<<father>>",
             listOf(),
             listOf(),
             listOf()))
-        nodes.add(UmlNode(EUtils.getUUIDForEObject(family.mother), family.mother.firstName,
+        nodes.add(UmlNode(EUtils.getUUIDForEObject(family.mother), family.mother?.firstName ?: "",
             "<<mother>>",
             listOf(),
             listOf(),
