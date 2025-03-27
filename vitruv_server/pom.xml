@@ -113,20 +113,16 @@
         </dependency>
 
         <dependency>
-            <groupId>tools.vitruv.dsls.reactions</groupId>
-            <artifactId>runtime</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/Dependencies/tools/vitruv/dsls.reactions.runtime/3.1.0/dsls.reactions.runtime-3.1.0.jar
-            </systemPath>
-        </dependency>
-
-        <dependency>
             <groupId>tools.vitruv</groupId>
             <artifactId>tools.vitruv.framework.remote</artifactId>
             <version>3.1.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>tools.vitruv</groupId>
+            <artifactId>tools.vitruv.dsls.reactions.runtime</artifactId>
+            <version>3.2.0-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>org.eclipse.emf</groupId>
